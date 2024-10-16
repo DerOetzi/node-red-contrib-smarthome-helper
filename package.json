@@ -1,0 +1,35 @@
+{
+    "name": "@deroetzi/node-red-contrib-smarthome-helper",
+    "version": "0.0.1",
+    "description": "A collection of personal helper nodes for Node-RED",
+    "author": "Johannes Ott",
+    "license": "MIT",
+    "keywords": [
+        "node-red",
+        "smarthome"
+    ],
+    "engines": {
+        "node": ">=16.0.0"
+    },
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "node-red": ">=2.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DerOetzi/node-red-contrib-smarthome-helper.git"
+    },
+    "devDependencies": {
+        "@types/node": "^16.18.113",
+        "@types/node-red": "^1.3.5",
+        "typescript": "^5.0.0"
+    },
+    "node-red": {
+        "version": ">=2.0.0",
+        "nodes": {
+            "automation-gate": "nodes/automation_gate/gate.js"
+        }
+    }
+}
