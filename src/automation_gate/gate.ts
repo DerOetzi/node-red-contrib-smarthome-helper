@@ -13,15 +13,10 @@ module.exports = function (RED: NodeAPI) {
 
     let pauseTimer: NodeJS.Timeout | null = null;
 
-    changeState(config.startupState !== undefined ? config.startupState : true);
+    changeState(config.startupState ?? true);
 
-    const autoReplay =
-      config.autoReplay !== undefined ? config.autoReplay : true;
-
-    const filterUniquePayload =
-      config.filterUniquePayload !== undefined
-        ? config.filterUniquePayload
-        : false;
+    const autoReplay = config.autoReplay ?? true;
+    const filterUniquePayload = config.filterUniquePayload ?? false;
 
     node.on("input", (msg: any) => {
       if (msg.gate) {
@@ -51,6 +46,8 @@ module.exports = function (RED: NodeAPI) {
         if (actualState()) {
           if (filterUniquePayload) {
             sendIfChanged(msg);
+          } else {
+            node.send([msg, null]);
           }
         }
       }

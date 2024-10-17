@@ -37,7 +37,8 @@
     "node-red": {
         "version": ">=2.0.0",
         "nodes": {
-            "automation-gate": "nodes/automation_gate/gate.js"
+            "automation-gate": "nodes/automation_gate/gate.js",
+            "gate-control": "nodes/automation_gate/control.js"
         }
     }
 }
