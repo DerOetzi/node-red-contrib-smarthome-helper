@@ -1,20 +1,26 @@
 import { NodeAPI } from "node-red";
-import { NodeType } from "./const";
-import AutomationGate from "./nodes/flow_control/automation-gate";
 import { setRED } from "./globals";
-import GateControl from "./nodes/flow_control/gate-control";
 import version from "./version";
+import { NodeType } from "./const";
+import AutomationGateNode from "./nodes/flowctrl/automation-gate";
+import GateControlNode from "./nodes/flowctrl/gate-control";
+import LogicalOperationNode from "./nodes/logical/op";
+import CompareNode from "./nodes/logical/compare";
 
-const nodes: Record<NodeType, any> = {
-  [NodeType.AutomationGate]: AutomationGate,
-  [NodeType.GateControl]: GateControl,
+const nodes: Record<string, any> = {
+  [NodeType.AutomationGate.fullName]: AutomationGateNode,
+  [NodeType.GateControl.fullName]: GateControlNode,
+  [NodeType.LogicalOp.fullName]: LogicalOperationNode,
+  [NodeType.Compare.fullName]: CompareNode,
 };
 
 export default async (RED: NodeAPI): Promise<void> => {
-  console.log("Registering nodes");
   setRED(RED);
-  let type: NodeType;
+  let type: string;
   for (type in nodes) {
+    RED.log.info(
+      `Registering node type ${type} for @deroetzi/node-red-contrib-smarthome-helper`
+    );
     RED.nodes.registerType(type, nodes[type]);
   }
 

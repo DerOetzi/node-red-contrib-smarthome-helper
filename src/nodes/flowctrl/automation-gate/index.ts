@@ -1,7 +1,10 @@
-import { Node, NodeDef, NodeStatusFill } from "node-red";
+import { Node, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
+import { BaseNodeConfig } from "../../types";
+import { SendHandler } from "../../../common/sendhandler";
+import { start } from "repl";
 
-interface GateNodeConfig extends NodeDef {
+interface AutomationGateNodeConfig extends BaseNodeConfig {
   startupState: boolean;
   autoReplay: boolean;
   filterUniquePayload: boolean;
@@ -9,17 +12,17 @@ interface GateNodeConfig extends NodeDef {
 
 export default function AutomationGateNode(
   this: Node,
-  config: GateNodeConfig
+  config: AutomationGateNodeConfig
 ): void {
   RED.nodes.createNode(this, config);
   const node = this;
+  const sendHandler = new SendHandler(node, config, 2);
 
   let pauseTimer: NodeJS.Timeout | null = null;
 
   changeState(config.startupState ?? true);
 
   const autoReplay = config.autoReplay ?? true;
-  const filterUniquePayload = config.filterUniquePayload ?? false;
 
   node.on("input", (msg: any) => {
     if (msg.gate) {
@@ -47,34 +50,18 @@ export default function AutomationGateNode(
       saveLastMessage(msg);
 
       if (actualState()) {
-        if (filterUniquePayload) {
-          sendIfChanged(msg);
-        } else {
-          node.send([msg, null]);
-        }
+        sendHandler.sendMsg(msg);
       }
     }
   });
 
-  function sendIfChanged(msg: any) {
-    if (msg.topic) {
-      let lastSentPayloads: Record<string, any> =
-        node.context().get("lastSentPayloads") || {};
-
-      if (lastSentPayloads[msg.topic] !== msg.payload) {
-        node.send([msg, null]);
-        lastSentPayloads[msg.topic] = msg.payload;
-        node.context().set("lastSentPayloads", lastSentPayloads);
-      }
-    }
-  }
-
   function resetFilter() {
-    node.context().set("lastSentPayloads", {});
+    sendHandler.resetFilter();
   }
 
   function stopGate() {
     changeState(false);
+    sendHandler.resetFilter();
     clearPauseTimer();
   }
 
@@ -92,7 +79,7 @@ export default function AutomationGateNode(
     stopGate();
 
     pauseTimer = setTimeout(() => {
-      changeState(true);
+      startGate();
 
       if (autoReplay) {
         replayMessages();
@@ -110,11 +97,13 @@ export default function AutomationGateNode(
   }
 
   function replayMessages() {
+    startGate();
+
     const lastMessages: Record<string, any> =
       node.context().get("lastMessages") || {};
     for (const topic in lastMessages) {
       if (lastMessages.hasOwnProperty(topic)) {
-        node.send([lastMessages[topic], null]);
+        sendHandler.sendMsg(lastMessages[topic]);
       }
     }
   }
@@ -143,7 +132,11 @@ export default function AutomationGateNode(
         shape: "dot",
         text: state ? "Automated" : "Manual",
       });
-      node.send([null, { payload: state, topic: "automation_state" }]);
+
+      sendHandler.sendMsgToOutput(
+        { payload: state, topic: "automation_state" },
+        1
+      );
     }
   }
 

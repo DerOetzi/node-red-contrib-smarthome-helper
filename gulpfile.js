@@ -7,7 +7,8 @@ const flatmap = require("gulp-flatmap");
 const lazypipe = require("lazypipe");
 const merge = require("merge-stream");
 const wrap = require("gulp-wrap");
-const { src, dest, series, task, parallel } = require("gulp");
+const { src, dest, task, parallel } = require("gulp");
+const appendPrepend = require("gulp-append-prepend");
 
 // Source
 const buffer = require("gulp-buffer");
@@ -25,19 +26,15 @@ const terser = require("gulp-terser");
 const minify = require("cssnano");
 const postcss = require("gulp-postcss");
 const prefix = require("autoprefixer");
-const sass = require("gulp-dart-sass");
+const sass = require("gulp-sass")(require("sass"));
 
 const editorFilePath = "dist";
 const uiCssWrap = "<style><%= contents %></style>";
 const uiJsWrap = '<script type="text/javascript"><%= contents %></script>';
 const uiFormWrap =
   '<script type="text/html" data-template-name="<%= data.type %>"><%= data.contents %></script>';
-const nodeMap = {
-  "automation-gate": { type: "automation-gate" },
-  "gate-control": { type: "gate-control" },
-};
 
-let currentFilename;
+let currentNode;
 
 // Compile sass and wrap it
 const buildSass = lazypipe()
@@ -66,13 +63,7 @@ const buildForm = lazypipe()
     collapseWhitespace: true,
     minifyCSS: true,
   })
-  .pipe(() =>
-    wrap(
-      uiFormWrap,
-      { type: nodeMap[currentFilename].type },
-      { variable: "data" },
-    ),
-  );
+  .pipe(() => wrap(uiFormWrap, { type: currentNode }, { variable: "data" }));
 
 task("buildEditorFiles", () => {
   const css = src(["src/nodes/**/*.scss", "!_*.scss"]).pipe(buildSass());
@@ -101,12 +92,13 @@ task("buildEditorFiles", () => {
 
   const html = src(["src/nodes/**/*.html"]).pipe(
     flatmap((stream, file) => {
-      console.log(file.path);
-      const [, , node] = file.path.match(
+      const [, category, node] = file.path.match(
         /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]editor\.html/,
       );
-      currentFilename = node;
-      return stream.pipe(buildForm());
+      currentNode = category + "-" + node;
+      return stream
+        .pipe(appendPrepend.appendFile("src/editor/base.editor.html"))
+        .pipe(buildForm());
     }),
   );
 
@@ -119,4 +111,11 @@ task("buildSourceFiles", () => {
   return tsProject.src().pipe(tsProject()).js.pipe(dest(editorFilePath));
 });
 
-task("default", parallel(["buildEditorFiles", "buildSourceFiles"]));
+task("copyIcons", () => {
+  return src("icons/*").pipe(dest(`${editorFilePath}/icons`));
+});
+
+task(
+  "default",
+  parallel(["buildEditorFiles", "buildSourceFiles", "copyIcons"]),
+);

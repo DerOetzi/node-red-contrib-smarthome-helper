@@ -1,0 +1,25 @@
+<div class="form-row">
+  <label for="node-input-property"><i class="fa fa-cog"></i> Property</label>
+  <input type="text" id="node-input-property" required />
+  <input type="hidden" id="node-input-propertyType" />
+</div>
+<div class="form-row">
+  <label for="node-input-operator"><i class="fa fa-equals"></i> Operator</label>
+  <select id="node-input-operator">
+    <option value="eq">==</option>
+    <option value="neq">!=</option>
+    <option value="lt">&lt;</option>
+    <option value="lte">&lt;=</option>
+    <option value="gt">&gt;</option>
+    <option value="gte">&gt;=</option>
+    <option value="true">is true</option>
+    <option value="false">is false</option>
+    <option value="empty">is empty</option>
+    <option value="not_empty">is not empty</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-value"><i class="fa fa-check"></i> Compare to</label>
+  <input type="text" id="node-input-value" required />
+  <input type="hidden" id="node-input-valueType" />
+</div>

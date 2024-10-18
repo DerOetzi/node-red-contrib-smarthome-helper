@@ -1,7 +1,9 @@
-import { Node, NodeDef } from "node-red";
+import { Node } from "node-red";
 import { RED } from "../../../globals";
+import { BaseNodeConfig } from "../../types";
+import { SendHandler } from "../../../common/sendhandler";
 
-interface GateControlNodeConfig extends NodeDef {
+interface GateControlNodeConfig extends BaseNodeConfig {
   delay: number;
   gateCommand: string;
   pauseTime?: number; // Optional pause time property
@@ -14,8 +16,10 @@ export default function GateControlNode(
 ): void {
   RED.nodes.createNode(this, config);
   const node = this;
-  const delay = config.delay || 100;
+  const sendHandler = new SendHandler(node, config, 2);
+
   const gateCommand = config.gateCommand || "start";
+  const delay = config.delay || 100;
 
   let pauseTimeInMs = 0;
   if (gateCommand === "pause" && config.pauseTime) {
@@ -34,39 +38,10 @@ export default function GateControlNode(
     if (gateCommand === "pause") {
       gateControlMsg.pause = pauseTimeInMs;
     }
-    node.send([gateControlMsg, null]);
-
-    if (msg.trigger === true) {
-      return;
-    }
+    sendHandler.sendMsgToOutput(gateControlMsg, 1);
 
     setTimeout(() => {
-      node.send([null, msg]);
+      sendHandler.sendMsg(msg);
     }, delay);
   });
-
-  RED.httpAdmin.post(
-    "/smarthomehelper/automation_gate/control/:id",
-    RED.auth.needsPermission("inject.write"),
-    function (req, res) {
-      const node = RED.nodes.getNode(req.params.id);
-      if (node != null) {
-        try {
-          if (req.body?.trigger) {
-            node.receive(req.body);
-            res.sendStatus(200);
-          } else {
-            res.sendStatus(400);
-          }
-        } catch (err) {
-          res.sendStatus(500);
-          node.error(
-            RED._("inject.failed", { error: (err as Error).toString() })
-          );
-        }
-      } else {
-        res.sendStatus(404);
-      }
-    }
-  );
 }
