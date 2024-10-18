@@ -1,4 +1,4 @@
-nodes/**/*.js
+nodes/**/*
 
 # Logs
 logs

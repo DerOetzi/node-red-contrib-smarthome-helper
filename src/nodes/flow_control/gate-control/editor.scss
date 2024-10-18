@@ -1,0 +1,9 @@
+#pause-options div {
+    display: flex;
+    align-items: center;
+
+    input[type="number"],
+    select {
+        width: 50px;
+    }
+}
