@@ -1,6 +1,6 @@
 {
     "name": "@deroetzi/node-red-contrib-smarthome-helper",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "A collection of personal helper nodes for Node-RED",
     "author": "Johannes Ott",
     "license": "MIT",
@@ -31,14 +31,17 @@
         "eslint": "^9.12.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^5.2.1",
+        "gulp": "^5.0.0",
+        "gulp-copy": "^5.0.0",
+        "gulp-typescript": "^6.0.0-alpha.1",
         "prettier": "^3.3.3",
         "typescript": "^5.0.0"
     },
     "node-red": {
         "version": ">=2.0.0",
         "nodes": {
-            "automation-gate": "nodes/automation_gate/gate.js",
-            "gate-control": "nodes/automation_gate/control.js"
+            "automation-gate": "nodes/flow_control/gate.js",
+            "gate-control": "nodes/flow_control/gate_control.js"
         }
     }
 }
