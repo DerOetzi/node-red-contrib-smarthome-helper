@@ -1,8 +1,7 @@
 import { Node, NodeStatusFill } from "node-red";
+import { SendHandler } from "../../../common/sendhandler";
 import { RED } from "../../../globals";
 import { BaseNodeConfig } from "../../types";
-import { SendHandler } from "../../../common/sendhandler";
-import { start } from "repl";
 
 interface AutomationGateNodeConfig extends BaseNodeConfig {
   startupState: boolean;

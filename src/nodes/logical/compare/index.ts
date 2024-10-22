@@ -1,8 +1,19 @@
-import { RED } from "../../../globals";
 import { Node } from "node-red";
-import { eqCmp, neqCmp } from "../operations";
-import { BaseNodeConfig } from "../../types";
 import { SendHandler } from "../../../common/sendhandler";
+import { RED } from "../../../globals";
+import { BaseNodeConfig } from "../../types";
+import {
+  emptyCmp,
+  eqCmp,
+  falseCmp,
+  gtCmp,
+  gteCmp,
+  ltCmp,
+  lteCmp,
+  neqCmp,
+  notEmptyCmp,
+  trueCmp,
+} from "../operations";
 
 // Typdefinition für das Node-Konfigurationsobjekt
 interface CompareNodeConfig extends BaseNodeConfig {
@@ -16,6 +27,14 @@ interface CompareNodeConfig extends BaseNodeConfig {
 const comparators: Record<string, any> = {
   eq: { func: eqCmp, propertyOnly: false },
   neq: { func: neqCmp, propertyOnly: false },
+  lt: { func: ltCmp, propertyOnly: false },
+  lte: { func: lteCmp, propertyOnly: false },
+  gt: { func: gtCmp, propertyOnly: false },
+  gte: { func: gteCmp, propertyOnly: false },
+  true: { func: trueCmp, propertyOnly: true },
+  false: { func: falseCmp, propertyOnly: true },
+  empty: { func: emptyCmp, propertyOnly: true },
+  not_empty: { func: notEmptyCmp, propertyOnly: true },
 };
 
 export default function CompareNode(
