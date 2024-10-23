@@ -13,7 +13,7 @@ interface CompareNodeProperties extends BaseNodeEditorProperties {
   valueType: string;
 }
 
-const nodeType = NodeType.Compare;
+const nodeType = NodeType.LogicalCompare;
 
 const CompareNodeEditor: EditorNodeDef<CompareNodeProperties> = {
   category: nodeType.category.label,

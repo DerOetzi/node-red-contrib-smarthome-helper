@@ -13,7 +13,7 @@ export class SendHandler {
     this.context = this.node.context();
   }
 
-  sendMsg(received_msg: any, payload: any = null) {
+  sendMsg(received_msg: any, payload: any = null, output: number = 0) {
     const topicValue = RED.util.evaluateNodeProperty(
       this.config.topic,
       this.config.topicType,
@@ -37,12 +37,12 @@ export class SendHandler {
         this.context.get("lastSentPayloads") || {};
 
       if (lastSentPayloads[msg.topic] !== msg.payload) {
-        this.sendMsgToOutput(msg);
+        this.sendMsgToOutput(msg, output);
         lastSentPayloads[msg.topic] = msg.payload;
         this.context.set("lastSentPayloads", lastSentPayloads);
       }
     } else {
-      this.sendMsgToOutput(msg);
+      this.sendMsgToOutput(msg, output);
     }
   }
 

@@ -36,16 +36,25 @@ export class NodeTypeStruct {
 }
 
 export const NodeType: Record<string, NodeTypeStruct> = {
-  AutomationGate: new NodeTypeStruct(
+  FlowCtrlAutomationGate: new NodeTypeStruct(
     "automation-gate",
     NodeCategory.FlowControl,
     NodeColor.AutomationGate
   ),
-  GateControl: new NodeTypeStruct(
+  FlowCtrlGateControl: new NodeTypeStruct(
     "gate-control",
     NodeCategory.FlowControl,
     NodeColor.AutomationGate
   ),
   LogicalOp: new NodeTypeStruct("op", NodeCategory.Logical, NodeColor.Logical),
-  Compare: new NodeTypeStruct("compare", NodeCategory.Logical, NodeColor.Logical),
+  LogicalCompare: new NodeTypeStruct(
+    "compare",
+    NodeCategory.Logical,
+    NodeColor.Logical
+  ),
+  LogicalSwitch: new NodeTypeStruct(
+    "switch",
+    NodeCategory.Logical,
+    NodeColor.Logical
+  ),
 };

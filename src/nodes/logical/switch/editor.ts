@@ -5,28 +5,22 @@ import {
   baseNodeEditorPropertiesDefaults,
 } from "../../../editor/types";
 
-interface GateNodeProperties extends BaseNodeEditorProperties {
-  startupState: boolean;
-  autoReplay: boolean;
-  filterUniquePayload: boolean;
-}
+interface SwitchNodeProperties extends BaseNodeEditorProperties {}
 
-const nodeType = NodeType.FlowCtrlAutomationGate;
+const nodeType = NodeType.LogicalSwitch;
 
-const AutomationGateNodeEditor: EditorNodeDef<GateNodeProperties> = {
+const SwitchNodeEditor: EditorNodeDef<SwitchNodeProperties> = {
   category: nodeType.category.label,
   color: nodeType.color,
   defaults: {
-    startupState: { value: true },
-    autoReplay: { value: true },
     ...baseNodeEditorPropertiesDefaults,
   },
   inputs: 1,
   outputs: 2,
-  outputLabels: ["Messages when gate is open", "Gate state updates"],
-  icon: "gate.png",
+  outputLabels: ["true", "false"],
+  icon: "switch.svg",
   label: function () {
-    return this.name || nodeType.name;
+    return this.name || "switch";
   },
   oneditprepare: function () {
     $("#node-input-topic").typedInput({
@@ -36,4 +30,4 @@ const AutomationGateNodeEditor: EditorNodeDef<GateNodeProperties> = {
   },
 };
 
-export default AutomationGateNodeEditor;
+export default SwitchNodeEditor;

@@ -12,7 +12,7 @@ interface GateControlNodeProperties extends BaseNodeEditorProperties {
   pauseUnit?: string;
 }
 
-const nodeType = NodeType.GateControl;
+const nodeType = NodeType.FlowCtrlGateControl;
 
 const GateControlNodeEditor: EditorNodeDef<GateControlNodeProperties> = {
   category: nodeType.category.label,

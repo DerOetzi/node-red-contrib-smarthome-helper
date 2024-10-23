@@ -6,12 +6,14 @@ import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import GateControlNode from "./nodes/flowctrl/gate-control";
 import LogicalOperationNode from "./nodes/logical/op";
 import CompareNode from "./nodes/logical/compare";
+import SwitchNode from "./nodes/logical/switch";
 
 const nodes: Record<string, any> = {
-  [NodeType.AutomationGate.fullName]: AutomationGateNode,
-  [NodeType.GateControl.fullName]: GateControlNode,
+  [NodeType.FlowCtrlAutomationGate.fullName]: AutomationGateNode,
+  [NodeType.FlowCtrlGateControl.fullName]: GateControlNode,
   [NodeType.LogicalOp.fullName]: LogicalOperationNode,
-  [NodeType.Compare.fullName]: CompareNode,
+  [NodeType.LogicalCompare.fullName]: CompareNode,
+  [NodeType.LogicalSwitch.fullName]: SwitchNode,
 };
 
 export default async (RED: NodeAPI): Promise<void> => {
