@@ -6,7 +6,8 @@ import { BaseNodeConfig } from "../../types";
 interface AutomationGateNodeConfig extends BaseNodeConfig {
   startupState: boolean;
   autoReplay: boolean;
-  filterUniquePayload: boolean;
+  stateOpenLabel: string;
+  stateClosedLabel: string;
 }
 
 export default function AutomationGateNode(
@@ -19,7 +20,7 @@ export default function AutomationGateNode(
 
   let pauseTimer: NodeJS.Timeout | null = null;
 
-  changeState(config.startupState ?? true);
+  RED.events.on("flows:started", initializeState);
 
   const autoReplay = config.autoReplay ?? true;
 
@@ -53,6 +54,13 @@ export default function AutomationGateNode(
       }
     }
   });
+
+  function initializeState() {
+    RED.events.removeListener("flows:started", initializeState);
+    setTimeout(() => {
+      changeState(config.startupState ?? true);
+    }, 5000);
+  }
 
   function resetFilter() {
     sendHandler.resetFilter();
@@ -129,7 +137,9 @@ export default function AutomationGateNode(
       node.status({
         fill: color,
         shape: "dot",
-        text: state ? "Automated" : "Manual",
+        text: state
+          ? (config.stateOpenLabel ?? "Automated")
+          : (config.stateClosedLabel ?? "Manual"),
       });
 
       sendHandler.sendMsgToOutput(

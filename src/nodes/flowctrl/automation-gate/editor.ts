@@ -8,6 +8,8 @@ import {
 interface GateNodeProperties extends BaseNodeEditorProperties {
   startupState: boolean;
   autoReplay: boolean;
+  stateOpenLabel: string;
+  stateClosedLabel: string;
   filterUniquePayload: boolean;
 }
 
@@ -19,6 +21,8 @@ const AutomationGateNodeEditor: EditorNodeDef<GateNodeProperties> = {
   defaults: {
     startupState: { value: true },
     autoReplay: { value: true },
+    stateOpenLabel: { value: "Automated", required: true },
+    stateClosedLabel: { value: "Manual", required: true },
     ...baseNodeEditorPropertiesDefaults,
   },
   inputs: 1,
