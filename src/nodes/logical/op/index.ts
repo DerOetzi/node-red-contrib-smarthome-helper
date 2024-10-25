@@ -1,5 +1,5 @@
-import { Node } from "node-red";
-import { SendHandler } from "../../../common/sendhandler";
+import { Node, NodeStatusFill } from "node-red";
+import { NodeSendHandler } from "../../../common/sendhandler";
 import { RED } from "../../../globals";
 import { BaseNodeConfig } from "../../types";
 import {
@@ -11,6 +11,7 @@ import {
   orOp,
   xorOp,
 } from "../operations";
+import { NodeStateHandler } from "../../../common/statehandler";
 
 interface LogicalOperationNodeConfig extends BaseNodeConfig {
   logical: string;
@@ -32,42 +33,49 @@ export default function LogicalOperationNode(
   config: LogicalOperationNodeConfig
 ): void {
   RED.nodes.createNode(this, config);
-  const node = this;
-  const sendHandler = new SendHandler(node, config, 1);
 
-  const context = node.context();
+  const node = this;
+
+  const stateHandler = new NodeStateHandler(node, { statusColor: statusColor });
+  const sendHandler = new NodeSendHandler(stateHandler, config, 1);
 
   const logical = config.logical ?? "and";
   const minMsgCount = config.minMsgCount ?? 1;
 
   const operator = operations[logical];
 
-  node.status({ fill: "grey", shape: "ring", text: "no message" });
-
   node.on("input", (msg: any) => {
     if (logical === "not") {
       sendResult(msg, notOp(msg.payload));
     } else {
-      const topics: Record<string, any> = context.get("topics") || {};
+      const topics = stateHandler.getRecordFromContext("topics");
       topics[msg.topic] = msg.payload;
-      context.set("topics", topics);
+      stateHandler.setToContext("topics", topics);
 
       if (Object.keys(topics).length >= minMsgCount) {
         const payloads = Object.values(topics);
         sendResult(msg, operator(payloads));
       } else {
-        node.status({ fill: "yellow", shape: "ring", text: "waiting" });
+        stateHandler.nodeStatus = "waiting";
       }
     }
   });
 
   function sendResult(msg: any, result: boolean): void {
-    node.status({
-      fill: result ? "green" : "red",
-      shape: "dot",
-      text: result.toString(),
-    });
-
+    stateHandler.nodeStatus = result;
     sendHandler.sendMsg(msg, result);
+  }
+
+  function statusColor(status: any): NodeStatusFill {
+    let color: NodeStatusFill = "red";
+    if (status === null || status === undefined || status === "") {
+      color = "grey";
+    } else if (status === "waiting") {
+      color = "yellow";
+    } else if (status) {
+      color = "green";
+    }
+
+    return color;
   }
 }

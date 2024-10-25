@@ -1,16 +1,25 @@
-import { BaseNodeConfig } from "../nodes/types";
-import { RED } from "../globals";
 import { Node } from "node-red";
+import { RED } from "../globals";
+import { BaseNodeConfig } from "../nodes/types";
+import { NodeStateHandler, NodeStatusSendConfig } from "./statehandler";
 
-export class SendHandler {
-  private readonly context;
+const lastSentPayloadsKey = "lastSentPayloads";
+
+export class NodeSendHandler {
+  private readonly node: Node;
 
   constructor(
-    private readonly node: Node,
+    private readonly stateHandler: NodeStateHandler,
     private readonly config: BaseNodeConfig,
-    private readonly outputs: number = 1
+    private readonly outputs: number = 1,
+    statusOutputConfig?: NodeStatusSendConfig
   ) {
-    this.context = this.node.context();
+    this.node = stateHandler.node;
+
+    if (statusOutputConfig) {
+      statusOutputConfig.sendHandler = this;
+      stateHandler.registerStatusOutput(statusOutputConfig);
+    }
   }
 
   sendMsg(received_msg: any, payload: any = null, output: number = 0) {
@@ -34,12 +43,12 @@ export class SendHandler {
 
     if (this.config.filterUniquePayload ?? false) {
       let lastSentPayloads: Record<string, any> =
-        this.context.get("lastSentPayloads") || {};
+        this.stateHandler.getRecordFromContext(lastSentPayloadsKey);
 
       if (lastSentPayloads[msg.topic] !== msg.payload) {
         this.sendMsgToOutput(msg, output);
         lastSentPayloads[msg.topic] = msg.payload;
-        this.context.set("lastSentPayloads", lastSentPayloads);
+        this.stateHandler.setToContext(lastSentPayloadsKey, lastSentPayloads);
       }
     } else {
       this.sendMsgToOutput(msg, output);
@@ -47,13 +56,12 @@ export class SendHandler {
   }
 
   resetFilter() {
-    this.context.set("lastSentPayloads", {});
+    this.stateHandler.removeFromContext(lastSentPayloadsKey);
   }
 
   sendMsgToOutput(msg: any, output: number = 0) {
     let msgs = Array(this.outputs).fill(null);
     msgs[output] = msg;
-
     this.node.send(msgs);
   }
 }

@@ -1,7 +1,8 @@
 import { Node } from "node-red";
 import { RED } from "../../../globals";
 import { BaseNodeConfig } from "../../types";
-import { SendHandler } from "../../../common/sendhandler";
+import { NodeSendHandler } from "../../../common/sendhandler";
+import { NodeStateHandler } from "../../../common/statehandler";
 
 interface GateControlNodeConfig extends BaseNodeConfig {
   delay: number;
@@ -15,8 +16,12 @@ export default function GateControlNode(
   config: GateControlNodeConfig
 ): void {
   RED.nodes.createNode(this, config);
+
   const node = this;
-  const sendHandler = new SendHandler(node, config, 2);
+
+  const stateHandler = new NodeStateHandler(node);
+
+  const sendHandler = new NodeSendHandler(stateHandler, config, 2);
 
   const gateCommand = config.gateCommand || "start";
   const delay = config.delay || 100;
@@ -42,6 +47,7 @@ export default function GateControlNode(
 
     setTimeout(() => {
       sendHandler.sendMsg(msg);
+      stateHandler.nodeStatus = new Date();
     }, delay);
   });
 }

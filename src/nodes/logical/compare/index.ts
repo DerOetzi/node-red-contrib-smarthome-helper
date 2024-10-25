@@ -1,5 +1,5 @@
 import { Node } from "node-red";
-import { SendHandler } from "../../../common/sendhandler";
+import { NodeSendHandler } from "../../../common/sendhandler";
 import { RED } from "../../../globals";
 import { BaseNodeConfig } from "../../types";
 import {
@@ -14,6 +14,7 @@ import {
   notEmptyCmp,
   trueCmp,
 } from "../operations";
+import { NodeStateHandler } from "../../../common/statehandler";
 
 // Typdefinition für das Node-Konfigurationsobjekt
 interface CompareNodeConfig extends BaseNodeConfig {
@@ -43,11 +44,10 @@ export default function CompareNode(
 ): void {
   RED.nodes.createNode(this, config);
   const node = this;
-  const sendHandler = new SendHandler(node, config, 1);
+  const stateHandler = new NodeStateHandler(node);
+  const sendHandler = new NodeSendHandler(stateHandler, config, 1);
 
   const comparator = comparators[config.operator];
-
-  node.status({ fill: "grey", shape: "ring", text: "no message" });
 
   node.on("input", (msg: any) => {
     const propertyValue = RED.util.evaluateNodeProperty(
@@ -70,11 +70,7 @@ export default function CompareNode(
       result = comparator.func(propertyValue, compareValue);
     }
 
-    node.status({
-      fill: result ? "green" : "red",
-      shape: "dot",
-      text: result.toString(),
-    });
+    stateHandler.nodeStatus = result;
 
     sendHandler.sendMsg(msg, result);
   });

@@ -1,5 +1,6 @@
 import { Node, NodeStatusFill } from "node-red";
-import { SendHandler } from "../../../common/sendhandler";
+import { NodeSendHandler } from "../../../common/sendhandler";
+import { NodeStateHandler } from "../../../common/statehandler";
 import { RED } from "../../../globals";
 import { BaseNodeConfig } from "../../types";
 
@@ -15,14 +16,27 @@ export default function AutomationGateNode(
   config: AutomationGateNodeConfig
 ): void {
   RED.nodes.createNode(this, config);
+
   const node = this;
-  const sendHandler = new SendHandler(node, config, 2);
+
+  const stateHandler = new NodeStateHandler(node, {
+    initialize: initializeState,
+    statusColor: statusColor,
+    statusTextFormatter: statusTextFormatter,
+  });
+
+  const sendHandler = new NodeSendHandler(stateHandler, config, 2, {
+    output: 1,
+    topic: "automation_status",
+  });
 
   let pauseTimer: NodeJS.Timeout | null = null;
 
-  RED.events.on("flows:started", initializeState);
-
   const autoReplay = config.autoReplay ?? true;
+
+  node.on("close", () => {
+    clearPauseTimer();
+  });
 
   node.on("input", (msg: any) => {
     if (msg.gate) {
@@ -49,32 +63,29 @@ export default function AutomationGateNode(
     } else {
       saveLastMessage(msg);
 
-      if (actualState()) {
+      if (stateHandler.nodeStatus ?? config.startupState ?? true) {
         sendHandler.sendMsg(msg);
       }
     }
   });
 
-  function initializeState() {
-    RED.events.removeListener("flows:started", initializeState);
-    setTimeout(() => {
-      changeState(config.startupState ?? true);
-    }, 5000);
+  function initializeState(): void {
+    stateHandler.nodeStatus = config.startupState ?? true;
   }
 
-  function resetFilter() {
+  function resetFilter(): void {
     sendHandler.resetFilter();
   }
 
   function stopGate() {
-    changeState(false);
+    stateHandler.nodeStatus = false;
     sendHandler.resetFilter();
     clearPauseTimer();
   }
 
   function startGate() {
     clearPauseTimer();
-    changeState(true);
+    stateHandler.nodeStatus = true;
   }
 
   function pauseGate(msg: any) {
@@ -96,18 +107,22 @@ export default function AutomationGateNode(
 
   function saveLastMessage(msg: any) {
     if (msg.topic) {
-      let lastMessages: Record<string, any> =
-        node.context().get("lastMessages") || {};
+      let lastMessages: Record<string, any> = stateHandler.getFromContext(
+        "lastMessages",
+        {}
+      );
       lastMessages[msg.topic] = msg;
-      node.context().set("lastMessages", lastMessages);
+      stateHandler.setToContext("lastMessages", lastMessages);
     }
   }
 
   function replayMessages() {
     startGate();
 
-    const lastMessages: Record<string, any> =
-      node.context().get("lastMessages") || {};
+    const lastMessages: Record<string, any> = stateHandler.getFromContext(
+      "lastMessages",
+      {}
+    );
     for (const topic in lastMessages) {
       if (lastMessages.hasOwnProperty(topic)) {
         sendHandler.sendMsg(lastMessages[topic]);
@@ -122,34 +137,24 @@ export default function AutomationGateNode(
     }
   }
 
-  function changeState(state: boolean) {
-    const currentState = actualState();
-    if (currentState !== state) {
-      node.context().set("state", state);
-
-      let color: NodeStatusFill = "red";
-      if (state) {
-        color = "green";
-      } else if (pauseTimer !== null) {
-        color = "yellow";
-      }
-
-      node.status({
-        fill: color,
-        shape: "dot",
-        text: state
-          ? (config.stateOpenLabel ?? "Automated")
-          : (config.stateClosedLabel ?? "Manual"),
-      });
-
-      sendHandler.sendMsgToOutput(
-        { payload: state, topic: "automation_state" },
-        1
-      );
+  function statusColor(status: boolean): NodeStatusFill {
+    let color: NodeStatusFill = "red";
+    if (status === null || status === undefined) {
+      color = "grey";
+    } else if (status) {
+      color = "green";
+    } else if (pauseTimer !== null) {
+      color = "yellow";
     }
+
+    return color;
   }
 
-  function actualState(): boolean {
-    return node.context().get("state") as boolean;
+  function statusTextFormatter(status: any): string {
+    if (status) {
+      return config.stateOpenLabel ?? "Automated";
+    } else {
+      return config.stateClosedLabel ?? "Manual";
+    }
   }
 }
