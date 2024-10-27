@@ -20,6 +20,8 @@ const nodeStatusKey = "node_status";
 export class NodeStateHandler {
   private static readonly nodesToInitialize: (() => void)[] = [];
 
+  private stateStorage: Record<string, any> = {};
+
   private readonly context: NodeContext;
 
   private readonly options: NodeStateHandlerOptions;
@@ -50,10 +52,7 @@ export class NodeStateHandler {
   }
 
   public cleanupNodeContext() {
-    let keys = this.context.keys();
-    for (const element of keys) {
-      this.context.set(element, null);
-    }
+    this.stateStorage = {};
   }
 
   private registerNodeForInitialization() {
@@ -73,7 +72,7 @@ export class NodeStateHandler {
   }
 
   public getFromContext(key: string, defaultValue: any = null): any {
-    return this.context.get(key) ?? defaultValue;
+    return this.stateStorage[key] ?? defaultValue;
   }
 
   public getRecordFromContext(key: string): Record<string, any> {
@@ -81,11 +80,11 @@ export class NodeStateHandler {
   }
 
   public setToContext(key: string, value: any) {
-    this.context.set(key, value);
+    this.stateStorage[key] = value;
   }
 
   public removeFromContext(key: string) {
-    this.context.set(key, null);
+    this.stateStorage[key] = null;
   }
 
   public registerStatusOutput(statusSendConfig: NodeStatusSendConfig) {
