@@ -1,5 +1,8 @@
 import { Node, NodeStatusFill } from "node-red";
-import { NodeSendHandler } from "../../../common/sendhandler";
+import {
+  NodeSendHandler,
+  NodeSendHandlerOptions,
+} from "../../../common/sendhandler";
 import { NodeStateHandler } from "../../../common/statehandler";
 import { RED } from "../../../globals";
 import { BaseNodeConfig } from "../../types";
@@ -38,7 +41,7 @@ export default function AutomationGateNode(
     clearPauseTimer();
   });
 
-  node.on("input", (msg: any) => {
+  node.on("input", (msg: any, send: any, done: any) => {
     if (msg.gate) {
       switch (msg.gate) {
         case "pause":
@@ -51,7 +54,7 @@ export default function AutomationGateNode(
           startGate();
           break;
         case "replay":
-          replayMessages();
+          replayMessages(send);
           break;
         case "reset_filter":
           resetFilter();
@@ -64,8 +67,12 @@ export default function AutomationGateNode(
       saveLastMessage(msg);
 
       if (stateHandler.nodeStatus ?? config.startupState ?? true) {
-        sendHandler.sendMsg(msg);
+        sendHandler.sendMsg(msg, { send: send });
       }
+    }
+
+    if (done) {
+      done();
     }
   });
 
@@ -79,7 +86,7 @@ export default function AutomationGateNode(
 
   function stopGate() {
     stateHandler.nodeStatus = false;
-    sendHandler.resetFilter();
+    resetFilter();
     clearPauseTimer();
   }
 
@@ -116,8 +123,13 @@ export default function AutomationGateNode(
     }
   }
 
-  function replayMessages() {
+  function replayMessages(send?: any) {
     startGate();
+
+    let sendOptions: NodeSendHandlerOptions = {};
+    if (send) {
+      sendOptions = { send };
+    }
 
     const lastMessages: Record<string, any> = stateHandler.getFromContext(
       "lastMessages",
@@ -125,7 +137,7 @@ export default function AutomationGateNode(
     );
     for (const topic in lastMessages) {
       if (lastMessages.hasOwnProperty(topic)) {
-        sendHandler.sendMsg(lastMessages[topic]);
+        sendHandler.sendMsg(lastMessages[topic], sendOptions);
       }
     }
   }

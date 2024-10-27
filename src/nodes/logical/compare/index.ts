@@ -49,7 +49,7 @@ export default function CompareNode(
 
   const comparator = comparators[config.operator];
 
-  node.on("input", (msg: any) => {
+  node.on("input", (msg: any, send: any, done: any) => {
     const propertyValue = RED.util.evaluateNodeProperty(
       config.property,
       config.propertyType,
@@ -72,6 +72,10 @@ export default function CompareNode(
 
     stateHandler.nodeStatus = result;
 
-    sendHandler.sendMsg(msg, result);
+    sendHandler.sendMsg(msg, { send, payload: result });
+
+    if (done) {
+      done();
+    }
   });
 }

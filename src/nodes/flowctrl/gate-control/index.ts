@@ -38,16 +38,20 @@ export default function GateControlNode(
     pauseTimeInMs = config.pauseTime * (pauseUnits[unit] || 1000);
   }
 
-  node.on("input", (msg: any) => {
+  node.on("input", (msg: any, send: any, done: any) => {
     const gateControlMsg: any = { gate: gateCommand, originalMsg: msg };
     if (gateCommand === "pause") {
       gateControlMsg.pause = pauseTimeInMs;
     }
-    sendHandler.sendMsgToOutput(gateControlMsg, 1);
+    sendHandler.sendMsgToOutput(gateControlMsg, { send, output: 1 });
 
     setTimeout(() => {
       sendHandler.sendMsg(msg);
       stateHandler.nodeStatus = new Date();
     }, delay);
+
+    if (done) {
+      done();
+    }
   });
 }

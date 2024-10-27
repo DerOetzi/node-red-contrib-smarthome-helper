@@ -5,6 +5,12 @@ import { NodeStateHandler, NodeStatusSendConfig } from "./statehandler";
 
 const lastSentPayloadsKey = "lastSentPayloads";
 
+export interface NodeSendHandlerOptions {
+  send?: any;
+  payload?: any;
+  output?: number;
+}
+
 export class NodeSendHandler {
   private readonly node: Node;
 
@@ -22,7 +28,7 @@ export class NodeSendHandler {
     }
   }
 
-  sendMsg(received_msg: any, payload: any = null, output: number = 0) {
+  sendMsg(received_msg: any, options: NodeSendHandlerOptions = {}) {
     const topicValue = RED.util.evaluateNodeProperty(
       this.config.topic,
       this.config.topicType,
@@ -30,7 +36,7 @@ export class NodeSendHandler {
       received_msg
     );
 
-    payload = payload ?? received_msg.payload;
+    const payload = options.payload ?? received_msg.payload;
 
     let msg: any;
     if (this.config.newMsg ?? false) {
@@ -46,12 +52,12 @@ export class NodeSendHandler {
         this.stateHandler.getRecordFromContext(lastSentPayloadsKey);
 
       if (lastSentPayloads[msg.topic] !== msg.payload) {
-        this.sendMsgToOutput(msg, output);
+        this.sendMsgToOutput(msg, options);
         lastSentPayloads[msg.topic] = msg.payload;
         this.stateHandler.setToContext(lastSentPayloadsKey, lastSentPayloads);
       }
     } else {
-      this.sendMsgToOutput(msg, output);
+      this.sendMsgToOutput(msg, options);
     }
   }
 
@@ -59,9 +65,11 @@ export class NodeSendHandler {
     this.stateHandler.removeFromContext(lastSentPayloadsKey);
   }
 
-  sendMsgToOutput(msg: any, output: number = 0) {
+  sendMsgToOutput(msg: any, options: NodeSendHandlerOptions = {}) {
     let msgs = Array(this.outputs).fill(null);
-    msgs[output] = msg;
-    this.node.send(msgs);
+    msgs[options.output ?? 0] = msg;
+
+    const send = options.send ?? this.node.send.bind(this.node);
+    send(msgs);
   }
 }

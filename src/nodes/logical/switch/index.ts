@@ -15,15 +15,15 @@ export default function SwitchNode(this: Node, config: SwitchNodeConfig): void {
 
   const sendHandler = new NodeSendHandler(stateHandler, config, 2);
 
-  node.on("input", (msg: any) => {
+  node.on("input", (msg: any, send: any, done: any) => {
     let result = msg.payload;
 
     stateHandler.nodeStatus = result;
 
     if (result === true) {
-      sendHandler.sendMsg(msg);
+      sendHandler.sendMsg(msg, { send });
     } else if (result === false) {
-      sendHandler.sendMsg(msg, null, 1);
+      sendHandler.sendMsg(msg, { send, output: 1 });
     }
   });
 }

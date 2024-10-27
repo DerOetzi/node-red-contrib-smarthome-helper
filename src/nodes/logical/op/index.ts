@@ -44,9 +44,9 @@ export default function LogicalOperationNode(
 
   const operator = operations[logical];
 
-  node.on("input", (msg: any) => {
+  node.on("input", (msg: any, send: any, done: any) => {
     if (logical === "not") {
-      sendResult(msg, notOp(msg.payload));
+      sendResult(msg, send, notOp(msg.payload));
     } else {
       const topics = stateHandler.getRecordFromContext("topics");
       topics[msg.topic] = msg.payload;
@@ -54,16 +54,20 @@ export default function LogicalOperationNode(
 
       if (Object.keys(topics).length >= minMsgCount) {
         const payloads = Object.values(topics);
-        sendResult(msg, operator(payloads));
+        sendResult(msg, send, operator(payloads));
       } else {
         stateHandler.nodeStatus = "waiting";
       }
     }
+
+    if (done) {
+      done();
+    }
   });
 
-  function sendResult(msg: any, result: boolean): void {
+  function sendResult(msg: any, send: any, result: boolean): void {
     stateHandler.nodeStatus = result;
-    sendHandler.sendMsg(msg, result);
+    sendHandler.sendMsg(msg, { send, payload: result });
   }
 
   function statusColor(status: any): NodeStatusFill {

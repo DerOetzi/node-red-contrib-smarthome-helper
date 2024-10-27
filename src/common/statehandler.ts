@@ -116,7 +116,7 @@ export class NodeStateHandler {
 
       this.statusSendConfig?.sendHandler?.sendMsgToOutput(
         { payload: status, topic: this.statusSendConfig.topic },
-        this.statusSendConfig.output
+        { output: this.statusSendConfig.output }
       );
     }
   }
@@ -137,7 +137,7 @@ export class NodeStateHandler {
     if (status === null || status === undefined || status === "") {
       text = "unknown";
     } else if (status instanceof Date) {
-      text = formatDate(status as Date);
+      text = formatDate(status);
     } else {
       text = status.toString();
     }
