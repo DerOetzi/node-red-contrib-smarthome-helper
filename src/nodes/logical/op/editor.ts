@@ -1,11 +1,10 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import {
-  BaseNodeEditorProperties,
-  baseNodeEditorPropertiesDefaults,
-} from "../../../editor/types";
+import CommonNodeEditor, {
+  CommonNodeEditorProperties,
+} from "../../flowctrl/common/editor";
 
-interface LogicalOpProperties extends BaseNodeEditorProperties {
+interface LogicalOpProperties extends CommonNodeEditorProperties {
   logical: string;
   minMsgCount: number;
 }
@@ -13,15 +12,14 @@ interface LogicalOpProperties extends BaseNodeEditorProperties {
 const nodeType = NodeType.LogicalOp;
 
 const LogicalOpNodeEditor: EditorNodeDef<LogicalOpProperties> = {
+  ...CommonNodeEditor,
   category: nodeType.category.label,
   color: nodeType.color,
   defaults: {
+    ...CommonNodeEditor.defaults,
     logical: { value: "and" },
     minMsgCount: { value: 1 },
-    ...baseNodeEditorPropertiesDefaults,
   },
-  inputs: 1,
-  outputs: 1,
   outputLabels: ["Logical operation result"],
   label: function () {
     const logicalOp = this.logical.toUpperCase();
@@ -34,12 +32,6 @@ const LogicalOpNodeEditor: EditorNodeDef<LogicalOpProperties> = {
     return label;
   },
   icon: "logical.svg",
-  oneditprepare: function () {
-    $("#node-input-topic").typedInput({
-      types: ["msg", "str"],
-      typeField: "#node-input-topicType",
-    });
-  },
 };
 
 export default LogicalOpNodeEditor;

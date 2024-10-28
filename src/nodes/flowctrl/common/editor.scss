@@ -1,0 +1,9 @@
+.form-row.time-row {
+        display: flex;
+        align-items: center;
+
+        input[type="number"],
+        select {
+            width: 65px;
+        }
+    }

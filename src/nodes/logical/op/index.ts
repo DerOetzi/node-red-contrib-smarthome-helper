@@ -1,7 +1,8 @@
 import { Node, NodeStatusFill } from "node-red";
 import { NodeSendHandler } from "../../../common/sendhandler";
+import { NodeStateHandler } from "../../../common/statehandler";
 import { RED } from "../../../globals";
-import { BaseNodeConfig } from "../../types";
+import { CommonNodeConfig } from "../../flowctrl/common";
 import {
   andOp,
   nandOp,
@@ -11,9 +12,8 @@ import {
   orOp,
   xorOp,
 } from "../operations";
-import { NodeStateHandler } from "../../../common/statehandler";
 
-interface LogicalOperationNodeConfig extends BaseNodeConfig {
+interface LogicalOperationNodeConfig extends CommonNodeConfig {
   logical: string;
   minMsgCount: number;
 }
@@ -45,16 +45,26 @@ export default function LogicalOperationNode(
   const operator = operations[logical];
 
   node.on("input", (msg: any, send: any, done: any) => {
+    if (typeof msg.payload !== "boolean") {
+      node.error("Payload must be a boolean value");
+      return;
+    }
+
     if (logical === "not") {
       sendResult(msg, send, notOp(msg.payload));
     } else {
-      const topics = stateHandler.getRecordFromContext("topics");
-      topics[msg.topic] = msg.payload;
-      stateHandler.setToContext("topics", topics);
+      if (typeof msg.topic !== "string") {
+        node.error("Topic must be a string");
+        return;
+      }
 
-      if (Object.keys(topics).length >= minMsgCount) {
-        const payloads = Object.values(topics);
-        sendResult(msg, send, operator(payloads));
+      const messages = stateHandler.getRecordFromContext("messagesStore");
+      messages[msg.topic] = msg.payload;
+      stateHandler.setToContext("messagesStore", messages);
+
+      if (Object.keys(messages).length >= minMsgCount) {
+        const payloads = Object.values(messages);
+        sendResult(msg, send, operator(payloads), messages);
       } else {
         stateHandler.nodeStatus = "waiting";
       }
@@ -65,9 +75,18 @@ export default function LogicalOperationNode(
     }
   });
 
-  function sendResult(msg: any, send: any, result: boolean): void {
+  function sendResult(
+    msg: any,
+    send: any,
+    result: boolean,
+    messages: Record<string, any> = {}
+  ): void {
     stateHandler.nodeStatus = result;
-    sendHandler.sendMsg(msg, { send, payload: result });
+    sendHandler.sendMsg(msg, {
+      send,
+      payload: result,
+      additionalAttributes: { messages: messages },
+    });
   }
 
   function statusColor(status: any): NodeStatusFill {

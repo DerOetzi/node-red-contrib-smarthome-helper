@@ -1,14 +1,14 @@
 import { Node } from "node-red";
-import { RED } from "../../../globals";
-import { BaseNodeConfig } from "../../types";
 import { NodeSendHandler } from "../../../common/sendhandler";
 import { NodeStateHandler } from "../../../common/statehandler";
+import { RED } from "../../../globals";
+import { CommonNodeConfig } from "../common";
 
-interface GateControlNodeConfig extends BaseNodeConfig {
+interface GateControlNodeConfig extends CommonNodeConfig {
   delay: number;
   gateCommand: string;
-  pauseTime?: number; // Optional pause time property
-  pauseUnit?: string; // Time unit for the pause property
+  pauseTime?: number;
+  pauseUnit?: string;
 }
 
 export default function GateControlNode(

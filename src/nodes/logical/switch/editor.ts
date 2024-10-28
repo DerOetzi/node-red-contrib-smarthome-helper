@@ -1,32 +1,23 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import {
-  BaseNodeEditorProperties,
-  baseNodeEditorPropertiesDefaults,
-} from "../../../editor/types";
-
-interface SwitchNodeProperties extends BaseNodeEditorProperties {}
+import CommonNodeEditor, {
+  CommonNodeEditorProperties,
+} from "../../flowctrl/common/editor";
 
 const nodeType = NodeType.LogicalSwitch;
 
-const SwitchNodeEditor: EditorNodeDef<SwitchNodeProperties> = {
+const SwitchNodeEditor: EditorNodeDef<CommonNodeEditorProperties> = {
+  ...CommonNodeEditor,
   category: nodeType.category.label,
   color: nodeType.color,
   defaults: {
-    ...baseNodeEditorPropertiesDefaults,
+    ...CommonNodeEditor.defaults,
   },
-  inputs: 1,
   outputs: 2,
   outputLabels: ["true", "false"],
   icon: "switch.svg",
   label: function () {
-    return this.name || "switch";
-  },
-  oneditprepare: function () {
-    $("#node-input-topic").typedInput({
-      types: ["msg", "str"],
-      typeField: "#node-input-topicType",
-    });
+    return this.name || nodeType.name;
   },
 };
 

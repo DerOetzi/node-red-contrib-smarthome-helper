@@ -1,11 +1,8 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import {
-  BaseNodeEditorProperties,
-  baseNodeEditorPropertiesDefaults,
-} from "../../../editor/types";
+import CommonNodeEditor, { CommonNodeEditorProperties } from "../common/editor";
 
-interface GateControlNodeProperties extends BaseNodeEditorProperties {
+interface GateControlNodeProperties extends CommonNodeEditorProperties {
   delay: number;
   gateCommand: string;
   pauseTime?: number;
@@ -15,16 +12,15 @@ interface GateControlNodeProperties extends BaseNodeEditorProperties {
 const nodeType = NodeType.FlowCtrlGateControl;
 
 const GateControlNodeEditor: EditorNodeDef<GateControlNodeProperties> = {
-  category: nodeType.category.label,
+  ...CommonNodeEditor,
   color: nodeType.color,
   defaults: {
+    ...CommonNodeEditor.defaults,
     delay: { value: 100, required: true },
     gateCommand: { value: "start", required: true },
     pauseTime: { value: 1, required: false },
     pauseUnit: { value: "s", required: false },
-    ...baseNodeEditorPropertiesDefaults,
   },
-  inputs: 1,
   outputs: 2,
   outputLabels: ["Delayed Message Output", "Gate Command Output"],
   icon: "timer.svg",
@@ -38,15 +34,14 @@ const GateControlNodeEditor: EditorNodeDef<GateControlNodeProperties> = {
     return label;
   },
   oneditprepare: function () {
+    if (CommonNodeEditor.oneditprepare) {
+      CommonNodeEditor.oneditprepare.call(this);
+    }
+
     $("#pause-options").toggle($("#node-input-gateCommand").val() === "pause");
 
     $("#node-input-gateCommand").on("change", function () {
       $("#pause-options").toggle($(this).val() === "pause");
-    });
-
-    $("#node-input-topic").typedInput({
-      types: ["msg", "str"],
-      typeField: "#node-input-topicType",
     });
   },
 };

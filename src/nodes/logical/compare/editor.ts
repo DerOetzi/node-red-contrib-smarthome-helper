@@ -1,11 +1,10 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import {
-  BaseNodeEditorProperties,
-  baseNodeEditorPropertiesDefaults,
-} from "../../../editor/types";
+import CommonNodeEditor, {
+  CommonNodeEditorProperties,
+} from "../../flowctrl/common/editor";
 
-interface CompareNodeProperties extends BaseNodeEditorProperties {
+interface CompareNodeProperties extends CommonNodeEditorProperties {
   property: string;
   propertyType: string;
   operator: string;
@@ -16,18 +15,17 @@ interface CompareNodeProperties extends BaseNodeEditorProperties {
 const nodeType = NodeType.LogicalCompare;
 
 const CompareNodeEditor: EditorNodeDef<CompareNodeProperties> = {
+  ...CommonNodeEditor,
   category: nodeType.category.label,
   color: nodeType.color,
   defaults: {
+    ...CommonNodeEditor.defaults,
     property: { value: "payload", required: true },
     propertyType: { value: "msg", required: true },
     operator: { value: "eq", required: true },
     value: { value: "", required: true },
     valueType: { value: "str", required: true },
-    ...baseNodeEditorPropertiesDefaults,
   },
-  inputs: 1,
-  outputs: 1,
   outputLabels: ["Result of comparison"],
   icon: "compare.svg",
   label: function () {
@@ -41,6 +39,10 @@ const CompareNodeEditor: EditorNodeDef<CompareNodeProperties> = {
     return label;
   },
   oneditprepare: function () {
+    if (CommonNodeEditor.oneditprepare) {
+      CommonNodeEditor.oneditprepare.call(this);
+    }
+
     $("#node-input-property").typedInput({
       types: ["msg"],
     });
@@ -61,11 +63,6 @@ const CompareNodeEditor: EditorNodeDef<CompareNodeProperties> = {
     });
 
     $("#node-input-operator").trigger("change");
-
-    $("#node-input-topic").typedInput({
-      types: ["msg", "str"],
-      typeField: "#node-input-topicType",
-    });
   },
 };
 

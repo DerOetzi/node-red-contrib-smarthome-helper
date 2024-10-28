@@ -7,8 +7,10 @@ import GateControlNode from "./nodes/flowctrl/gate-control";
 import LogicalOperationNode from "./nodes/logical/op";
 import CompareNode from "./nodes/logical/compare";
 import SwitchNode from "./nodes/logical/switch";
+import CommonNode from "./nodes/flowctrl/common";
 
 const nodes: Record<string, any> = {
+  [NodeType.FlowCtrlCommon.fullName]: CommonNode,
   [NodeType.FlowCtrlAutomationGate.fullName]: AutomationGateNode,
   [NodeType.FlowCtrlGateControl.fullName]: GateControlNode,
   [NodeType.LogicalOp.fullName]: LogicalOperationNode,

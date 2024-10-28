@@ -1,5 +1,6 @@
 export enum NodeColor {
   AutomationGate = "#ff7f50",
+  Common = "#00ff00",
   Logical = "#7fff00",
 }
 
@@ -36,6 +37,11 @@ export class NodeTypeStruct {
 }
 
 export const NodeType: Record<string, NodeTypeStruct> = {
+  FlowCtrlCommon: new NodeTypeStruct(
+    "common",
+    NodeCategory.FlowControl,
+    NodeColor.Common
+  ),
   FlowCtrlAutomationGate: new NodeTypeStruct(
     "automation-gate",
     NodeCategory.FlowControl,

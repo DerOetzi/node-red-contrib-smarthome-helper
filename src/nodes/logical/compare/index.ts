@@ -1,7 +1,8 @@
 import { Node } from "node-red";
 import { NodeSendHandler } from "../../../common/sendhandler";
+import { NodeStateHandler } from "../../../common/statehandler";
 import { RED } from "../../../globals";
-import { BaseNodeConfig } from "../../types";
+import { CommonNodeConfig } from "../..//flowctrl/common";
 import {
   emptyCmp,
   eqCmp,
@@ -14,10 +15,9 @@ import {
   notEmptyCmp,
   trueCmp,
 } from "../operations";
-import { NodeStateHandler } from "../../../common/statehandler";
 
 // Typdefinition für das Node-Konfigurationsobjekt
-interface CompareNodeConfig extends BaseNodeConfig {
+interface CompareNodeConfig extends CommonNodeConfig {
   property: string;
   propertyType: string;
   operator: string;

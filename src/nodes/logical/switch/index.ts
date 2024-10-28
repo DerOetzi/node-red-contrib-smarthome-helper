@@ -1,12 +1,10 @@
 import { Node } from "node-red";
+import { CommonNodeConfig } from "../../flowctrl/common";
 import { NodeSendHandler } from "../../../common/sendhandler";
 import { NodeStateHandler } from "../../../common/statehandler";
 import { RED } from "../../../globals";
-import { BaseNodeConfig } from "../../types";
 
-interface SwitchNodeConfig extends BaseNodeConfig {}
-
-export default function SwitchNode(this: Node, config: SwitchNodeConfig): void {
+export default function SwitchNode(this: Node, config: CommonNodeConfig): void {
   RED.nodes.createNode(this, config);
 
   const node = this;
@@ -24,6 +22,10 @@ export default function SwitchNode(this: Node, config: SwitchNodeConfig): void {
       sendHandler.sendMsg(msg, { send });
     } else if (result === false) {
       sendHandler.sendMsg(msg, { send, output: 1 });
+    }
+
+    if (done) {
+      done();
     }
   });
 }

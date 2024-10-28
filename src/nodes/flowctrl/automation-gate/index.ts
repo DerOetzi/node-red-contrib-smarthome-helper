@@ -5,9 +5,9 @@ import {
 } from "../../../common/sendhandler";
 import { NodeStateHandler } from "../../../common/statehandler";
 import { RED } from "../../../globals";
-import { BaseNodeConfig } from "../../types";
+import { CommonNodeConfig } from "../common";
 
-interface AutomationGateNodeConfig extends BaseNodeConfig {
+interface AutomationGateNodeConfig extends CommonNodeConfig {
   startupState: boolean;
   autoReplay: boolean;
   stateOpenLabel: string;

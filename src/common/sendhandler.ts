@@ -2,6 +2,7 @@ import { Node } from "node-red";
 import { RED } from "../globals";
 import { BaseNodeConfig } from "../nodes/types";
 import { NodeStateHandler, NodeStatusSendConfig } from "./statehandler";
+import { CommonNodeConfig } from "../nodes/flowctrl/common";
 
 const lastSentPayloadsKey = "lastSentPayloads";
 
@@ -9,6 +10,7 @@ export interface NodeSendHandlerOptions {
   send?: any;
   payload?: any;
   output?: number;
+  additionalAttributes?: Record<string, any>;
 }
 
 export class NodeSendHandler {
@@ -16,7 +18,7 @@ export class NodeSendHandler {
 
   constructor(
     private readonly stateHandler: NodeStateHandler,
-    private readonly config: BaseNodeConfig,
+    private readonly config: CommonNodeConfig | BaseNodeConfig,
     private readonly outputs: number = 1,
     statusOutputConfig?: NodeStatusSendConfig
   ) {
@@ -66,6 +68,10 @@ export class NodeSendHandler {
   }
 
   sendMsgToOutput(msg: any, options: NodeSendHandlerOptions = {}) {
+    if (options.additionalAttributes) {
+      Object.assign(msg, options.additionalAttributes);
+    }
+
     let msgs = Array(this.outputs).fill(null);
     msgs[options.output ?? 0] = msg;
 
