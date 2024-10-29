@@ -1,7 +1,6 @@
-import { Node, NodeContext, NodeStatusFill } from "node-red";
-import { RED } from "../globals";
-import { NodeSendHandler } from "./sendhandler";
+import { Node, NodeStatusFill } from "node-red";
 import { formatDate } from "./helpers/date";
+import { NodeSendHandler } from "./sendhandler";
 
 export interface NodeStateHandlerOptions {
   initialize?: () => void;
@@ -18,11 +17,7 @@ export interface NodeStatusSendConfig {
 const nodeStatusKey = "node_status";
 
 export class NodeStateHandler {
-  private static readonly nodesToInitialize: (() => void)[] = [];
-
   private stateStorage: Record<string, any> = {};
-
-  private readonly context: NodeContext;
 
   private readonly options: NodeStateHandlerOptions;
   private statusSendConfig?: NodeStatusSendConfig;
@@ -38,13 +33,19 @@ export class NodeStateHandler {
 
     this.options = { ...defaultOptions, ...options };
 
-    this.context = node.context();
     this.cleanupNodeContext();
 
     this.node.on("close", this.onClose.bind(this));
-    this.registerNodeForInitialization();
 
     this.nodeStatus = null;
+
+    if (this.options.initialize) {
+      setTimeout(() => {
+        if (this.options.initialize) {
+          this.options.initialize();
+        }
+      }, 100);
+    }
   }
 
   public onClose() {
@@ -53,22 +54,6 @@ export class NodeStateHandler {
 
   public cleanupNodeContext() {
     this.stateStorage = {};
-  }
-
-  private registerNodeForInitialization() {
-    if (this.options.initialize) {
-      NodeStateHandler.nodesToInitialize.push(this.options.initialize);
-    }
-
-    if (NodeStateHandler.nodesToInitialize.length === 1) {
-      RED.events.on("flows:started", () => {
-        setTimeout(() => {
-          NodeStateHandler.nodesToInitialize.forEach((initialize) => {
-            initialize();
-          });
-        }, 2000);
-      });
-    }
   }
 
   public getFromContext(key: string, defaultValue: any = null): any {
