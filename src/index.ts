@@ -1,20 +1,20 @@
 import { NodeAPI } from "node-red";
-import { setRED } from "./globals";
-import version from "./version";
 import { NodeType } from "./const";
+import { setRED } from "./globals";
 import createAutomationGateNode from "./nodes/flowctrl/automation-gate";
-import GateControlNode from "./nodes/flowctrl/gate-control";
-import LogicalOperationNode from "./nodes/logical/op";
-import CompareNode from "./nodes/logical/compare";
-import createSwitchNode from "./nodes/logical/switch";
 import createBaseNode from "./nodes/flowctrl/base";
+import createGateControlNode from "./nodes/flowctrl/gate-control";
+import createCompareNode from "./nodes/logical/compare";
+import createLogicalOpNode from "./nodes/logical/op";
+import createSwitchNode from "./nodes/logical/switch";
+import version from "./version";
 
 const nodes: Record<string, any> = {
   [NodeType.FlowCtrlBase.fullName]: createBaseNode,
   [NodeType.FlowCtrlAutomationGate.fullName]: createAutomationGateNode,
-  [NodeType.FlowCtrlGateControl.fullName]: GateControlNode,
-  [NodeType.LogicalOp.fullName]: LogicalOperationNode,
-  [NodeType.LogicalCompare.fullName]: CompareNode,
+  [NodeType.FlowCtrlGateControl.fullName]: createGateControlNode,
+  [NodeType.LogicalOp.fullName]: createLogicalOpNode,
+  [NodeType.LogicalCompare.fullName]: createCompareNode,
   [NodeType.LogicalSwitch.fullName]: createSwitchNode,
 };
 

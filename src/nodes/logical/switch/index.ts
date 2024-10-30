@@ -1,7 +1,7 @@
 import { Node } from "node-red";
-import { BaseNode, BaseNodeConfig } from "../../flowctrl/base";
-
-interface SwitchNodeConfig extends BaseNodeConfig {}
+import { RED } from "../../../globals";
+import { BaseNode } from "../../flowctrl/base";
+import { SwitchNodeConfig } from "./types";
 
 class SwitchNode extends BaseNode<SwitchNodeConfig> {
   constructor(node: Node, config: SwitchNodeConfig) {
@@ -26,5 +26,7 @@ class SwitchNode extends BaseNode<SwitchNodeConfig> {
 }
 
 export default function createSwitchNode(this: Node, config: SwitchNodeConfig) {
-  SwitchNode.create(this, config);
+  RED.nodes.createNode(this, config);
+  const node = this;
+  SwitchNode.create(node, config);
 }

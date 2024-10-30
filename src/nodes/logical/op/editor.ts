@@ -1,24 +1,24 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import CommonNodeEditor, {
-  CommonNodeEditorProperties,
-} from "../../flowctrl/common/editor";
-
-interface LogicalOpProperties extends CommonNodeEditorProperties {
-  logical: string;
-  minMsgCount: number;
-}
+import BaseNodeEditor from "../../flowctrl/base/editor";
+import {
+  defaultLogicalOpNodeConfig,
+  LogicalOpNodeEditorProperties,
+} from "./types";
 
 const nodeType = NodeType.LogicalOp;
 
-const LogicalOpNodeEditor: EditorNodeDef<LogicalOpProperties> = {
-  ...CommonNodeEditor,
+const LogicalOpNodeEditor: EditorNodeDef<LogicalOpNodeEditorProperties> = {
+  ...BaseNodeEditor,
   category: nodeType.category.label,
   color: nodeType.color,
   defaults: {
-    ...CommonNodeEditor.defaults,
-    logical: { value: "and" },
-    minMsgCount: { value: 1 },
+    ...BaseNodeEditor.defaults,
+    logical: { value: defaultLogicalOpNodeConfig.logical!, required: true },
+    minMsgCount: {
+      value: defaultLogicalOpNodeConfig.minMsgCount!,
+      required: true,
+    },
   },
   outputLabels: ["Logical operation result"],
   label: function () {

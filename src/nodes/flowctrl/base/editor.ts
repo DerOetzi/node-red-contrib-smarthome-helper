@@ -1,18 +1,6 @@
-import { EditorNodeDef, EditorNodeProperties } from "node-red";
+import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-
-export interface BaseNodeEditorProperties extends EditorNodeProperties {
-  name: string;
-  topic: string;
-  topicType: string;
-  debounce: boolean;
-  debounceTime: number;
-  debounceUnit: string;
-  debounceLeading: boolean;
-  debounceTrailing: boolean;
-  filterUniquePayload: boolean;
-  newMsg: boolean;
-}
+import { BaseNodeEditorProperties, defaultBaseNodeConfig } from "./types";
 
 const nodeType = NodeType.FlowCtrlBase;
 
@@ -21,15 +9,30 @@ const BaseNodeEditor: EditorNodeDef<BaseNodeEditorProperties> = {
   color: nodeType.color,
   defaults: {
     name: { value: "", required: false },
-    topic: { value: "topic", required: true },
-    topicType: { value: "msg", required: true },
-    debounce: { value: false, required: false },
-    debounceTime: { value: 500, required: false },
-    debounceUnit: { value: "ms", required: false },
-    debounceLeading: { value: true, required: false },
-    debounceTrailing: { value: false, required: false },
-    filterUniquePayload: { value: false, required: false },
-    newMsg: { value: false, required: false },
+    topic: { value: defaultBaseNodeConfig.topic!, required: true },
+    topicType: { value: defaultBaseNodeConfig.topicType!, required: true },
+    debounce: { value: defaultBaseNodeConfig.debounce!, required: false },
+    debounceTime: {
+      value: defaultBaseNodeConfig.debounceTime!,
+      required: false,
+    },
+    debounceUnit: {
+      value: defaultBaseNodeConfig.debounceUnit!,
+      required: false,
+    },
+    debounceLeading: {
+      value: defaultBaseNodeConfig.debounceLeading!,
+      required: false,
+    },
+    debounceTrailing: {
+      value: defaultBaseNodeConfig.debounceTrailing!,
+      required: false,
+    },
+    filterUniquePayload: {
+      value: defaultBaseNodeConfig.filterUniquePayload!,
+      required: false,
+    },
+    newMsg: { value: defaultBaseNodeConfig.newMsg!, required: false },
   },
   inputs: 1,
   outputs: 1,

@@ -1,52 +1,30 @@
-import { Node, NodeDef, NodeStatusFill } from "node-red";
-import { formatDate } from "../../../common/helpers/date";
+import { Node, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
-
-export interface NodeSendOptions {
-  send?: any;
-  payload?: any;
-  output?: number;
-  additionalAttributes?: Record<string, any>;
-}
-
-export interface BaseNodeConfig extends NodeDef {
-  topic: string;
-  topicType: string;
-  debounce: boolean;
-  debounceTime: number;
-  debounceUnit: string;
-  debounceLeading: boolean;
-  debounceTrailing: boolean;
-  filterUniquePayload: boolean;
-  newMsg: boolean;
-}
-
-export interface StatusUpdateConfig {
-  output: number;
-  topic: string;
-}
-
-export interface BaseNodeOptions {
-  outputs?: number;
-  statusOutput?: StatusUpdateConfig;
-}
+import { formatDate } from "../../../helpers/date.helper";
+import {
+  BaseNodeConfig,
+  BaseNodeOptions,
+  defaultBaseNodeConfig,
+  NodeSendOptions,
+} from "./types";
 
 const nodeStatusKey = "node_status";
 const lastSentPayloadsKey = "lastSentPayloads";
 
 export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
+  protected readonly config: T;
   private storage: Record<string, any> = {};
 
   constructor(
     protected readonly node: Node,
-    protected readonly config: T,
+    config: T,
     private readonly options: BaseNodeOptions = {}
   ) {
-    RED.nodes.createNode(this.node, this.config);
+    this.config = { ...defaultBaseNodeConfig, ...config };
     this.node.on("input", this.onInput.bind(this));
     this.node.on("close", this.onClose.bind(this));
 
-    this.nodeStatus = null;
+    setTimeout(() => this.initialize(), 100);
   }
 
   public static create(node: Node, config: BaseNodeConfig) {
@@ -57,8 +35,13 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     this.cleanupStorage();
   }
 
+  protected initialize() {
+    this.nodeStatus = null;
+  }
+
   protected onInput(msg: any, send: any, done: any) {
-    this.sendMsg(msg, send);
+    this.sendMsg(msg, { send });
+    this.nodeStatus = new Date();
 
     if (done) {
       done();
@@ -159,8 +142,10 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     let msgs = Array(this.options.outputs ?? 1).fill(null);
     msgs[options.output ?? 0] = msg;
 
-    const send = options.send ?? this.node.send.bind(this.node);
-    send(msgs);
+    this.node.send(msgs);
+
+    //    const send = options.send ?? this.node.send.bind(this.node);
+    //    send(msgs);
   }
 
   public save(key: string, value: any) {
@@ -181,5 +166,7 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 }
 
 export default function createBaseNode(this: Node, config: BaseNodeConfig) {
-  BaseNode.create(this, config);
+  RED.nodes.createNode(this, config);
+  const node = this;
+  BaseNode.create(node, config);
 }

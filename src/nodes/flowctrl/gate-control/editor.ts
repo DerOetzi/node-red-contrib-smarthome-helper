@@ -1,25 +1,31 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import BaseNodeEditor, { BaseNodeEditorProperties } from "../base/editor";
-
-interface GateControlNodeProperties extends BaseNodeEditorProperties {
-  delay: number;
-  gateCommand: string;
-  pauseTime?: number;
-  pauseUnit?: string;
-}
+import BaseNodeEditor from "../base/editor";
+import {
+  defaultGateControlNodeConfig,
+  GateControlNodeEditorProperties,
+} from "./types";
 
 const nodeType = NodeType.FlowCtrlGateControl;
 
-const GateControlNodeEditor: EditorNodeDef<GateControlNodeProperties> = {
+const GateControlNodeEditor: EditorNodeDef<GateControlNodeEditorProperties> = {
   ...BaseNodeEditor,
   color: nodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
-    delay: { value: 100, required: true },
-    gateCommand: { value: "start", required: true },
-    pauseTime: { value: 1, required: false },
-    pauseUnit: { value: "s", required: false },
+    delay: { value: defaultGateControlNodeConfig.delay!, required: true },
+    gateCommand: {
+      value: defaultGateControlNodeConfig.gateCommand!,
+      required: true,
+    },
+    pauseTime: {
+      value: defaultGateControlNodeConfig.pauseTime!,
+      required: false,
+    },
+    pauseUnit: {
+      value: defaultGateControlNodeConfig.pauseUnit!,
+      required: false,
+    },
   },
   outputs: 2,
   outputLabels: ["Delayed Message Output", "Gate Command Output"],

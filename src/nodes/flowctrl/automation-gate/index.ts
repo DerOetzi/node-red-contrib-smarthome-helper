@@ -1,12 +1,11 @@
 import { Node, NodeStatusFill } from "node-red";
-import { BaseNode, BaseNodeConfig, NodeSendOptions } from "../base";
-
-interface AutomationGateNodeConfig extends BaseNodeConfig {
-  startupState: boolean;
-  autoReplay: boolean;
-  stateOpenLabel: string;
-  stateClosedLabel: string;
-}
+import { RED } from "../../../globals";
+import { BaseNode } from "../base";
+import { NodeSendOptions } from "../base/types";
+import {
+  AutomationGateNodeConfig,
+  defaultAutomationGateNodeConfig,
+} from "./types";
 
 const lastMessagesKey = "lastMessages";
 
@@ -14,19 +13,20 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
   private pauseTimer: NodeJS.Timeout | null = null;
 
   constructor(node: Node, config: AutomationGateNodeConfig) {
+    config = { ...defaultAutomationGateNodeConfig, ...config };
     super(node, config, {
       outputs: 2,
       statusOutput: { output: 1, topic: "automation_status" },
     });
-
-    setTimeout(() => {
-      this.nodeStatus = config.startupState ?? true;
-    }, 100);
   }
 
   protected onClose(): void {
     super.onClose();
     this.clearPauseTimer();
+  }
+
+  protected initialize() {
+    this.nodeStatus = this.config.startupState;
   }
 
   public static create(node: Node, config: AutomationGateNodeConfig) {
@@ -58,7 +58,7 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
     } else {
       this.saveLastMessage(msg);
 
-      if (this.nodeStatus ?? this.config.startupState ?? true) {
+      if (this.nodeStatus ?? this.config.startupState) {
         this.sendMsg(msg, { send: send });
       }
     }
@@ -79,7 +79,7 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
     this.pauseTimer = setTimeout(() => {
       this.startGate();
 
-      if (this.config.autoReplay ?? true) {
+      if (this.config.autoReplay) {
         this.replayMessages();
       }
     }, msg.pause);
@@ -154,5 +154,7 @@ export default function createAutomationGateNode(
   this: Node,
   config: AutomationGateNodeConfig
 ): void {
-  AutomationGateNode.create(this, config);
+  RED.nodes.createNode(this, config);
+  const node = this;
+  AutomationGateNode.create(node, config);
 }
