@@ -36,8 +36,10 @@ export default function LogicalOperationNode(
 
   const node = this;
 
-  const stateHandler = new NodeStateHandler(node, { statusColor: statusColor });
-  const sendHandler = new NodeSendHandler(stateHandler, config, 1);
+  const stateHandler = new NodeStateHandler(node, config, {
+    statusColor: statusColor,
+  });
+  const sendHandler = new NodeSendHandler(stateHandler, 1);
 
   const logical = config.logical ?? "and";
   const minMsgCount = config.minMsgCount ?? 1;

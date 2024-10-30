@@ -9,9 +9,9 @@ export default function SwitchNode(this: Node, config: CommonNodeConfig): void {
 
   const node = this;
 
-  const stateHandler = new NodeStateHandler(node);
+  const stateHandler = new NodeStateHandler(node, config);
 
-  const sendHandler = new NodeSendHandler(stateHandler, config, 2);
+  const sendHandler = new NodeSendHandler(stateHandler, 2);
 
   node.on("input", (msg: any, send: any, done: any) => {
     let result = msg.payload;

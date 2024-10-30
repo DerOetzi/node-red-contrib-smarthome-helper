@@ -47,22 +47,23 @@ const CompareNodeEditor: EditorNodeDef<CompareNodeProperties> = {
       types: ["msg"],
     });
 
-    $("#node-input-value").typedInput({
-      types: ["str", "num", "msg"],
-    });
+    const valueRow = $("#node-input-value")
+      .typedInput({
+        types: ["str", "num", "msg"],
+      })
+      .parent();
 
-    const valueRow = $("#node-input-value").parent();
+    valueRow.toggle(
+      !["true", "false", "empty", "not_empty"].includes(this.operator)
+    );
 
     $("#node-input-operator").on("change", function () {
-      const operator = $(this).val() as string;
-      if (["true", "false", "empty", "not_empty"].includes(operator)) {
-        valueRow.hide();
-      } else {
-        valueRow.show();
-      }
+      valueRow.toggle(
+        !["true", "false", "empty", "not_empty"].includes(
+          $(this).val() as string
+        )
+      );
     });
-
-    $("#node-input-operator").trigger("change");
   },
 };
 

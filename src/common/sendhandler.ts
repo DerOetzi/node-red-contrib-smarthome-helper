@@ -1,8 +1,5 @@
-import { Node } from "node-red";
 import { RED } from "../globals";
-import { BaseNodeConfig } from "../nodes/types";
 import { NodeStateHandler, NodeStatusSendConfig } from "./statehandler";
-import { CommonNodeConfig } from "../nodes/flowctrl/common";
 
 const lastSentPayloadsKey = "lastSentPayloads";
 
@@ -14,16 +11,11 @@ export interface NodeSendHandlerOptions {
 }
 
 export class NodeSendHandler {
-  private readonly node: Node;
-
   constructor(
     private readonly stateHandler: NodeStateHandler,
-    private readonly config: CommonNodeConfig | BaseNodeConfig,
     private readonly outputs: number = 1,
     statusOutputConfig?: NodeStatusSendConfig
   ) {
-    this.node = stateHandler.node;
-
     if (statusOutputConfig) {
       statusOutputConfig.sendHandler = this;
       stateHandler.registerStatusOutput(statusOutputConfig);
@@ -32,16 +24,16 @@ export class NodeSendHandler {
 
   sendMsg(received_msg: any, options: NodeSendHandlerOptions = {}) {
     const topicValue = RED.util.evaluateNodeProperty(
-      this.config.topic,
-      this.config.topicType,
-      this.node,
+      this.stateHandler.config.topic,
+      this.stateHandler.config.topicType,
+      this.stateHandler.node,
       received_msg
     );
 
     const payload = options.payload ?? received_msg.payload;
 
     let msg: any;
-    if (this.config.newMsg ?? false) {
+    if (this.stateHandler.config.newMsg ?? false) {
       msg = { payload: payload, topic: topicValue };
     } else {
       msg = received_msg;
@@ -49,7 +41,7 @@ export class NodeSendHandler {
       msg.topic = topicValue;
     }
 
-    if (this.config.filterUniquePayload ?? false) {
+    if (this.stateHandler.config.filterUniquePayload ?? false) {
       let lastSentPayloads: Record<string, any> =
         this.stateHandler.getRecordFromContext(lastSentPayloadsKey);
 
@@ -75,7 +67,8 @@ export class NodeSendHandler {
     let msgs = Array(this.outputs).fill(null);
     msgs[options.output ?? 0] = msg;
 
-    const send = options.send ?? this.node.send.bind(this.node);
+    const send =
+      options.send ?? this.stateHandler.node.send.bind(this.stateHandler.node);
     send(msgs);
   }
 }

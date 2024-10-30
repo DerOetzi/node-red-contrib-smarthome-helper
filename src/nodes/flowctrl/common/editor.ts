@@ -41,6 +41,14 @@ const CommonNodeEditor: EditorNodeDef<CommonNodeEditorProperties> = {
       types: ["msg", "str"],
       typeField: "#node-input-topicType",
     });
+
+    const debounceOptions = $("#debounce-options");
+
+    debounceOptions.toggle(this.debounce);
+
+    $("#node-input-debounce").on("change", function () {
+      debounceOptions.toggle($(this).is(":checked"));
+    });
   },
 };
 

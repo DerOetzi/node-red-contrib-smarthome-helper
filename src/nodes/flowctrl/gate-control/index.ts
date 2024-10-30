@@ -19,9 +19,9 @@ export default function GateControlNode(
 
   const node = this;
 
-  const stateHandler = new NodeStateHandler(node);
+  const stateHandler = new NodeStateHandler(node, config);
 
-  const sendHandler = new NodeSendHandler(stateHandler, config, 2);
+  const sendHandler = new NodeSendHandler(stateHandler, 2);
 
   const gateCommand = config.gateCommand || "start";
   const delay = config.delay || 100;

@@ -20,9 +20,9 @@ export default function CommonNode(this: Node, config: CommonNodeConfig): void {
 
   const node = this;
 
-  const stateHandler = new NodeStateHandler(node);
+  const stateHandler = new NodeStateHandler(node, config);
 
-  const sendHandler = new NodeSendHandler(stateHandler, config, 1);
+  const sendHandler = new NodeSendHandler(stateHandler, 1);
 
   node.on("input", (msg: any, send: any, done: any) => {
     sendHandler.sendMsg(msg, { send });

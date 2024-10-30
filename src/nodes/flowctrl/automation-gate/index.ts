@@ -22,13 +22,13 @@ export default function AutomationGateNode(
 
   const node = this;
 
-  const stateHandler = new NodeStateHandler(node, {
+  const stateHandler = new NodeStateHandler(node, config, {
     initialize: initializeState,
     statusColor: statusColor,
     statusTextFormatter: statusTextFormatter,
   });
 
-  const sendHandler = new NodeSendHandler(stateHandler, config, 2, {
+  const sendHandler = new NodeSendHandler(stateHandler, 2, {
     output: 1,
     topic: "automation_status",
   });

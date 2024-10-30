@@ -1,6 +1,7 @@
 import { Node, NodeStatusFill } from "node-red";
 import { formatDate } from "./helpers/date";
 import { NodeSendHandler } from "./sendhandler";
+import { CommonNodeConfig } from "../nodes/flowctrl/common";
 
 export interface NodeStateHandlerOptions {
   initialize?: () => void;
@@ -24,6 +25,7 @@ export class NodeStateHandler {
 
   constructor(
     public readonly node: Node,
+    public readonly config: CommonNodeConfig,
     options: NodeStateHandlerOptions = {}
   ) {
     const defaultOptions: NodeStateHandlerOptions = {

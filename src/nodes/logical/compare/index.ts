@@ -44,8 +44,8 @@ export default function CompareNode(
 ): void {
   RED.nodes.createNode(this, config);
   const node = this;
-  const stateHandler = new NodeStateHandler(node);
-  const sendHandler = new NodeSendHandler(stateHandler, config, 1);
+  const stateHandler = new NodeStateHandler(node, config);
+  const sendHandler = new NodeSendHandler(stateHandler, 1);
 
   const comparator = comparators[config.operator];
 
