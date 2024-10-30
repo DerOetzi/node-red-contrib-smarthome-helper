@@ -1,172 +1,158 @@
 import { Node, NodeStatusFill } from "node-red";
-import {
-  NodeSendHandler,
-  NodeSendHandlerOptions,
-} from "../../../common/sendhandler";
-import { NodeStateHandler } from "../../../common/statehandler";
-import { RED } from "../../../globals";
-import { CommonNodeConfig } from "../common";
+import { BaseNode, BaseNodeConfig, NodeSendOptions } from "../base";
 
-interface AutomationGateNodeConfig extends CommonNodeConfig {
+interface AutomationGateNodeConfig extends BaseNodeConfig {
   startupState: boolean;
   autoReplay: boolean;
   stateOpenLabel: string;
   stateClosedLabel: string;
 }
 
-export default function AutomationGateNode(
-  this: Node,
-  config: AutomationGateNodeConfig
-): void {
-  RED.nodes.createNode(this, config);
+const lastMessagesKey = "lastMessages";
 
-  const node = this;
+export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
+  private pauseTimer: NodeJS.Timeout | null = null;
 
-  const stateHandler = new NodeStateHandler(node, config, {
-    initialize: initializeState,
-    statusColor: statusColor,
-    statusTextFormatter: statusTextFormatter,
-  });
+  constructor(node: Node, config: AutomationGateNodeConfig) {
+    super(node, config, {
+      outputs: 2,
+      statusOutput: { output: 1, topic: "automation_status" },
+    });
 
-  const sendHandler = new NodeSendHandler(stateHandler, 2, {
-    output: 1,
-    topic: "automation_status",
-  });
+    setTimeout(() => {
+      this.nodeStatus = config.startupState ?? true;
+    }, 100);
+  }
 
-  let pauseTimer: NodeJS.Timeout | null = null;
+  protected onClose(): void {
+    super.onClose();
+    this.clearPauseTimer();
+  }
 
-  const autoReplay = config.autoReplay ?? true;
+  public static create(node: Node, config: AutomationGateNodeConfig) {
+    return new AutomationGateNode(node, config);
+  }
 
-  node.on("close", () => {
-    clearPauseTimer();
-  });
-
-  node.on("input", (msg: any, send: any, done: any) => {
+  protected onInput(msg: any, send: any, done: any) {
     if (msg.gate) {
       switch (msg.gate) {
         case "pause":
-          pauseGate(msg);
+          this.pauseGate(msg);
           break;
         case "stop":
-          stopGate();
+          this.stopGate();
           break;
         case "start":
-          startGate();
+          this.startGate();
           break;
         case "replay":
-          replayMessages(send);
+          this.replayMessages(send);
           break;
         case "reset_filter":
-          resetFilter();
+          this.resetFilter();
           break;
         default:
-          node.error(`Invalid gate command: ${msg.gate}`);
+          this.node.error(`Invalid gate command: ${msg.gateway}`);
           break;
       }
     } else {
-      saveLastMessage(msg);
+      this.saveLastMessage(msg);
 
-      if (stateHandler.nodeStatus ?? config.startupState ?? true) {
-        sendHandler.sendMsg(msg, { send: send });
+      if (this.nodeStatus ?? this.config.startupState ?? true) {
+        this.sendMsg(msg, { send: send });
       }
     }
 
     if (done) {
       done();
     }
-  });
-
-  function initializeState(): void {
-    stateHandler.nodeStatus = config.startupState ?? true;
   }
 
-  function resetFilter(): void {
-    sendHandler.resetFilter();
-  }
-
-  function stopGate() {
-    stateHandler.nodeStatus = false;
-    resetFilter();
-    clearPauseTimer();
-  }
-
-  function startGate() {
-    clearPauseTimer();
-    stateHandler.nodeStatus = true;
-  }
-
-  function pauseGate(msg: any) {
+  private pauseGate(msg: any) {
     if (typeof msg.pause !== "number" || msg.pause <= 0) {
-      node.error("Invalid or missing pause duration");
+      this.node.error("Invalid or missing pause duration");
       return;
     }
 
-    stopGate();
+    this.stopGate();
 
-    pauseTimer = setTimeout(() => {
-      startGate();
+    this.pauseTimer = setTimeout(() => {
+      this.startGate();
 
-      if (autoReplay) {
-        replayMessages();
+      if (this.config.autoReplay ?? true) {
+        this.replayMessages();
       }
     }, msg.pause);
   }
 
-  function saveLastMessage(msg: any) {
-    if (msg.topic) {
-      let lastMessages: Record<string, any> = stateHandler.getFromContext(
-        "lastMessages",
-        {}
-      );
-      lastMessages[msg.topic] = msg;
-      stateHandler.setToContext("lastMessages", lastMessages);
+  private stopGate() {
+    this.nodeStatus = false;
+    this.resetFilter();
+    this.clearPauseTimer();
+  }
+
+  private clearPauseTimer() {
+    if (this.pauseTimer) {
+      clearTimeout(this.pauseTimer);
+      this.pauseTimer = null;
     }
   }
 
-  function replayMessages(send?: any) {
-    startGate();
+  private startGate() {
+    this.clearPauseTimer();
+    this.nodeStatus = true;
+  }
 
-    let sendOptions: NodeSendHandlerOptions = {};
+  private saveLastMessage(msg: any) {
+    if (msg.topic) {
+      let lastMessages: Record<string, any> = this.loadRecord(lastMessagesKey);
+      lastMessages[msg.topic] = msg;
+      this.save(lastMessagesKey, lastMessages);
+    }
+  }
+
+  private replayMessages(send?: any) {
+    this.startGate();
+    this.resetFilter();
+
+    let sendOptions: NodeSendOptions = {};
     if (send) {
       sendOptions = { send };
     }
 
-    const lastMessages: Record<string, any> = stateHandler.getFromContext(
-      "lastMessages",
-      {}
-    );
+    const lastMessages: Record<string, any> = this.loadRecord(lastMessagesKey);
     for (const topic in lastMessages) {
       if (lastMessages.hasOwnProperty(topic)) {
-        sendHandler.sendMsg(lastMessages[topic], sendOptions);
+        this.sendMsg(lastMessages[topic], sendOptions);
       }
     }
   }
 
-  function clearPauseTimer() {
-    if (pauseTimer) {
-      clearTimeout(pauseTimer);
-      pauseTimer = null;
-    }
-  }
-
-  function statusColor(status: boolean): NodeStatusFill {
+  protected statusColor(status: boolean): NodeStatusFill {
     let color: NodeStatusFill = "red";
     if (status === null || status === undefined) {
       color = "grey";
     } else if (status) {
       color = "green";
-    } else if (pauseTimer !== null) {
+    } else if (this.pauseTimer !== null) {
       color = "yellow";
     }
 
     return color;
   }
 
-  function statusTextFormatter(status: any): string {
+  protected statusTextFormatter(status: any): string {
     if (status) {
-      return config.stateOpenLabel ?? "Automated";
+      return this.config.stateOpenLabel ?? "Automated";
     } else {
-      return config.stateClosedLabel ?? "Manual";
+      return this.config.stateClosedLabel ?? "Manual";
     }
   }
+}
+
+export default function createAutomationGateNode(
+  this: Node,
+  config: AutomationGateNodeConfig
+): void {
+  AutomationGateNode.create(this, config);
 }

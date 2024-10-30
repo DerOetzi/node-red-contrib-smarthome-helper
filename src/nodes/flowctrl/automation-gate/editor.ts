@@ -1,8 +1,8 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import CommonNodeEditor, { CommonNodeEditorProperties } from "../common/editor";
+import BaseNodeEditor, { BaseNodeEditorProperties } from "../base/editor";
 
-interface GateNodeProperties extends CommonNodeEditorProperties {
+interface GateNodeProperties extends BaseNodeEditorProperties {
   startupState: boolean;
   autoReplay: boolean;
   stateOpenLabel: string;
@@ -13,10 +13,10 @@ interface GateNodeProperties extends CommonNodeEditorProperties {
 const nodeType = NodeType.FlowCtrlAutomationGate;
 
 const AutomationGateNodeEditor: EditorNodeDef<GateNodeProperties> = {
-  ...CommonNodeEditor,
+  ...BaseNodeEditor,
   color: nodeType.color,
   defaults: {
-    ...CommonNodeEditor.defaults,
+    ...BaseNodeEditor.defaults,
     startupState: { value: true },
     autoReplay: { value: true },
     stateOpenLabel: { value: "Automated", required: true },

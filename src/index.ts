@@ -2,20 +2,20 @@ import { NodeAPI } from "node-red";
 import { setRED } from "./globals";
 import version from "./version";
 import { NodeType } from "./const";
-import AutomationGateNode from "./nodes/flowctrl/automation-gate";
+import createAutomationGateNode from "./nodes/flowctrl/automation-gate";
 import GateControlNode from "./nodes/flowctrl/gate-control";
 import LogicalOperationNode from "./nodes/logical/op";
 import CompareNode from "./nodes/logical/compare";
-import SwitchNode from "./nodes/logical/switch";
-import CommonNode from "./nodes/flowctrl/common";
+import createSwitchNode from "./nodes/logical/switch";
+import createBaseNode from "./nodes/flowctrl/base";
 
 const nodes: Record<string, any> = {
-  [NodeType.FlowCtrlCommon.fullName]: CommonNode,
-  [NodeType.FlowCtrlAutomationGate.fullName]: AutomationGateNode,
+  [NodeType.FlowCtrlBase.fullName]: createBaseNode,
+  [NodeType.FlowCtrlAutomationGate.fullName]: createAutomationGateNode,
   [NodeType.FlowCtrlGateControl.fullName]: GateControlNode,
   [NodeType.LogicalOp.fullName]: LogicalOperationNode,
   [NodeType.LogicalCompare.fullName]: CompareNode,
-  [NodeType.LogicalSwitch.fullName]: SwitchNode,
+  [NodeType.LogicalSwitch.fullName]: createSwitchNode,
 };
 
 export default async (RED: NodeAPI): Promise<void> => {

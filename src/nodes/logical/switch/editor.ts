@@ -1,17 +1,17 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import CommonNodeEditor, {
-  CommonNodeEditorProperties,
-} from "../../flowctrl/common/editor";
+import BaseNodeEditor, {
+  BaseNodeEditorProperties,
+} from "../../flowctrl/base/editor";
 
 const nodeType = NodeType.LogicalSwitch;
 
-const SwitchNodeEditor: EditorNodeDef<CommonNodeEditorProperties> = {
-  ...CommonNodeEditor,
+const SwitchNodeEditor: EditorNodeDef<BaseNodeEditorProperties> = {
+  ...BaseNodeEditor,
   category: nodeType.category.label,
   color: nodeType.color,
   defaults: {
-    ...CommonNodeEditor.defaults,
+    ...BaseNodeEditor.defaults,
   },
   outputs: 2,
   outputLabels: ["true", "false"],

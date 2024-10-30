@@ -96,13 +96,12 @@ task("buildEditorFiles", () => {
         /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]editor\.html/,
       );
       currentNode = category + "-" + node;
-      if (category === "flowctrl" && node === "common") {
+      if (category === "flowctrl" && (node === "common" || node === "base")) {
+        //TODO remove common
         return stream.pipe(buildForm());
       } else {
         return stream
-          .pipe(
-            appendPrepend.appendFile("src/nodes/flowctrl/common/editor.html"),
-          )
+          .pipe(appendPrepend.appendFile("src/nodes/flowctrl/base/editor.html"))
           .pipe(buildForm());
       }
     }),

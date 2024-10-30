@@ -1,8 +1,8 @@
 import { EditorNodeDef } from "node-red";
 import { NodeType } from "../../../const";
-import CommonNodeEditor, { CommonNodeEditorProperties } from "../common/editor";
+import BaseNodeEditor, { BaseNodeEditorProperties } from "../base/editor";
 
-interface GateControlNodeProperties extends CommonNodeEditorProperties {
+interface GateControlNodeProperties extends BaseNodeEditorProperties {
   delay: number;
   gateCommand: string;
   pauseTime?: number;
@@ -12,10 +12,10 @@ interface GateControlNodeProperties extends CommonNodeEditorProperties {
 const nodeType = NodeType.FlowCtrlGateControl;
 
 const GateControlNodeEditor: EditorNodeDef<GateControlNodeProperties> = {
-  ...CommonNodeEditor,
+  ...BaseNodeEditor,
   color: nodeType.color,
   defaults: {
-    ...CommonNodeEditor.defaults,
+    ...BaseNodeEditor.defaults,
     delay: { value: 100, required: true },
     gateCommand: { value: "start", required: true },
     pauseTime: { value: 1, required: false },
@@ -34,8 +34,8 @@ const GateControlNodeEditor: EditorNodeDef<GateControlNodeProperties> = {
     return label;
   },
   oneditprepare: function () {
-    if (CommonNodeEditor.oneditprepare) {
-      CommonNodeEditor.oneditprepare.call(this);
+    if (BaseNodeEditor.oneditprepare) {
+      BaseNodeEditor.oneditprepare.call(this);
     }
 
     $("#pause-options").toggle($("#node-input-gateCommand").val() === "pause");

@@ -1,31 +1,30 @@
 import { Node } from "node-red";
-import { CommonNodeConfig } from "../../flowctrl/common";
-import { NodeSendHandler } from "../../../common/sendhandler";
-import { NodeStateHandler } from "../../../common/statehandler";
-import { RED } from "../../../globals";
+import { BaseNode, BaseNodeConfig } from "../../flowctrl/base";
 
-export default function SwitchNode(this: Node, config: CommonNodeConfig): void {
-  RED.nodes.createNode(this, config);
+interface SwitchNodeConfig extends BaseNodeConfig {}
 
-  const node = this;
+class SwitchNode extends BaseNode<SwitchNodeConfig> {
+  constructor(node: Node, config: SwitchNodeConfig) {
+    super(node, config, { outputs: 2 });
+  }
 
-  const stateHandler = new NodeStateHandler(node, config);
+  public static create(node: Node, config: SwitchNodeConfig) {
+    return new SwitchNode(node, config);
+  }
 
-  const sendHandler = new NodeSendHandler(stateHandler, 2);
+  public onInput(msg: any, send: any, done: any) {
+    const result = msg.payload;
+    this.nodeStatus = result;
 
-  node.on("input", (msg: any, send: any, done: any) => {
-    let result = msg.payload;
-
-    stateHandler.nodeStatus = result;
-
-    if (result === true) {
-      sendHandler.sendMsg(msg, { send });
-    } else if (result === false) {
-      sendHandler.sendMsg(msg, { send, output: 1 });
-    }
+    const options = result ? { send } : { send, output: 1 };
+    this.sendMsg(msg, options);
 
     if (done) {
       done();
     }
-  });
+  }
+}
+
+export default function createSwitchNode(this: Node, config: SwitchNodeConfig) {
+  SwitchNode.create(this, config);
 }
