@@ -18,6 +18,10 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties
         value: defaultAutomationGateNodeConfig.startupState!,
         required: false,
       },
+      statusDelay: {
+        value: defaultAutomationGateNodeConfig.statusDelay!,
+        required: false,
+      },
       autoReplay: {
         value: defaultAutomationGateNodeConfig.autoReplay!,
         required: false,

@@ -51,4 +51,22 @@ export interface NodeStatusOutputConfig {
 export interface BaseNodeOptions {
   outputs?: number;
   statusOutput?: NodeStatusOutputConfig;
+  initializeDelay?: number;
+}
+
+export const defaultBaseNodeOptions: BaseNodeOptions = {
+  outputs: 1,
+  initializeDelay: 100,
+};
+
+export interface BaseNodeDebounceData {
+  received_msg?: any;
+  result?: any;
+  send?: any;
+}
+
+export interface BaseNodeDebounceRunning {
+  timer: NodeJS.Timeout | null;
+  key: string;
+  lastData: BaseNodeDebounceData;
 }

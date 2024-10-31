@@ -1,10 +1,15 @@
 import { Node, NodeStatusFill } from "node-red";
+import { clearTimeout } from "timers";
 import { RED } from "../../../globals";
 import { formatDate } from "../../../helpers/date.helper";
+import { convertToMilliseconds } from "../../../helpers/time.helper";
 import {
   BaseNodeConfig,
+  BaseNodeDebounceData,
+  BaseNodeDebounceRunning,
   BaseNodeOptions,
   defaultBaseNodeConfig,
+  defaultBaseNodeOptions,
   NodeSendOptions,
 } from "./types";
 
@@ -13,18 +18,24 @@ const lastSentPayloadsKey = "lastSentPayloads";
 
 export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   protected readonly config: T;
+  private readonly options: BaseNodeOptions;
+
   private storage: Record<string, any> = {};
+  private debouncing: Record<string, BaseNodeDebounceRunning> = {};
 
   constructor(
     protected readonly node: Node,
     config: T,
-    private readonly options: BaseNodeOptions = {}
+    options: BaseNodeOptions = {}
   ) {
     this.config = { ...defaultBaseNodeConfig, ...config };
+
     this.node.on("input", this.onInput.bind(this));
     this.node.on("close", this.onClose.bind(this));
 
-    setTimeout(() => this.initialize(), 100);
+    this.options = { ...defaultBaseNodeOptions, ...options };
+
+    setTimeout(() => this.initialize(), this.options.initializeDelay);
   }
 
   public static create(node: Node, config: BaseNodeConfig) {
@@ -40,12 +51,65 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   }
 
   protected onInput(msg: any, send: any, done: any) {
-    this.sendMsg(msg, { send });
-    this.nodeStatus = new Date();
+    this.debounce(msg.topic, { received_msg: msg, send: send });
 
     if (done) {
       done();
     }
+  }
+
+  protected debounce(key: string, data: BaseNodeDebounceData): void {
+    if (this.config.debounce) {
+      let debounceRunning: BaseNodeDebounceRunning =
+        this.debouncing[key] ?? ({} as BaseNodeDebounceRunning);
+
+      debounceRunning.lastData = data;
+
+      if (!debounceRunning.timer) {
+        if (this.config.debounceLeading) {
+          this.debounceListener(data);
+        }
+
+        const nodeStatusSave = this.nodeStatus;
+
+        this.nodeStatus = "debounce";
+
+        debounceRunning.key = key;
+        debounceRunning.timer = setTimeout(
+          () => {
+            let debounceRunningCurrent = this.debouncing[key];
+
+            if (debounceRunningCurrent.timer) {
+              clearTimeout(debounceRunningCurrent.timer);
+              debounceRunningCurrent.timer = null;
+              this.debouncing[key] = debounceRunningCurrent;
+            }
+
+            this.nodeStatus = nodeStatusSave;
+
+            if (this.config.debounceTrailing) {
+              debounceRunningCurrent.lastData.send = this.node.send.bind(
+                this.node
+              );
+              this.debounceListener(debounceRunningCurrent.lastData);
+            }
+          },
+          convertToMilliseconds(
+            this.config.debounceTime,
+            this.config.debounceUnit
+          )
+        );
+      }
+
+      this.debouncing[key] = debounceRunning;
+    } else {
+      this.debounceListener(data);
+    }
+  }
+
+  protected debounceListener(data: BaseNodeDebounceData) {
+    this.sendMsg(data.received_msg, { send: data.send });
+    this.nodeStatus = new Date();
   }
 
   protected get nodeStatus(): any {
@@ -77,6 +141,8 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     let color: NodeStatusFill = "red";
     if (status === null || status === undefined || status === "") {
       color = "grey";
+    } else if (status === "debounce") {
+      color = "blue";
     } else if (status) {
       color = "green";
     }

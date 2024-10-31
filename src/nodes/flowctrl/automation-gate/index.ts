@@ -17,6 +17,7 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
     super(node, config, {
       outputs: 2,
       statusOutput: { output: 1, topic: "automation_status" },
+      initializeDelay: config.statusDelay,
     });
   }
 
