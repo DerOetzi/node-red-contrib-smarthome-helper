@@ -21,7 +21,7 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   private readonly options: BaseNodeOptions;
 
   private storage: Record<string, any> = {};
-  private debouncing: Record<string, BaseNodeDebounceRunning> = {};
+  private readonly debouncing: BaseNodeDebounceRunning;
 
   constructor(
     protected readonly node: Node,
@@ -36,6 +36,8 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     this.options = { ...defaultBaseNodeOptions, ...options };
 
     setTimeout(() => this.initialize(), this.options.initializeDelay);
+
+    this.debouncing = {} as BaseNodeDebounceRunning;
   }
 
   public static create(node: Node, config: BaseNodeConfig) {
@@ -51,47 +53,36 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   }
 
   protected onInput(msg: any, send: any, done: any) {
-    this.debounce(msg.topic, { received_msg: msg, send: send });
+    this.debounce({ received_msg: msg, send: send });
 
     if (done) {
       done();
     }
   }
 
-  protected debounce(key: string, data: BaseNodeDebounceData): void {
+  protected debounce(data: BaseNodeDebounceData): void {
     if (this.config.debounce) {
-      let debounceRunning: BaseNodeDebounceRunning =
-        this.debouncing[key] ?? ({} as BaseNodeDebounceRunning);
+      this.debouncing.lastData = data;
 
-      debounceRunning.lastData = data;
-
-      if (!debounceRunning.timer) {
+      if (!this.debouncing.timer) {
         if (this.config.debounceLeading) {
           this.debounceListener(data);
         }
 
-        const nodeStatusSave = this.nodeStatus;
+        this.setNodeStatus("Debounce", "blue", "Debounce");
 
-        this.nodeStatus = "debounce";
-
-        debounceRunning.key = key;
-        debounceRunning.timer = setTimeout(
+        this.debouncing.timer = setTimeout(
           () => {
-            let debounceRunningCurrent = this.debouncing[key];
-
-            if (debounceRunningCurrent.timer) {
-              clearTimeout(debounceRunningCurrent.timer);
-              debounceRunningCurrent.timer = null;
-              this.debouncing[key] = debounceRunningCurrent;
+            if (this.debouncing.timer) {
+              clearTimeout(this.debouncing.timer);
+              this.debouncing.timer = null;
             }
 
-            this.nodeStatus = nodeStatusSave;
+            this.setNodeStatus(this.nodeStatus);
 
             if (this.config.debounceTrailing) {
-              debounceRunningCurrent.lastData.send = this.node.send.bind(
-                this.node
-              );
-              this.debounceListener(debounceRunningCurrent.lastData);
+              this.debouncing.lastData.send = this.node.send.bind(this.node);
+              this.debounceListener(this.debouncing.lastData);
             }
           },
           convertToMilliseconds(
@@ -100,8 +91,6 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
           )
         );
       }
-
-      this.debouncing[key] = debounceRunning;
     } else {
       this.debounceListener(data);
     }
@@ -119,11 +108,7 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   protected set nodeStatus(status: any) {
     const currentStatus = this.load(nodeStatusKey, null);
 
-    this.node.status({
-      fill: this.statusColor(status),
-      shape: "dot",
-      text: this.statusTextFormatter(status),
-    });
+    this.setNodeStatus(status);
 
     if (currentStatus !== status) {
       this.save(nodeStatusKey, status);
@@ -137,12 +122,18 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     }
   }
 
+  private setNodeStatus(status: any, color?: NodeStatusFill, text?: string) {
+    this.node.status({
+      fill: color ?? this.statusColor(status),
+      shape: "dot",
+      text: text ?? this.statusTextFormatter(status),
+    });
+  }
+
   protected statusColor(status: any): NodeStatusFill {
     let color: NodeStatusFill = "red";
     if (status === null || status === undefined || status === "") {
       color = "grey";
-    } else if (status === "debounce") {
-      color = "blue";
     } else if (status) {
       color = "green";
     }

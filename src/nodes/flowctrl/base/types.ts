@@ -67,6 +67,5 @@ export interface BaseNodeDebounceData {
 
 export interface BaseNodeDebounceRunning {
   timer: NodeJS.Timeout | null;
-  key: string;
   lastData: BaseNodeDebounceData;
 }

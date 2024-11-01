@@ -1,6 +1,7 @@
 import { Node, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
 import { BaseNode } from "../../flowctrl/base";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import { LogicalOperation, logicalOperations, notOp } from "./operations";
 import { defaultLogicalOpNodeConfig, LogicalOpNodeConfig } from "./types";
 
@@ -27,7 +28,7 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
     }
 
     if (this.config.logical === "not") {
-      this.sendResult(msg, send, notOp(msg.payload));
+      this.debounce({ received_msg: msg, send, result: notOp(msg.payload) });
     } else {
       if (typeof msg.topic !== "string") {
         this.node.error("Topic must be a string");
@@ -40,7 +41,11 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
 
       if (Object.keys(messages).length >= this.config.minMsgCount) {
         const payloads = Object.values(messages);
-        this.sendResult(msg, send, this.operator.func(payloads));
+        this.debounce({
+          received_msg: msg,
+          send,
+          result: this.operator.func(payloads),
+        });
       } else {
         this.nodeStatus = "waiting";
       }
@@ -51,9 +56,9 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
     }
   }
 
-  private sendResult(msg: any, send: any, result: boolean): void {
-    this.sendMsg(msg, { send, payload: result });
-    this.nodeStatus = result;
+  protected debounceListener(data: BaseNodeDebounceData): void {
+    this.sendMsg(data.received_msg, { send: data.send, payload: data.result });
+    this.nodeStatus = data.result;
   }
 
   protected statusColor(status: any): NodeStatusFill {

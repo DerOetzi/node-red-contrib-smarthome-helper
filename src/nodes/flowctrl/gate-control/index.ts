@@ -3,6 +3,7 @@ import { RED } from "../../../globals";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNode } from "../base";
 import { defaultGateControlNodeConfig, GateControlNodeConfig } from "./types";
+import { BaseNodeDebounceData } from "../base/types";
 
 export class GateControlNode extends BaseNode<GateControlNodeConfig> {
   private readonly gateControlMsg: any;
@@ -34,13 +35,17 @@ export class GateControlNode extends BaseNode<GateControlNodeConfig> {
     this.sendMsgToOutput(gateControlMsg, { send, output: 1 });
 
     setTimeout(() => {
-      this.sendMsg(msg);
+      this.debounce({ received_msg: msg });
       this.nodeStatus = new Date();
     }, this.config.delay);
 
     if (done) {
       done();
     }
+  }
+
+  protected debounceListener(data: BaseNodeDebounceData): void {
+    this.sendMsg(data.received_msg);
   }
 }
 

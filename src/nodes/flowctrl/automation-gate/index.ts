@@ -1,7 +1,7 @@
 import { Node, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
 import { BaseNode } from "../base";
-import { NodeSendOptions } from "../base/types";
+import { BaseNodeDebounceData } from "../base/types";
 import {
   AutomationGateNodeConfig,
   defaultAutomationGateNodeConfig,
@@ -59,13 +59,17 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
     } else {
       this.saveLastMessage(msg);
 
-      if (this.nodeStatus ?? this.config.startupState) {
-        this.sendMsg(msg, { send: send });
-      }
+      this.debounce({ received_msg: msg, send: send });
     }
 
     if (done) {
       done();
+    }
+  }
+
+  protected debounceListener(data: BaseNodeDebounceData): void {
+    if (this.nodeStatus ?? this.config.startupState) {
+      this.sendMsg(data.received_msg, { send: data.send });
     }
   }
 
@@ -116,15 +120,10 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
     this.startGate();
     this.resetFilter();
 
-    let sendOptions: NodeSendOptions = {};
-    if (send) {
-      sendOptions = { send };
-    }
-
     const lastMessages: Record<string, any> = this.loadRecord(lastMessagesKey);
     for (const topic in lastMessages) {
       if (lastMessages.hasOwnProperty(topic)) {
-        this.sendMsg(lastMessages[topic], sendOptions);
+        this.debounce({ received_msg: lastMessages[topic], send: send });
       }
     }
   }
@@ -143,11 +142,13 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
   }
 
   protected statusTextFormatter(status: any): string {
-    if (status) {
-      return this.config.stateOpenLabel ?? "Automated";
-    } else {
-      return this.config.stateClosedLabel ?? "Manual";
+    if (status === true) {
+      status = this.config.stateOpenLabel ?? "Automated";
+    } else if (status === false) {
+      status = this.config.stateClosedLabel ?? "Manual";
     }
+
+    return status;
   }
 }
 

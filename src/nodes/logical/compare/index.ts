@@ -1,6 +1,7 @@
 import { Node } from "node-red";
 import { RED } from "../../../globals";
 import { BaseNode } from "../../flowctrl/base";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import { Comparator, comparators } from "./operations";
 import { CompareNodeConfig, defaultCompareNodeConfig } from "./types";
 
@@ -39,12 +40,16 @@ export class CompareNode extends BaseNode<CompareNodeConfig> {
       result = this.comparator.func(propertyValue, compareValue);
     }
 
-    this.sendMsg(msg, { send, payload: result });
-    this.nodeStatus = result;
+    this.debounce({ received_msg: msg, result, send });
 
     if (done) {
       done();
     }
+  }
+
+  protected debounceListener(data: BaseNodeDebounceData): void {
+    this.sendMsg(data.received_msg, { send: data.send, payload: data.result });
+    this.nodeStatus = data.result;
   }
 }
 

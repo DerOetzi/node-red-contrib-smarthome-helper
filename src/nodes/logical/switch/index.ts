@@ -1,6 +1,7 @@
 import { Node } from "node-red";
 import { RED } from "../../../globals";
 import { BaseNode } from "../../flowctrl/base";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import { SwitchNodeConfig } from "./types";
 
 class SwitchNode extends BaseNode<SwitchNodeConfig> {
@@ -13,15 +14,21 @@ class SwitchNode extends BaseNode<SwitchNodeConfig> {
   }
 
   public onInput(msg: any, send: any, done: any) {
-    const result = msg.payload;
-    this.nodeStatus = result;
-
-    const options = result ? { send } : { send, output: 1 };
-    this.sendMsg(msg, options);
+    this.debounce({ received_msg: msg, send: send });
 
     if (done) {
       done();
     }
+  }
+
+  protected debounceListener(data: BaseNodeDebounceData): void {
+    const result = data.received_msg.payload;
+    this.nodeStatus = result;
+
+    const options = result
+      ? { send: data.send }
+      : { send: data.send, output: 1 };
+    this.sendMsg(data.received_msg, options);
   }
 }
 
