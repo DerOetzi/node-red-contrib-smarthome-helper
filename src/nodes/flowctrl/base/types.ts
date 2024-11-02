@@ -63,6 +63,7 @@ export interface BaseNodeDebounceData {
   received_msg?: any;
   result?: any;
   send?: any;
+  additionalAttributes?: Record<string, any>;
 }
 
 export interface BaseNodeDebounceRunning {

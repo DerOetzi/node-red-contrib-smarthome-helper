@@ -57,6 +57,11 @@ export const NodeType: Record<string, NodeTypeStruct> = {
     NodeCategory.FlowControl,
     NodeColor.AutomationGate
   ),
+  FlowCtrlMatchJoin: new NodeTypeStruct(
+    "match-join",
+    NodeCategory.FlowControl,
+    NodeColor.Base
+  ),
   LogicalOp: new NodeTypeStruct("op", NodeCategory.Logical, NodeColor.Logical),
   LogicalCompare: new NodeTypeStruct(
     "compare",

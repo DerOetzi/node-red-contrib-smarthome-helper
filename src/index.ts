@@ -8,11 +8,13 @@ import createCompareNode from "./nodes/logical/compare";
 import createLogicalOpNode from "./nodes/logical/op";
 import createSwitchNode from "./nodes/logical/switch";
 import version from "./version";
+import createMatchJoinNode from "./nodes/flowctrl/match-join";
 
 const nodes: Record<string, any> = {
   [NodeType.FlowCtrlBase.fullName]: createBaseNode,
   [NodeType.FlowCtrlAutomationGate.fullName]: createAutomationGateNode,
   [NodeType.FlowCtrlGateControl.fullName]: createGateControlNode,
+  [NodeType.FlowCtrlMatchJoin.fullName]: createMatchJoinNode,
   [NodeType.LogicalOp.fullName]: createLogicalOpNode,
   [NodeType.LogicalCompare.fullName]: createCompareNode,
   [NodeType.LogicalSwitch.fullName]: createSwitchNode,

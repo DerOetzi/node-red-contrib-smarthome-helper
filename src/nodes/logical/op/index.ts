@@ -1,7 +1,10 @@
 import { Node, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
 import { BaseNode } from "../../flowctrl/base";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import {
+  BaseNodeDebounceData,
+  NodeSendOptions,
+} from "../../flowctrl/base/types";
 import { LogicalOperation, logicalOperations, notOp } from "./operations";
 import { defaultLogicalOpNodeConfig, LogicalOpNodeConfig } from "./types";
 
@@ -28,7 +31,12 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
     }
 
     if (this.config.logical === "not") {
-      this.debounce({ received_msg: msg, send, result: notOp(msg.payload) });
+      this.debounce({
+        received_msg: msg,
+        send,
+        result: notOp(msg.payload),
+        additionalAttributes: { message: msg },
+      });
     } else {
       if (typeof msg.topic !== "string") {
         this.node.error("Topic must be a string");
@@ -45,6 +53,7 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
           received_msg: msg,
           send,
           result: this.operator.func(payloads),
+          additionalAttributes: { messages },
         });
       } else {
         this.nodeStatus = "waiting";
@@ -57,7 +66,13 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
   }
 
   protected debounceListener(data: BaseNodeDebounceData): void {
-    this.sendMsg(data.received_msg, { send: data.send, payload: data.result });
+    let sendOptions: NodeSendOptions = {
+      send: data.send,
+      payload: data.result,
+      additionalAttributes: data.additionalAttributes,
+    };
+
+    this.sendMsg(data.received_msg, sendOptions);
     this.nodeStatus = data.result;
   }
 

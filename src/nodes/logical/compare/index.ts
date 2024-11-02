@@ -48,7 +48,11 @@ export class CompareNode extends BaseNode<CompareNodeConfig> {
   }
 
   protected debounceListener(data: BaseNodeDebounceData): void {
-    this.sendMsg(data.received_msg, { send: data.send, payload: data.result });
+    this.sendMsg(data.received_msg, {
+      send: data.send,
+      payload: data.result,
+      additionalAttributes: { message: data.received_msg },
+    });
     this.nodeStatus = data.result;
   }
 }
