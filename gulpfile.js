@@ -96,8 +96,7 @@ task("buildEditorFiles", () => {
         /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]editor\.html/,
       );
       currentNode = category + "-" + node;
-      if (category === "flowctrl" && (node === "common" || node === "base")) {
-        //TODO remove common
+      if (category === "flowctrl" && node === "base") {
         return stream.pipe(buildForm());
       } else {
         return stream
