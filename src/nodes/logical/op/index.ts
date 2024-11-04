@@ -1,16 +1,20 @@
 import { Node, NodeStatusFill } from "node-red";
-import { RED } from "../../../globals";
-import { BaseNode } from "../../flowctrl/base";
+import BaseNode from "../../flowctrl/base";
 import {
   BaseNodeDebounceData,
   NodeSendOptions,
 } from "../../flowctrl/base/types";
+import { NodeType } from "../../types";
 import { LogicalOperation, logicalOperations, notOp } from "./operations";
-import { defaultLogicalOpNodeConfig, LogicalOpNodeConfig } from "./types";
+import {
+  defaultLogicalOpNodeConfig,
+  LogicalOpNodeConfig,
+  LogicalOpNodeType,
+} from "./types";
 
 const messagesStoreKey = "messagesStore";
 
-export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
+export default class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
   private readonly operator: LogicalOperation;
 
   constructor(node: Node, config: LogicalOpNodeConfig) {
@@ -20,8 +24,8 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
     this.operator = logicalOperations[config.logical];
   }
 
-  public static create(node: Node, config: LogicalOpNodeConfig): LogicalOpNode {
-    return new LogicalOpNode(node, config);
+  static get type(): NodeType {
+    return LogicalOpNodeType;
   }
 
   protected onInput(msg: any, send: any, done: any): void {
@@ -88,13 +92,4 @@ export class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
 
     return color;
   }
-}
-
-export default function createLogicalOpNode(
-  this: Node,
-  config: LogicalOpNodeConfig
-): void {
-  RED.nodes.createNode(this, config);
-  const node = this;
-  LogicalOpNode.create(node, config);
 }

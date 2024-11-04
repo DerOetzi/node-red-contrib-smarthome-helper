@@ -1,4 +1,6 @@
+import { NodeColor, NodeType } from "../../types";
 import { BaseNodeConfig, BaseNodeEditorProperties } from "../base/types";
+import { flowctrlCategory } from "../types";
 
 export interface MatcherRow {
   property: string;
@@ -35,3 +37,9 @@ export interface MatchJoinNodeEditorProperties
   matchers: MatcherRow[];
   minMsgCount: number;
 }
+
+export const MatchJoinNodeType = new NodeType(
+  flowctrlCategory,
+  "match-join",
+  NodeColor.Base
+);

@@ -1,17 +1,15 @@
 import { EditorNodeDef } from "node-red";
-import { NodeType } from "../../../const";
 import BaseNodeEditor from "../base/editor";
 import {
   AutomationGateNodeEditorProperties,
+  AutomationGateNodeType,
   defaultAutomationGateNodeConfig,
 } from "./types";
-
-const nodeType = NodeType.FlowCtrlAutomationGate;
 
 const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties> =
   {
     ...BaseNodeEditor,
-    color: nodeType.color,
+    color: AutomationGateNodeType.color,
     defaults: {
       ...BaseNodeEditor.defaults,
       startupState: {
@@ -36,7 +34,7 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties
       },
     },
     label: function () {
-      return this.name || nodeType.name;
+      return this.name || AutomationGateNodeType.name;
     },
     outputs: 2,
     outputLabels: ["Messages when gate is open", "Gate state updates"],
@@ -44,3 +42,5 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties
   };
 
 export default AutomationGateNodeEditor;
+
+export { AutomationGateNodeType };

@@ -1,4 +1,6 @@
 import { EditorNodeProperties, NodeDef } from "node-red";
+import { NodeColor, NodeType } from "../../types";
+import { flowctrlCategory } from "../types";
 
 export interface BaseNodeConfig extends NodeDef {
   topic: string;
@@ -52,6 +54,7 @@ export interface BaseNodeOptions {
   outputs?: number;
   statusOutput?: NodeStatusOutputConfig;
   initializeDelay?: number;
+  filterkey?: string;
 }
 
 export const defaultBaseNodeOptions: BaseNodeOptions = {
@@ -70,3 +73,9 @@ export interface BaseNodeDebounceRunning {
   timer: NodeJS.Timeout | null;
   lastData: BaseNodeDebounceData;
 }
+
+export const BaseNodeType = new NodeType(
+  flowctrlCategory,
+  "base",
+  NodeColor.Base
+);

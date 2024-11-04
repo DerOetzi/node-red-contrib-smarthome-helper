@@ -1,14 +1,15 @@
 import { EditorNodeDef } from "node-red";
-import { NodeType } from "../../../const";
-import { CompareNodeEditorProperties, defaultCompareNodeConfig } from "./types";
 import BaseNodeEditor from "../../flowctrl/base/editor";
-
-const nodeType = NodeType.LogicalCompare;
+import {
+  CompareNodeEditorProperties,
+  CompareNodeType,
+  defaultCompareNodeConfig,
+} from "./types";
 
 const CompareNodeEditor: EditorNodeDef<CompareNodeEditorProperties> = {
   ...BaseNodeEditor,
-  category: nodeType.category.label,
-  color: nodeType.color,
+  category: CompareNodeType.categoryLabel,
+  color: CompareNodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
     property: { value: defaultCompareNodeConfig.property!, required: true },
@@ -39,11 +40,13 @@ const CompareNodeEditor: EditorNodeDef<CompareNodeEditorProperties> = {
 
     $("#node-input-property").typedInput({
       types: ["msg"],
+      typeField: "#node-input-propertyType",
     });
 
     const valueRow = $("#node-input-value")
       .typedInput({
         types: ["str", "num", "msg"],
+        typeField: "#node-input-valueType",
       })
       .parent();
 
@@ -62,3 +65,5 @@ const CompareNodeEditor: EditorNodeDef<CompareNodeEditorProperties> = {
 };
 
 export default CompareNodeEditor;
+
+export { CompareNodeType };

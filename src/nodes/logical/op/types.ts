@@ -2,6 +2,8 @@ import {
   BaseNodeConfig,
   BaseNodeEditorProperties,
 } from "../../flowctrl/base/types";
+import { NodeColor, NodeType } from "../../types";
+import { logicalCategory } from "../types";
 
 export interface LogicalOpNodeConfig extends BaseNodeConfig {
   logical: string;
@@ -18,3 +20,9 @@ export interface LogicalOpNodeEditorProperties
   logical: string;
   minMsgCount: number;
 }
+
+export const LogicalOpNodeType = new NodeType(
+  logicalCategory,
+  "op",
+  NodeColor.Logical
+);

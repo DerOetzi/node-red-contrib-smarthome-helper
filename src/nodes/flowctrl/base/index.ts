@@ -1,13 +1,15 @@
+import _ from "lodash";
 import { Node, NodeStatusFill } from "node-red";
-import { clearTimeout } from "timers";
 import { RED } from "../../../globals";
 import { formatDate } from "../../../helpers/date.helper";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
+import { NodeType } from "../../types";
 import {
   BaseNodeConfig,
   BaseNodeDebounceData,
   BaseNodeDebounceRunning,
   BaseNodeOptions,
+  BaseNodeType,
   defaultBaseNodeConfig,
   defaultBaseNodeOptions,
   NodeSendOptions,
@@ -16,7 +18,7 @@ import {
 const nodeStatusKey = "node_status";
 const lastSentPayloadsKey = "lastSentPayloads";
 
-export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
+export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   protected readonly config: T;
   private readonly options: BaseNodeOptions;
 
@@ -40,8 +42,21 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     this.debouncing = {} as BaseNodeDebounceRunning;
   }
 
-  public static create(node: Node, config: BaseNodeConfig) {
-    return new BaseNode(node, config);
+  public static createFunction() {
+    const NodeClass = this;
+    return function (this: Node, config: any) {
+      RED.nodes.createNode(this, config);
+      const node = this;
+      NodeClass.instance(node, config);
+    };
+  }
+
+  public static instance(node: Node, config: any) {
+    return new this(node, config);
+  }
+
+  static get type(): NodeType {
+    return BaseNodeType;
   }
 
   protected onClose() {
@@ -177,14 +192,31 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
       let lastSentPayloads: Record<string, any> =
         this.loadRecord(lastSentPayloadsKey);
 
-      if (lastSentPayloads[msg.topic] !== msg.payload) {
+      const compareKey = this.options.filterkey ?? msg.topic;
+
+      if (this.filterPayload(lastSentPayloads, msg, compareKey)) {
         this.sendMsgToOutput(msg, options);
-        lastSentPayloads[msg.topic] = msg.payload;
+        lastSentPayloads[compareKey] =
+          typeof msg.payload === "object" && msg.payload !== null
+            ? _.cloneDeep(msg.payload)
+            : msg.payload;
         this.save(lastSentPayloadsKey, lastSentPayloads);
       }
     } else {
       this.sendMsgToOutput(msg, options);
     }
+  }
+
+  private filterPayload(
+    lastSentPayloads: Record<string, any>,
+    msg: any,
+    compareKey: string
+  ) {
+    if (typeof msg.payload === "object" && msg.payload !== null) {
+      return !_.isEqual(lastSentPayloads[compareKey], msg.payload);
+    }
+
+    return lastSentPayloads[compareKey] !== msg.payload;
   }
 
   protected resetFilter(): void {
@@ -201,7 +233,7 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
     this.node.send(msgs);
 
-    //    const send = options.send ?? this.node.send.bind(this.node);
+    // TODO   const send = options.send ?? this.node.send.bind(this.node);
     //    send(msgs);
   }
 
@@ -220,10 +252,4 @@ export class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   public cleanupStorage() {
     this.storage = {};
   }
-}
-
-export default function createBaseNode(this: Node, config: BaseNodeConfig) {
-  RED.nodes.createNode(this, config);
-  const node = this;
-  BaseNode.create(node, config);
 }

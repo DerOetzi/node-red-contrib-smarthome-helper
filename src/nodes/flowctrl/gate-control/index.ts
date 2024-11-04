@@ -1,11 +1,15 @@
 import { Node } from "node-red";
-import { RED } from "../../../globals";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
-import { BaseNode } from "../base";
-import { defaultGateControlNodeConfig, GateControlNodeConfig } from "./types";
+import { NodeType } from "../../types";
+import BaseNode from "../base";
 import { BaseNodeDebounceData } from "../base/types";
+import {
+  defaultGateControlNodeConfig,
+  GateControlNodeConfig,
+  GateControlNodeType,
+} from "./types";
 
-export class GateControlNode extends BaseNode<GateControlNodeConfig> {
+export default class GateControlNode extends BaseNode<GateControlNodeConfig> {
   private readonly gateControlMsg: any;
 
   constructor(node: Node, config: GateControlNodeConfig) {
@@ -26,8 +30,8 @@ export class GateControlNode extends BaseNode<GateControlNodeConfig> {
     }
   }
 
-  public static create(node: Node, config: GateControlNodeConfig) {
-    return new GateControlNode(node, config);
+  static get type(): NodeType {
+    return GateControlNodeType;
   }
 
   public onInput(msg: any, send: any, done: any) {
@@ -47,13 +51,4 @@ export class GateControlNode extends BaseNode<GateControlNodeConfig> {
   protected debounceListener(data: BaseNodeDebounceData): void {
     this.sendMsg(data.received_msg);
   }
-}
-
-export default function createGateControlNode(
-  this: Node,
-  config: GateControlNodeConfig
-): void {
-  RED.nodes.createNode(this, config);
-  const node = this;
-  GateControlNode.create(node, config);
 }

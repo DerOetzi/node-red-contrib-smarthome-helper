@@ -1,17 +1,15 @@
 import { EditorNodeDef } from "node-red";
-import { NodeType } from "../../../const";
 import BaseNodeEditor from "../../flowctrl/base/editor";
 import {
   defaultLogicalOpNodeConfig,
   LogicalOpNodeEditorProperties,
+  LogicalOpNodeType,
 } from "./types";
-
-const nodeType = NodeType.LogicalOp;
 
 const LogicalOpNodeEditor: EditorNodeDef<LogicalOpNodeEditorProperties> = {
   ...BaseNodeEditor,
-  category: nodeType.category.label,
-  color: nodeType.color,
+  category: LogicalOpNodeType.categoryLabel,
+  color: LogicalOpNodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
     logical: { value: defaultLogicalOpNodeConfig.logical!, required: true },
@@ -35,3 +33,5 @@ const LogicalOpNodeEditor: EditorNodeDef<LogicalOpNodeEditorProperties> = {
 };
 
 export default LogicalOpNodeEditor;
+
+export { LogicalOpNodeType };

@@ -2,6 +2,8 @@ import {
   BaseNodeConfig,
   BaseNodeEditorProperties,
 } from "../../flowctrl/base/types";
+import { NodeColor, NodeType } from "../../types";
+import { logicalCategory } from "../types";
 
 export interface CompareNodeConfig extends BaseNodeConfig {
   property: string;
@@ -26,3 +28,9 @@ export interface CompareNodeEditorProperties extends BaseNodeEditorProperties {
   value: string;
   valueType: string;
 }
+
+export const CompareNodeType = new NodeType(
+  logicalCategory,
+  "compare",
+  NodeColor.Logical
+);

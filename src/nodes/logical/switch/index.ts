@@ -1,16 +1,16 @@
 import { Node } from "node-red";
-import { RED } from "../../../globals";
-import { BaseNode } from "../../flowctrl/base";
+import BaseNode from "../../flowctrl/base";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
-import { SwitchNodeConfig } from "./types";
+import { NodeType } from "../../types";
+import { SwitchNodeConfig, SwitchNodeType } from "./types";
 
-class SwitchNode extends BaseNode<SwitchNodeConfig> {
+export default class SwitchNode extends BaseNode<SwitchNodeConfig> {
   constructor(node: Node, config: SwitchNodeConfig) {
     super(node, config, { outputs: 2 });
   }
 
-  public static create(node: Node, config: SwitchNodeConfig) {
-    return new SwitchNode(node, config);
+  static get type(): NodeType {
+    return SwitchNodeType;
   }
 
   public onInput(msg: any, send: any, done: any) {
@@ -30,10 +30,4 @@ class SwitchNode extends BaseNode<SwitchNodeConfig> {
       : { send: data.send, output: 1 };
     this.sendMsg(data.received_msg, options);
   }
-}
-
-export default function createSwitchNode(this: Node, config: SwitchNodeConfig) {
-  RED.nodes.createNode(this, config);
-  const node = this;
-  SwitchNode.create(node, config);
 }

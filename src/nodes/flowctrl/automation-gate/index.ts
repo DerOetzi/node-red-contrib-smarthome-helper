@@ -1,15 +1,16 @@
 import { Node, NodeStatusFill } from "node-red";
-import { RED } from "../../../globals";
-import { BaseNode } from "../base";
+import { NodeType } from "../../types";
+import BaseNode from "../base";
 import { BaseNodeDebounceData } from "../base/types";
 import {
   AutomationGateNodeConfig,
+  AutomationGateNodeType,
   defaultAutomationGateNodeConfig,
 } from "./types";
 
 const lastMessagesKey = "lastMessages";
 
-export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
+export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
   private pauseTimer: NodeJS.Timeout | null = null;
 
   constructor(node: Node, config: AutomationGateNodeConfig) {
@@ -30,8 +31,8 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
     this.nodeStatus = this.config.startupState;
   }
 
-  public static create(node: Node, config: AutomationGateNodeConfig) {
-    return new AutomationGateNode(node, config);
+  static get type(): NodeType {
+    return AutomationGateNodeType;
   }
 
   protected onInput(msg: any, send: any, done: any) {
@@ -150,13 +151,4 @@ export class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
 
     return status;
   }
-}
-
-export default function createAutomationGateNode(
-  this: Node,
-  config: AutomationGateNodeConfig
-): void {
-  RED.nodes.createNode(this, config);
-  const node = this;
-  AutomationGateNode.create(node, config);
 }

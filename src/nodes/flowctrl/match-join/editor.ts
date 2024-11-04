@@ -1,18 +1,16 @@
 import { EditorNodeDef } from "node-red";
-import { NodeType } from "../../../const";
 import BaseNodeEditor from "../base/editor";
 import {
   defaultMatchJoinNodeConfig,
   MatcherRow,
   MatchJoinNodeEditorProperties,
+  MatchJoinNodeType,
 } from "./types";
 import { comparators } from "../../logical/compare/operations";
 
-const nodeType = NodeType.FlowCtrlMatchJoin;
-
 const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
   ...BaseNodeEditor,
-  color: nodeType.color,
+  color: MatchJoinNodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
     matchers: { value: defaultMatchJoinNodeConfig.matchers!, required: true },
@@ -23,7 +21,7 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
   },
   icon: "join.svg",
   label: function () {
-    return this.name || nodeType.name;
+    return this.name || MatchJoinNodeType.name;
   },
   oneditprepare: function () {
     if (BaseNodeEditor.oneditprepare) {
@@ -148,3 +146,5 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
 };
 
 export default MatchJoinNodeEditor;
+
+export { MatchJoinNodeType };

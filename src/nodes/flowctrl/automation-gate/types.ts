@@ -1,4 +1,6 @@
+import { NodeColor, NodeType } from "../../types";
 import { BaseNodeConfig, BaseNodeEditorProperties } from "../base/types";
+import { flowctrlCategory } from "../types";
 
 export interface AutomationGateNodeConfig extends BaseNodeConfig {
   startupState: boolean;
@@ -25,3 +27,9 @@ export interface AutomationGateNodeEditorProperties
   stateOpenLabel: string;
   stateClosedLabel: string;
 }
+
+export const AutomationGateNodeType = new NodeType(
+  flowctrlCategory,
+  "automation-gate",
+  NodeColor.AutomationGate
+);

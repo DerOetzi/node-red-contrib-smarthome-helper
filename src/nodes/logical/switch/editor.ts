@@ -1,14 +1,13 @@
 import { EditorNodeDef } from "node-red";
-import { NodeType } from "../../../const";
 import BaseNodeEditor from "../../flowctrl/base/editor";
-import { SwitchNodeEditorProperties } from "./types";
-
-const nodeType = NodeType.LogicalSwitch;
+import { NodeColor } from "../../types";
+import { logicalCategory } from "../types";
+import { SwitchNodeEditorProperties, SwitchNodeType } from "./types";
 
 const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
   ...BaseNodeEditor,
-  category: nodeType.category.label,
-  color: nodeType.color,
+  category: SwitchNodeType.categoryLabel,
+  color: SwitchNodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
   },
@@ -16,8 +15,10 @@ const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
   outputLabels: ["true", "false"],
   icon: "switch.svg",
   label: function () {
-    return this.name || nodeType.name;
+    return this.name || "switch";
   },
 };
 
 export default SwitchNodeEditor;
+
+export { SwitchNodeType };

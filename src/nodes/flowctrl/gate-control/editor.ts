@@ -1,16 +1,14 @@
 import { EditorNodeDef } from "node-red";
-import { NodeType } from "../../../const";
 import BaseNodeEditor from "../base/editor";
 import {
   defaultGateControlNodeConfig,
   GateControlNodeEditorProperties,
+  GateControlNodeType,
 } from "./types";
-
-const nodeType = NodeType.FlowCtrlGateControl;
 
 const GateControlNodeEditor: EditorNodeDef<GateControlNodeEditorProperties> = {
   ...BaseNodeEditor,
-  color: nodeType.color,
+  color: GateControlNodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
     delay: { value: defaultGateControlNodeConfig.delay!, required: true },
@@ -53,3 +51,5 @@ const GateControlNodeEditor: EditorNodeDef<GateControlNodeEditorProperties> = {
 };
 
 export default GateControlNodeEditor;
+
+export { GateControlNodeType };

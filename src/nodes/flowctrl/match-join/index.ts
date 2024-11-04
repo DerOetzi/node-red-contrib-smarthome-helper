@@ -1,17 +1,22 @@
 import { Node, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
-import { BaseNode } from "../base";
-import { defaultMatchJoinNodeConfig, MatchJoinNodeConfig } from "./types";
 import { comparators } from "../../logical/compare/operations";
+import { NodeType } from "../../types";
+import BaseNode from "../base";
+import {
+  defaultMatchJoinNodeConfig,
+  MatchJoinNodeConfig,
+  MatchJoinNodeType,
+} from "./types";
 
-export class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
+export default class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
   constructor(node: Node, config: MatchJoinNodeConfig) {
     config = { ...defaultMatchJoinNodeConfig, ...config };
-    super(node, config);
+    super(node, config, { filterkey: "filterMessages" });
   }
 
-  public static create(node: Node, config: MatchJoinNodeConfig) {
-    return new MatchJoinNode(node, config);
+  static get type(): NodeType {
+    return MatchJoinNodeType;
   }
 
   public onInput(msg: any, send: any, done: any) {
@@ -87,13 +92,4 @@ export class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
 
     return color;
   }
-}
-
-export default function createMatchJoinNode(
-  this: Node,
-  config: MatchJoinNodeConfig
-): void {
-  RED.nodes.createNode(this, config);
-  const node = this;
-  MatchJoinNode.create(node, config);
 }

@@ -1,11 +1,17 @@
 import { Node } from "node-red";
 import { RED } from "../../../globals";
-import { BaseNode } from "../../flowctrl/base";
+import BaseNode from "../../flowctrl/base";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import { NodeCategory, NodeType } from "../../types";
+import { logicalCategory } from "../types";
 import { Comparator, comparators } from "./operations";
-import { CompareNodeConfig, defaultCompareNodeConfig } from "./types";
+import {
+  CompareNodeConfig,
+  CompareNodeType,
+  defaultCompareNodeConfig,
+} from "./types";
 
-export class CompareNode extends BaseNode<CompareNodeConfig> {
+export default class CompareNode extends BaseNode<CompareNodeConfig> {
   private readonly comparator: Comparator;
 
   constructor(node: Node, config: CompareNodeConfig) {
@@ -15,8 +21,8 @@ export class CompareNode extends BaseNode<CompareNodeConfig> {
     this.comparator = comparators[config.operator];
   }
 
-  public static create(node: Node, config: CompareNodeConfig): CompareNode {
-    return new CompareNode(node, config);
+  static get type(): NodeType {
+    return CompareNodeType;
   }
 
   protected onInput(msg: any, send: any, done: any): void {
@@ -55,13 +61,4 @@ export class CompareNode extends BaseNode<CompareNodeConfig> {
     });
     this.nodeStatus = data.result;
   }
-}
-
-export default function createCompareNode(
-  this: Node,
-  config: CompareNodeConfig
-): void {
-  RED.nodes.createNode(this, config);
-  const node = this;
-  CompareNode.create(node, config);
 }

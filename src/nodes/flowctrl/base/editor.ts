@@ -1,12 +1,13 @@
 import { EditorNodeDef } from "node-red";
-import { NodeType } from "../../../const";
-import { BaseNodeEditorProperties, defaultBaseNodeConfig } from "./types";
-
-const nodeType = NodeType.FlowCtrlBase;
+import {
+  BaseNodeEditorProperties,
+  BaseNodeType,
+  defaultBaseNodeConfig,
+} from "./types";
 
 const BaseNodeEditor: EditorNodeDef<BaseNodeEditorProperties> = {
-  category: nodeType.category.label,
-  color: nodeType.color,
+  category: BaseNodeType.categoryLabel,
+  color: BaseNodeType.color,
   defaults: {
     name: { value: "", required: false },
     topic: { value: defaultBaseNodeConfig.topic!, required: true },
@@ -37,7 +38,7 @@ const BaseNodeEditor: EditorNodeDef<BaseNodeEditorProperties> = {
   inputs: 1,
   outputs: 1,
   label: function () {
-    return this.name || nodeType.name;
+    return this.name || BaseNodeType.name;
   },
   oneditprepare: function () {
     $("#node-input-topic").typedInput({
@@ -56,3 +57,5 @@ const BaseNodeEditor: EditorNodeDef<BaseNodeEditorProperties> = {
 };
 
 export default BaseNodeEditor;
+
+export { BaseNodeType };
