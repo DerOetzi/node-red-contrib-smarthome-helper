@@ -56,6 +56,13 @@ export function endsWithCmp(
   return propertyValue.endsWith(compareValue);
 }
 
+export function containsCmp(
+  propertyValue: string,
+  compareValue: string
+): boolean {
+  return propertyValue.includes(compareValue);
+}
+
 export interface Comparator {
   func: (propertyValue: any, compareValue?: any) => boolean;
   propertyOnly: boolean;
@@ -79,4 +86,5 @@ export const comparators: Record<string, Comparator> = {
     label: "starts with",
   },
   ends_with: { func: endsWithCmp, propertyOnly: false, label: "ends with" },
+  contains: { func: containsCmp, propertyOnly: false, label: "contains" },
 };

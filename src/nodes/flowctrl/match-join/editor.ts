@@ -13,7 +13,12 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
   color: MatchJoinNodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
+    join: { value: defaultMatchJoinNodeConfig.join!, required: false },
     matchers: { value: defaultMatchJoinNodeConfig.matchers!, required: true },
+    discardNotMatched: {
+      value: defaultMatchJoinNodeConfig.discardNotMatched!,
+      required: false,
+    },
     minMsgCount: {
       value: defaultMatchJoinNodeConfig.minMsgCount!,
       required: true,
@@ -125,6 +130,12 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
         },
       })
       .editableList("addItems", this.matchers || []);
+
+    $("#row-minMsgCount").toggle(this.join);
+
+    $("#node-input-join").on("change", function () {
+      $("#row-minMsgCount").toggle($(this).is(":checked"));
+    });
   },
   oneditsave: function () {
     let matchersList = $("#matcher-rows").editableList("items");

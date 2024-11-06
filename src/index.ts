@@ -4,6 +4,7 @@ import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import BaseNode from "./nodes/flowctrl/base";
 import GateControlNode from "./nodes/flowctrl/gate-control";
 import MatchJoinNode from "./nodes/flowctrl/match-join";
+import HeatModeSelectNode from "./nodes/helper/heatmode-select";
 import CompareNode from "./nodes/logical/compare";
 import LogicalOpNode from "./nodes/logical/op";
 import SwitchNode from "./nodes/logical/switch";
@@ -17,6 +18,7 @@ const nodes = [
   CompareNode,
   LogicalOpNode,
   SwitchNode,
+  HeatModeSelectNode,
 ];
 
 export default async (RED: NodeAPI): Promise<void> => {

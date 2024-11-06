@@ -9,6 +9,9 @@ import GateControlNodeEditor, {
 import MatchJoinNodeEditor, {
   MatchJoinNodeType,
 } from "./nodes/flowctrl/match-join/editor";
+import HeatModeSelectNodeEditor, {
+  HeatModeSelectNodeType,
+} from "./nodes/helper/heatmode-select/editor";
 import CompareNodeEditor, {
   CompareNodeType,
 } from "./nodes/logical/compare/editor";
@@ -28,6 +31,7 @@ const nodes: Record<string, any> = {
   [CompareNodeType.fullName]: CompareNodeEditor,
   [LogicalOpNodeType.fullName]: LogicalOpNodeEditor,
   [SwitchNodeType.fullName]: SwitchNodeEditor,
+  [HeatModeSelectNodeType.fullName]: HeatModeSelectNodeEditor,
 };
 
 let type: string;

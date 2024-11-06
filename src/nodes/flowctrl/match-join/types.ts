@@ -23,17 +23,23 @@ const defaultMatcherRow: MatcherRow = {
 };
 
 export interface MatchJoinNodeConfig extends BaseNodeConfig {
+  join: boolean;
+  discardNotMatched: boolean;
   matchers: MatcherRow[];
   minMsgCount: number;
 }
 
 export const defaultMatchJoinNodeConfig: Partial<MatchJoinNodeConfig> = {
+  join: true,
+  discardNotMatched: false,
   matchers: [defaultMatcherRow],
   minMsgCount: 1,
 };
 
 export interface MatchJoinNodeEditorProperties
   extends BaseNodeEditorProperties {
+  join: boolean;
+  discardNotMatched: boolean;
   matchers: MatcherRow[];
   minMsgCount: number;
 }

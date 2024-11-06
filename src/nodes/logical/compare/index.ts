@@ -2,8 +2,7 @@ import { Node } from "node-red";
 import { RED } from "../../../globals";
 import BaseNode from "../../flowctrl/base";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
-import { NodeCategory, NodeType } from "../../types";
-import { logicalCategory } from "../types";
+import { NodeType } from "../../types";
 import { Comparator, comparators } from "./operations";
 import {
   CompareNodeConfig,

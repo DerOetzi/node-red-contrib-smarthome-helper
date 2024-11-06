@@ -8,11 +8,18 @@ import {
   MatchJoinNodeConfig,
   MatchJoinNodeType,
 } from "./types";
+import { BaseNodeOptions } from "../base/types";
 
 export default class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
   constructor(node: Node, config: MatchJoinNodeConfig) {
     config = { ...defaultMatchJoinNodeConfig, ...config };
-    super(node, config, { filterkey: "filterMessages" });
+    let options: BaseNodeOptions = {};
+    if (config.join) {
+      options = {
+        filterkey: "filterMessages",
+      };
+    }
+    super(node, config, options);
   }
 
   static get type(): NodeType {
@@ -22,7 +29,7 @@ export default class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
   public onInput(msg: any, send: any, done: any) {
     const matchers = this.config.matchers;
 
-    let messages = this.loadRecord("messages");
+    let matcherFound = false;
 
     matchers.forEach((matcher) => {
       const propertyValue = RED.util.getMessageProperty(msg, matcher.property);
@@ -48,21 +55,30 @@ export default class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
           this.node,
           msg
         );
-        messages[targetValue] = msg.payload;
+        msg.topic = targetValue;
+        matcherFound = true;
         return false;
       }
     });
 
-    this.save("messages", messages);
+    if (matcherFound || !this.config.discardNotMatched) {
+      if (this.config.join) {
+        let messages = this.loadRecord("messages") || {};
+        messages[msg.topic] = msg.payload;
+        this.save("messages", messages);
 
-    if (Object.keys(messages).length >= this.config.minMsgCount) {
-      this.debounce({
-        received_msg: msg,
-        send,
-        result: messages,
-      });
-    } else {
-      this.nodeStatus = "waiting";
+        if (Object.keys(messages).length >= this.config.minMsgCount) {
+          this.debounce({
+            received_msg: msg,
+            send,
+            result: messages,
+          });
+        } else {
+          this.nodeStatus = "waiting";
+        }
+      } else {
+        this.debounce({ received_msg: msg, send, result: msg.payload });
+      }
     }
 
     if (done) {
