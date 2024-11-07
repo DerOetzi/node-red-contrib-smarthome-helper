@@ -1,10 +1,14 @@
 import { EditorNodeDef } from "node-red";
+import BaseNodeEditor from "../../flowctrl/base/editor";
+import {
+  getMatchers,
+  initializeMatcherRows,
+} from "../../flowctrl/match-join/editor";
 import {
   defaultHeatModeSelectNodeConfig,
   HeatModeSelectNodeEditorProperties,
   HeatModeSelectNodeType,
 } from "./types";
-import BaseNodeEditor from "../../flowctrl/base/editor";
 
 const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties> =
   {
@@ -13,6 +17,19 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
     color: HeatModeSelectNodeType.color,
     defaults: {
       ...BaseNodeEditor.defaults,
+      matchers: {
+        value: defaultHeatModeSelectNodeConfig.matchers!,
+        required: true,
+      },
+      join: { value: defaultHeatModeSelectNodeConfig.join!, required: false },
+      discardNotMatched: {
+        value: defaultHeatModeSelectNodeConfig.discardNotMatched!,
+        required: false,
+      },
+      minMsgCount: {
+        value: defaultHeatModeSelectNodeConfig.minMsgCount!,
+        required: true,
+      },
       comfortMode: {
         value: defaultHeatModeSelectNodeConfig.comfortMode!,
         required: true,
@@ -29,20 +46,22 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
         value: defaultHeatModeSelectNodeConfig.frostProtectionMode!,
         required: true,
       },
-      defaultComfortTemp: {
-        value: defaultHeatModeSelectNodeConfig.defaultComfortTemp!,
-        required: true,
-      },
-      defaultEcoTemp: {
-        value: defaultHeatModeSelectNodeConfig.defaultEcoTemp!,
-        required: true,
-      },
     },
-    outputs: 2,
-    outputLabels: ["target temperature", "gate command"],
+    outputs: 1,
+    outputLabels: ["selection"],
     icon: "switch.svg",
     label: function () {
       return this.name || HeatModeSelectNodeType.name;
+    },
+    oneditprepare: function () {
+      if (BaseNodeEditor.oneditprepare) {
+        BaseNodeEditor.oneditprepare.call(this);
+      }
+
+      initializeMatcherRows("#matcher-rows", false, this.matchers);
+    },
+    oneditsave: function () {
+      this.matchers = getMatchers("#matcher-rows");
     },
   };
 

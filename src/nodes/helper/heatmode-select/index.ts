@@ -1,63 +1,79 @@
-import { Node } from "node-red";
-import BaseNode from "../../flowctrl/base";
+import { Node, NodeStatusFill } from "node-red";
 import { NodeType } from "../../types";
 import {
   defaultHeatModeSelectNodeConfig,
   HeatModeSelectNodeConfig,
   HeatModeSelectNodeType,
 } from "./types";
+import MatchJoinNode from "../../flowctrl/match-join";
 
-export default class HeatModeSelectNode extends BaseNode<HeatModeSelectNodeConfig> {
+export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNodeConfig> {
   constructor(node: Node, config: HeatModeSelectNodeConfig) {
     config = { ...defaultHeatModeSelectNodeConfig, ...config };
-    super(node, config, { outputs: 3 });
+    super(node, config);
   }
 
   static get type(): NodeType {
     return HeatModeSelectNodeType;
   }
 
-  protected onInput(msg: any, send: any, done: any): void {
-    let targetTemperature: number = 8;
+  protected debounceListener(data: any): void {
+    const heatmode = data.result.heatmode;
+    const comfortTemp = data.result.comfortTemp;
+    const ecoTempOffset = data.result.ecoTempOffset;
 
-    switch (msg.payload.mode) {
+    let targetTemperature = 0;
+    let active = false;
+
+    switch (heatmode) {
       case this.config.comfortMode:
-        targetTemperature = msg.payload.comfortTemp;
+        targetTemperature = comfortTemp;
+        active = true;
         break;
       case this.config.ecoMode:
-        targetTemperature = msg.payload.comfortTemp + msg.payload.ecoTemp;
-        break;
-      case this.config.frostProtectionMode:
+        targetTemperature = comfortTemp + ecoTempOffset;
         break;
       case this.config.boostMode:
-        targetTemperature = msg.payload.comfortTemp + 5;
+        targetTemperature = comfortTemp + 5;
+        active = true;
+        break;
+      case this.config.frostProtectionMode:
+        targetTemperature = 8;
         break;
       default:
-        this.node.error("Invalid mode: " + msg.payload.mode);
+        this.node.error(`Unknown heatmode: ${heatmode}`);
         return;
     }
 
-    this.debounce({
-      received_msg: msg,
-      send,
-      result: { input: msg.payload, targetTemp: targetTemperature },
+    this.sendMsg(data.received_msg, {
+      payload: { heatmode, targetTemperature, active },
+      send: data.send,
+      additionalAttributes: { input: data.result },
     });
 
-    if (done) {
-      done();
-    }
+    this.nodeStatus = { heatmode, targetTemperature, active };
   }
 
-  protected debounceListener(data: any): void {
-    const targetTemperature = data.result.targetTemp;
-    const input = data.result.input;
+  protected statusColor(status: any): NodeStatusFill {
+    let color: NodeStatusFill = "red";
+    if (status === null || status === undefined || status === "") {
+      color = "grey";
+    } else if (status === "waiting") {
+      color = "yellow";
+    } else if (status.active) {
+      color = "green";
+    }
 
-    this.sendMsg(data.received_msg, {
-      send: data.send,
-      payload: targetTemperature,
-      additionalAttributes: { params: input },
-    });
+    return color;
+  }
 
-    this.nodeStatus = `${input.mode} ${targetTemperature} °C`;
+  protected statusTextFormatter(status: any): string {
+    if (status === null || status === undefined || status === "") {
+      return "unknown";
+    } else if (status === "waiting") {
+      return "waiting";
+    } else {
+      return `${status.heatmode} (${status.targetTemperature} °C)`;
+    }
   }
 }

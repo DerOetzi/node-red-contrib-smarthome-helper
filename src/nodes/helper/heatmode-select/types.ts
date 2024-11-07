@@ -1,17 +1,18 @@
+import { BaseNodeEditorProperties } from "../../flowctrl/base/types";
 import {
-  BaseNodeConfig,
-  BaseNodeEditorProperties,
-} from "../../flowctrl/base/types";
+  defaultMatchJoinNodeConfig,
+  MatchJoinNodeConfig,
+  MatchJoinNodeEditorProperties,
+} from "../../flowctrl/match-join/types";
 import { NodeColor, NodeType } from "../../types";
 import { helperCategory } from "../types";
+import { defaultMatcherRow } from "../../flowctrl/match-join/types";
 
-export interface HeatModeSelectNodeConfig extends BaseNodeConfig {
+export interface HeatModeSelectNodeConfig extends MatchJoinNodeConfig {
   comfortMode: string;
   ecoMode: string;
   boostMode: string;
   frostProtectionMode: string;
-  defaultComfortTemp: number;
-  defaultEcoTemp: number;
 }
 
 export const defaultHeatModeSelectNodeConfig: Partial<HeatModeSelectNodeConfig> =
@@ -20,18 +21,31 @@ export const defaultHeatModeSelectNodeConfig: Partial<HeatModeSelectNodeConfig> 
     ecoMode: "eco",
     boostMode: "boost",
     frostProtectionMode: "frost protection",
-    defaultComfortTemp: 20,
-    defaultEcoTemp: 16,
+    matchers: [
+      {
+        ...defaultMatcherRow,
+        target: "heatmode",
+      },
+      {
+        ...defaultMatcherRow,
+        target: "comfortTemp",
+      },
+      {
+        ...defaultMatcherRow,
+        target: "ecoTempOffset",
+      },
+    ],
+    join: true,
+    minMsgCount: 3,
+    discardNotMatched: true,
   };
 
 export interface HeatModeSelectNodeEditorProperties
-  extends BaseNodeEditorProperties {
+  extends MatchJoinNodeEditorProperties {
   comfortMode: string;
   ecoMode: string;
   boostMode: string;
   frostProtectionMode: string;
-  defaultComfortTemp: number;
-  defaultEcoTemp: number;
 }
 
 export const HeatModeSelectNodeType = new NodeType(

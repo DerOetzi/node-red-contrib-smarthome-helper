@@ -10,16 +10,21 @@ import {
 } from "./types";
 import { BaseNodeOptions } from "../base/types";
 
-export default class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
-  constructor(node: Node, config: MatchJoinNodeConfig) {
+export default class MatchJoinNode<
+  T extends MatchJoinNodeConfig = MatchJoinNodeConfig,
+> extends BaseNode<T> {
+  constructor(
+    node: Node,
+    config: MatchJoinNodeConfig,
+    options: BaseNodeOptions = {}
+  ) {
     config = { ...defaultMatchJoinNodeConfig, ...config };
-    let options: BaseNodeOptions = {};
     if (config.join) {
       options = {
         filterkey: "filterMessages",
       };
     }
-    super(node, config, options);
+    super(node, config as T, options);
   }
 
   static get type(): NodeType {
@@ -27,11 +32,7 @@ export default class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
   }
 
   public onInput(msg: any, send: any, done: any) {
-    const matchers = this.config.matchers;
-
-    let matcherFound = false;
-
-    matchers.forEach((matcher) => {
+    const matcher = this.config.matchers.find((matcher) => {
       const propertyValue = RED.util.getMessageProperty(msg, matcher.property);
       const compareValue = RED.util.evaluateNodeProperty(
         matcher.compare,
@@ -48,20 +49,20 @@ export default class MatchJoinNode extends BaseNode<MatchJoinNodeConfig> {
         result = comparator.func(propertyValue, compareValue);
       }
 
-      if (result) {
-        const targetValue = RED.util.evaluateNodeProperty(
-          matcher.target,
-          matcher.targetType,
-          this.node,
-          msg
-        );
-        msg.topic = targetValue;
-        matcherFound = true;
-        return false;
-      }
+      return result;
     });
 
-    if (matcherFound || !this.config.discardNotMatched) {
+    if (matcher) {
+      const targetValue = RED.util.evaluateNodeProperty(
+        matcher.target,
+        matcher.targetType,
+        this.node,
+        msg
+      );
+      msg.topic = targetValue;
+    }
+
+    if (matcher || !this.config.discardNotMatched) {
       if (this.config.join) {
         let messages = this.loadRecord("messages") || {};
         messages[msg.topic] = msg.payload;

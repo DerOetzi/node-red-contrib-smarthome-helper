@@ -12,7 +12,7 @@ export interface MatcherRow {
   targetType: string;
 }
 
-const defaultMatcherRow: MatcherRow = {
+export const defaultMatcherRow: MatcherRow = {
   property: "topic",
   propertyType: "msg",
   operator: "eq",
