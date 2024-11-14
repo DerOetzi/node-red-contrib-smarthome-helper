@@ -15,32 +15,15 @@ import {
   NodeSendOptions,
 } from "./types";
 
-const nodeStatusKey = "node_status";
 const lastSentPayloadsKey = "lastSentPayloads";
 
 export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   protected readonly config: T;
   private readonly options: BaseNodeOptions;
 
-  private storage: Record<string, any> = {};
+  private _nodeStatus: any;
+  private lastSentPayloads: Record<string, any> = {};
   private readonly debouncing: BaseNodeDebounceRunning;
-
-  constructor(
-    protected readonly node: Node,
-    config: T,
-    options: BaseNodeOptions = {}
-  ) {
-    this.config = { ...defaultBaseNodeConfig, ...config };
-
-    this.node.on("input", this.onInput.bind(this));
-    this.node.on("close", this.onClose.bind(this));
-
-    this.options = { ...defaultBaseNodeOptions, ...options };
-
-    setTimeout(() => this.initialize(), this.options.initializeDelay);
-
-    this.debouncing = {} as BaseNodeDebounceRunning;
-  }
 
   public static createFunction() {
     const NodeClass = this;
@@ -57,6 +40,23 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
   static get type(): NodeType {
     return BaseNodeType;
+  }
+
+  constructor(
+    protected readonly node: Node,
+    config: T,
+    options: BaseNodeOptions = {}
+  ) {
+    this.config = { ...defaultBaseNodeConfig, ...config };
+
+    this.node.on("input", this.onInput.bind(this));
+    this.node.on("close", this.onClose.bind(this));
+
+    this.options = { ...defaultBaseNodeOptions, ...options };
+
+    setTimeout(() => this.initialize(), this.options.initializeDelay);
+
+    this.debouncing = {} as BaseNodeDebounceRunning;
   }
 
   protected onClose() {
@@ -117,16 +117,16 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   }
 
   protected get nodeStatus(): any {
-    return this.load(nodeStatusKey, null);
+    return this._nodeStatus;
   }
 
   protected set nodeStatus(status: any) {
-    const currentStatus = this.load(nodeStatusKey, null);
+    const currentStatus = this._nodeStatus;
 
     this.setNodeStatus(status);
 
     if (currentStatus !== status) {
-      this.save(nodeStatusKey, status);
+      this._nodeStatus = status;
 
       if (this.options.statusOutput) {
         this.sendMsgToOutput(
@@ -176,7 +176,6 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
       this.node,
       received_msg
     );
-
     const payload = options.payload ?? received_msg.payload;
 
     let msg: any;
@@ -189,18 +188,14 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     }
 
     if (this.config.filterUniquePayload ?? false) {
-      let lastSentPayloads: Record<string, any> =
-        this.loadRecord(lastSentPayloadsKey);
-
       const compareKey = this.options.filterkey ?? msg.topic;
 
-      if (this.filterPayload(lastSentPayloads, msg, compareKey)) {
+      if (this.filterPayload(this.lastSentPayloads, msg, compareKey)) {
         this.sendMsgToOutput(msg, options);
-        lastSentPayloads[compareKey] =
+        this.lastSentPayloads[compareKey] =
           typeof msg.payload === "object" && msg.payload !== null
             ? _.cloneDeep(msg.payload)
             : msg.payload;
-        this.save(lastSentPayloadsKey, lastSentPayloads);
       }
     } else {
       this.sendMsgToOutput(msg, options);
@@ -220,7 +215,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   }
 
   protected resetFilter(): void {
-    this.save(lastSentPayloadsKey, {});
+    this.lastSentPayloads = {};
   }
 
   protected sendMsgToOutput(msg: any, options: NodeSendOptions = {}) {
@@ -237,19 +232,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     //    send(msgs);
   }
 
-  public save(key: string, value: any) {
-    this.storage[key] = value;
-  }
-
-  public load(key: string, defaultValue: any): any {
-    return this.storage[key] ?? defaultValue;
-  }
-
-  public loadRecord(key: string): Record<string, any> {
-    return this.load(key, {}) as Record<string, any>;
-  }
-
   public cleanupStorage() {
-    this.storage = {};
+    this.resetFilter();
   }
 }

@@ -46,9 +46,25 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
         value: defaultHeatModeSelectNodeConfig.frostProtectionMode!,
         required: true,
       },
+      checkAutomationInProgress: {
+        value: defaultHeatModeSelectNodeConfig.checkAutomationInProgress!,
+        required: false,
+      },
+      automationProgressId: {
+        value: defaultHeatModeSelectNodeConfig.automationProgressId!,
+        required: true,
+      },
+      pauseTime: {
+        value: defaultHeatModeSelectNodeConfig.pauseTime!,
+        required: true,
+      },
+      pauseTimeUnit: {
+        value: defaultHeatModeSelectNodeConfig.pauseTimeUnit!,
+        required: true,
+      },
     },
-    outputs: 1,
-    outputLabels: ["selection"],
+    outputs: 2,
+    outputLabels: ["selection", "gate control"],
     icon: "switch.svg",
     label: function () {
       return this.name || HeatModeSelectNodeType.name;
@@ -59,6 +75,19 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
       }
 
       initializeMatcherRows("#matcher-rows", false, this.matchers);
+
+      const automationProgressIdRow = $("#node-input-automationProgressId")
+        .parent()
+        .toggle(this.checkAutomationInProgress);
+
+      const pauseTimeRow = $("#node-input-pauseTime")
+        .parent()
+        .toggle(this.checkAutomationInProgress);
+
+      $("#node-input-checkAutomationInProgress").on("change", function () {
+        automationProgressIdRow.toggle($(this).is(":checked"));
+        pauseTimeRow.toggle($(this).is(":checked"));
+      });
     },
     oneditsave: function () {
       this.matchers = getMatchers("#matcher-rows");

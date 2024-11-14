@@ -16,6 +16,11 @@ const messagesStoreKey = "messagesStore";
 
 export default class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
   private readonly operator: LogicalOperation;
+  private messages: Record<string, any> = {};
+
+  static get type(): NodeType {
+    return LogicalOpNodeType;
+  }
 
   constructor(node: Node, config: LogicalOpNodeConfig) {
     config = { ...defaultLogicalOpNodeConfig, ...config };
@@ -24,8 +29,9 @@ export default class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
     this.operator = logicalOperations[config.logical];
   }
 
-  static get type(): NodeType {
-    return LogicalOpNodeType;
+  protected onClose(): void {
+    super.onClose();
+    this.messages = {};
   }
 
   protected onInput(msg: any, send: any, done: any): void {
@@ -47,17 +53,15 @@ export default class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
         return;
       }
 
-      const messages = this.loadRecord(messagesStoreKey);
-      messages[msg.topic] = msg.payload;
-      this.save(messagesStoreKey, messages);
+      this.messages[msg.topic] = msg.payload;
 
-      if (Object.keys(messages).length >= this.config.minMsgCount) {
-        const payloads = Object.values(messages);
+      if (Object.keys(this.messages).length >= this.config.minMsgCount) {
+        const payloads = Object.values(this.messages);
         this.debounce({
           received_msg: msg,
           send,
           result: this.operator.func(payloads),
-          additionalAttributes: { messages },
+          additionalAttributes: { messages: this.messages },
         });
       } else {
         this.nodeStatus = "waiting";

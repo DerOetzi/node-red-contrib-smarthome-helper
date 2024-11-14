@@ -5,11 +5,31 @@ import {
 } from "../../flowctrl/base/types";
 import { logicalCategory } from "../types";
 
-export interface SwitchNodeConfig extends BaseNodeConfig {}
+type ValueType = "msg" | "str" | "num";
 
-export const defaultSwitchNodeConfig: Partial<SwitchNodeConfig> = {};
+export interface SwitchNodeConfig extends BaseNodeConfig {
+  target: string;
+  trueValue: string;
+  trueType: ValueType;
+  falseValue: string;
+  falseType: ValueType;
+}
 
-export interface SwitchNodeEditorProperties extends BaseNodeEditorProperties {}
+export const defaultSwitchNodeConfig: Partial<SwitchNodeConfig> = {
+  target: "payload",
+  trueValue: "payload",
+  trueType: "msg",
+  falseValue: "payload",
+  falseType: "msg",
+};
+
+export interface SwitchNodeEditorProperties extends BaseNodeEditorProperties {
+  target: string;
+  trueValue: string;
+  trueType: ValueType;
+  falseValue: string;
+  falseType: ValueType;
+}
 
 export const SwitchNodeType = new NodeType(
   logicalCategory,

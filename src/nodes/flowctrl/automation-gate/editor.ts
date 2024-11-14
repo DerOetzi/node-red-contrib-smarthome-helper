@@ -32,6 +32,14 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties
         value: defaultAutomationGateNodeConfig.stateClosedLabel!,
         required: true,
       },
+      setAutomationInProgress: {
+        value: defaultAutomationGateNodeConfig.setAutomationInProgress!,
+        required: false,
+      },
+      automationProgressId: {
+        value: defaultAutomationGateNodeConfig.automationProgressId!,
+        required: false,
+      },
     },
     label: function () {
       return this.name || AutomationGateNodeType.name;
@@ -39,6 +47,17 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties
     outputs: 2,
     outputLabels: ["Messages when gate is open", "Gate state updates"],
     icon: "gate.png",
+    oneditprepare: function () {
+      BaseNodeEditor.oneditprepare!.call(this);
+
+      const automationProgressIdRow = $("#node-input-automationProgressId")
+        .parent()
+        .toggle(this.setAutomationInProgress);
+
+      $("#node-input-setAutomationInProgress").on("change", function () {
+        automationProgressIdRow.toggle($(this).is(":checked"));
+      });
+    },
   };
 
 export default AutomationGateNodeEditor;

@@ -1,17 +1,20 @@
 import { Node, NodeStatusFill } from "node-red";
 import { NodeType } from "../../types";
 import BaseNode from "../base";
-import { BaseNodeDebounceData } from "../base/types";
+import { BaseNodeDebounceData, NodeSendOptions } from "../base/types";
 import {
   AutomationGateNodeConfig,
   AutomationGateNodeType,
   defaultAutomationGateNodeConfig,
 } from "./types";
 
-const lastMessagesKey = "lastMessages";
-
 export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
   private pauseTimer: NodeJS.Timeout | null = null;
+  private lastMessages: Record<string, any> = {};
+
+  static get type(): NodeType {
+    return AutomationGateNodeType;
+  }
 
   constructor(node: Node, config: AutomationGateNodeConfig) {
     config = { ...defaultAutomationGateNodeConfig, ...config };
@@ -22,17 +25,24 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     });
   }
 
-  protected onClose(): void {
-    super.onClose();
-    this.clearPauseTimer();
-  }
-
   protected initialize() {
     this.nodeStatus = this.config.startupState;
   }
 
-  static get type(): NodeType {
-    return AutomationGateNodeType;
+  protected onClose(): void {
+    super.onClose();
+    this.cleanupStorage();
+    this.clearPauseTimer();
+  }
+
+  public cleanupStorage() {
+    this.lastMessages = {};
+
+    if (this.config.setAutomationInProgress) {
+      this.node
+        .context()
+        .flow.set(`automation_${this.config.automationProgressId}`, false);
+    }
   }
 
   protected onInput(msg: any, send: any, done: any) {
@@ -74,6 +84,20 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     }
   }
 
+  protected sendMsgToOutput(msg: any, options: NodeSendOptions): void {
+    if (this.config.setAutomationInProgress && (options.output ?? 0) === 0) {
+      this.setAutomationInProgress();
+    }
+
+    super.sendMsgToOutput(msg, options);
+  }
+
+  private setAutomationInProgress() {
+    this.node
+      .context()
+      .flow.set(`automation_${this.config.automationProgressId}`, true);
+  }
+
   private pauseGate(msg: any) {
     if (typeof msg.pause !== "number" || msg.pause <= 0) {
       this.node.error("Invalid or missing pause duration");
@@ -111,9 +135,7 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
 
   private saveLastMessage(msg: any) {
     if (msg.topic) {
-      let lastMessages: Record<string, any> = this.loadRecord(lastMessagesKey);
-      lastMessages[msg.topic] = msg;
-      this.save(lastMessagesKey, lastMessages);
+      this.lastMessages[msg.topic] = msg;
     }
   }
 
@@ -121,10 +143,9 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     this.startGate();
     this.resetFilter();
 
-    const lastMessages: Record<string, any> = this.loadRecord(lastMessagesKey);
-    for (const topic in lastMessages) {
-      if (lastMessages.hasOwnProperty(topic)) {
-        this.debounce({ received_msg: lastMessages[topic], send: send });
+    for (const topic in this.lastMessages) {
+      if (this.lastMessages.hasOwnProperty(topic)) {
+        this.debounce({ received_msg: this.lastMessages[topic], send: send });
       }
     }
   }

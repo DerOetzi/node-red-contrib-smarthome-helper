@@ -8,6 +8,8 @@ export interface AutomationGateNodeConfig extends BaseNodeConfig {
   autoReplay: boolean;
   stateOpenLabel: string;
   stateClosedLabel: string;
+  setAutomationInProgress: boolean;
+  automationProgressId: string;
 }
 
 export const defaultAutomationGateNodeConfig: Partial<AutomationGateNodeConfig> =
@@ -17,6 +19,8 @@ export const defaultAutomationGateNodeConfig: Partial<AutomationGateNodeConfig> 
     autoReplay: true,
     stateOpenLabel: "Automated",
     stateClosedLabel: "Manual",
+    setAutomationInProgress: false,
+    automationProgressId: "",
   };
 
 export interface AutomationGateNodeEditorProperties
@@ -26,6 +30,8 @@ export interface AutomationGateNodeEditorProperties
   autoReplay: boolean;
   stateOpenLabel: string;
   stateClosedLabel: string;
+  setAutomationInProgress: boolean;
+  automationProgressId: string;
 }
 
 export const AutomationGateNodeType = new NodeType(

@@ -26,7 +26,8 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
   },
   icon: "join.svg",
   label: function () {
-    return this.name || MatchJoinNodeType.name;
+    const label = this.join ? "join" : "match";
+    return this.name ? `${this.name} (${label})` : label;
   },
   oneditprepare: function () {
     if (BaseNodeEditor.oneditprepare) {

@@ -13,6 +13,12 @@ import { BaseNodeOptions } from "../base/types";
 export default class MatchJoinNode<
   T extends MatchJoinNodeConfig = MatchJoinNodeConfig,
 > extends BaseNode<T> {
+  private messages: Record<string, any> = {};
+
+  static get type(): NodeType {
+    return MatchJoinNodeType;
+  }
+
   constructor(
     node: Node,
     config: MatchJoinNodeConfig,
@@ -27,8 +33,9 @@ export default class MatchJoinNode<
     super(node, config as T, options);
   }
 
-  static get type(): NodeType {
-    return MatchJoinNodeType;
+  protected onClose() {
+    super.onClose();
+    this.messages = {};
   }
 
   public onInput(msg: any, send: any, done: any) {
@@ -64,15 +71,13 @@ export default class MatchJoinNode<
 
     if (matcher || !this.config.discardNotMatched) {
       if (this.config.join) {
-        let messages = this.loadRecord("messages") || {};
-        messages[msg.topic] = msg.payload;
-        this.save("messages", messages);
+        this.messages[msg.topic] = msg.payload;
 
-        if (Object.keys(messages).length >= this.config.minMsgCount) {
+        if (Object.keys(this.messages).length >= this.config.minMsgCount) {
           this.debounce({
             received_msg: msg,
             send,
-            result: messages,
+            result: this.messages,
           });
         } else {
           this.nodeStatus = "waiting";

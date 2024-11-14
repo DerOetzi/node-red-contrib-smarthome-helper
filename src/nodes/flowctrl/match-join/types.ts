@@ -18,8 +18,8 @@ export const defaultMatcherRow: MatcherRow = {
   operator: "eq",
   compare: "",
   compareType: "str",
-  target: "",
-  targetType: "str",
+  target: "topic",
+  targetType: "msg",
 };
 
 export interface MatchJoinNodeConfig extends BaseNodeConfig {
@@ -30,8 +30,8 @@ export interface MatchJoinNodeConfig extends BaseNodeConfig {
 }
 
 export const defaultMatchJoinNodeConfig: Partial<MatchJoinNodeConfig> = {
-  join: true,
-  discardNotMatched: false,
+  join: false,
+  discardNotMatched: true,
   matchers: [defaultMatcherRow],
   minMsgCount: 1,
 };

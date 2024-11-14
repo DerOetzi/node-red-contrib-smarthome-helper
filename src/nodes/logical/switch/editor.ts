@@ -1,8 +1,10 @@
 import { EditorNodeDef } from "node-red";
 import BaseNodeEditor from "../../flowctrl/base/editor";
-import { NodeColor } from "../../types";
-import { logicalCategory } from "../types";
-import { SwitchNodeEditorProperties, SwitchNodeType } from "./types";
+import {
+  defaultSwitchNodeConfig,
+  SwitchNodeEditorProperties,
+  SwitchNodeType,
+} from "./types";
 
 const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
   ...BaseNodeEditor,
@@ -10,12 +12,34 @@ const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
   color: SwitchNodeType.color,
   defaults: {
     ...BaseNodeEditor.defaults,
+    target: { value: defaultSwitchNodeConfig.target!, required: true },
+    trueValue: { value: defaultSwitchNodeConfig.trueValue!, required: true },
+    trueType: { value: defaultSwitchNodeConfig.trueType!, required: true },
+    falseValue: { value: defaultSwitchNodeConfig.falseValue!, required: true },
+    falseType: { value: defaultSwitchNodeConfig.falseType!, required: true },
   },
   outputs: 2,
   outputLabels: ["true", "false"],
   icon: "switch.svg",
   label: function () {
     return this.name || "switch";
+  },
+  oneditprepare: function () {
+    BaseNodeEditor.oneditprepare!.call(this);
+
+    $("#node-input-target").typedInput({
+      types: ["msg"],
+    });
+
+    $("#node-input-trueValue").typedInput({
+      types: ["msg", "str", "num"],
+      typeField: "#node-input-trueType",
+    });
+
+    $("#node-input-falseValue").typedInput({
+      types: ["msg", "str", "num"],
+      typeField: "#node-input-falseType",
+    });
   },
 };
 

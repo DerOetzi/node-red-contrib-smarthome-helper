@@ -1,11 +1,12 @@
 import { Node, NodeStatusFill } from "node-red";
+import { convertToMilliseconds } from "../../../helpers/time.helper";
+import MatchJoinNode from "../../flowctrl/match-join";
 import { NodeType } from "../../types";
 import {
   defaultHeatModeSelectNodeConfig,
   HeatModeSelectNodeConfig,
   HeatModeSelectNodeType,
 } from "./types";
-import MatchJoinNode from "../../flowctrl/match-join";
 
 export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNodeConfig> {
   constructor(node: Node, config: HeatModeSelectNodeConfig) {
@@ -45,13 +46,38 @@ export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNode
         return;
     }
 
-    this.sendMsg(data.received_msg, {
+    const msg = data.received_msg;
+
+    this.sendMsg(msg, {
       payload: { heatmode, targetTemperature, active },
       send: data.send,
       additionalAttributes: { input: data.result },
     });
 
     this.nodeStatus = { heatmode, targetTemperature, active };
+
+    if (this.config.checkAutomationInProgress && msg.topic === "heatmode") {
+      const inProgress = this.node
+        .context()
+        .flow.get(`automation_${this.config.automationProgressId}`);
+
+      if (!inProgress) {
+        this.sendMsgToOutput(
+          {
+            gate: "pause",
+            pause: convertToMilliseconds(
+              this.config.pauseTime,
+              this.config.pauseTimeUnit
+            ),
+          },
+          { send: data.send, output: 1 }
+        );
+      }
+
+      this.node
+        .context()
+        .flow.set(`automation_${this.config.automationProgressId}`, false);
+    }
   }
 
   protected statusColor(status: any): NodeStatusFill {
