@@ -9,8 +9,9 @@ import {
   CompareNodeType,
   defaultCompareNodeConfig,
 } from "./types";
+import SwitchNode from "../switch";
 
-export default class CompareNode extends BaseNode<CompareNodeConfig> {
+export default class CompareNode extends SwitchNode<CompareNodeConfig> {
   private readonly comparator: Comparator;
 
   constructor(node: Node, config: CompareNodeConfig) {
@@ -50,14 +51,5 @@ export default class CompareNode extends BaseNode<CompareNodeConfig> {
     if (done) {
       done();
     }
-  }
-
-  protected debounceListener(data: BaseNodeDebounceData): void {
-    this.sendMsg(data.received_msg, {
-      send: data.send,
-      payload: data.result,
-      additionalAttributes: { message: data.received_msg },
-    });
-    this.nodeStatus = data.result;
   }
 }

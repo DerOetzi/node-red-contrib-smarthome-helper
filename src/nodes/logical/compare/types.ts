@@ -3,9 +3,10 @@ import {
   BaseNodeEditorProperties,
 } from "../../flowctrl/base/types";
 import { NodeColor, NodeType } from "../../types";
+import { SwitchNodeConfig, SwitchNodeEditorProperties } from "../switch/types";
 import { logicalCategory } from "../types";
 
-export interface CompareNodeConfig extends BaseNodeConfig {
+export interface CompareNodeConfig extends SwitchNodeConfig {
   property: string;
   propertyType: string;
   operator: string;
@@ -19,9 +20,17 @@ export const defaultCompareNodeConfig: Partial<CompareNodeConfig> = {
   operator: "eq",
   value: "",
   valueType: "str",
+  target: "payload",
+  trueValue: "true",
+  trueType: "bool",
+  falseValue: "false",
+  falseType: "bool",
+  seperatedOutputs: false,
+  outputs: 1,
 };
 
-export interface CompareNodeEditorProperties extends BaseNodeEditorProperties {
+export interface CompareNodeEditorProperties
+  extends SwitchNodeEditorProperties {
   property: string;
   propertyType: string;
   operator: string;

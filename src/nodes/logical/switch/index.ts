@@ -31,7 +31,7 @@ export default class SwitchNode<
 
   protected debounceListener(data: BaseNodeDebounceData): void {
     const msg = data.received_msg;
-    const result = data.result;
+    const result = data.result ?? msg.payload;
 
     if (result === true) {
       msg[this.config.target] = RED.util.evaluateNodeProperty(
