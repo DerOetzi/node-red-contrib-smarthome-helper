@@ -223,7 +223,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
       Object.assign(msg, options.additionalAttributes);
     }
 
-    let msgs = Array(this.options.outputs ?? 1).fill(null);
+    let msgs = Array(this.config.outputs ?? 1).fill(null);
     msgs[options.output ?? 0] = msg;
 
     this.node.send(msgs);

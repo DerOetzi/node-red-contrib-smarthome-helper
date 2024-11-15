@@ -21,6 +21,7 @@ export const defaultAutomationGateNodeConfig: Partial<AutomationGateNodeConfig> 
     stateClosedLabel: "Manual",
     setAutomationInProgress: false,
     automationProgressId: "",
+    outputs: 2,
   };
 
 export interface AutomationGateNodeEditorProperties

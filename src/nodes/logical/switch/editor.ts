@@ -17,9 +17,19 @@ const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
     trueType: { value: defaultSwitchNodeConfig.trueType!, required: true },
     falseValue: { value: defaultSwitchNodeConfig.falseValue!, required: true },
     falseType: { value: defaultSwitchNodeConfig.falseType!, required: true },
+    seperatedOutputs: {
+      value: defaultSwitchNodeConfig.seperatedOutputs!,
+      required: false,
+    },
+    outputs: { value: defaultSwitchNodeConfig.outputs!, required: true },
   },
-  outputs: 2,
-  outputLabels: ["true", "false"],
+  outputLabels: function (index) {
+    if (this.seperatedOutputs) {
+      return index === 0 ? "true" : "false";
+    } else if (index === 0) {
+      return "switch result";
+    }
+  },
   icon: "switch.svg",
   label: function () {
     return this.name || "switch";
@@ -39,6 +49,11 @@ const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
     $("#node-input-falseValue").typedInput({
       types: ["msg", "str", "num"],
       typeField: "#node-input-falseType",
+    });
+
+    $("#node-input-seperatedOutputs").on("change", function () {
+      const outputs = $(this).is(":checked") ? 2 : 1;
+      $("#node-input-outputs").val(outputs);
     });
   },
 };

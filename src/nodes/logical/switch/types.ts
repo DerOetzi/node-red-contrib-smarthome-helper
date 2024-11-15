@@ -13,6 +13,8 @@ export interface SwitchNodeConfig extends BaseNodeConfig {
   trueType: ValueType;
   falseValue: string;
   falseType: ValueType;
+  seperatedOutputs: boolean;
+  outputs: number;
 }
 
 export const defaultSwitchNodeConfig: Partial<SwitchNodeConfig> = {
@@ -21,6 +23,8 @@ export const defaultSwitchNodeConfig: Partial<SwitchNodeConfig> = {
   trueType: "msg",
   falseValue: "payload",
   falseType: "msg",
+  seperatedOutputs: true,
+  outputs: 2,
 };
 
 export interface SwitchNodeEditorProperties extends BaseNodeEditorProperties {
@@ -29,6 +33,8 @@ export interface SwitchNodeEditorProperties extends BaseNodeEditorProperties {
   trueType: ValueType;
   falseValue: string;
   falseType: ValueType;
+  seperatedOutputs: boolean;
+  outputs: number;
 }
 
 export const SwitchNodeType = new NodeType(

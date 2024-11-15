@@ -34,6 +34,7 @@ const BaseNodeEditor: EditorNodeDef<BaseNodeEditorProperties> = {
       required: false,
     },
     newMsg: { value: defaultBaseNodeConfig.newMsg!, required: false },
+    outputs: { value: defaultBaseNodeConfig.outputs!, required: true },
   },
   inputs: 1,
   outputs: 1,

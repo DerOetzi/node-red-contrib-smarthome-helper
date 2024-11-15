@@ -12,6 +12,7 @@ export interface BaseNodeConfig extends NodeDef {
   debounceTrailing: boolean;
   filterUniquePayload: boolean;
   newMsg: boolean;
+  outputs: number;
 }
 
 export const defaultBaseNodeConfig: Partial<BaseNodeConfig> = {
@@ -24,6 +25,7 @@ export const defaultBaseNodeConfig: Partial<BaseNodeConfig> = {
   debounceTrailing: true,
   filterUniquePayload: false,
   newMsg: false,
+  outputs: 1,
 };
 
 export interface BaseNodeEditorProperties extends EditorNodeProperties {
@@ -36,6 +38,7 @@ export interface BaseNodeEditorProperties extends EditorNodeProperties {
   debounceTrailing: boolean;
   filterUniquePayload: boolean;
   newMsg: boolean;
+  outputs: number;
 }
 
 export interface NodeSendOptions {
@@ -51,14 +54,12 @@ export interface NodeStatusOutputConfig {
 }
 
 export interface BaseNodeOptions {
-  outputs?: number;
   statusOutput?: NodeStatusOutputConfig;
   initializeDelay?: number;
   filterkey?: string;
 }
 
 export const defaultBaseNodeOptions: BaseNodeOptions = {
-  outputs: 1,
   initializeDelay: 100,
 };
 

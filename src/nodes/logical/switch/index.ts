@@ -1,13 +1,16 @@
 import { Node } from "node-red";
 import { RED } from "../../../globals";
 import BaseNode from "../../flowctrl/base";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import {
+  BaseNodeDebounceData,
+  NodeSendOptions,
+} from "../../flowctrl/base/types";
 import { NodeType } from "../../types";
 import { SwitchNodeConfig, SwitchNodeType } from "./types";
 
 export default class SwitchNode extends BaseNode<SwitchNodeConfig> {
   constructor(node: Node, config: SwitchNodeConfig) {
-    super(node, config, { outputs: 2 });
+    super(node, config);
   }
 
   static get type(): NodeType {
@@ -34,9 +37,12 @@ export default class SwitchNode extends BaseNode<SwitchNodeConfig> {
       );
     }
 
-    const options = result
-      ? { send: data.send }
-      : { send: data.send, output: 1 };
+    const options: NodeSendOptions = { send: data.send };
+
+    if (this.config.seperatedOutputs && result === false) {
+      options.output = 1;
+    }
+
     this.sendMsg(msg, options);
 
     this.nodeStatus = result;

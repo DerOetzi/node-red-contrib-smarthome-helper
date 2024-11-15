@@ -19,7 +19,6 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
   constructor(node: Node, config: AutomationGateNodeConfig) {
     config = { ...defaultAutomationGateNodeConfig, ...config };
     super(node, config, {
-      outputs: 2,
       statusOutput: { output: 1, topic: "automation_status" },
       initializeDelay: config.statusDelay,
     });
