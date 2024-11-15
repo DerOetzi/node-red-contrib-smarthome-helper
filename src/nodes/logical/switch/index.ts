@@ -3,14 +3,26 @@ import { RED } from "../../../globals";
 import BaseNode from "../../flowctrl/base";
 import {
   BaseNodeDebounceData,
+  BaseNodeOptions,
   NodeSendOptions,
 } from "../../flowctrl/base/types";
 import { NodeType } from "../../types";
-import { SwitchNodeConfig, SwitchNodeType } from "./types";
+import {
+  defaultSwitchNodeConfig,
+  SwitchNodeConfig,
+  SwitchNodeType,
+} from "./types";
 
-export default class SwitchNode extends BaseNode<SwitchNodeConfig> {
-  constructor(node: Node, config: SwitchNodeConfig) {
-    super(node, config);
+export default class SwitchNode<
+  T extends SwitchNodeConfig = SwitchNodeConfig,
+> extends BaseNode<T> {
+  constructor(
+    node: Node,
+    config: SwitchNodeConfig,
+    options: BaseNodeOptions = {}
+  ) {
+    config = { ...defaultSwitchNodeConfig, ...config };
+    super(node, config as T, options);
   }
 
   static get type(): NodeType {
@@ -19,7 +31,7 @@ export default class SwitchNode extends BaseNode<SwitchNodeConfig> {
 
   protected debounceListener(data: BaseNodeDebounceData): void {
     const msg = data.received_msg;
-    const result = msg.payload;
+    const result = data.result;
 
     if (result === true) {
       msg[this.config.target] = RED.util.evaluateNodeProperty(
@@ -37,7 +49,10 @@ export default class SwitchNode extends BaseNode<SwitchNodeConfig> {
       );
     }
 
-    const options: NodeSendOptions = { send: data.send };
+    const options: NodeSendOptions = {
+      send: data.send,
+      additionalAttributes: data.additionalAttributes,
+    };
 
     if (this.config.seperatedOutputs && result === false) {
       options.output = 1;

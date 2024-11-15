@@ -42,12 +42,12 @@ const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
     });
 
     $("#node-input-trueValue").typedInput({
-      types: ["msg", "str", "num"],
+      types: ["msg", "str", "num", "bool"],
       typeField: "#node-input-trueType",
     });
 
     $("#node-input-falseValue").typedInput({
-      types: ["msg", "str", "num"],
+      types: ["msg", "str", "num", "bool"],
       typeField: "#node-input-falseType",
     });
 

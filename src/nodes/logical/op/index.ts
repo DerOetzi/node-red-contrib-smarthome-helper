@@ -1,10 +1,6 @@
 import { Node, NodeStatusFill } from "node-red";
-import BaseNode from "../../flowctrl/base";
-import {
-  BaseNodeDebounceData,
-  NodeSendOptions,
-} from "../../flowctrl/base/types";
 import { NodeType } from "../../types";
+import SwitchNode from "../switch";
 import { LogicalOperation, logicalOperations, notOp } from "./operations";
 import {
   defaultLogicalOpNodeConfig,
@@ -12,9 +8,7 @@ import {
   LogicalOpNodeType,
 } from "./types";
 
-const messagesStoreKey = "messagesStore";
-
-export default class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
+export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
   private readonly operator: LogicalOperation;
   private messages: Record<string, any> = {};
 
@@ -24,7 +18,7 @@ export default class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
 
   constructor(node: Node, config: LogicalOpNodeConfig) {
     config = { ...defaultLogicalOpNodeConfig, ...config };
-    super(node, config);
+    super(node, config, { filterkey: "filterResult" });
 
     this.operator = logicalOperations[config.logical];
   }
@@ -71,17 +65,6 @@ export default class LogicalOpNode extends BaseNode<LogicalOpNodeConfig> {
     if (done) {
       done();
     }
-  }
-
-  protected debounceListener(data: BaseNodeDebounceData): void {
-    let sendOptions: NodeSendOptions = {
-      send: data.send,
-      payload: data.result,
-      additionalAttributes: data.additionalAttributes,
-    };
-
-    this.sendMsg(data.received_msg, sendOptions);
-    this.nodeStatus = data.result;
   }
 
   protected statusColor(status: any): NodeStatusFill {

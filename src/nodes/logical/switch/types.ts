@@ -5,7 +5,7 @@ import {
 } from "../../flowctrl/base/types";
 import { logicalCategory } from "../types";
 
-type ValueType = "msg" | "str" | "num";
+type ValueType = "msg" | "str" | "num" | "bool";
 
 export interface SwitchNodeConfig extends BaseNodeConfig {
   target: string;
