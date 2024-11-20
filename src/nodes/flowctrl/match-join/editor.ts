@@ -50,16 +50,18 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
 export function initializeMatcherRows(
   containerId: string,
   changeable: boolean,
-  matchers: MatcherRow[]
+  matchers: MatcherRow[],
+  targetFixed: boolean = false,
+  targetCounter: string = ""
 ) {
   $(containerId)
     .editableList({
       addButton: changeable,
       removable: changeable,
-      sortable: changeable,
+      sortable: false,
       height: "auto",
       header: $("<div>").append($("<label>").text("Matchers")),
-      addItem: function (container, _, data: MatcherRow) {
+      addItem: function (container, index, data: MatcherRow) {
         container.css({
           overflow: "hidden",
           whiteSpace: "nowrap",
@@ -128,10 +130,16 @@ export function initializeMatcherRows(
             types: ["msg", "str"],
           });
 
+        if (targetCounter) {
+          data.target = `${targetCounter}${index + 1}`;
+          data.targetType = "str";
+          targetFixed = true;
+        }
+
         propertyTarget.typedInput("value", data.target ?? "");
         propertyTarget.typedInput("type", data.targetType ?? "str");
 
-        if (!changeable) {
+        if (targetFixed) {
           (propertyTarget as any).typedInput("hide");
           $("<span />", {
             class: "target-value",
@@ -158,20 +166,32 @@ export function initializeMatcherRows(
     .editableList("addItems", matchers || []);
 }
 
-export function getMatchers(containerId: string): MatcherRow[] {
+export function getMatchers(
+  containerId: string,
+  targetCounter: string = ""
+): MatcherRow[] {
   let matchersList = $(containerId).editableList("items");
   let matchers: MatcherRow[] = [];
 
-  matchersList.each((_, row) => {
+  matchersList.each((index, row) => {
     let matcher = $(row);
+    let target: string | null = null;
+    let targetType: string | null = null;
+
+    if (targetCounter) {
+      target = `${targetCounter}${index + 1}`;
+      targetType = "str";
+    }
+
     matchers.push({
       property: matcher.find(".property-name").typedInput("value"),
       propertyType: matcher.find(".property-name").typedInput("type"),
       operator: matcher.find("select").val() as string,
       compare: matcher.find(".property-compare").typedInput("value"),
       compareType: matcher.find(".property-compare").typedInput("type"),
-      target: matcher.find(".property-target").typedInput("value"),
-      targetType: matcher.find(".property-target").typedInput("type"),
+      target: target ?? matcher.find(".property-target").typedInput("value"),
+      targetType:
+        targetType ?? matcher.find(".property-target").typedInput("type"),
     });
   });
 

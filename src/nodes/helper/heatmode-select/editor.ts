@@ -62,8 +62,11 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
         value: defaultHeatModeSelectNodeConfig.pauseTimeUnit!,
         required: true,
       },
+      outputs: {
+        value: defaultHeatModeSelectNodeConfig.outputs!,
+        required: true,
+      },
     },
-    outputs: 2,
     outputLabels: ["selection", "gate control"],
     icon: "switch.svg",
     label: function () {
@@ -74,7 +77,7 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
         BaseNodeEditor.oneditprepare.call(this);
       }
 
-      initializeMatcherRows("#matcher-rows", false, this.matchers);
+      initializeMatcherRows("#matcher-rows", false, this.matchers, true);
 
       const automationProgressIdRow = $("#node-input-automationProgressId")
         .parent()

@@ -7,7 +7,7 @@ export enum NodeColor {
   AutomationGate = "#ff7f50",
   Base = "#7fffd4",
   Logical = "#7fff00",
-  Heating = "#b22222",
+  Climate = "#ff69b4",
 }
 
 export class NodeType {

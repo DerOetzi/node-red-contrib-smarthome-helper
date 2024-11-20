@@ -12,6 +12,10 @@ import MatchJoinNodeEditor, {
 import HeatModeSelectNodeEditor, {
   HeatModeSelectNodeType,
 } from "./nodes/helper/heatmode-select/editor";
+import NotifyDispatcherNodeEditor from "./nodes/helper/notify-dispatcher/editor";
+import { NotifyDispatcherNodeType } from "./nodes/helper/notify-dispatcher/types";
+import WindowReminderNodeEditor from "./nodes/helper/window-reminder/editor";
+import { WindowReminderNodeType } from "./nodes/helper/window-reminder/types";
 import CompareNodeEditor, {
   CompareNodeType,
 } from "./nodes/logical/compare/editor";
@@ -32,6 +36,8 @@ const nodes: Record<string, any> = {
   [LogicalOpNodeType.fullName]: LogicalOpNodeEditor,
   [SwitchNodeType.fullName]: SwitchNodeEditor,
   [HeatModeSelectNodeType.fullName]: HeatModeSelectNodeEditor,
+  [NotifyDispatcherNodeType.fullName]: NotifyDispatcherNodeEditor,
+  [WindowReminderNodeType.fullName]: WindowReminderNodeEditor,
 };
 
 let type: string;

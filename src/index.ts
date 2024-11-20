@@ -9,6 +9,8 @@ import CompareNode from "./nodes/logical/compare";
 import LogicalOpNode from "./nodes/logical/op";
 import SwitchNode from "./nodes/logical/switch";
 import version from "./version";
+import NotifyDispatcherNode from "./nodes/helper/notify-dispatcher";
+import WindowReminderNode from "./nodes/helper/window-reminder";
 
 const nodes = [
   BaseNode,
@@ -19,6 +21,8 @@ const nodes = [
   LogicalOpNode,
   SwitchNode,
   HeatModeSelectNode,
+  NotifyDispatcherNode,
+  WindowReminderNode,
 ];
 
 export default async (RED: NodeAPI): Promise<void> => {

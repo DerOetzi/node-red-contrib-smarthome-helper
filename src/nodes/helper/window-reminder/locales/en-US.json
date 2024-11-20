@@ -1,0 +1,12 @@
+{
+    "notification": {
+        "title": "Window reminder",
+        "normal": "Window {windowName} is opened",
+        "leaving": "Window {windowName} is still opened",
+        "alarm": "Window {windowName} has been opened, but nobody is at home"
+    },
+    "status": {
+        "open": "Window opened",
+        "closed": "Window closed"
+    }
+}

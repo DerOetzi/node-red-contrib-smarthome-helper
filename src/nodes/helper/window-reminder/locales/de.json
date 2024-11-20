@@ -1,0 +1,12 @@
+{
+    "notification": {
+        "title": "Fenstererinnerung",
+        "normal": "Fenster {windowName} ist offen",
+        "leaving": "Fenster {windowName} ist noch offen",
+        "alarm": "Fenster {windowName} wurde geöffnet, aber niemand ist zu Hause"
+    },
+    "status": {
+        "open": "Fenster offen",
+        "closed": "Fenster geschlossen"
+    }
+}

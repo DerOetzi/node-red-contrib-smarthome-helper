@@ -29,14 +29,17 @@ export const defaultHeatModeSelectNodeConfig: Partial<HeatModeSelectNodeConfig> 
       {
         ...defaultMatcherRow,
         target: "heatmode",
+        targetType: "str",
       },
       {
         ...defaultMatcherRow,
         target: "comfortTemp",
+        targetType: "str",
       },
       {
         ...defaultMatcherRow,
         target: "ecoTempOffset",
+        targetType: "str",
       },
     ],
     join: true,
@@ -44,6 +47,7 @@ export const defaultHeatModeSelectNodeConfig: Partial<HeatModeSelectNodeConfig> 
     discardNotMatched: true,
     pauseTime: 30,
     pauseTimeUnit: "m",
+    outputs: 2,
   };
 
 export interface HeatModeSelectNodeEditorProperties
@@ -61,5 +65,5 @@ export interface HeatModeSelectNodeEditorProperties
 export const HeatModeSelectNodeType = new NodeType(
   helperCategory,
   "heatmode-select",
-  NodeColor.Heating
+  NodeColor.Climate
 );

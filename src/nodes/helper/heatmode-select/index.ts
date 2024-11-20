@@ -1,5 +1,6 @@
 import { Node, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { NodeType } from "../../types";
 import {
@@ -18,7 +19,7 @@ export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNode
     return HeatModeSelectNodeType;
   }
 
-  protected debounceListener(data: any): void {
+  protected debounceListener(data: BaseNodeDebounceData): void {
     const heatmode = data.result.heatmode;
     const comfortTemp = data.result.comfortTemp;
     const ecoTempOffset = data.result.ecoTempOffset;

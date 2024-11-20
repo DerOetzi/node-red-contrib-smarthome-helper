@@ -2,7 +2,6 @@ const ts = require("gulp-typescript");
 const tsProject = ts.createProject("tsconfig.json");
 
 // General
-const concat = require("gulp-concat");
 const flatmap = require("gulp-flatmap");
 const lazypipe = require("lazypipe");
 const merge = require("merge-stream");
@@ -16,6 +15,10 @@ const rollupStream = require("@rollup/stream");
 const rollupTypescript = require("@rollup/plugin-typescript");
 const source = require("vinyl-source-stream");
 
+const path = require("path");
+const through = require("through2");
+const fs = require("fs");
+
 // HTML
 const gulpHtmlmin = require("gulp-html-minifier-terser");
 
@@ -26,7 +29,7 @@ const terser = require("gulp-terser");
 const minify = require("cssnano");
 const postcss = require("gulp-postcss");
 const prefix = require("autoprefixer");
-const sass = require("gulp-sass")(require("sass"));
+const sass = require("sass");
 
 const editorFilePath = "dist";
 const uiCssWrap = "<style><%= contents %></style>";
@@ -38,10 +41,23 @@ let currentNode;
 
 // Compile sass and wrap it
 const buildSass = lazypipe()
-  .pipe(sass, {
-    outputStyle: "expanded",
-    sourceComments: true,
-  })
+  .pipe(() =>
+    through.obj(async (file, _, cb) => {
+      if (file.isBuffer()) {
+        try {
+          const result = await sass.compileAsync(file.path, {
+            style: "expanded", // entspricht "outputStyle: expanded"
+          });
+          file.contents = Buffer.from(result.css);
+          cb(null, file);
+        } catch (err) {
+          cb(err);
+        }
+      } else {
+        cb(null, file);
+      }
+    }),
+  )
   .pipe(postcss, [
     prefix({
       cascade: true,
@@ -107,8 +123,22 @@ task("buildEditorFiles", () => {
   );
 
   return merge([css, js, html])
-    .pipe(concat("index.html"))
-    .pipe(dest(editorFilePath + "/"));
+    .pipe(
+      through.obj(function (file, _, cb) {
+        // Sammle den Inhalt aller Dateien
+        if (!this.concatContent) {
+          this.concatContent = "";
+        }
+        if (file.isBuffer()) {
+          this.concatContent += file.contents.toString() + "\n";
+        }
+        cb(null, file);
+      }),
+    )
+    .on("finish", function () {
+      const finalFilePath = path.join(editorFilePath, "index.html");
+      fs.writeFileSync(finalFilePath, this.concatContent);
+    });
 });
 
 task("buildSourceFiles", () => {
@@ -119,7 +149,43 @@ task("copyIcons", () => {
   return src("icons/*").pipe(dest(`${editorFilePath}/icons`));
 });
 
+task("buildLocales", () => {
+  return src("src/nodes/**/locales/*.json").pipe(
+    through.obj(function (file, _, cb) {
+      if (file.isBuffer()) {
+        const relativePath = path.relative("src/nodes", file.path);
+        const [category, node, , languageFile] = relativePath.split(path.sep);
+        const language = path.basename(languageFile, ".json");
+        const content = JSON.parse(file.contents.toString());
+
+        // Load existing structure or initialize it
+        const outputPath = path.join("dist", "locales", language, "index.json");
+        let existingData = {};
+        if (fs.existsSync(outputPath)) {
+          existingData = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+        }
+
+        // Build hierarchical structure
+        if (!existingData[category]) {
+          existingData[category] = {};
+        }
+        existingData[category][node] = content;
+
+        // Write back the updated structure
+        fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+        fs.writeFileSync(outputPath, JSON.stringify(existingData, null, 2));
+      }
+      cb();
+    }),
+  );
+});
+
 task(
   "default",
-  parallel(["buildEditorFiles", "buildSourceFiles", "copyIcons"]),
+  parallel([
+    "buildEditorFiles",
+    "buildSourceFiles",
+    "copyIcons",
+    "buildLocales",
+  ]),
 );
