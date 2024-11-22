@@ -6,7 +6,7 @@ const flatmap = require("gulp-flatmap");
 const lazypipe = require("lazypipe");
 const merge = require("merge-stream");
 const wrap = require("gulp-wrap");
-const { src, dest, task, parallel } = require("gulp");
+const { src, dest, task, parallel, watch, series } = require("gulp");
 const appendPrepend = require("gulp-append-prepend");
 
 // Source
@@ -189,3 +189,16 @@ task(
     "buildLocales",
   ]),
 );
+
+task("watch", () => {
+  watch(["src/nodes/**/*.scss"], series("buildEditorFiles"));
+  watch(["src/nodes/**/*.html"], series("buildEditorFiles"));
+  watch(["src/**/editor.ts"], series("buildEditorFiles"));
+  watch(["src/**/types.ts"], series("buildEditorFiles"));
+
+  watch(["src/**/*.ts", "!src/**/editor.ts"], series("buildSourceFiles"));
+
+  watch(["src/nodes/**/locales/*.json"], series("buildLocales"));
+
+  watch(["icons/*"], series("copyIcons"));
+});

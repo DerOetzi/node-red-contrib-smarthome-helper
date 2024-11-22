@@ -15,8 +15,6 @@ import {
   NodeSendOptions,
 } from "./types";
 
-const lastSentPayloadsKey = "lastSentPayloads";
-
 export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   protected readonly config: T;
   private readonly options: BaseNodeOptions;

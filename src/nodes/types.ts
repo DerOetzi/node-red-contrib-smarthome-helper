@@ -8,6 +8,7 @@ export enum NodeColor {
   Base = "#7fffd4",
   Logical = "#7fff00",
   Climate = "#ff69b4",
+  Light = "#ffd700",
 }
 
 export class NodeType {

@@ -1,7 +1,3 @@
-import {
-  BaseNodeConfig,
-  BaseNodeEditorProperties,
-} from "../../flowctrl/base/types";
 import { NodeColor, NodeType } from "../../types";
 import { SwitchNodeConfig, SwitchNodeEditorProperties } from "../switch/types";
 import { logicalCategory } from "../types";

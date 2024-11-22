@@ -66,6 +66,9 @@ export function initializeMatcherRows(
           overflow: "hidden",
           whiteSpace: "nowrap",
         });
+
+        container.attr("data-row", index);
+
         const $row = $("<div />").appendTo(container);
         const $row1 = $("<div />").appendTo($row).css("margin-bottom", "6px");
 

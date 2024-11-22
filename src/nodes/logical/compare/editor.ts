@@ -1,11 +1,10 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
+import SwitchNodeEditor from "../switch/editor";
 import {
   CompareNodeEditorProperties,
   CompareNodeType,
   defaultCompareNodeConfig,
 } from "./types";
-import SwitchNodeEditor from "../switch/editor";
 
 const CompareNodeEditor: EditorNodeDef<CompareNodeEditorProperties> = {
   ...SwitchNodeEditor,
