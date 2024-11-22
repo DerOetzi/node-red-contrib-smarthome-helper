@@ -12,8 +12,8 @@ import MatchJoinNodeEditor, {
 import HeatModeSelectNodeEditor, {
   HeatModeSelectNodeType,
 } from "./nodes/helper/heatmode-select/editor";
-import LightbulbControllerNodeEditor from "./nodes/helper/lightbulb-controller/editor";
-import { LightbulbControllerNodeType } from "./nodes/helper/lightbulb-controller/types";
+import LightControllerNodeEditor from "./nodes/helper/light-controller/editor";
+import { LightControllerNodeType } from "./nodes/helper/light-controller/types";
 import NotifyDispatcherNodeEditor from "./nodes/helper/notify-dispatcher/editor";
 import { NotifyDispatcherNodeType } from "./nodes/helper/notify-dispatcher/types";
 import WindowReminderNodeEditor from "./nodes/helper/window-reminder/editor";
@@ -30,17 +30,17 @@ import { SwitchNodeType } from "./nodes/logical/switch/types";
 declare const RED: EditorRED;
 
 const nodes: Record<string, any> = {
-  [BaseNodeType.fullName]: BaseNodeEditor,
   [AutomationGateNodeType.fullName]: AutomationGateNodeEditor,
-  [GateControlNodeType.fullName]: GateControlNodeEditor,
-  [MatchJoinNodeType.fullName]: MatchJoinNodeEditor,
+  [BaseNodeType.fullName]: BaseNodeEditor,
   [CompareNodeType.fullName]: CompareNodeEditor,
-  [LogicalOpNodeType.fullName]: LogicalOpNodeEditor,
-  [SwitchNodeType.fullName]: SwitchNodeEditor,
+  [GateControlNodeType.fullName]: GateControlNodeEditor,
   [HeatModeSelectNodeType.fullName]: HeatModeSelectNodeEditor,
+  [LightControllerNodeType.fullName]: LightControllerNodeEditor,
+  [LogicalOpNodeType.fullName]: LogicalOpNodeEditor,
+  [MatchJoinNodeType.fullName]: MatchJoinNodeEditor,
   [NotifyDispatcherNodeType.fullName]: NotifyDispatcherNodeEditor,
+  [SwitchNodeType.fullName]: SwitchNodeEditor,
   [WindowReminderNodeType.fullName]: WindowReminderNodeEditor,
-  [LightbulbControllerNodeType.fullName]: LightbulbControllerNodeEditor,
 };
 
 let type: string;

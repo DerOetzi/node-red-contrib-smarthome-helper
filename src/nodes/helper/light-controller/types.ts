@@ -6,9 +6,9 @@ import {
 import { NodeColor, NodeType } from "../../types";
 import { helperCategory } from "../types";
 
-type LightbulbType = "switch" | "dimmable" | "colortemperature" | "rgb";
+type LightType = "switch" | "dimmable" | "colortemperature" | "rgb";
 
-export enum LightbulbCommand {
+export enum LightCommand {
   On = "on",
   Off = "off",
   Nightmode = "night",
@@ -20,17 +20,26 @@ export interface HomeAssistantLightAction {
     entity_id: string[];
   };
   data?: {
-    brightness?: number;
+    transition?: number;
+    brightness_pct?: number;
     color_temp?: number;
     hs_color?: [number, number];
-    transition?: number;
   };
 }
 
-export interface LightbulbControllerNodeConfig extends MatchJoinNodeConfig {
+export interface LightIdentifierRow {
   identifier: string;
   identifierType: string;
-  lightbulbType: LightbulbType;
+}
+
+export const defaultLightIdentifierRow: LightIdentifierRow = {
+  identifier: "",
+  identifierType: "str",
+};
+
+export interface LightControllerNodeConfig extends MatchJoinNodeConfig {
+  identifiers: LightIdentifierRow[];
+  lightbulbType: LightType;
   homeAssistantOutput: boolean;
   onBrightness: number;
   transitionTime: number;
@@ -44,7 +53,7 @@ export interface LightbulbControllerNodeConfig extends MatchJoinNodeConfig {
   fixColorSaturation: number;
 }
 
-export const defaultLightbulbControllerNodeConfig: Partial<LightbulbControllerNodeConfig> =
+export const defaultLightControllerNodeConfig: Partial<LightControllerNodeConfig> =
   {
     matchers: [
       {
@@ -63,27 +72,25 @@ export const defaultLightbulbControllerNodeConfig: Partial<LightbulbControllerNo
     join: true,
     discardNotMatched: true,
     minMsgCount: 1,
-    identifier: "",
-    identifierType: "str",
+    identifiers: [defaultLightIdentifierRow],
     lightbulbType: "dimmable",
     homeAssistantOutput: true,
     onBrightness: 100,
     transitionTime: 0.3,
     colorTemperature: 327,
     nightmodeBrightness: 10,
-    onCommand: LightbulbCommand.On,
-    offCommand: LightbulbCommand.Off,
-    nightmodeCommand: LightbulbCommand.Nightmode,
-    colorCycle: false,
+    onCommand: LightCommand.On,
+    offCommand: LightCommand.Off,
+    nightmodeCommand: LightCommand.Nightmode,
+    colorCycle: true,
     fixColorHue: 360,
     fixColorSaturation: 100,
   };
 
-export interface LightbulbControllerNodeEditorProperties
+export interface LightControllerNodeEditorProperties
   extends MatchJoinNodeEditorProperties {
-  identifier: string;
-  identifierType: string;
-  lightbulbType: LightbulbType;
+  identifiers: LightIdentifierRow[];
+  lightbulbType: LightType;
   homeAssistantOutput: boolean;
   onBrightness: number;
   transitionTime: number;
@@ -97,8 +104,8 @@ export interface LightbulbControllerNodeEditorProperties
   fixColorSaturation: number;
 }
 
-export const LightbulbControllerNodeType = new NodeType(
+export const LightControllerNodeType = new NodeType(
   helperCategory,
-  "lightbulb-controller",
+  "light-controller",
   NodeColor.Light
 );

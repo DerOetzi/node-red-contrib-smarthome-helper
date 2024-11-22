@@ -5,26 +5,26 @@ import BaseNode from "./nodes/flowctrl/base";
 import GateControlNode from "./nodes/flowctrl/gate-control";
 import MatchJoinNode from "./nodes/flowctrl/match-join";
 import HeatModeSelectNode from "./nodes/helper/heatmode-select";
+import LightControllerNode from "./nodes/helper/light-controller";
+import NotifyDispatcherNode from "./nodes/helper/notify-dispatcher";
+import WindowReminderNode from "./nodes/helper/window-reminder";
 import CompareNode from "./nodes/logical/compare";
 import LogicalOpNode from "./nodes/logical/op";
 import SwitchNode from "./nodes/logical/switch";
 import version from "./version";
-import NotifyDispatcherNode from "./nodes/helper/notify-dispatcher";
-import WindowReminderNode from "./nodes/helper/window-reminder";
-import LightbulbControllerNode from "./nodes/helper/lightbulb-controller";
 
 const nodes = [
-  BaseNode,
   AutomationGateNode,
+  BaseNode,
+  CompareNode,
+  HeatModeSelectNode,
+  LightControllerNode,
+  LogicalOpNode,
   GateControlNode,
   MatchJoinNode,
-  CompareNode,
-  LogicalOpNode,
-  SwitchNode,
-  HeatModeSelectNode,
   NotifyDispatcherNode,
+  SwitchNode,
   WindowReminderNode,
-  LightbulbControllerNode,
 ];
 
 export default async (RED: NodeAPI): Promise<void> => {

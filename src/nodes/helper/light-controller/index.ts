@@ -4,14 +4,14 @@ import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { NodeType } from "../../types";
 import {
-  defaultLightbulbControllerNodeConfig,
+  defaultLightControllerNodeConfig,
   HomeAssistantLightAction,
-  LightbulbCommand,
-  LightbulbControllerNodeConfig,
-  LightbulbControllerNodeType,
+  LightCommand,
+  LightControllerNodeConfig,
+  LightControllerNodeType,
 } from "./types";
 
-export default class LightbulbControllerNode extends MatchJoinNode<LightbulbControllerNodeConfig> {
+export default class LightControllerNode extends MatchJoinNode<LightControllerNodeConfig> {
   private colorTemperature: number;
   private fixColorHue: number;
   private fixColorSaturation: number;
@@ -19,11 +19,11 @@ export default class LightbulbControllerNode extends MatchJoinNode<LightbulbCont
   private colorCycle: NodeJS.Timeout | null = null;
 
   static get type(): NodeType {
-    return LightbulbControllerNodeType;
+    return LightControllerNodeType;
   }
 
-  constructor(node: Node, config: LightbulbControllerNodeConfig) {
-    config = { ...defaultLightbulbControllerNodeConfig, ...config };
+  constructor(node: Node, config: LightControllerNodeConfig) {
+    config = { ...defaultLightControllerNodeConfig, ...config };
 
     config.onBrightness = parseInt(config.onBrightness.toString());
     config.nightmodeBrightness = parseInt(
@@ -63,25 +63,27 @@ export default class LightbulbControllerNode extends MatchJoinNode<LightbulbCont
 
     let msg = data.received_msg;
 
-    msg.lightbulb = RED.util.evaluateNodeProperty(
-      this.config.identifier,
-      this.config.identifierType,
-      this.node,
-      msg
-    );
+    msg.lightbulbs = this.config.identifiers.map((identifier) => {
+      return RED.util.evaluateNodeProperty(
+        identifier.identifier,
+        identifier.identifierType,
+        this.node,
+        msg
+      );
+    });
 
     switch (command) {
-      case LightbulbCommand.On:
+      case LightCommand.On:
         if (this.config.lightbulbType === "rgb") {
           this.colorOn(msg);
         } else {
           this.prepareOnMessage(msg);
         }
         break;
-      case LightbulbCommand.Off:
+      case LightCommand.Off:
         this.prepareOffMessage(msg);
         break;
-      case LightbulbCommand.Nightmode:
+      case LightCommand.Nightmode:
         this.prepareNightmodeMessage(msg);
         break;
     }
@@ -101,25 +103,25 @@ export default class LightbulbControllerNode extends MatchJoinNode<LightbulbCont
     this.fixColorSaturation = parseInt(this.fixColorSaturation.toString());
   }
 
-  private parseCommand(command: boolean | string): LightbulbCommand | null {
+  private parseCommand(command: boolean | string): LightCommand | null {
     let parsed = null;
 
     if (typeof command === "boolean") {
-      parsed = command ? LightbulbCommand.On : LightbulbCommand.Off;
+      parsed = command ? LightCommand.On : LightCommand.Off;
     } else {
       command = command.toLowerCase();
       switch (command) {
-        case LightbulbCommand.On:
+        case LightCommand.On:
         case this.config.onCommand:
-          parsed = LightbulbCommand.On;
+          parsed = LightCommand.On;
           break;
-        case LightbulbCommand.Off:
+        case LightCommand.Off:
         case this.config.offCommand:
-          parsed = LightbulbCommand.Off;
+          parsed = LightCommand.Off;
           break;
-        case LightbulbCommand.Nightmode:
+        case LightCommand.Nightmode:
         case this.config.nightmodeCommand:
-          parsed = LightbulbCommand.Nightmode;
+          parsed = LightCommand.Nightmode;
           break;
       }
     }
@@ -197,13 +199,13 @@ export default class LightbulbControllerNode extends MatchJoinNode<LightbulbCont
       const output: HomeAssistantLightAction = {
         action: msg.on ? "homeassistant.turn_on" : "homeassistant.turn_off",
         target: {
-          entity_id: [msg.lightbulb],
+          entity_id: msg.lightbulbs,
         },
       };
 
       if (msg.on && this.config.lightbulbType !== "switch") {
         output.data = {
-          brightness: msg.brightness,
+          brightness_pct: msg.brightness,
         };
 
         if (this.config.lightbulbType === "colortemperature") {
@@ -232,11 +234,11 @@ export default class LightbulbControllerNode extends MatchJoinNode<LightbulbCont
 
   protected statusColor(status: any): NodeStatusFill {
     switch (status) {
-      case LightbulbCommand.On:
+      case LightCommand.On:
         return "green";
-      case LightbulbCommand.Off:
+      case LightCommand.Off:
         return "red";
-      case LightbulbCommand.Nightmode:
+      case LightCommand.Nightmode:
         return "blue";
       default:
         return "grey";

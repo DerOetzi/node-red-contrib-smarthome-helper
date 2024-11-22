@@ -5,88 +5,85 @@ import {
   initializeMatcherRows,
 } from "../../flowctrl/match-join/editor";
 import {
-  defaultLightbulbControllerNodeConfig,
-  LightbulbControllerNodeEditorProperties,
-  LightbulbControllerNodeType,
+  defaultLightControllerNodeConfig,
+  LightControllerNodeEditorProperties,
+  LightControllerNodeType,
+  LightIdentifierRow,
 } from "./types";
 
-const LightbulbControllerNodeEditor: EditorNodeDef<LightbulbControllerNodeEditorProperties> =
+const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperties> =
   {
     ...BaseNodeEditor,
-    category: LightbulbControllerNodeType.categoryLabel,
-    color: LightbulbControllerNodeType.color,
+    category: LightControllerNodeType.categoryLabel,
+    color: LightControllerNodeType.color,
     defaults: {
       ...BaseNodeEditor.defaults,
       matchers: {
-        value: defaultLightbulbControllerNodeConfig.matchers!,
+        value: defaultLightControllerNodeConfig.matchers!,
         required: true,
       },
       join: {
-        value: defaultLightbulbControllerNodeConfig.join!,
+        value: defaultLightControllerNodeConfig.join!,
         required: true,
       },
       discardNotMatched: {
-        value: defaultLightbulbControllerNodeConfig.discardNotMatched!,
+        value: defaultLightControllerNodeConfig.discardNotMatched!,
         required: true,
       },
       minMsgCount: {
-        value: defaultLightbulbControllerNodeConfig.minMsgCount!,
+        value: defaultLightControllerNodeConfig.minMsgCount!,
         required: true,
       },
-      identifier: {
-        value: defaultLightbulbControllerNodeConfig.identifier!,
-        required: true,
-      },
-      identifierType: {
-        value: defaultLightbulbControllerNodeConfig.identifierType!,
+      identifiers: {
+        value: defaultLightControllerNodeConfig.identifiers!,
         required: true,
       },
       lightbulbType: {
-        value: defaultLightbulbControllerNodeConfig.lightbulbType!,
+        value: defaultLightControllerNodeConfig.lightbulbType!,
         required: true,
       },
       homeAssistantOutput: {
-        value: defaultLightbulbControllerNodeConfig.homeAssistantOutput!,
+        value: defaultLightControllerNodeConfig.homeAssistantOutput!,
         required: false,
       },
       onBrightness: {
-        value: defaultLightbulbControllerNodeConfig.onBrightness!,
+        value: defaultLightControllerNodeConfig.onBrightness!,
         required: true,
       },
       transitionTime: {
-        value: defaultLightbulbControllerNodeConfig.transitionTime!,
+        value: defaultLightControllerNodeConfig.transitionTime!,
         required: true,
       },
       colorTemperature: {
-        value: defaultLightbulbControllerNodeConfig.colorTemperature!,
+        value: defaultLightControllerNodeConfig.colorTemperature!,
         required: true,
       },
       nightmodeBrightness: {
-        value: defaultLightbulbControllerNodeConfig.nightmodeBrightness!,
+        value: defaultLightControllerNodeConfig.nightmodeBrightness!,
         required: true,
       },
       onCommand: {
-        value: defaultLightbulbControllerNodeConfig.onCommand!,
+        value: defaultLightControllerNodeConfig.onCommand!,
         required: true,
       },
       offCommand: {
-        value: defaultLightbulbControllerNodeConfig.offCommand!,
+        value: defaultLightControllerNodeConfig.offCommand!,
         required: true,
       },
       nightmodeCommand: {
-        value: defaultLightbulbControllerNodeConfig.nightmodeCommand!,
+        value: defaultLightControllerNodeConfig.nightmodeCommand!,
         required: true,
       },
       colorCycle: {
-        value: defaultLightbulbControllerNodeConfig.colorCycle!,
+        value: defaultLightControllerNodeConfig.colorCycle!,
         required: false,
       },
       fixColorHue: {
-        value: defaultLightbulbControllerNodeConfig.fixColorHue!,
+        value: defaultLightControllerNodeConfig.fixColorHue!,
         required: true,
       },
       fixColorSaturation: {
-        value: defaultLightbulbControllerNodeConfig.fixColorSaturation!,
+        value: defaultLightControllerNodeConfig.fixColorSaturation!,
         required: true,
       },
     },
@@ -100,10 +97,7 @@ const LightbulbControllerNodeEditor: EditorNodeDef<LightbulbControllerNodeEditor
 
       initializeMatcherRows("#matcher-rows", false, this.matchers, true);
 
-      $("#node-input-identifier").typedInput({
-        types: ["msg", "str"],
-        typeField: "#node-input-identifierType",
-      });
+      initializeIdentifierRows("#identifier-rows", this.identifiers);
 
       let brightnessRow = $("#node-input-onBrightness")
         .parent()
@@ -132,6 +126,8 @@ const LightbulbControllerNodeEditor: EditorNodeDef<LightbulbControllerNodeEditor
       let colorCycleRow = $("#node-input-colorCycle")
         .parent()
         .toggle(this.lightbulbType === "rgb");
+
+      console.log(this.lightbulbType === "rgb" && !this.colorCycle);
 
       let fixColorRow = $("#node-input-fixColorHue")
         .parent()
@@ -177,9 +173,65 @@ const LightbulbControllerNodeEditor: EditorNodeDef<LightbulbControllerNodeEditor
     },
     oneditsave: function () {
       this.matchers = getMatchers("#matcher-rows");
+      this.identifiers = getIdentifiers("#identifier-rows");
     },
   };
 
-export default LightbulbControllerNodeEditor;
+export function initializeIdentifierRows(
+  containerId: string,
+  identifiers: LightIdentifierRow[]
+) {
+  $(containerId)
+    .editableList({
+      addButton: true,
+      removable: true,
+      sortable: true,
+      height: "auto",
+      header: $("<div>").append($("<label>").text("Identifiers")),
+      addItem: function (container, index, data: LightIdentifierRow) {
+        container.css({
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+        });
 
-export { LightbulbControllerNodeType };
+        container.attr("data-row", index);
+
+        const $row = $("<div />").appendTo(container);
+        const $row1 = $("<div />").appendTo($row).css("margin-bottom", "6px");
+
+        const identifierName = $("<input/>", {
+          class: "identifier-name",
+          type: "text",
+        })
+          .css("width", "100%")
+          .appendTo($row1)
+          .typedInput({
+            types: ["str", "msg"],
+          });
+
+        identifierName.typedInput("value", data.identifier ?? "");
+        identifierName.typedInput("type", data.identifierType ?? "str");
+      },
+    })
+    .editableList("addItems", identifiers || []);
+}
+
+export function getIdentifiers(containerId: string): LightIdentifierRow[] {
+  let identifiersList = $(containerId).editableList("items");
+  let identifiers: LightIdentifierRow[] = [];
+
+  identifiersList.each((_, row) => {
+    let identifier = $(row);
+
+    identifiers.push({
+      identifier: identifier.find(".identifier-name").typedInput("value"),
+      identifierType: identifier.find(".identifier-name").typedInput("type"),
+    });
+  });
+
+  return identifiers;
+}
+
+export default LightControllerNodeEditor;
+
+export { LightControllerNodeType };
