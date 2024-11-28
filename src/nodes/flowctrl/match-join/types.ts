@@ -4,7 +4,7 @@ import { flowctrlCategory } from "../types";
 
 export interface MatcherRow {
   property: string;
-  propertyType: any;
+  propertyType: string;
   operator: string;
   compare: string;
   compareType: string;

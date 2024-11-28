@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Node, NodeStatusFill } from "node-red";
 import { NodeType } from "../../types";
 import BaseNode from "../base";
@@ -134,7 +135,8 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
 
   private saveLastMessage(msg: any) {
     if (msg.topic) {
-      this.lastMessages[msg.topic] = msg;
+      this.lastMessages[msg.topic] = _.cloneDeep(msg);
+      delete this.lastMessages[msg.topic]._msgid;
     }
   }
 
@@ -144,7 +146,10 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
 
     for (const topic in this.lastMessages) {
       if (this.lastMessages.hasOwnProperty(topic)) {
-        this.debounce({ received_msg: this.lastMessages[topic], send: send });
+        this.debounce({
+          received_msg: _.cloneDeep(this.lastMessages[topic]),
+          send: send,
+        });
       }
     }
   }

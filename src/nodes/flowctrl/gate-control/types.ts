@@ -14,6 +14,7 @@ export const defaultGateControlNodeConfig: Partial<GateControlNodeConfig> = {
   gateCommand: "start",
   pauseTime: 1,
   pauseUnit: "s",
+  outputs: 2,
 };
 
 export interface GateControlNodeEditorProperties

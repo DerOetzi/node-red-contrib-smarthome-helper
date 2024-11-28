@@ -9,6 +9,8 @@ import GateControlNodeEditor, {
 import MatchJoinNodeEditor, {
   MatchJoinNodeType,
 } from "./nodes/flowctrl/match-join/editor";
+import EventMapperNodeEditor from "./nodes/helper/event-mapper/editor";
+import { EventMapperNodeType } from "./nodes/helper/event-mapper/types";
 import HeatModeSelectNodeEditor, {
   HeatModeSelectNodeType,
 } from "./nodes/helper/heatmode-select/editor";
@@ -26,6 +28,8 @@ import LogicalOpNodeEditor, {
 } from "./nodes/logical/op/editor";
 import SwitchNodeEditor from "./nodes/logical/switch/editor";
 import { SwitchNodeType } from "./nodes/logical/switch/types";
+import { ToggleNodeType } from "./nodes/logical/toggle/types";
+import ToggleNodeEditor from "./nodes/logical/toggle/editor";
 
 declare const RED: EditorRED;
 
@@ -33,6 +37,7 @@ const nodes: Record<string, any> = {
   [AutomationGateNodeType.fullName]: AutomationGateNodeEditor,
   [BaseNodeType.fullName]: BaseNodeEditor,
   [CompareNodeType.fullName]: CompareNodeEditor,
+  [EventMapperNodeType.fullName]: EventMapperNodeEditor,
   [GateControlNodeType.fullName]: GateControlNodeEditor,
   [HeatModeSelectNodeType.fullName]: HeatModeSelectNodeEditor,
   [LightControllerNodeType.fullName]: LightControllerNodeEditor,
@@ -40,6 +45,7 @@ const nodes: Record<string, any> = {
   [MatchJoinNodeType.fullName]: MatchJoinNodeEditor,
   [NotifyDispatcherNodeType.fullName]: NotifyDispatcherNodeEditor,
   [SwitchNodeType.fullName]: SwitchNodeEditor,
+  [ToggleNodeType.fullName]: ToggleNodeEditor,
   [WindowReminderNodeType.fullName]: WindowReminderNodeEditor,
 };
 

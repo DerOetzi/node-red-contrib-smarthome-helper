@@ -4,6 +4,7 @@ import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import BaseNode from "./nodes/flowctrl/base";
 import GateControlNode from "./nodes/flowctrl/gate-control";
 import MatchJoinNode from "./nodes/flowctrl/match-join";
+import EventMapperNode from "./nodes/helper/event-mapper";
 import HeatModeSelectNode from "./nodes/helper/heatmode-select";
 import LightControllerNode from "./nodes/helper/light-controller";
 import NotifyDispatcherNode from "./nodes/helper/notify-dispatcher";
@@ -11,12 +12,14 @@ import WindowReminderNode from "./nodes/helper/window-reminder";
 import CompareNode from "./nodes/logical/compare";
 import LogicalOpNode from "./nodes/logical/op";
 import SwitchNode from "./nodes/logical/switch";
+import ToggleNode from "./nodes/logical/toggle";
 import version from "./version";
 
 const nodes = [
   AutomationGateNode,
   BaseNode,
   CompareNode,
+  EventMapperNode,
   HeatModeSelectNode,
   LightControllerNode,
   LogicalOpNode,
@@ -24,6 +27,7 @@ const nodes = [
   MatchJoinNode,
   NotifyDispatcherNode,
   SwitchNode,
+  ToggleNode,
   WindowReminderNode,
 ];
 

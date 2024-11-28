@@ -40,11 +40,14 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties
         value: defaultAutomationGateNodeConfig.automationProgressId!,
         required: false,
       },
+      outputs: {
+        value: defaultAutomationGateNodeConfig.outputs!,
+        required: true,
+      },
     },
     label: function () {
       return this.name || AutomationGateNodeType.name;
     },
-    outputs: 2,
     outputLabels: ["Messages when gate is open", "Gate state updates"],
     icon: "gate.png",
     oneditprepare: function () {

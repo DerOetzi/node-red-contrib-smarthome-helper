@@ -6,9 +6,10 @@ export interface NodeCategory {
 export enum NodeColor {
   AutomationGate = "#ff7f50",
   Base = "#7fffd4",
-  Logical = "#7fff00",
   Climate = "#ff69b4",
   Light = "#ffd700",
+  Logical = "#7fff00",
+  Switch = "#ff8c00",
 }
 
 export class NodeType {

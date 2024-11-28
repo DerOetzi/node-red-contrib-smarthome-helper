@@ -24,6 +24,7 @@ const GateControlNodeEditor: EditorNodeDef<GateControlNodeEditorProperties> = {
       value: defaultGateControlNodeConfig.pauseUnit!,
       required: false,
     },
+    outputs: { value: defaultGateControlNodeConfig.outputs!, required: true },
   },
   outputs: 2,
   outputLabels: ["Delayed Message Output", "Gate Command Output"],
