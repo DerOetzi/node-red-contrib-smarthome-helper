@@ -66,6 +66,7 @@ export default class MatchJoinNode<
         this.node,
         msg
       );
+      msg.originalTopic = msg.topic;
       msg.topic = targetValue;
     }
 

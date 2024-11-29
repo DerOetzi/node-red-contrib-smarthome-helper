@@ -1,8 +1,8 @@
-function andOp(payloads: boolean[]): boolean {
+export function andOp(payloads: boolean[]): boolean {
   return payloads.every((value: boolean) => value === true);
 }
 
-function orOp(payloads: boolean[]): boolean {
+export function orOp(payloads: boolean[]): boolean {
   return payloads.some((value: boolean) => value === true);
 }
 
@@ -10,19 +10,19 @@ export function notOp(payload: boolean): boolean {
   return !payload;
 }
 
-function nandOp(payloads: boolean[]): boolean {
+export function nandOp(payloads: boolean[]): boolean {
   return notOp(andOp(payloads));
 }
 
-function norOp(payloads: boolean[]): boolean {
+export function norOp(payloads: boolean[]): boolean {
   return notOp(orOp(payloads));
 }
 
-function xorOp(payloads: boolean[]): boolean {
+export function xorOp(payloads: boolean[]): boolean {
   return payloads.filter((value) => value === true).length === 1;
 }
 
-function nxorOp(payloads: boolean[]): boolean {
+export function nxorOp(payloads: boolean[]): boolean {
   return notOp(xorOp(payloads));
 }
 

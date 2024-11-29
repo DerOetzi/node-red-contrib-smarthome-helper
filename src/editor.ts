@@ -16,6 +16,8 @@ import HeatModeSelectNodeEditor, {
 } from "./nodes/helper/heatmode-select/editor";
 import LightControllerNodeEditor from "./nodes/helper/light-controller/editor";
 import { LightControllerNodeType } from "./nodes/helper/light-controller/types";
+import MotionControllerNodeEditor from "./nodes/helper/motion-controller/editor";
+import { MotionControllerNodeType } from "./nodes/helper/motion-controller/types";
 import NotifyDispatcherNodeEditor from "./nodes/helper/notify-dispatcher/editor";
 import { NotifyDispatcherNodeType } from "./nodes/helper/notify-dispatcher/types";
 import WindowReminderNodeEditor from "./nodes/helper/window-reminder/editor";
@@ -28,8 +30,8 @@ import LogicalOpNodeEditor, {
 } from "./nodes/logical/op/editor";
 import SwitchNodeEditor from "./nodes/logical/switch/editor";
 import { SwitchNodeType } from "./nodes/logical/switch/types";
-import { ToggleNodeType } from "./nodes/logical/toggle/types";
 import ToggleNodeEditor from "./nodes/logical/toggle/editor";
+import { ToggleNodeType } from "./nodes/logical/toggle/types";
 
 declare const RED: EditorRED;
 
@@ -43,6 +45,7 @@ const nodes: Record<string, any> = {
   [LightControllerNodeType.fullName]: LightControllerNodeEditor,
   [LogicalOpNodeType.fullName]: LogicalOpNodeEditor,
   [MatchJoinNodeType.fullName]: MatchJoinNodeEditor,
+  [MotionControllerNodeType.fullName]: MotionControllerNodeEditor,
   [NotifyDispatcherNodeType.fullName]: NotifyDispatcherNodeEditor,
   [SwitchNodeType.fullName]: SwitchNodeEditor,
   [ToggleNodeType.fullName]: ToggleNodeEditor,

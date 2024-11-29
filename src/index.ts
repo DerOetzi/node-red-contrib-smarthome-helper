@@ -7,6 +7,7 @@ import MatchJoinNode from "./nodes/flowctrl/match-join";
 import EventMapperNode from "./nodes/helper/event-mapper";
 import HeatModeSelectNode from "./nodes/helper/heatmode-select";
 import LightControllerNode from "./nodes/helper/light-controller";
+import MotionControllerNode from "./nodes/helper/motion-controller";
 import NotifyDispatcherNode from "./nodes/helper/notify-dispatcher";
 import WindowReminderNode from "./nodes/helper/window-reminder";
 import CompareNode from "./nodes/logical/compare";
@@ -25,6 +26,7 @@ const nodes = [
   LogicalOpNode,
   GateControlNode,
   MatchJoinNode,
+  MotionControllerNode,
   NotifyDispatcherNode,
   SwitchNode,
   ToggleNode,

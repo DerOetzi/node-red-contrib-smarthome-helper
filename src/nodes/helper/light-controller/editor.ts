@@ -127,8 +127,6 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
         .parent()
         .toggle(this.lightbulbType === "rgb");
 
-      console.log(this.lightbulbType === "rgb" && !this.colorCycle);
-
       let fixColorRow = $("#node-input-fixColorHue")
         .parent()
         .toggle(this.lightbulbType === "rgb" && !this.colorCycle);

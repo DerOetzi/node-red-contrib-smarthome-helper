@@ -1,0 +1,9 @@
+{
+    "status": {
+        "automationOn": "Automated",
+        "active": "Active",
+        "automationOff": "Manual",
+        "motion": "Motion detected",
+        "noMotion": "No motion detected"
+    }
+}
