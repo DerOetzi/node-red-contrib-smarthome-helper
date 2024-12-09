@@ -26,7 +26,8 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     private motionStates: Record<string, boolean> = {},
     private blocked: boolean = false,
     private darkness: boolean = true,
-    private night: boolean = false
+    private night: boolean = false,
+    private lastAction: string = ""
   ) {
     config = { ...defaultMotionControllerNodeConfig, ...config };
     super(node, config, {
@@ -57,6 +58,9 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
         this.blocked = msg.command === MotionControllerCommand.block;
         this.handleCommand(msg);
         break;
+      case "manual_control":
+        this.handleManualControl(msg);
+        break;
       case "darkness":
         this.darkness = msg.payload;
         this.handleMotion(true);
@@ -69,23 +73,26 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
 
   private handleMotion(ignoreTimer: boolean = false): void {
     if (!this.blocked && (!this.timer || ignoreTimer)) {
-      const msg = { topic: "action" };
-
       if (this.isOn()) {
         if (this.config.nightmodeEnabled && this.night) {
-          this.sendMsg(msg, { payload: this.config.nightmodeCommand });
+          this.sendAction(this.config.nightmodeCommand);
         } else {
-          this.sendMsg(msg, { payload: this.config.onCommand });
+          this.sendAction(this.config.onCommand);
         }
 
         this.startTimer();
       } else {
         this.clearTimer();
-        this.sendMsg(msg, { payload: this.config.offCommand });
+        this.sendAction(this.config.offCommand);
       }
     }
 
     this.nodeStatus = !this.blocked;
+  }
+
+  private sendAction(action: string) {
+    this.lastAction = action;
+    this.sendMsg({ topic: "action" }, { payload: action });
   }
 
   private startTimer() {
@@ -113,6 +120,15 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     return !this.config.onlyDarkness || this.darkness;
   }
 
+  private handleManualControl(msg: any) {
+    if (!this.blocked) {
+      if (this.lastAction && msg.payload !== this.lastAction) {
+        this.blocked = true;
+        this.handleCommand(msg);
+      }
+    }
+  }
+
   private handleCommand(msg: any): void {
     this.nodeStatus = !this.blocked;
 
@@ -133,7 +149,7 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
           action = this.config.offCommand;
           break;
       }
-      this.sendMsg({ topic: "action" }, { payload: action });
+      this.sendAction(action);
     } else {
       this.handleMotion();
     }

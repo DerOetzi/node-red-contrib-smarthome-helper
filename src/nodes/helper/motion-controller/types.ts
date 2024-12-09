@@ -48,6 +48,11 @@ export const defaultMotionControllerNodeConfig: Partial<MotionControllerNodeConf
         target: "command",
         targetType: "str",
       },
+      {
+        ...defaultMatcherRow,
+        target: "manual_control",
+        targetType: "str",
+      },
     ],
     statusDelay: 100,
     timer: 30,

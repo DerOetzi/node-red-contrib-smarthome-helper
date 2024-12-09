@@ -74,6 +74,7 @@ const MotionControllerNodeEditor: EditorNodeDef<MotionControllerNodeEditorProper
     label: function () {
       return this.name || MotionControllerNodeType.name;
     },
+    outputLabels: ["Action", "Status"],
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
 
