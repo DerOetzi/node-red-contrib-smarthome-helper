@@ -11,6 +11,8 @@ import MatchJoinNodeEditor, {
 } from "./nodes/flowctrl/match-join/editor";
 import EventMapperNodeEditor from "./nodes/helper/event-mapper/editor";
 import { EventMapperNodeType } from "./nodes/helper/event-mapper/types";
+import HeatingControllerNodeEditor from "./nodes/helper/heating-controller/editor";
+import { HeatingControllerNodeType } from "./nodes/helper/heating-controller/types";
 import HeatModeSelectNodeEditor, {
   HeatModeSelectNodeType,
 } from "./nodes/helper/heatmode-select/editor";
@@ -41,6 +43,7 @@ const nodes: Record<string, any> = {
   [CompareNodeType.fullName]: CompareNodeEditor,
   [EventMapperNodeType.fullName]: EventMapperNodeEditor,
   [GateControlNodeType.fullName]: GateControlNodeEditor,
+  [HeatingControllerNodeType.fullName]: HeatingControllerNodeEditor,
   [HeatModeSelectNodeType.fullName]: HeatModeSelectNodeEditor,
   [LightControllerNodeType.fullName]: LightControllerNodeEditor,
   [LogicalOpNodeType.fullName]: LogicalOpNodeEditor,

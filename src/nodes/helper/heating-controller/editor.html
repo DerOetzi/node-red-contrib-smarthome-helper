@@ -1,0 +1,60 @@
+<ol id="matcher-rows"></ol>
+<hr />
+<div class="form-row time-row">
+  <label for="node-input-pause"><i class="fa fa-clock"></i> Pause Time</label>
+  <input type="number" id="node-input-pause" min="1" value="0" />
+  <select id="node-input-pauseUnit">
+    <option value="ms">ms</option>
+    <option value="s">s</option>
+    <option value="m">m</option>
+    <option value="h">h</option>
+    <option value="d">d</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-boostTemperatureOffset"
+    >Boost temperature offset</label
+  >
+  <input
+    type="number"
+    id="node-input-boostTemperatureOffset"
+    min="5"
+    max="10"
+  />
+</div>
+<div class="form-row">
+  <label for="node-input-frostProtectionTemperature"
+    >Frost protection temperature</label
+  >
+  <input
+    type="number"
+    id="node-input-frostProtectionTemperature"
+    min="5"
+    max="9"
+  />
+</div>
+<div class="form-row">
+  <label for="node-input-statusDelay"
+    ><i class="fa fa-pause"></i> Delay status send (ms)</label
+  >
+  <input type="number" id="node-input-statusDelay" min="100" />
+</div>
+<hr />
+<div class="form-row">
+  <label for="node-input-comfortCommand">Comfort Command</label>
+  <input type="text" id="node-input-comfortCommand" />
+</div>
+<div class="form-row">
+  <label for="node-input-ecoCommand">ECO Command</label>
+  <input type="text" id="node-input-ecoCommand" />
+</div>
+<div class="form-row">
+  <label for="node-input-boostCommand">Boost Command</label>
+  <input type="text" id="node-input-boostCommand" />
+</div>
+<div class="form-row">
+  <label for="node-input-frostProtectionCommand"
+    >Frost protection Command</label
+  >
+  <input type="text" id="node-input-frostProtectionCommand" />
+</div>

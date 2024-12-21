@@ -52,13 +52,14 @@ export function initializeMatcherRows(
   changeable: boolean,
   matchers: MatcherRow[],
   targetFixed: boolean = false,
-  targetCounter: string = ""
+  targetCounter: string = "",
+  targets: Record<string, string> = {}
 ) {
   $(containerId)
     .editableList({
-      addButton: changeable,
-      removable: changeable,
-      sortable: false,
+      addButton: true,
+      removable: true,
+      sortable: true,
       height: "auto",
       header: $("<div>").append($("<label>").text("Matchers")),
       addItem: function (container, index, data: MatcherRow) {
@@ -143,12 +144,33 @@ export function initializeMatcherRows(
         propertyTarget.typedInput("type", data.targetType ?? "str");
 
         if (targetFixed) {
-          (propertyTarget as any).typedInput("hide");
-          $("<span />", {
-            class: "target-value",
-          })
-            .text(data.target)
-            .appendTo($row3);
+          if (targets) {
+            const propertyTargetSelect = $("<select/>", {
+              id: "property-target-select",
+            })
+              .css("width", "calc(100% - 40px)")
+              .appendTo($row3);
+
+            Object.entries(targets).forEach(([key, value]) => {
+              $("<option/>", {
+                value: key,
+                text: value,
+              }).appendTo(propertyTargetSelect);
+            });
+
+            propertyTargetSelect.val(data.target ?? "");
+            propertyTargetSelect.on("change", function () {
+              propertyTarget.typedInput("value", $(this).val() as string);
+            });
+            (propertyTarget as any).typedInput("hide");
+          } else {
+            (propertyTarget as any).typedInput("hide");
+            $("<span />", {
+              class: "target-value",
+            })
+              .text(data.target)
+              .appendTo($row3);
+          }
         }
 
         compareWrap.toggle(

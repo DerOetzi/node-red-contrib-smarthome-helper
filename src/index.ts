@@ -5,6 +5,7 @@ import BaseNode from "./nodes/flowctrl/base";
 import GateControlNode from "./nodes/flowctrl/gate-control";
 import MatchJoinNode from "./nodes/flowctrl/match-join";
 import EventMapperNode from "./nodes/helper/event-mapper";
+import HeatingControllerNode from "./nodes/helper/heating-controller";
 import HeatModeSelectNode from "./nodes/helper/heatmode-select";
 import LightControllerNode from "./nodes/helper/light-controller";
 import MotionControllerNode from "./nodes/helper/motion-controller";
@@ -21,6 +22,7 @@ const nodes = [
   BaseNode,
   CompareNode,
   EventMapperNode,
+  HeatingControllerNode,
   HeatModeSelectNode,
   LightControllerNode,
   LogicalOpNode,

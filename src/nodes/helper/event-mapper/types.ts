@@ -28,7 +28,7 @@ export const defaultEventMapperNodeConfig: Partial<EventMapperNodeConfig> = {
   matchers: [{ ...defaultMatcherRow, target: "event", targetType: "str" }],
   join: true,
   minMsgCount: 1,
-  discardNotMatched: false,
+  discardNotMatched: true,
   outputs: 1,
   rules: [defaultEventMapperRule],
   ignoreUnknownEvents: false,

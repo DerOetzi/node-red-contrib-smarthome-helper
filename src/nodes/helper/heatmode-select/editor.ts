@@ -77,7 +77,11 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
         BaseNodeEditor.oneditprepare.call(this);
       }
 
-      initializeMatcherRows("#matcher-rows", false, this.matchers, true);
+      initializeMatcherRows("#matcher-rows", false, this.matchers, true, "", {
+        heatmode: "heatmode",
+        comfortTemp: "comfort temperature",
+        ecoTempOffset: "eco temperature offset",
+      });
 
       const automationProgressIdRow = $("#node-input-automationProgressId")
         .parent()

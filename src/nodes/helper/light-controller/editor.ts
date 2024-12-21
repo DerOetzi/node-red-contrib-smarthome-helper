@@ -95,7 +95,12 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
 
-      initializeMatcherRows("#matcher-rows", false, this.matchers, true);
+      initializeMatcherRows("#matcher-rows", false, this.matchers, true, "", {
+        command: "command",
+        colorTemperature: "color temperature",
+        hue: "hue",
+        saturation: "saturation",
+      });
 
       initializeIdentifierRows("#identifier-rows", this.identifiers);
 
@@ -107,9 +112,9 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
         .parent()
         .toggle(this.lightbulbType !== "switch");
 
-      let colortemperatureMatcherRow = $("#matcher-rows [data-row='1']")
-        .parent()
-        .toggle(this.lightbulbType === "colortemperature");
+      let colortemperatureMatcherRow = $(
+        "#matcher-rows option[value='colorTemperature']"
+      ).toggle(this.lightbulbType === "colortemperature");
 
       let colortemperatureRow = $("#node-input-colorTemperature")
         .parent()
@@ -131,13 +136,13 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
         .parent()
         .toggle(this.lightbulbType === "rgb" && !this.colorCycle);
 
-      let matcherHueRow = $("#matcher-rows [data-row='2']")
-        .parent()
-        .toggle(this.lightbulbType === "rgb" && !this.colorCycle);
+      let matcherHueRow = $("#matcher-rows option[value='hue']").toggle(
+        this.lightbulbType === "rgb" && !this.colorCycle
+      );
 
-      let matcherSaturationRow = $("#matcher-rows [data-row='3']")
-        .parent()
-        .toggle(this.lightbulbType === "rgb" && !this.colorCycle);
+      let matcherSaturationRow = $(
+        "#matcher-rows option[value='saturation']"
+      ).toggle(this.lightbulbType === "rgb" && !this.colorCycle);
 
       $("#node-input-lightbulbType").on("change", function () {
         let lightbulbType = $(this).val() as string;
