@@ -33,16 +33,6 @@ export const defaultMotionControllerNodeConfig: Partial<MotionControllerNodeConf
       },
       {
         ...defaultMatcherRow,
-        target: "darkness",
-        targetType: "str",
-      },
-      {
-        ...defaultMatcherRow,
-        target: "night",
-        targetType: "str",
-      },
-      {
-        ...defaultMatcherRow,
         property: "command",
         operator: "not_empty",
         target: "command",

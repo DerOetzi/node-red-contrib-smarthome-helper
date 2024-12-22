@@ -1,0 +1,10 @@
+{
+    "target": {
+        "activeCondition": "Bedingung aktiv",
+        "comfortTemperature": "Komforttemperatur",
+        "ecoTemperatureOffset": "Offset ECO-Temperatur",
+        "windowOpen": "Fenster offen",
+        "manual_control": "Manuelle Bedienung",
+        "command": "Befehl"
+    }
+}

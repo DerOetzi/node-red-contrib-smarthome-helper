@@ -77,10 +77,10 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
         BaseNodeEditor.oneditprepare.call(this);
       }
 
-      initializeMatcherRows("#matcher-rows", false, this.matchers, true, "", {
-        heatmode: "heatmode",
-        comfortTemp: "comfort temperature",
-        ecoTempOffset: "eco temperature offset",
+      initializeMatcherRows(this.matchers, {
+        targets: ["heatmode", "comfortTemp", "ecoTempOffset"],
+        translatePrefix: "helper.heatmode-select.target",
+        t: this._.bind(this),
       });
 
       const automationProgressIdRow = $("#node-input-automationProgressId")
@@ -97,7 +97,7 @@ const HeatModeSelectNodeEditor: EditorNodeDef<HeatModeSelectNodeEditorProperties
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers("#matcher-rows");
+      this.matchers = getMatchers();
     },
   };
 

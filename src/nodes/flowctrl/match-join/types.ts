@@ -2,6 +2,12 @@ import { NodeColor, NodeType } from "../../types";
 import { BaseNodeConfig, BaseNodeEditorProperties } from "../base/types";
 import { flowctrlCategory } from "../types";
 
+export interface MatchFixedTargets {
+  targets: string[];
+  translatePrefix: string;
+  t: (key: string) => string;
+}
+
 export interface MatcherRow {
   property: string;
   propertyType: string;

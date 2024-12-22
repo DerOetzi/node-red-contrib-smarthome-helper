@@ -43,7 +43,7 @@ const nodes: Record<string, any> = {
   [CompareNodeType.fullName]: CompareNodeEditor,
   [EventMapperNodeType.fullName]: EventMapperNodeEditor,
   [GateControlNodeType.fullName]: GateControlNodeEditor,
-  [HeatingControllerNodeType.fullName]: HeatingControllerNodeEditor,
+  //[HeatingControllerNodeType.fullName]: HeatingControllerNodeEditor,
   [HeatModeSelectNodeType.fullName]: HeatModeSelectNodeEditor,
   [LightControllerNodeType.fullName]: LightControllerNodeEditor,
   [LogicalOpNodeType.fullName]: LogicalOpNodeEditor,

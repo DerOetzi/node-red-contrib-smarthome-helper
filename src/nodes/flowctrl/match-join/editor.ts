@@ -1,12 +1,13 @@
 import { EditorNodeDef } from "node-red";
+import { comparators } from "../../logical/compare/operations";
 import BaseNodeEditor from "../base/editor";
 import {
   defaultMatchJoinNodeConfig,
   MatcherRow,
+  MatchFixedTargets,
   MatchJoinNodeEditorProperties,
   MatchJoinNodeType,
 } from "./types";
-import { comparators } from "../../logical/compare/operations";
 
 const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
   ...BaseNodeEditor,
@@ -34,7 +35,7 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
       BaseNodeEditor.oneditprepare.call(this);
     }
 
-    initializeMatcherRows("#matcher-rows", true, this.matchers);
+    initializeMatcherRows(this.matchers);
 
     $("#row-minMsgCount").toggle(this.join);
 
@@ -43,32 +44,28 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
     });
   },
   oneditsave: function () {
-    this.matchers = getMatchers("#matcher-rows");
+    this.matchers = getMatchers();
   },
 };
 
+const matcherRowsId = "#matcher-rows";
+
 export function initializeMatcherRows(
-  containerId: string,
-  changeable: boolean,
   matchers: MatcherRow[],
-  targetFixed: boolean = false,
-  targetCounter: string = "",
-  targets: Record<string, string> = {}
+  fixedTargets?: MatchFixedTargets
 ) {
-  $(containerId)
+  $(matcherRowsId)
     .editableList({
       addButton: true,
       removable: true,
       sortable: true,
       height: "auto",
-      header: $("<div>").append($("<label>").text("Matchers")),
-      addItem: function (container, index, data: MatcherRow) {
+      header: $("<div>").append($("<label>").text("Input mappings")),
+      addItem: function (container, _, data: MatcherRow) {
         container.css({
           overflow: "hidden",
           whiteSpace: "nowrap",
         });
-
-        container.attr("data-row", index);
 
         const $row = $("<div />").appendTo(container);
         const $row1 = $("<div />").appendTo($row).css("margin-bottom", "6px");
@@ -134,43 +131,33 @@ export function initializeMatcherRows(
             types: ["msg", "str"],
           });
 
-        if (targetCounter) {
-          data.target = `${targetCounter}${index + 1}`;
-          data.targetType = "str";
-          targetFixed = true;
-        }
-
         propertyTarget.typedInput("value", data.target ?? "");
         propertyTarget.typedInput("type", data.targetType ?? "str");
 
-        if (targetFixed) {
-          if (targets) {
-            const propertyTargetSelect = $("<select/>", {
-              id: "property-target-select",
-            })
-              .css("width", "calc(100% - 40px)")
-              .appendTo($row3);
+        if (fixedTargets) {
+          const propertyTargetSelect = $("<select/>", {
+            class: "property-target-select",
+          })
+            .css("width", "calc(100% - 40px)")
+            .appendTo($row3);
 
-            Object.entries(targets).forEach(([key, value]) => {
-              $("<option/>", {
-                value: key,
-                text: value,
-              }).appendTo(propertyTargetSelect);
-            });
+          const matchers = $(matcherRowsId);
 
-            propertyTargetSelect.val(data.target ?? "");
-            propertyTargetSelect.on("change", function () {
-              propertyTarget.typedInput("value", $(this).val() as string);
-            });
-            (propertyTarget as any).typedInput("hide");
-          } else {
-            (propertyTarget as any).typedInput("hide");
-            $("<span />", {
-              class: "target-value",
-            })
-              .text(data.target)
-              .appendTo($row3);
-          }
+          fixedTargets.targets.forEach((target) => {
+            const option = $("<option/>", {
+              value: target,
+              text: fixedTargets.t(fixedTargets.translatePrefix + "." + target),
+            }).appendTo(propertyTargetSelect);
+
+            option.toggle(matchers.data("showHide_" + target) ?? true);
+          });
+
+          propertyTargetSelect.val(data.target ?? "");
+          propertyTargetSelect.on("change", function () {
+            const value = $(this).val() as string;
+            propertyTarget.typedInput("value", value);
+          });
+          (propertyTarget as any).typedInput("hide");
         }
 
         compareWrap.toggle(
@@ -191,22 +178,14 @@ export function initializeMatcherRows(
     .editableList("addItems", matchers || []);
 }
 
-export function getMatchers(
-  containerId: string,
-  targetCounter: string = ""
-): MatcherRow[] {
-  let matchersList = $(containerId).editableList("items");
+export function getMatchers(): MatcherRow[] {
+  let matchersList = $(matcherRowsId).editableList("items");
   let matchers: MatcherRow[] = [];
 
-  matchersList.each((index, row) => {
+  matchersList.each((_, row) => {
     let matcher = $(row);
     let target: string | null = null;
     let targetType: string | null = null;
-
-    if (targetCounter) {
-      target = `${targetCounter}${index + 1}`;
-      targetType = "str";
-    }
 
     matchers.push({
       property: matcher.find(".property-name").typedInput("value"),
@@ -221,6 +200,28 @@ export function getMatchers(
   });
 
   return matchers;
+}
+
+export function showHideTarget(showHideTarget: boolean, option: string) {
+  $(matcherRowsId)
+    .data("showHide_" + option, showHideTarget)
+    .find('.property-target-select option[value="' + option + '"]')
+    .toggle(showHideTarget);
+}
+
+export function removeTarget(keep: boolean, option: string) {
+  const inputs = $(matcherRowsId);
+
+  showHideTarget(keep, option);
+
+  if (!keep) {
+    const matchers = getMatchers().filter((matcher) => {
+      return matcher.target !== option;
+    });
+
+    inputs.editableList("empty");
+    inputs.editableList("addItems", matchers);
+  }
 }
 
 export default MatchJoinNodeEditor;

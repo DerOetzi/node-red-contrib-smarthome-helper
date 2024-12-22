@@ -1,4 +1,11 @@
 {
+    "target": {
+        "motion": "motion",
+        "darkness": "darkness",
+        "night": "nightmode",
+        "manual_control": "manual control",
+        "command": "command"
+    },
     "status": {
         "automationOn": "Automated",
         "active": "Active",

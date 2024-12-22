@@ -61,13 +61,6 @@ export const defaultLightControllerNodeConfig: Partial<LightControllerNodeConfig
         target: "command",
         targetType: "str",
       },
-      {
-        ...defaultMatcherRow,
-        target: "colorTemperature",
-        targetType: "str",
-      },
-      { ...defaultMatcherRow, target: "hue", targetType: "str" },
-      { ...defaultMatcherRow, target: "saturation", targetType: "str" },
     ],
     join: true,
     discardNotMatched: true,

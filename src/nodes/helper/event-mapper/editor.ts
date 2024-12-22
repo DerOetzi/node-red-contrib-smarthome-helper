@@ -53,14 +53,16 @@ const EventMapperNodeEditor: EditorNodeDef<EventMapperNodeEditorProperties> = {
   oneditprepare: function () {
     BaseNodeEditor.oneditprepare!.call(this);
 
-    initializeMatcherRows("#matcher-rows", false, this.matchers, true, "", {
-      event: "event",
+    initializeMatcherRows(this.matchers, {
+      targets: ["event"],
+      translatePrefix: "helper.event-mapper.target",
+      t: this._.bind(this),
     });
 
     initializeRuleRows("#rule-rows", this.rules);
   },
   oneditsave: function () {
-    this.matchers = getMatchers("#matcher-rows");
+    this.matchers = getMatchers();
     this.rules = getRules("#rule-rows");
     this.outputs = this.rules.length;
   },

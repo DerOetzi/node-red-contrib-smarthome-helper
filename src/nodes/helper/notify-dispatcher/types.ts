@@ -16,7 +16,7 @@ export interface NotifyMessage {
 
 export const defaultNotifyDispatcherNodeConfig: Partial<NotifyDispatcherNodeConfig> =
   {
-    matchers: [{ ...defaultMatcherRow, target: "person1" }],
+    matchers: [{ ...defaultMatcherRow, target: "person1", targetType: "str" }],
     join: true,
     minMsgCount: 2,
     discardNotMatched: true,

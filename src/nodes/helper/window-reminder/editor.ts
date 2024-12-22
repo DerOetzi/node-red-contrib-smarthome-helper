@@ -42,10 +42,14 @@ const WindowReminderNodeEditor: EditorNodeDef<WindowReminderNodeEditorProperties
     },
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
-      initializeMatcherRows("#matcher-rows", false, this.matchers, true);
+      initializeMatcherRows(this.matchers, {
+        targets: ["window", "presence"],
+        translatePrefix: "helper.window-reminder.target",
+        t: this._.bind(this),
+      });
     },
     oneditsave: function () {
-      this.matchers = getMatchers("#matcher-rows");
+      this.matchers = getMatchers();
     },
   };
 

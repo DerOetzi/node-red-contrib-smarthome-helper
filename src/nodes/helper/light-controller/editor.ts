@@ -1,8 +1,10 @@
 import { EditorNodeDef } from "node-red";
 import BaseNodeEditor from "../../flowctrl/base/editor";
 import {
+  removeTarget,
   getMatchers,
   initializeMatcherRows,
+  showHideTarget,
 } from "../../flowctrl/match-join/editor";
 import {
   defaultLightControllerNodeConfig,
@@ -95,11 +97,10 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
 
-      initializeMatcherRows("#matcher-rows", false, this.matchers, true, "", {
-        command: "command",
-        colorTemperature: "color temperature",
-        hue: "hue",
-        saturation: "saturation",
+      initializeMatcherRows(this.matchers, {
+        targets: ["command", "colorTemperature", "hue", "saturation"],
+        translatePrefix: "helper.light-controller.target",
+        t: this._.bind(this),
       });
 
       initializeIdentifierRows("#identifier-rows", this.identifiers);
@@ -112,13 +113,14 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
         .parent()
         .toggle(this.lightbulbType !== "switch");
 
-      let colortemperatureMatcherRow = $(
-        "#matcher-rows option[value='colorTemperature']"
-      ).toggle(this.lightbulbType === "colortemperature");
-
       let colortemperatureRow = $("#node-input-colorTemperature")
         .parent()
         .toggle(this.lightbulbType === "colortemperature");
+
+      showHideTarget(
+        this.lightbulbType === "colortemperature",
+        "colorTemperature"
+      );
 
       let nightmodeBrightnessRow = $("#node-input-nightmodeBrightness")
         .parent()
@@ -132,17 +134,12 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
         .parent()
         .toggle(this.lightbulbType === "rgb");
 
-      let fixColorRow = $("#node-input-fixColorHue")
-        .parent()
-        .toggle(this.lightbulbType === "rgb" && !this.colorCycle);
+      const showColor = this.lightbulbType === "rgb" && !this.colorCycle;
 
-      let matcherHueRow = $("#matcher-rows option[value='hue']").toggle(
-        this.lightbulbType === "rgb" && !this.colorCycle
-      );
+      let fixColorRow = $("#node-input-fixColorHue").parent().toggle(showColor);
 
-      let matcherSaturationRow = $(
-        "#matcher-rows option[value='saturation']"
-      ).toggle(this.lightbulbType === "rgb" && !this.colorCycle);
+      showHideTarget(showColor, "hue");
+      showHideTarget(showColor, "saturation");
 
       $("#node-input-lightbulbType").on("change", function () {
         let lightbulbType = $(this).val() as string;
@@ -153,29 +150,28 @@ const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperti
         nightmodeBrightnessRow.toggle(!isSwitch);
         nightmodeCommandRow.toggle(!isSwitch);
 
-        colortemperatureMatcherRow.toggle(lightbulbType === "colortemperature");
         colortemperatureRow.toggle(lightbulbType === "colortemperature");
+        removeTarget(lightbulbType === "colortemperature", "colorTemperature");
+
+        const showColor =
+          lightbulbType === "rgb" &&
+          !$("#node-input-colorCycle").is(":checked");
 
         colorCycleRow.toggle(lightbulbType === "rgb");
-        fixColorRow.toggle(
-          lightbulbType === "rgb" && !$("#node-input-colorCycle").is(":checked")
-        );
-        matcherHueRow.toggle(
-          lightbulbType === "rgb" && !$("#node-input-colorCycle").is(":checked")
-        );
-        matcherSaturationRow.toggle(
-          lightbulbType === "rgb" && !$("#node-input-colorCycle").is(":checked")
-        );
+        fixColorRow.toggle(showColor);
+        removeTarget(showColor, "hue");
+        removeTarget(showColor, "saturation");
       });
 
       $("#node-input-colorCycle").on("change", function () {
-        fixColorRow.toggle(!$(this).is(":checked"));
-        matcherHueRow.toggle(!$(this).is(":checked"));
-        matcherSaturationRow.toggle(!$(this).is(":checked"));
+        const showColor = !$(this).is(":checked");
+        fixColorRow.toggle(showColor);
+        removeTarget(showColor, "hue");
+        removeTarget(showColor, "saturation");
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers("#matcher-rows");
+      this.matchers = getMatchers();
       this.identifiers = getIdentifiers("#identifier-rows");
     },
   };

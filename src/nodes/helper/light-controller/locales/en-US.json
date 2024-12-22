@@ -1,0 +1,8 @@
+{
+    "target": {
+        "command": "command",
+        "colorTemperature": "color temperature",
+        "hue": "hue",
+        "saturation": "saturation"
+    }
+}

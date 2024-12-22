@@ -5,6 +5,10 @@
         "leaving": "Fenster {windowName} ist noch offen",
         "alarm": "Fenster {windowName} wurde geöffnet, aber niemand ist zu Hause"
     },
+    "target": {
+        "window": "Fenster offen",
+        "presence": "Anwesenheit"
+    },
     "status": {
         "open": "Fenster offen",
         "closed": "Fenster geschlossen"

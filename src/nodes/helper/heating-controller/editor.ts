@@ -82,17 +82,21 @@ const HeatingControllerNodeEditor: EditorNodeDef<HeatingControllerNodeEditorProp
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
 
-      initializeMatcherRows("#matcher-rows", false, this.matchers, true, "", {
-        activeCondition: "active condition",
-        comfortTemperature: "comfort temperature",
-        ecoTemperatureOffset: "eco temperature offset",
-        windowOpen: "window open",
-        manual_control: "manual control",
-        command: "command",
+      initializeMatcherRows(this.matchers, {
+        targets: [
+          "activeCondition",
+          "comfortTemperature",
+          "ecoTemperatureOffset",
+          "windowOpen",
+          "manual_control",
+          "command",
+        ],
+        translatePrefix: "helper.heating-controller.target",
+        t: this._,
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers("#matcher-rows");
+      this.matchers = getMatchers();
     },
   };
 

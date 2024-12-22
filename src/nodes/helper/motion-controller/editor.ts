@@ -1,14 +1,16 @@
 import { EditorNodeDef } from "node-red";
 import BaseNodeEditor from "../../flowctrl/base/editor";
 import {
+  getMatchers,
+  initializeMatcherRows,
+  removeTarget,
+  showHideTarget,
+} from "../../flowctrl/match-join/editor";
+import {
   defaultMotionControllerNodeConfig,
   MotionControllerNodeEditorProperties,
   MotionControllerNodeType,
 } from "./types";
-import {
-  getMatchers,
-  initializeMatcherRows,
-} from "../../flowctrl/match-join/editor";
 
 const MotionControllerNodeEditor: EditorNodeDef<MotionControllerNodeEditorProperties> =
   {
@@ -78,33 +80,31 @@ const MotionControllerNodeEditor: EditorNodeDef<MotionControllerNodeEditorProper
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
 
-      initializeMatcherRows("#matcher-rows", false, this.matchers, true);
+      initializeMatcherRows(this.matchers, {
+        targets: ["motion", "darkness", "night", "manual_control", "command"],
+        translatePrefix: "helper.motion-controller.target",
+        t: this._.bind(this),
+      });
 
-      let matcherDarknessRow = $("#matcher-rows [data-row='1']")
-        .parent()
-        .toggle(this.onlyDarkness);
-
-      let matcherNightRow = $("#matcher-rows [data-row='2']")
-        .parent()
-        .toggle(this.nightmodeEnabled);
-
-      $("#matcher-rows [data-row='3']").parent().hide();
+      showHideTarget(this.onlyDarkness, "darkness");
 
       let nightmodeCommandRow = $("#node-input-nightmodeCommand")
         .parent()
         .toggle(this.nightmodeEnabled);
 
+      showHideTarget(this.nightmodeEnabled, "night");
+
       $("#node-input-onlyDarkness").on("change", function () {
-        matcherDarknessRow.toggle($(this).is(":checked"));
+        removeTarget($(this).is(":checked"), "darkness");
       });
 
       $("#node-input-nightmodeEnabled").on("change", function () {
-        matcherNightRow.toggle($(this).is(":checked"));
         nightmodeCommandRow.toggle($(this).is(":checked"));
+        removeTarget($(this).is(":checked"), "night");
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers("#matcher-rows");
+      this.matchers = getMatchers();
     },
   };
 

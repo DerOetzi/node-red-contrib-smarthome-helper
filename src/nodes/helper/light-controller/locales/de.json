@@ -1,0 +1,8 @@
+{
+    "target": {
+        "command": "Befehl",
+        "colorTemperature": "Farbspektrum",
+        "hue": "Hue",
+        "saturation": "Sättigung"
+    }
+}

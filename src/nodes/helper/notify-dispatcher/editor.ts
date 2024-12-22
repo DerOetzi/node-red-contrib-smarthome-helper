@@ -44,16 +44,23 @@ const NotifyDispatcherNodeEditor: EditorNodeDef<NotifyDispatcherNodeEditorProper
     },
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
-      initializeMatcherRows(
-        "#matcher-rows",
-        true,
-        this.matchers,
-        true,
-        "person"
-      );
+      initializeMatcherRows(this.matchers, {
+        targets: [
+          "person1",
+          "person2",
+          "person3",
+          "person4",
+          "person5",
+          "person6",
+          "person7",
+          "person8",
+        ],
+        translatePrefix: "helper.notify-dispatcher.target",
+        t: this._.bind(this),
+      });
     },
     oneditsave: function () {
-      this.matchers = getMatchers("#matcher-rows", "person");
+      this.matchers = getMatchers();
       this.outputs = this.matchers.length + 1;
       this.minMsgCount = this.matchers.length + 1;
     },

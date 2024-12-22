@@ -1,0 +1,7 @@
+{
+    "target": {
+        "heatmode": "heatmode",
+        "comfortTemp": "comfort temperature",
+        "ecoTempOffset": "eco temperature offset"
+    }
+}
