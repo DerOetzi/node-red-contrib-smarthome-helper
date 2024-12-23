@@ -49,6 +49,7 @@ export interface NodeSendOptions {
 }
 
 export interface NodeStatusOutputConfig {
+  automatic?: boolean;
   output: number;
   topic: string;
 }

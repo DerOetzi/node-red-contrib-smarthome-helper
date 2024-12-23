@@ -6,5 +6,9 @@
         "windowOpen": "Fenster offen",
         "manual_control": "Manuelle Bedienung",
         "command": "Befehl"
+    },
+    "status": {
+        "automationOn": "Automatisch",
+        "automationOff": "Manuell"
     }
 }

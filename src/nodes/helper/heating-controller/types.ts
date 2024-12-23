@@ -13,6 +13,11 @@ export enum HeatMode {
   frostProtection = "frost protection",
 }
 
+export enum HeatingControllerCommand {
+  block = "block",
+  unblock = "unblock",
+}
+
 export interface HeatingControllerNodeConfig extends MatchJoinNodeConfig {
   statusDelay: number;
   pause: number;

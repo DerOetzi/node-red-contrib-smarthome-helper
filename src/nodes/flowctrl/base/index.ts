@@ -125,13 +125,21 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
     if (currentStatus !== status) {
       this._nodeStatus = status;
-
-      if (this.options.statusOutput) {
-        this.sendMsgToOutput(
-          { payload: status, topic: this.options.statusOutput.topic },
-          { output: this.options.statusOutput.output }
-        );
+      if (
+        this.options.statusOutput &&
+        (this.options.statusOutput.automatic ?? true)
+      ) {
+        this.sendStatus(status);
       }
+    }
+  }
+
+  protected sendStatus(status: any) {
+    if (this.options.statusOutput) {
+      this.sendMsgToOutput(
+        { payload: status, topic: this.options.statusOutput.topic },
+        { output: this.options.statusOutput.output }
+      );
     }
   }
 
