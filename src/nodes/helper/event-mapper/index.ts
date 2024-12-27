@@ -1,7 +1,7 @@
 import { Node } from "node-red";
 import { RED } from "../../../globals";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { NodeType } from "../../types";
 import {
   defaultEventMapperNodeConfig,
@@ -21,8 +21,8 @@ export default class EventMapperNode extends MatchJoinNode<EventMapperNodeConfig
     super(node, config);
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
-    const input = data.result;
+  protected matched(data: MatchJoinNodeData): void {
+    const input = data.payload;
 
     if (!input.event) {
       return;
@@ -36,17 +36,16 @@ export default class EventMapperNode extends MatchJoinNode<EventMapperNodeConfig
       return;
     }
 
-    const msg = data.received_msg;
-
-    const mapped = RED.util.evaluateNodeProperty(
+    data.payload = RED.util.evaluateNodeProperty(
       rule.mapped,
       rule.mappedType,
       this.node,
-      msg
+      data.received_msg
     );
 
-    this.sendMsg(msg, { payload: mapped, output: rule.output });
-    this.nodeStatus = new Date();
+    data.output = rule.output;
+
+    this.debounce(data);
   }
 
   private getRule(event: string): EventMapperRule | undefined {

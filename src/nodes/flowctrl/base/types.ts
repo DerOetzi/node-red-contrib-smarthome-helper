@@ -6,6 +6,8 @@ export interface BaseNodeConfig extends NodeDef {
   topic: string;
   topicType: string;
   debounce: boolean;
+  debounceTopic: boolean;
+  debounceShowStatus: boolean;
   debounceTime: number;
   debounceUnit: string;
   debounceLeading: boolean;
@@ -19,6 +21,8 @@ export const defaultBaseNodeConfig: Partial<BaseNodeConfig> = {
   topic: "topic",
   topicType: "msg",
   debounce: false,
+  debounceTopic: false,
+  debounceShowStatus: false,
   debounceTime: 100,
   debounceUnit: "ms",
   debounceLeading: false,
@@ -32,6 +36,8 @@ export interface BaseNodeEditorProperties extends EditorNodeProperties {
   topic: string;
   topicType: string;
   debounce: boolean;
+  debounceTopic: boolean;
+  debounceShowStatus: boolean;
   debounceTime: number;
   debounceUnit: string;
   debounceLeading: boolean;
@@ -64,11 +70,8 @@ export const defaultBaseNodeOptions: BaseNodeOptions = {
   initializeDelay: 100,
 };
 
-export interface BaseNodeDebounceData {
+export interface BaseNodeDebounceData extends NodeSendOptions {
   received_msg?: any;
-  result?: any;
-  send?: any;
-  additionalAttributes?: Record<string, any>;
 }
 
 export interface BaseNodeDebounceRunning {

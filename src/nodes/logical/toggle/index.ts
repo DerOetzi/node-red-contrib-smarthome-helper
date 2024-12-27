@@ -33,7 +33,7 @@ export default class ToggleNode extends SwitchNode<ToggleNodeConfig> {
     this.debounce({
       received_msg: msg,
       send,
-      result: this.lastValue,
+      payload: this.lastValue,
     });
 
     if (done) {

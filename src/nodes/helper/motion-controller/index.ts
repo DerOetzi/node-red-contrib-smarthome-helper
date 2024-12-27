@@ -3,6 +3,7 @@ import { RED } from "../../../globals";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { orOp } from "../../logical/op/operations";
 import { NodeType } from "../../types";
 import { LightCommand } from "../light-controller/types";
@@ -45,7 +46,7 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     this.motionStates = {};
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
+  protected matched(data: MatchJoinNodeData): void {
     const msg = data.received_msg;
     const topic = msg.topic;
 
@@ -92,7 +93,11 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
 
   private sendAction(action: string) {
     this.lastAction = action;
-    this.sendMsg({ topic: "action" }, { payload: action });
+    this.debounce({ received_msg: { topic: "action", payload: action } });
+  }
+
+  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+    this.nodeStatus = !this.blocked;
   }
 
   private startTimer() {

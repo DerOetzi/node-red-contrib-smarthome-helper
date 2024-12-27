@@ -9,6 +9,7 @@ import {
   WindowReminderNodeConfig,
   WindowReminderNodeType,
 } from "./types";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 
 export default class WindowReminderNode extends MatchJoinNode<WindowReminderNodeConfig> {
   private timer: NodeJS.Timeout | null = null;
@@ -22,10 +23,10 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
     return WindowReminderNodeType;
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
+  protected matched(data: MatchJoinNodeData): void {
     const trigger = data.received_msg.topic;
-    const window = data.result.window;
-    const presence = data.result.presence;
+    const window = data.payload.window;
+    const presence = data.payload.presence;
 
     if (trigger === "window") {
       if (window === true) {
@@ -56,7 +57,9 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
     const notification = this.prepareNotification("normal", true);
     if (this.config.interval > 0) {
       this.timer = setInterval(() => {
-        this.sendMsg({ topic: "reminder", notify: notification });
+        this.debounce({
+          received_msg: { topic: "reminder", notify: notification },
+        });
       }, this.config.interval * 60000);
     }
   }

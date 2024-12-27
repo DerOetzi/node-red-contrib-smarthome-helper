@@ -7,6 +7,7 @@ import {
   LogicalOpNodeConfig,
   LogicalOpNodeType,
 } from "./types";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 
 export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
   private readonly operator: LogicalOperation;
@@ -38,8 +39,8 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
       this.debounce({
         received_msg: msg,
         send,
-        result: notOp(msg.payload),
-        additionalAttributes: { message: msg },
+        payload: notOp(msg.payload),
+        additionalAttributes: { input: msg },
       });
     } else {
       if (typeof msg.topic !== "string") {
@@ -54,8 +55,8 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
         this.debounce({
           received_msg: msg,
           send,
-          result: this.operator.func(payloads),
-          additionalAttributes: { messages: this.messages },
+          payload: this.operator.func(payloads),
+          additionalAttributes: { input: this.messages },
         });
       } else {
         this.nodeStatus = "waiting";
@@ -65,6 +66,10 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
     if (done) {
       done();
     }
+  }
+
+  protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
+    this.nodeStatus = data.payload;
   }
 
   protected statusColor(status: any): NodeStatusFill {

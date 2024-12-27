@@ -3,12 +3,13 @@ import { RED } from "../../../globals";
 import { comparators } from "../../logical/compare/operations";
 import { NodeType } from "../../types";
 import BaseNode from "../base";
+import { BaseNodeOptions } from "../base/types";
 import {
   defaultMatchJoinNodeConfig,
   MatchJoinNodeConfig,
+  MatchJoinNodeData,
   MatchJoinNodeType,
 } from "./types";
-import { BaseNodeOptions } from "../base/types";
 
 export default class MatchJoinNode<
   T extends MatchJoinNodeConfig = MatchJoinNodeConfig,
@@ -75,16 +76,23 @@ export default class MatchJoinNode<
         this.messages[msg.topic] = msg.payload;
 
         if (Object.keys(this.messages).length >= this.config.minMsgCount) {
-          this.debounce({
+          this.matched({
+            input: this.messages,
             received_msg: msg,
             send,
-            result: this.messages,
+            payload: this.messages,
+            additionalAttributes: { input: this.messages },
           });
         } else {
           this.nodeStatus = "waiting";
         }
       } else {
-        this.debounce({ received_msg: msg, send, result: msg.payload });
+        this.matched({
+          input: msg.payload,
+          received_msg: msg,
+          send,
+          additionalAttributes: { input: msg.payload },
+        });
       }
     }
 
@@ -93,14 +101,8 @@ export default class MatchJoinNode<
     }
   }
 
-  protected debounceListener(data: any) {
-    let sendOptions = {
-      send: data.send,
-      payload: data.result,
-    };
-
-    this.sendMsg(data.received_msg, sendOptions);
-    this.nodeStatus = new Date();
+  protected matched(data: MatchJoinNodeData) {
+    this.debounce(data);
   }
 
   protected statusColor(status: any): NodeStatusFill {

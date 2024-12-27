@@ -13,8 +13,16 @@ const BaseNodeEditor: EditorNodeDef<BaseNodeEditorProperties> = {
     topic: { value: defaultBaseNodeConfig.topic!, required: true },
     topicType: { value: defaultBaseNodeConfig.topicType!, required: true },
     debounce: { value: defaultBaseNodeConfig.debounce!, required: false },
+    debounceTopic: {
+      value: defaultBaseNodeConfig.debounceTopic!,
+      required: false,
+    },
     debounceTime: {
       value: defaultBaseNodeConfig.debounceTime!,
+      required: false,
+    },
+    debounceShowStatus: {
+      value: defaultBaseNodeConfig.debounceShowStatus!,
       required: false,
     },
     debounceUnit: {

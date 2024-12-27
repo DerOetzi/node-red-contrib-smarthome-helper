@@ -1,15 +1,14 @@
 import { Node } from "node-red";
 import { RED } from "../../../globals";
-import BaseNode from "../../flowctrl/base";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import { NodeType } from "../../types";
+import SwitchNode from "../switch";
 import { Comparator, comparators } from "./operations";
 import {
   CompareNodeConfig,
   CompareNodeType,
   defaultCompareNodeConfig,
 } from "./types";
-import SwitchNode from "../switch";
 
 export default class CompareNode extends SwitchNode<CompareNodeConfig> {
   private readonly comparator: Comparator;
@@ -46,7 +45,7 @@ export default class CompareNode extends SwitchNode<CompareNodeConfig> {
       result = this.comparator.func(propertyValue, compareValue);
     }
 
-    this.debounce({ received_msg: msg, result, send });
+    this.debounce({ received_msg: msg, payload: result, send });
 
     if (done) {
       done();

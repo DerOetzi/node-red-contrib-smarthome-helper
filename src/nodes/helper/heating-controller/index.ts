@@ -3,6 +3,7 @@ import { RED } from "../../../globals";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { andOp, orOp } from "../../logical/op/operations";
 import { NodeType } from "../../types";
 import {
@@ -48,7 +49,7 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
     this.windowsStates = {};
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
+  protected matched(data: MatchJoinNodeData): void {
     const msg = data.received_msg;
     const topic = msg.topic;
 
@@ -59,11 +60,11 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
         break;
       case "comfortTemperature":
         this.comfortTemperature = msg.payload;
-        this.sendAction(this.lastHeatmode);
+        this.sendAction(this.nodeStatus);
         break;
       case "ecoTemperatureOffset":
         this.ecoTemperatureOffset = msg.payload;
-        this.sendAction(this.lastHeatmode);
+        this.sendAction(this.nodeStatus);
         break;
       case "command":
         this.blocked = msg.command === HeatingControllerCommand.block;
@@ -159,32 +160,54 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
   private handleWindowOpen(msg: any) {
     const windowOpen = orOp(Object.values(this.windowsStates));
 
+    let ha_action = "";
+
     if (windowOpen) {
       this.blocked = true;
       this.sendAction(this.config.frostProtectionCommand, true);
+      ha_action = "switch.turn_on";
     } else {
       this.blocked = false;
       this.handleActiveCondition();
+      ha_action = "switch.turn_off";
     }
 
-    this.sendMsg(msg, { payload: windowOpen, output: 2 });
+    this.debounce({
+      received_msg: msg,
+      payload: windowOpen,
+      output: 2,
+      additionalAttributes: { ha_action },
+    });
   }
 
   private sendAction(heatmode: string, ignoreBlocked: boolean = false) {
-    if (!this.blocked || ignoreBlocked) {
-      this.lastHeatmode = heatmode;
-      this.sendMsg({ topic: "heatmode" }, { payload: heatmode });
+    if (heatmode && (!this.blocked || ignoreBlocked)) {
+      this.debounce({
+        received_msg: { topic: "heatmode" },
+        payload: heatmode,
+        output: 0,
+      });
     }
 
     let targetTemperature = this.determineHeatingSetpoint(heatmode);
-    this.sendMsg(
-      { topic: "target_temperature" },
-      { payload: targetTemperature, output: 1 }
-    );
 
-    this.nodeStatus = heatmode;
+    if (targetTemperature >= 0) {
+      this.debounce({
+        received_msg: { topic: "target_temperature" },
+        payload: targetTemperature,
+        output: 1,
+      });
+    }
   }
 
+  protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
+    if (data.output === 0) {
+      this.lastHeatmode = data.payload;
+      this.nodeStatus = data.payload;
+    } else if (this.lastHeatmode) {
+      this.nodeStatus = this.lastHeatmode;
+    }
+  }
   protected statusColor(status: any): NodeStatusFill {
     let color: NodeStatusFill = "green";
 

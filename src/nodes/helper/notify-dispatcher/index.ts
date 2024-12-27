@@ -1,6 +1,6 @@
 import { Node } from "node-red";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { NodeType } from "../../types";
 import {
   defaultNotifyDispatcherNodeConfig,
@@ -30,25 +30,23 @@ export default class NotifyDispatcherNode extends MatchJoinNode<NotifyDispatcher
     return NotifyDispatcherNodeType;
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
+  protected matched(data: MatchJoinNodeData): void {
     const msg = data.received_msg;
 
     if (msg.topic === "message") {
       const notify = msg.notify as NotifyMessage;
+      data.payload = notify;
+
       let found = false;
       const onlyAtHome = notify.onlyAtHome ?? false;
       if (onlyAtHome) {
         this.config.matchers.forEach((matcher, index) => {
           let target = matcher.target;
           if (target.startsWith("person")) {
-            const person = data.result[target];
+            const person = data.input[target];
             if (person === true) {
-              this.sendMsg(msg, {
-                payload: notify,
-                send: data.send,
-                output: index + 1,
-                additionalAttributes: { input: data.result },
-              });
+              data.output = index + 1;
+              this.debounce(data);
               found = true;
             }
           }
@@ -56,14 +54,9 @@ export default class NotifyDispatcherNode extends MatchJoinNode<NotifyDispatcher
       }
 
       if (!(onlyAtHome && found)) {
-        this.sendMsg(msg, {
-          payload: notify,
-          send: data.send,
-          additionalAttributes: { input: data.result },
-        });
+        data.output = 0;
+        this.debounce(data);
       }
-
-      this.nodeStatus = new Date();
     }
   }
 }

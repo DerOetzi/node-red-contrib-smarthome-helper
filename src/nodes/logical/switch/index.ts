@@ -4,7 +4,6 @@ import BaseNode from "../../flowctrl/base";
 import {
   BaseNodeDebounceData,
   BaseNodeOptions,
-  NodeSendOptions,
 } from "../../flowctrl/base/types";
 import { NodeType } from "../../types";
 import {
@@ -31,7 +30,7 @@ export default class SwitchNode<
 
   protected debounceListener(data: BaseNodeDebounceData): void {
     const msg = data.received_msg;
-    const result = data.result ?? msg.payload;
+    const result = data.payload ?? msg.payload;
 
     if (result === true) {
       msg[this.config.target] = RED.util.evaluateNodeProperty(
@@ -49,16 +48,13 @@ export default class SwitchNode<
       );
     }
 
-    const options: NodeSendOptions = {
-      send: data.send,
-      additionalAttributes: data.additionalAttributes,
-    };
-
     if (this.config.seperatedOutputs && result === false) {
-      options.output = 1;
+      data.output = 1;
     }
 
-    this.sendMsg(msg, options);
+    data.payload = msg.payload;
+
+    this.sendMsg(msg, data);
 
     this.nodeStatus = result;
   }

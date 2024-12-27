@@ -10,6 +10,7 @@ import {
   LightControllerNodeConfig,
   LightControllerNodeType,
 } from "./types";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 
 export default class LightControllerNode extends MatchJoinNode<LightControllerNodeConfig> {
   private colorTemperature: number;
@@ -46,8 +47,8 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     this.clearColorCycle();
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
-    const input = data.result;
+  protected matched(data: MatchJoinNodeData): void {
+    const input = data.payload;
 
     if (!input.command) {
       return;
@@ -75,21 +76,28 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     switch (command) {
       case LightCommand.On:
         if (this.config.lightbulbType === "rgb") {
-          this.colorOn(msg);
+          msg = this.colorOn(msg);
         } else {
-          this.prepareOnMessage(msg);
+          msg = this.prepareOnMessage(msg);
         }
         break;
       case LightCommand.Off:
-        this.prepareOffMessage(msg);
+        msg = this.prepareOffMessage(msg);
         break;
       case LightCommand.Nightmode:
-        this.prepareNightmodeMessage(msg);
+        msg = this.prepareNightmodeMessage(msg);
         break;
     }
 
-    this.sendMsg(msg, { send: data.send });
-    this.nodeStatus = command;
+    data.received_msg = msg;
+    data.payload = msg.payload;
+    data.additionalAttributes = { command };
+
+    this.debounce(data);
+  }
+
+  protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
+    this.nodeStatus = data.additionalAttributes!.command;
   }
 
   private parseParameters(input: any) {
@@ -138,23 +146,30 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     this.clearColorCycle();
 
     if (this.config.colorCycle) {
-      this.prepareOnMessage(msg, this.config.onBrightness, [
+      msg = this.prepareOnMessage(msg, this.config.onBrightness, [
         this.calculateHue(),
         100,
       ]);
 
       this.colorCycle = setInterval(() => {
         const color = [this.calculateHue(), 100];
-        this.sendMsg(
-          this.prepareOnMessage(msg, this.config.onBrightness, color)
-        );
+        this.debounce({
+          received_msg: this.prepareOnMessage(
+            msg,
+            this.config.onBrightness,
+            color
+          ),
+          additionalAttributes: { command: LightCommand.On },
+        });
       }, 60000);
     } else {
-      this.prepareOnMessage(msg, this.config.onBrightness, [
+      msg = this.prepareOnMessage(msg, this.config.onBrightness, [
         this.fixColorHue,
         this.fixColorSaturation,
       ]);
     }
+
+    return msg;
   }
 
   private calculateHue() {

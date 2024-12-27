@@ -1,5 +1,9 @@
 import { NodeColor, NodeType } from "../../types";
-import { BaseNodeConfig, BaseNodeEditorProperties } from "../base/types";
+import {
+  BaseNodeConfig,
+  BaseNodeDebounceData,
+  BaseNodeEditorProperties,
+} from "../base/types";
 import { flowctrlCategory } from "../types";
 
 export interface MatchFixedTargets {
@@ -48,6 +52,10 @@ export interface MatchJoinNodeEditorProperties
   discardNotMatched: boolean;
   matchers: MatcherRow[];
   minMsgCount: number;
+}
+
+export interface MatchJoinNodeData extends BaseNodeDebounceData {
+  input: any;
 }
 
 export const MatchJoinNodeType = new NodeType(

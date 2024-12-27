@@ -2,6 +2,7 @@ import { Node, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { NodeType } from "../../types";
 import {
   defaultHeatModeSelectNodeConfig,
@@ -19,10 +20,10 @@ export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNode
     return HeatModeSelectNodeType;
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
-    const heatmode = data.result.heatmode;
-    const comfortTemp = data.result.comfortTemp;
-    const ecoTempOffset = data.result.ecoTempOffset;
+  protected matched(data: MatchJoinNodeData): void {
+    const heatmode = data.payload.heatmode;
+    const comfortTemp = data.payload.comfortTemp;
+    const ecoTempOffset = data.payload.ecoTempOffset;
 
     let targetTemperature = 0;
     let active = false;
@@ -47,15 +48,16 @@ export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNode
         return;
     }
 
+    data.payload = { heatmode, targetTemperature, active };
+
+    this.debounce(data);
+  }
+
+  protected debounceListener(data: BaseNodeDebounceData): void {
     const msg = data.received_msg;
 
-    this.sendMsg(msg, {
-      payload: { heatmode, targetTemperature, active },
-      send: data.send,
-      additionalAttributes: { input: data.result },
-    });
-
-    this.nodeStatus = { heatmode, targetTemperature, active };
+    this.sendMsg(msg, data);
+    this.nodeStatus = data.payload;
 
     if (this.config.checkAutomationInProgress && msg.topic === "heatmode") {
       const inProgress = this.node

@@ -80,7 +80,7 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
 
   protected debounceListener(data: BaseNodeDebounceData): void {
     if (this.nodeStatus ?? this.config.startupState) {
-      this.sendMsg(data.received_msg, { send: data.send });
+      this.sendMsg(data.received_msg, data);
     }
   }
 

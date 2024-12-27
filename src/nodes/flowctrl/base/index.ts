@@ -21,7 +21,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
   private _nodeStatus: any;
   private lastSentPayloads: Record<string, any> = {};
-  private readonly debouncing: BaseNodeDebounceRunning;
+  private readonly debouncing: BaseNodeDebounceRunning[];
 
   public static createFunction() {
     const NodeClass = this;
@@ -54,7 +54,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
     setTimeout(() => this.initialize(), this.options.initializeDelay);
 
-    this.debouncing = {} as BaseNodeDebounceRunning;
+    this.debouncing = [];
   }
 
   protected onClose() {
@@ -75,27 +75,42 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
   protected debounce(data: BaseNodeDebounceData): void {
     if (this.config.debounce) {
-      this.debouncing.lastData = data;
+      const key = this.config.debounceTopic
+        ? data.received_msg.topic
+        : "default";
 
-      if (!this.debouncing.timer) {
+      if (!this.debouncing[key]) {
+        this.debouncing[key] = { timer: null, lastData: {} };
+      }
+
+      this.debouncing[key].lastData = _.cloneDeep(data);
+      delete this.debouncing[key].lastData.received_msg._msgid;
+
+      if (!this.debouncing[key].timer) {
         if (this.config.debounceLeading) {
           this.debounceListener(data);
         }
 
-        this.setNodeStatus("Debounce", "blue", "Debounce");
+        if (this.config.debounceShowStatus) {
+          this.setNodeStatus("Debounce", "blue", "Debounce");
+        }
 
-        this.debouncing.timer = setTimeout(
+        this.debouncing[key].timer = setTimeout(
           () => {
-            if (this.debouncing.timer) {
-              clearTimeout(this.debouncing.timer);
-              this.debouncing.timer = null;
+            if (this.debouncing[key].timer) {
+              clearTimeout(this.debouncing[key].timer);
+              this.debouncing[key].timer = null;
             }
 
-            this.setNodeStatus(this.nodeStatus);
+            if (this.config.debounceShowStatus) {
+              this.setNodeStatus(this.nodeStatus);
+            }
 
             if (this.config.debounceTrailing) {
-              this.debouncing.lastData.send = this.node.send.bind(this.node);
-              this.debounceListener(this.debouncing.lastData);
+              this.debouncing[key].lastData.send = this.node.send.bind(
+                this.node
+              );
+              this.debounceListener(_.cloneDeep(this.debouncing[key].lastData));
             }
           },
           convertToMilliseconds(
@@ -110,7 +125,11 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   }
 
   protected debounceListener(data: BaseNodeDebounceData) {
-    this.sendMsg(data.received_msg, { send: data.send });
+    this.sendMsg(data.received_msg, data);
+    this.updateStatusAfterDebounce(data);
+  }
+
+  protected updateStatusAfterDebounce(_: BaseNodeDebounceData) {
     this.nodeStatus = new Date();
   }
 

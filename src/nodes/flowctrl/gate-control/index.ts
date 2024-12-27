@@ -2,7 +2,6 @@ import { Node } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { NodeType } from "../../types";
 import BaseNode from "../base";
-import { BaseNodeDebounceData } from "../base/types";
 import {
   defaultGateControlNodeConfig,
   GateControlNodeConfig,
@@ -40,15 +39,10 @@ export default class GateControlNode extends BaseNode<GateControlNodeConfig> {
 
     setTimeout(() => {
       this.debounce({ received_msg: msg });
-      this.nodeStatus = new Date();
     }, this.config.delay);
 
     if (done) {
       done();
     }
-  }
-
-  protected debounceListener(data: BaseNodeDebounceData): void {
-    this.sendMsg(data.received_msg);
   }
 }
