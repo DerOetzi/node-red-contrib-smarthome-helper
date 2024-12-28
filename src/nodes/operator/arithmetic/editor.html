@@ -1,0 +1,26 @@
+<ol id="matcher-rows"></ol>
+<div class="form-row">
+  <label for="node-input-minValueCount"
+    ><i class="fa fa-cog"></i> Min. value count</label
+  >
+  <input type="number" id="node-input-minValueCount" min="1" required />
+</div>
+<div class="form-row">
+  <label for="node-input-operation"
+    ><i class="fa fa-equals"></i> Operation</label
+  >
+  <select id="node-input-operation">
+    <option value="add">sum</option>
+    <option value="sub">subtraction</option>
+    <option value="mul">multiplication</option>
+    <option value="round">round</option>
+    <option value="mean">mean</option>
+    <option value="min">min</option>
+    <option value="max">max</option>
+  </select>
+</div>
+<div class="form-row">
+  <label for="node-input-precision"><i class="fa fa-cog"></i> Precision</label>
+  <input type="number" id="node-input-precision" min="0" required />
+</div>
+<ol id="additional-values-rows"></ol>

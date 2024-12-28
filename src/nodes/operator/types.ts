@@ -1,6 +1,6 @@
 import { NodeCategory } from "../types";
 
-export const logicalCategory: NodeCategory = {
+export const operatorCategory: NodeCategory = {
   label: "Smarthome Operators",
-  name: "logical",
+  name: "operator",
 };

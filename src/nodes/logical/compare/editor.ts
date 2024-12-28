@@ -20,18 +20,6 @@ const CompareNodeEditor: EditorNodeDef<CompareNodeEditorProperties> = {
     operator: { value: defaultCompareNodeConfig.operator!, required: true },
     value: { value: defaultCompareNodeConfig.value!, required: true },
     valueType: { value: defaultCompareNodeConfig.valueType!, required: true },
-    target: { value: defaultCompareNodeConfig.target!, required: true },
-    trueValue: { value: defaultCompareNodeConfig.trueValue!, required: true },
-    trueType: { value: defaultCompareNodeConfig.trueType!, required: true },
-    falseValue: {
-      value: defaultCompareNodeConfig.falseValue!,
-      required: true,
-    },
-    falseType: { value: defaultCompareNodeConfig.falseType!, required: true },
-    seperatedOutputs: {
-      value: defaultCompareNodeConfig.seperatedOutputs!,
-      required: false,
-    },
     outputs: { value: defaultCompareNodeConfig.outputs!, required: true },
   },
   outputLabels: ["Result of comparison"],

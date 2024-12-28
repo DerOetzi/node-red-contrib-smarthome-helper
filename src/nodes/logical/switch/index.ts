@@ -32,30 +32,40 @@ export default class SwitchNode<
     const msg = data.received_msg;
     const result = data.payload ?? msg.payload;
 
-    if (result === true) {
-      msg[this.config.target] = RED.util.evaluateNodeProperty(
-        this.config.trueValue,
-        this.config.trueType,
-        this.node,
-        msg
-      );
-    } else if (result === false) {
-      msg[this.config.target] = RED.util.evaluateNodeProperty(
-        this.config.falseValue,
-        this.config.falseType,
-        this.node,
-        msg
-      );
+    this.nodeStatus = result;
+
+    const configValue: any = result
+      ? this.config.trueValue
+      : this.config.falseValue;
+
+    const configType: string = result
+      ? this.config.trueType
+      : this.config.falseType;
+
+    if (configType === "__stop__") {
+      return;
+    }
+
+    const targetValue = RED.util.evaluateNodeProperty(
+      configValue,
+      configType,
+      this.node,
+      msg
+    );
+
+    if (this.config.target === "payload") {
+      data.payload = targetValue;
+    } else {
+      data.additionalAttributes = {
+        ...data.additionalAttributes,
+        [this.config.target]: targetValue,
+      };
     }
 
     if (this.config.seperatedOutputs && result === false) {
       data.output = 1;
     }
 
-    data.payload = msg.payload;
-
     this.sendMsg(msg, data);
-
-    this.nodeStatus = result;
   }
 }

@@ -34,10 +34,13 @@ import SwitchNodeEditor from "./nodes/logical/switch/editor";
 import { SwitchNodeType } from "./nodes/logical/switch/types";
 import ToggleNodeEditor from "./nodes/logical/toggle/editor";
 import { ToggleNodeType } from "./nodes/logical/toggle/types";
+import ArithmeticNodeEditor from "./nodes/operator/arithmetic/editor";
+import { ArithmeticNodeType } from "./nodes/operator/arithmetic/types";
 
 declare const RED: EditorRED;
 
 const nodes: Record<string, any> = {
+  [ArithmeticNodeType.fullName]: ArithmeticNodeEditor,
   [AutomationGateNodeType.fullName]: AutomationGateNodeEditor,
   [BaseNodeType.fullName]: BaseNodeEditor,
   [CompareNodeType.fullName]: CompareNodeEditor,

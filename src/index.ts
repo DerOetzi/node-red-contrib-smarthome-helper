@@ -16,8 +16,10 @@ import LogicalOpNode from "./nodes/logical/op";
 import SwitchNode from "./nodes/logical/switch";
 import ToggleNode from "./nodes/logical/toggle";
 import version from "./version";
+import ArithmeticNode from "./nodes/operator/arithmetic";
 
 const nodes = [
+  ArithmeticNode,
   AutomationGateNode,
   BaseNode,
   CompareNode,

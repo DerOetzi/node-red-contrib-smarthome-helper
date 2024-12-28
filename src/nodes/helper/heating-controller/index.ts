@@ -181,12 +181,16 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
   }
 
   private sendAction(heatmode: string, ignoreBlocked: boolean = false) {
-    if (heatmode && (!this.blocked || ignoreBlocked)) {
-      this.debounce({
-        received_msg: { topic: "heatmode" },
-        payload: heatmode,
-        output: 0,
-      });
+    if (heatmode) {
+      if (!this.blocked || ignoreBlocked) {
+        this.debounce({
+          received_msg: { topic: "heatmode" },
+          payload: heatmode,
+          output: 0,
+        });
+      } else {
+        this.lastHeatmode = heatmode;
+      }
     }
 
     let targetTemperature = this.determineHeatingSetpoint(heatmode);

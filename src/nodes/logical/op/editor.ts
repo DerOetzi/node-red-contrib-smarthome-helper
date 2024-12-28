@@ -17,18 +17,6 @@ const LogicalOpNodeEditor: EditorNodeDef<LogicalOpNodeEditorProperties> = {
       value: defaultLogicalOpNodeConfig.minMsgCount!,
       required: true,
     },
-    target: { value: defaultLogicalOpNodeConfig.target!, required: true },
-    trueValue: { value: defaultLogicalOpNodeConfig.trueValue!, required: true },
-    trueType: { value: defaultLogicalOpNodeConfig.trueType!, required: true },
-    falseValue: {
-      value: defaultLogicalOpNodeConfig.falseValue!,
-      required: true,
-    },
-    falseType: { value: defaultLogicalOpNodeConfig.falseType!, required: true },
-    seperatedOutputs: {
-      value: defaultLogicalOpNodeConfig.seperatedOutputs!,
-      required: false,
-    },
     outputs: { value: defaultLogicalOpNodeConfig.outputs!, required: true },
   },
   label: function () {
