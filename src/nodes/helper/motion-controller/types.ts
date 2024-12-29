@@ -1,7 +1,9 @@
 import {
   defaultMatcherRow,
   MatchJoinNodeConfig,
+  MatchJoinNodeData,
   MatchJoinNodeEditorProperties,
+  MatchJoinNodeMessage,
 } from "../../flowctrl/match-join/types";
 import { NodeColor, NodeType } from "../../types";
 import { LightCommand } from "../light-controller/types";
@@ -68,6 +70,16 @@ export interface MotionControllerNodeEditorProperties
   onCommand: string;
   offCommand: string;
   nightmodeCommand: string;
+}
+
+export interface MotionControllerNodeMessage extends MatchJoinNodeMessage {
+  originalTopic: string;
+  command?: MotionControllerCommand;
+  action?: LightCommand;
+}
+
+export interface MotionControllerNodeData extends MatchJoinNodeData {
+  msg: MotionControllerNodeMessage;
 }
 
 export const MotionControllerNodeType = new NodeType(

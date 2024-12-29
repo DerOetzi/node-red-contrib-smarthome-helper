@@ -1,4 +1,6 @@
-import { Node, NodeStatusFill } from "node-red";
+import { Node, NodeMessageInFlow, NodeStatusFill } from "node-red";
+import { NodeRedDone, NodeRedSend } from "../../../types";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import { NodeType } from "../../types";
 import SwitchNode from "../switch";
 import { LogicalOperation, logicalOperations, notOp } from "./operations";
@@ -7,11 +9,10 @@ import {
   LogicalOpNodeConfig,
   LogicalOpNodeType,
 } from "./types";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 
 export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
   private readonly operator: LogicalOperation;
-  private messages: Record<string, any> = {};
+  private messages: Record<string, boolean> = {};
 
   static get type(): NodeType {
     return LogicalOpNodeType;
@@ -29,7 +30,11 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
     this.messages = {};
   }
 
-  protected onInput(msg: any, send: any, done: any): void {
+  protected onInput(
+    msg: NodeMessageInFlow,
+    send: NodeRedSend,
+    done: NodeRedDone
+  ): void {
     if (typeof msg.payload !== "boolean") {
       this.node.error("Payload must be a boolean value");
       return;
@@ -37,7 +42,7 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
 
     if (this.config.logical === "not") {
       this.debounce({
-        received_msg: msg,
+        msg: msg,
         send,
         payload: notOp(msg.payload),
         additionalAttributes: { input: msg },
@@ -53,7 +58,7 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
       if (Object.keys(this.messages).length >= this.config.minMsgCount) {
         const payloads = Object.values(this.messages);
         this.debounce({
-          received_msg: msg,
+          msg: msg,
           send,
           payload: this.operator.func(payloads),
           additionalAttributes: { input: this.messages },

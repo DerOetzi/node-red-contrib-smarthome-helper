@@ -3,13 +3,13 @@ import { RED } from "../../../globals";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { andOp, orOp } from "../../logical/op/operations";
 import { NodeType } from "../../types";
 import {
   defaultHeatingControllerNodeConfig,
   HeatingControllerCommand,
   HeatingControllerNodeConfig,
+  HeatingControllerNodeData,
   HeatingControllerNodeType,
   HeatMode,
 } from "./types";
@@ -49,21 +49,21 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
     this.windowsStates = {};
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.received_msg;
+  protected matched(data: HeatingControllerNodeData): void {
+    const msg = data.msg;
     const topic = msg.topic;
 
     switch (topic) {
       case "activeCondition":
-        this.activeConditions[msg.originalTopic] = msg.payload;
+        this.activeConditions[msg.originalTopic] = msg.payload as boolean;
         this.handleActiveCondition();
         break;
       case "comfortTemperature":
-        this.comfortTemperature = msg.payload;
+        this.comfortTemperature = msg.payload as number;
         this.sendAction(this.nodeStatus);
         break;
       case "ecoTemperatureOffset":
-        this.ecoTemperatureOffset = msg.payload;
+        this.ecoTemperatureOffset = msg.payload as number;
         this.sendAction(this.nodeStatus);
         break;
       case "command":
@@ -75,7 +75,7 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
         this.handleManualControl(msg);
         break;
       case "windowOpen":
-        this.windowsStates[msg.originalTopic] = msg.payload;
+        this.windowsStates[msg.originalTopic] = msg.payload as boolean;
         this.handleWindowOpen(msg);
         break;
     }
@@ -173,7 +173,7 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
     }
 
     this.debounce({
-      received_msg: msg,
+      msg: msg,
       payload: windowOpen,
       output: 2,
       additionalAttributes: { ha_action },
@@ -184,7 +184,7 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
     if (heatmode) {
       if (!this.blocked || ignoreBlocked) {
         this.debounce({
-          received_msg: { topic: "heatmode" },
+          msg: { topic: "heatmode" },
           payload: heatmode,
           output: 0,
         });
@@ -197,7 +197,7 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
 
     if (targetTemperature >= 0) {
       this.debounce({
-        received_msg: { topic: "target_temperature" },
+        msg: { topic: "target_temperature" },
         payload: targetTemperature,
         output: 1,
       });

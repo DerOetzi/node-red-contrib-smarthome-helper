@@ -26,7 +26,7 @@ export interface EventMapperNodeConfig extends MatchJoinNodeConfig {
 
 export const defaultEventMapperNodeConfig: Partial<EventMapperNodeConfig> = {
   matchers: [{ ...defaultMatcherRow, target: "event", targetType: "str" }],
-  join: true,
+  join: false,
   minMsgCount: 1,
   discardNotMatched: true,
   outputs: 1,

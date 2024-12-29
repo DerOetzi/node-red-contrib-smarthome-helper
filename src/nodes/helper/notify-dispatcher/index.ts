@@ -1,12 +1,11 @@
 import { Node } from "node-red";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { NodeType } from "../../types";
 import {
   defaultNotifyDispatcherNodeConfig,
   NotifyDispatcherNodeConfig,
+  NotifyDispatcherNodeData,
   NotifyDispatcherNodeType,
-  NotifyMessage,
 } from "./types";
 
 export default class NotifyDispatcherNode extends MatchJoinNode<NotifyDispatcherNodeConfig> {
@@ -30,11 +29,11 @@ export default class NotifyDispatcherNode extends MatchJoinNode<NotifyDispatcher
     return NotifyDispatcherNodeType;
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.received_msg;
+  protected matched(data: NotifyDispatcherNodeData): void {
+    const msg = data.msg;
 
     if (msg.topic === "message") {
-      const notify = msg.notify as NotifyMessage;
+      const notify = msg.notify;
       data.payload = notify;
 
       let found = false;

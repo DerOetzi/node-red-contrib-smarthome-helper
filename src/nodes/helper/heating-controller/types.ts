@@ -1,7 +1,9 @@
 import {
   defaultMatcherRow,
   MatchJoinNodeConfig,
+  MatchJoinNodeData,
   MatchJoinNodeEditorProperties,
+  MatchJoinNodeMessage,
 } from "../../flowctrl/match-join/types";
 import { NodeColor, NodeType } from "../../types";
 import { helperCategory } from "../types";
@@ -92,6 +94,15 @@ export interface HeatingControllerNodeEditorProperties
   ecoCommand: string;
   boostCommand: string;
   frostProtectionCommand: string;
+}
+
+export interface HeatingControllerNodeMessage extends MatchJoinNodeMessage {
+  originalTopic: string;
+  command?: HeatingControllerCommand;
+}
+
+export interface HeatingControllerNodeData extends MatchJoinNodeData {
+  msg: HeatingControllerNodeMessage;
 }
 
 export const HeatingControllerNodeType = new NodeType(

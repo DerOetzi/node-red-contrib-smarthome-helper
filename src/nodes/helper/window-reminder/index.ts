@@ -3,13 +3,17 @@ import { RED } from "../../../globals";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { NodeType } from "../../types";
-import { NotifyMessage } from "../notify-dispatcher/types";
+import {
+  NotifyDispatcherNodeMessage,
+  NotifyMessage,
+} from "../notify-dispatcher/types";
 import {
   defaultWindowReminderNodeConfig,
   WindowReminderNodeConfig,
   WindowReminderNodeType,
 } from "./types";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
+import NotifyDispatcherNode from "../notify-dispatcher";
 
 export default class WindowReminderNode extends MatchJoinNode<WindowReminderNodeConfig> {
   private timer: NodeJS.Timeout | null = null;
@@ -24,7 +28,7 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
   }
 
   protected matched(data: MatchJoinNodeData): void {
-    const trigger = data.received_msg.topic;
+    const trigger = data.msg.topic;
     const window = data.payload.window;
     const presence = data.payload.presence;
 
@@ -35,7 +39,7 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
           this.sendMsg({
             topic: "alarm",
             notify: this.prepareNotification("alarm"),
-          });
+          } as NotifyDispatcherNodeMessage);
         }
       } else {
         this.clearTimer();
@@ -45,7 +49,7 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
         this.sendMsg({
           topic: "leaving",
           notify: this.prepareNotification("leaving"),
-        });
+        } as NotifyDispatcherNodeMessage);
       }
     }
 
@@ -58,7 +62,10 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
     if (this.config.interval > 0) {
       this.timer = setInterval(() => {
         this.debounce({
-          received_msg: { topic: "reminder", notify: notification },
+          msg: {
+            topic: "reminder",
+            notify: notification,
+          } as NotifyDispatcherNodeMessage,
         });
       }, this.config.interval * 60000);
     }

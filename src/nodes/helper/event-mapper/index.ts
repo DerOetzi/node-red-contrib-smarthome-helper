@@ -16,22 +16,18 @@ export default class EventMapperNode extends MatchJoinNode<EventMapperNodeConfig
   }
 
   constructor(node: Node, config: EventMapperNodeConfig) {
-    config = { ...defaultEventMapperNodeConfig, ...config };
+    config = { ...defaultEventMapperNodeConfig, ...config, join: false };
 
     super(node, config);
   }
 
   protected matched(data: MatchJoinNodeData): void {
-    const input = data.payload;
+    const event: string = data.input;
 
-    if (!input.event) {
-      return;
-    }
-
-    const rule = this.getRule(input.event);
+    const rule = this.getRule(event);
     if (!rule) {
       if (!this.config.ignoreUnknownEvents) {
-        this.node.error("No rule found for event", input.event);
+        this.node.error("No rule found for event: " + event);
       }
       return;
     }
@@ -40,7 +36,7 @@ export default class EventMapperNode extends MatchJoinNode<EventMapperNodeConfig
       rule.mapped,
       rule.mappedType,
       this.node,
-      data.received_msg
+      data.msg
     );
 
     data.output = rule.output;

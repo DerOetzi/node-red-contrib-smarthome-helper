@@ -2,7 +2,9 @@ import { NodeColor, NodeType } from "../../types";
 import {
   defaultMatcherRow,
   MatchJoinNodeConfig,
+  MatchJoinNodeData,
   MatchJoinNodeEditorProperties,
+  MatchJoinNodeMessage,
 } from "../../flowctrl/match-join/types";
 import { operatorCategory } from "../types";
 
@@ -35,6 +37,14 @@ export interface ArithmeticNodeEditorProperties
   minValueCount: number;
   precision: number;
   additionalValues: AdditionalValueRow[];
+}
+
+export interface ArithmeticNodeMessage extends MatchJoinNodeMessage {
+  originalTopic: string;
+}
+
+export interface ArithmeticNodeData extends MatchJoinNodeData {
+  msg: ArithmeticNodeMessage;
 }
 
 export const ArithmeticNodeType = new NodeType(

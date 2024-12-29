@@ -8,9 +8,10 @@ import {
   HomeAssistantLightAction,
   LightCommand,
   LightControllerNodeConfig,
+  LightControllerNodeData,
+  LightControllerNodeMessage,
   LightControllerNodeType,
 } from "./types";
-import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 
 export default class LightControllerNode extends MatchJoinNode<LightControllerNodeConfig> {
   private colorTemperature: number;
@@ -47,7 +48,7 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     this.clearColorCycle();
   }
 
-  protected matched(data: MatchJoinNodeData): void {
+  protected matched(data: LightControllerNodeData): void {
     const input = data.payload;
 
     if (!input.command) {
@@ -62,7 +63,7 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
       return;
     }
 
-    let msg = data.received_msg;
+    let msg = data.msg;
 
     msg.lightbulbs = this.config.identifiers.map((identifier) => {
       return RED.util.evaluateNodeProperty(
@@ -89,7 +90,7 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
         break;
     }
 
-    data.received_msg = msg;
+    data.msg = msg;
     data.payload = msg.payload;
     data.additionalAttributes = { command };
 
@@ -136,13 +137,15 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     return parsed;
   }
 
-  private prepareOffMessage(msg: any) {
+  private prepareOffMessage(
+    msg: LightControllerNodeMessage
+  ): LightControllerNodeMessage {
     this.clearColorCycle();
     msg.on = false;
     return this.prepareHAOutput(msg);
   }
 
-  private colorOn(msg: any) {
+  private colorOn(msg: LightControllerNodeMessage): LightControllerNodeMessage {
     this.clearColorCycle();
 
     if (this.config.colorCycle) {
@@ -154,11 +157,7 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
       this.colorCycle = setInterval(() => {
         const color = [this.calculateHue(), 100];
         this.debounce({
-          received_msg: this.prepareOnMessage(
-            msg,
-            this.config.onBrightness,
-            color
-          ),
+          msg: this.prepareOnMessage(msg, this.config.onBrightness, color),
           additionalAttributes: { command: LightCommand.On },
         });
       }, 60000);
@@ -172,12 +171,16 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     return msg;
   }
 
-  private calculateHue() {
+  private calculateHue(): number {
     const minute = new Date().getMinutes();
     return minute * 6;
   }
 
-  private prepareOnMessage(msg: any, brightness?: number, color?: number[]) {
+  private prepareOnMessage(
+    msg: LightControllerNodeMessage,
+    brightness?: number,
+    color?: number[]
+  ): LightControllerNodeMessage {
     msg.on = true;
 
     brightness = brightness ?? this.config.onBrightness;
@@ -201,7 +204,9 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     return this.prepareHAOutput(msg);
   }
 
-  private prepareNightmodeMessage(msg: any) {
+  private prepareNightmodeMessage(
+    msg: LightControllerNodeMessage
+  ): LightControllerNodeMessage {
     return this.prepareOnMessage(
       msg,
       this.config.nightmodeBrightness,
@@ -209,12 +214,14 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     );
   }
 
-  private prepareHAOutput(msg: any) {
+  private prepareHAOutput(
+    msg: LightControllerNodeMessage
+  ): LightControllerNodeMessage {
     if (this.config.homeAssistantOutput) {
       const output: HomeAssistantLightAction = {
         action: msg.on ? "homeassistant.turn_on" : "homeassistant.turn_off",
         target: {
-          entity_id: msg.lightbulbs,
+          entity_id: msg.lightbulbs!,
         },
       };
 
@@ -226,7 +233,7 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
         if (this.config.lightbulbType === "colortemperature") {
           output.data.color_temp = msg.colorTemperature;
         } else if (this.config.lightbulbType === "rgb") {
-          output.data.hs_color = [msg.hue, msg.saturation];
+          output.data.hs_color = [msg.hue!, msg.saturation!];
         }
 
         if (msg.transition) {
@@ -240,7 +247,7 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     return msg;
   }
 
-  private clearColorCycle() {
+  private clearColorCycle(): void {
     if (this.colorCycle) {
       clearInterval(this.colorCycle);
       this.colorCycle = null;

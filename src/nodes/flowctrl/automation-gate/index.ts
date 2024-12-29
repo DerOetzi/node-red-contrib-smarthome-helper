@@ -1,17 +1,19 @@
-import _ from "lodash";
-import { Node, NodeStatusFill } from "node-red";
+import { Node, NodeMessage, NodeStatusFill } from "node-red";
+import { NodeRedDone, NodeRedSend } from "../../../types";
 import { NodeType } from "../../types";
 import BaseNode from "../base";
 import { BaseNodeDebounceData, NodeSendOptions } from "../base/types";
 import {
+  AutomationGateCommand,
   AutomationGateNodeConfig,
+  AutomationGateNodeMessage,
   AutomationGateNodeType,
   defaultAutomationGateNodeConfig,
 } from "./types";
 
 export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
   private pauseTimer: NodeJS.Timeout | null = null;
-  private lastMessages: Record<string, any> = {};
+  private lastMessages: Record<string, NodeMessage> = {};
 
   static get type(): NodeType {
     return AutomationGateNodeType;
@@ -45,32 +47,36 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     }
   }
 
-  protected onInput(msg: any, send: any, done: any) {
+  protected onInput(
+    msg: AutomationGateNodeMessage,
+    send: NodeRedSend,
+    done: NodeRedDone
+  ) {
     if (msg.gate) {
       switch (msg.gate) {
-        case "pause":
+        case AutomationGateCommand.Pause:
           this.pauseGate(msg);
           break;
-        case "stop":
+        case AutomationGateCommand.Stop:
           this.stopGate();
           break;
-        case "start":
+        case AutomationGateCommand.Start:
           this.startGate();
           break;
-        case "replay":
+        case AutomationGateCommand.Replay:
           this.replayMessages(send);
           break;
-        case "reset_filter":
+        case AutomationGateCommand.ResetFilter:
           this.resetFilter();
           break;
         default:
-          this.node.error(`Invalid gate command: ${msg.gateway}`);
+          this.node.error(`Invalid gate command: ${msg.gate}`);
           break;
       }
     } else {
       this.saveLastMessage(msg);
 
-      this.debounce({ received_msg: msg, send: send });
+      this.debounce({ msg: msg, send: send });
     }
 
     if (done) {
@@ -80,11 +86,11 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
 
   protected debounceListener(data: BaseNodeDebounceData): void {
     if (this.nodeStatus ?? this.config.startupState) {
-      this.sendMsg(data.received_msg, data);
+      this.sendMsg(data.msg, data);
     }
   }
 
-  protected sendMsgToOutput(msg: any, options: NodeSendOptions): void {
+  protected sendMsgToOutput(msg: NodeMessage, options: NodeSendOptions): void {
     if (this.config.setAutomationInProgress && (options.output ?? 0) === 0) {
       this.setAutomationInProgress();
     }
@@ -98,7 +104,7 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
       .flow.set(`automation_${this.config.automationProgressId}`, true);
   }
 
-  private pauseGate(msg: any) {
+  private pauseGate(msg: AutomationGateNodeMessage) {
     if (typeof msg.pause !== "number" || msg.pause <= 0) {
       this.node.error("Invalid or missing pause duration");
       return;
@@ -133,22 +139,21 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     this.nodeStatus = true;
   }
 
-  private saveLastMessage(msg: any) {
+  private saveLastMessage(msg: NodeMessage) {
     if (msg.topic) {
-      this.lastMessages[msg.topic] = _.cloneDeep(msg);
-      delete this.lastMessages[msg.topic]._msgid;
+      this.lastMessages[msg.topic] = this.cloneMessage(msg);
     }
   }
 
-  private replayMessages(send?: any) {
+  private replayMessages(send?: NodeRedSend) {
     this.startGate();
     this.resetFilter();
 
     for (const topic in this.lastMessages) {
       if (this.lastMessages.hasOwnProperty(topic)) {
         this.debounce({
-          received_msg: _.cloneDeep(this.lastMessages[topic]),
-          send: send,
+          msg: this.cloneMessage(this.lastMessages[topic]),
+          send,
         });
       }
     }

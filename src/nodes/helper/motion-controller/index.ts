@@ -6,11 +6,16 @@ import MatchJoinNode from "../../flowctrl/match-join";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { orOp } from "../../logical/op/operations";
 import { NodeType } from "../../types";
-import { LightCommand } from "../light-controller/types";
+import {
+  LightCommand,
+  LightControllerNodeMessage,
+} from "../light-controller/types";
 import {
   defaultMotionControllerNodeConfig,
   MotionControllerCommand,
   MotionControllerNodeConfig,
+  MotionControllerNodeData,
+  MotionControllerNodeMessage,
   MotionControllerNodeType,
 } from "./types";
 
@@ -46,13 +51,13 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     this.motionStates = {};
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.received_msg;
+  protected matched(data: MotionControllerNodeData): void {
+    const msg = data.msg;
     const topic = msg.topic;
 
     switch (topic) {
       case "motion":
-        this.motionStates[msg.originalTopic] = msg.payload;
+        this.motionStates[msg.originalTopic] = msg.payload as boolean;
         this.handleMotion();
         break;
       case "command":
@@ -63,11 +68,11 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
         this.handleManualControl(msg);
         break;
       case "darkness":
-        this.darkness = msg.payload;
+        this.darkness = msg.payload as boolean;
         this.handleMotion(true);
         break;
       case "night":
-        this.night = msg.payload;
+        this.night = msg.payload as boolean;
         break;
     }
   }
@@ -91,16 +96,16 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     this.nodeStatus = !this.blocked;
   }
 
-  private sendAction(action: string) {
+  private sendAction(action: string): void {
     this.lastAction = action;
-    this.debounce({ received_msg: { topic: "action", payload: action } });
+    this.debounce({ msg: { topic: "action", payload: action } });
   }
 
   protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
     this.nodeStatus = !this.blocked;
   }
 
-  private startTimer() {
+  private startTimer(): void {
     if (!this.timer) {
       this.timer = setInterval(
         () => {
@@ -113,19 +118,19 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     }
   }
 
-  private isOn() {
+  private isOn(): boolean {
     return this.isMotion() && this.isDarkness();
   }
 
-  private isMotion() {
+  private isMotion(): boolean {
     return orOp(Object.values(this.motionStates));
   }
 
-  private isDarkness() {
+  private isDarkness(): boolean {
     return !this.config.onlyDarkness || this.darkness;
   }
 
-  private handleManualControl(msg: any) {
+  private handleManualControl(msg: MotionControllerNodeMessage): void {
     if (!this.blocked) {
       if (this.lastAction && msg.payload !== this.lastAction) {
         this.blocked = true;
@@ -134,7 +139,7 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     }
   }
 
-  private handleCommand(msg: any): void {
+  private handleCommand(msg: MotionControllerNodeMessage): void {
     this.nodeStatus = !this.blocked;
 
     if (this.blocked) {
@@ -142,8 +147,8 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     }
 
     if (msg?.action) {
-      let action = msg.action;
-      switch (action) {
+      let action: string;
+      switch (msg.action) {
         case LightCommand.On:
           action = this.config.onCommand;
           break;
@@ -160,7 +165,7 @@ export default class MotionControllerNode extends MatchJoinNode<MotionController
     }
   }
 
-  private clearTimer() {
+  private clearTimer(): void {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;

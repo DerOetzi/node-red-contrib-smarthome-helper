@@ -2,7 +2,6 @@ import { Node } from "node-red";
 import { RED } from "../../../globals";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { NodeType } from "../../types";
 import {
   addOp,
@@ -15,6 +14,7 @@ import {
 } from "./operations";
 import {
   ArithmeticNodeConfig,
+  ArithmeticNodeData,
   ArithmeticNodeType,
   defaultArithmeticNodeConfig,
 } from "./types";
@@ -34,8 +34,8 @@ export default class ArithmeticNode extends MatchJoinNode<ArithmeticNodeConfig> 
     super(node, config);
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.received_msg;
+  protected matched(data: ArithmeticNodeData): void {
+    const msg = data.msg;
     const valueType = msg.topic;
 
     if (typeof msg.payload !== "number") {

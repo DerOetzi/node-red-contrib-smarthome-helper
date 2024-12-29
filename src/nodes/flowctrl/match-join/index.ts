@@ -1,5 +1,6 @@
 import { Node, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
+import { NodeRedDone, NodeRedSend } from "../../../types";
 import { comparators } from "../../logical/compare/operations";
 import { NodeType } from "../../types";
 import BaseNode from "../base";
@@ -8,6 +9,7 @@ import {
   defaultMatchJoinNodeConfig,
   MatchJoinNodeConfig,
   MatchJoinNodeData,
+  MatchJoinNodeMessage,
   MatchJoinNodeType,
 } from "./types";
 
@@ -39,7 +41,11 @@ export default class MatchJoinNode<
     this.messages = {};
   }
 
-  public onInput(msg: any, send: any, done: any) {
+  public onInput(
+    msg: MatchJoinNodeMessage,
+    send: NodeRedSend,
+    done: NodeRedDone
+  ) {
     const matcher = this.config.matchers.find((matcher) => {
       const propertyValue = RED.util.getMessageProperty(msg, matcher.property);
       const compareValue = RED.util.evaluateNodeProperty(
@@ -67,18 +73,24 @@ export default class MatchJoinNode<
         this.node,
         msg
       );
+
       msg.originalTopic = msg.topic;
       msg.topic = targetValue;
     }
 
     if (matcher || !this.config.discardNotMatched) {
       if (this.config.join) {
+        if (!msg.topic) {
+          this.node.error("No topic set for message");
+          return;
+        }
+
         this.messages[msg.topic] = msg.payload;
 
         if (Object.keys(this.messages).length >= this.config.minMsgCount) {
           this.matched({
             input: this.messages,
-            received_msg: msg,
+            msg,
             send,
             payload: this.messages,
             additionalAttributes: { input: this.messages },
@@ -87,9 +99,10 @@ export default class MatchJoinNode<
           this.nodeStatus = "waiting";
         }
       } else {
+        //TODO Possible bug payload is not set
         this.matched({
           input: msg.payload,
-          received_msg: msg,
+          msg,
           send,
           additionalAttributes: { input: msg.payload },
         });

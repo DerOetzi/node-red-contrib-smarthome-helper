@@ -1,4 +1,5 @@
-import { EditorNodeProperties, NodeDef } from "node-red";
+import { EditorNodeProperties, NodeDef, NodeMessage } from "node-red";
+import { NodeRedSend } from "../../../types";
 import { NodeColor, NodeType } from "../../types";
 import { flowctrlCategory } from "../types";
 
@@ -48,7 +49,7 @@ export interface BaseNodeEditorProperties extends EditorNodeProperties {
 }
 
 export interface NodeSendOptions {
-  send?: any;
+  send?: NodeRedSend;
   payload?: any;
   output?: number;
   additionalAttributes?: Record<string, any>;
@@ -71,7 +72,7 @@ export const defaultBaseNodeOptions: BaseNodeOptions = {
 };
 
 export interface BaseNodeDebounceData extends NodeSendOptions {
-  received_msg?: any;
+  msg: NodeMessage;
 }
 
 export interface BaseNodeDebounceRunning {

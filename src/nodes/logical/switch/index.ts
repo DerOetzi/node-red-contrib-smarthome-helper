@@ -29,7 +29,7 @@ export default class SwitchNode<
   }
 
   protected debounceListener(data: BaseNodeDebounceData): void {
-    const msg = data.received_msg;
+    const msg = data.msg;
     const result = data.payload ?? msg.payload;
 
     this.nodeStatus = result;

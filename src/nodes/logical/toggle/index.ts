@@ -1,4 +1,5 @@
-import { Node } from "node-red";
+import { Node, NodeMessageInFlow } from "node-red";
+import { NodeRedDone, NodeRedSend } from "../../../types";
 import { NodeType } from "../../types";
 import SwitchNode from "../switch";
 import {
@@ -21,7 +22,11 @@ export default class ToggleNode extends SwitchNode<ToggleNodeConfig> {
     super(node, config);
   }
 
-  protected onInput(msg: any, send: any, done: any): void {
+  protected onInput(
+    msg: NodeMessageInFlow,
+    send: NodeRedSend,
+    done: NodeRedDone
+  ): void {
     const command = msg.payload;
 
     if (command === "toggle") {
@@ -31,7 +36,7 @@ export default class ToggleNode extends SwitchNode<ToggleNodeConfig> {
     }
 
     this.debounce({
-      received_msg: msg,
+      msg: msg,
       send,
       payload: this.lastValue,
     });

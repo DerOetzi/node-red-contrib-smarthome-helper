@@ -1,3 +1,4 @@
+import { NodeMessage } from "node-red";
 import { NodeColor, NodeType } from "../../types";
 import { BaseNodeConfig, BaseNodeEditorProperties } from "../base/types";
 import { flowctrlCategory } from "../types";
@@ -40,3 +41,17 @@ export const AutomationGateNodeType = new NodeType(
   "automation-gate",
   NodeColor.AutomationGate
 );
+
+export enum AutomationGateCommand {
+  Pause = "pause",
+  Stop = "stop",
+  Start = "start",
+  Replay = "replay",
+  ResetFilter = "reset_filter",
+}
+
+export interface AutomationGateNodeMessage extends NodeMessage {
+  gate?: AutomationGateCommand;
+  pause?: number;
+  originalMsg?: NodeMessage;
+}

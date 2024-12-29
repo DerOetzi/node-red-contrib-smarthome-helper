@@ -1,7 +1,9 @@
 import {
   defaultMatcherRow,
   MatchJoinNodeConfig,
+  MatchJoinNodeData,
   MatchJoinNodeEditorProperties,
+  MatchJoinNodeMessage,
 } from "../../flowctrl/match-join/types";
 import { NodeColor, NodeType } from "../../types";
 import { helperCategory } from "../types";
@@ -25,6 +27,15 @@ export const defaultNotifyDispatcherNodeConfig: Partial<NotifyDispatcherNodeConf
 
 export interface NotifyDispatcherNodeEditorProperties
   extends MatchJoinNodeEditorProperties {}
+
+export interface NotifyDispatcherNodeMessage extends MatchJoinNodeMessage {
+  originalTopic: string;
+  notify: NotifyMessage;
+}
+
+export interface NotifyDispatcherNodeData extends MatchJoinNodeData {
+  msg: NotifyDispatcherNodeMessage;
+}
 
 export const NotifyDispatcherNodeType = new NodeType(
   helperCategory,

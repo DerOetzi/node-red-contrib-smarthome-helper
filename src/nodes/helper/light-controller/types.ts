@@ -1,7 +1,9 @@
 import {
   defaultMatcherRow,
   MatchJoinNodeConfig,
+  MatchJoinNodeData,
   MatchJoinNodeEditorProperties,
+  MatchJoinNodeMessage,
 } from "../../flowctrl/match-join/types";
 import { NodeColor, NodeType } from "../../types";
 import { helperCategory } from "../types";
@@ -95,6 +97,20 @@ export interface LightControllerNodeEditorProperties
   colorCycle: boolean;
   fixColorHue: number;
   fixColorSaturation: number;
+}
+
+export interface LightControllerNodeMessage extends MatchJoinNodeMessage {
+  lightbulbs?: string[];
+  on?: boolean;
+  brightness?: number;
+  transition?: number;
+  colorTemperature?: number;
+  hue?: number;
+  saturation?: number;
+}
+
+export interface LightControllerNodeData extends MatchJoinNodeData {
+  msg: LightControllerNodeMessage;
 }
 
 export const LightControllerNodeType = new NodeType(

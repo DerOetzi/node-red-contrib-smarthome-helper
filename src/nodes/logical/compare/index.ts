@@ -1,6 +1,6 @@
-import { Node } from "node-red";
+import { Node, NodeMessageInFlow } from "node-red";
 import { RED } from "../../../globals";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import { NodeRedDone, NodeRedSend } from "../../../types";
 import { NodeType } from "../../types";
 import SwitchNode from "../switch";
 import { Comparator, comparators } from "./operations";
@@ -24,7 +24,11 @@ export default class CompareNode extends SwitchNode<CompareNodeConfig> {
     return CompareNodeType;
   }
 
-  protected onInput(msg: any, send: any, done: any): void {
+  protected onInput(
+    msg: NodeMessageInFlow,
+    send: NodeRedSend,
+    done: NodeRedDone
+  ): void {
     const propertyValue = RED.util.evaluateNodeProperty(
       this.config.property,
       this.config.propertyType,
@@ -45,7 +49,7 @@ export default class CompareNode extends SwitchNode<CompareNodeConfig> {
       result = this.comparator.func(propertyValue, compareValue);
     }
 
-    this.debounce({ received_msg: msg, payload: result, send });
+    this.debounce({ msg: msg, payload: result, send });
 
     if (done) {
       done();

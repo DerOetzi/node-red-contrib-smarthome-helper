@@ -1,6 +1,11 @@
-import { Node } from "node-red";
+import { Node, NodeMessageInFlow } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
+import { NodeRedDone, NodeRedSend } from "../../../types";
 import { NodeType } from "../../types";
+import {
+  AutomationGateCommand,
+  AutomationGateNodeMessage,
+} from "../automation-gate/types";
 import BaseNode from "../base";
 import {
   defaultGateControlNodeConfig,
@@ -9,7 +14,7 @@ import {
 } from "./types";
 
 export default class GateControlNode extends BaseNode<GateControlNodeConfig> {
-  private readonly gateControlMsg: any;
+  private readonly gateControlMsg: AutomationGateNodeMessage;
 
   constructor(node: Node, config: GateControlNodeConfig) {
     config = { ...defaultGateControlNodeConfig, ...config };
@@ -18,10 +23,9 @@ export default class GateControlNode extends BaseNode<GateControlNodeConfig> {
 
     this.gateControlMsg = {
       gate: config.gateCommand,
-      originalMsg: null,
     };
 
-    if (config.gateCommand === "pause") {
+    if (config.gateCommand === AutomationGateCommand.Pause) {
       this.gateControlMsg.pause = convertToMilliseconds(
         config.pauseTime!,
         config.pauseUnit
@@ -33,12 +37,15 @@ export default class GateControlNode extends BaseNode<GateControlNodeConfig> {
     return GateControlNodeType;
   }
 
-  public onInput(msg: any, send: any, done: any) {
-    const gateControlMsg = { ...this.gateControlMsg, originalMsg: msg };
+  public onInput(msg: NodeMessageInFlow, send: NodeRedSend, done: NodeRedDone) {
+    const gateControlMsg: AutomationGateNodeMessage = {
+      ...this.gateControlMsg,
+      originalMsg: msg,
+    };
     this.sendMsgToOutput(gateControlMsg, { send, output: 1 });
 
     setTimeout(() => {
-      this.debounce({ received_msg: msg });
+      this.debounce({ msg });
     }, this.config.delay);
 
     if (done) {

@@ -1,8 +1,9 @@
 import _ from "lodash";
-import { Node, NodeStatusFill } from "node-red";
+import { Node, NodeMessage, NodeMessageInFlow, NodeStatusFill } from "node-red";
 import { RED } from "../../../globals";
 import { formatDate } from "../../../helpers/date.helper";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
+import { NodeRedDone, NodeRedSend } from "../../../types";
 import { NodeType } from "../../types";
 import {
   BaseNodeConfig,
@@ -21,7 +22,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
   private _nodeStatus: any;
   private lastSentPayloads: Record<string, any> = {};
-  private readonly debouncing: BaseNodeDebounceRunning[];
+  private readonly debouncing: Record<string, BaseNodeDebounceRunning>;
 
   public static createFunction() {
     const NodeClass = this;
@@ -54,7 +55,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
     setTimeout(() => this.initialize(), this.options.initializeDelay);
 
-    this.debouncing = [];
+    this.debouncing = {};
   }
 
   protected onClose() {
@@ -65,8 +66,12 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     this.nodeStatus = null;
   }
 
-  protected onInput(msg: any, send: any, done: any) {
-    this.debounce({ received_msg: msg, send: send });
+  protected onInput(
+    msg: NodeMessageInFlow,
+    send: NodeRedSend,
+    done: NodeRedDone
+  ) {
+    this.debounce({ msg: msg, send });
 
     if (done) {
       done();
@@ -76,15 +81,22 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   protected debounce(data: BaseNodeDebounceData): void {
     if (this.config.debounce) {
       const key = this.config.debounceTopic
-        ? data.received_msg.topic
+        ? (data.msg.topic ?? "default")
         : "default";
 
-      if (!this.debouncing[key]) {
-        this.debouncing[key] = { timer: null, lastData: {} };
-      }
+      const lastData: BaseNodeDebounceData = {
+        ...data,
+        msg: this.cloneMessage(data.msg),
+      };
 
-      this.debouncing[key].lastData = _.cloneDeep(data);
-      delete this.debouncing[key].lastData.received_msg._msgid;
+      if (this.debouncing[key]) {
+        this.debouncing[key].lastData = lastData;
+      } else {
+        this.debouncing[key] = {
+          timer: null,
+          lastData,
+        };
+      }
 
       if (!this.debouncing[key].timer) {
         if (this.config.debounceLeading) {
@@ -107,10 +119,11 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
             }
 
             if (this.config.debounceTrailing) {
-              this.debouncing[key].lastData.send = this.node.send.bind(
-                this.node
-              );
-              this.debounceListener(_.cloneDeep(this.debouncing[key].lastData));
+              const lastData = this.debouncing[key].lastData;
+              lastData.send = this.node.send.bind(this.node);
+              lastData.msg = this.cloneMessage(lastData.msg);
+
+              this.debounceListener(lastData);
             }
           },
           convertToMilliseconds(
@@ -125,8 +138,14 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
   }
 
   protected debounceListener(data: BaseNodeDebounceData) {
-    this.sendMsg(data.received_msg, data);
+    this.sendMsg(data.msg, data);
     this.updateStatusAfterDebounce(data);
+  }
+
+  protected cloneMessage(msg: NodeMessage): NodeMessage {
+    const clonedMsg = _.cloneDeep(msg);
+    delete clonedMsg._msgid;
+    return clonedMsg;
   }
 
   protected updateStatusAfterDebounce(_: BaseNodeDebounceData) {
@@ -194,7 +213,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     return text;
   }
 
-  protected sendMsg(received_msg: any, options: NodeSendOptions = {}) {
+  protected sendMsg(received_msg: NodeMessage, options: NodeSendOptions = {}) {
     const topicValue = RED.util.evaluateNodeProperty(
       this.config.topic,
       this.config.topicType,
@@ -229,7 +248,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
 
   private filterPayload(
     lastSentPayloads: Record<string, any>,
-    msg: any,
+    msg: NodeMessage,
     compareKey: string
   ) {
     if (typeof msg.payload === "object" && msg.payload !== null) {
@@ -243,7 +262,7 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     this.lastSentPayloads = {};
   }
 
-  protected sendMsgToOutput(msg: any, options: NodeSendOptions = {}) {
+  protected sendMsgToOutput(msg: NodeMessage, options: NodeSendOptions = {}) {
     if (options.additionalAttributes) {
       Object.assign(msg, options.additionalAttributes);
     }

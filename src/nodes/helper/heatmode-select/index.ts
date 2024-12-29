@@ -9,6 +9,10 @@ import {
   HeatModeSelectNodeConfig,
   HeatModeSelectNodeType,
 } from "./types";
+import {
+  AutomationGateCommand,
+  AutomationGateNodeMessage,
+} from "../../flowctrl/automation-gate/types";
 
 export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNodeConfig> {
   constructor(node: Node, config: HeatModeSelectNodeConfig) {
@@ -54,7 +58,7 @@ export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNode
   }
 
   protected debounceListener(data: BaseNodeDebounceData): void {
-    const msg = data.received_msg;
+    const msg = data.msg;
 
     this.sendMsg(msg, data);
     this.nodeStatus = data.payload;
@@ -67,12 +71,12 @@ export default class HeatModeSelectNode extends MatchJoinNode<HeatModeSelectNode
       if (!inProgress) {
         this.sendMsgToOutput(
           {
-            gate: "pause",
+            gate: AutomationGateCommand.Pause,
             pause: convertToMilliseconds(
               this.config.pauseTime,
               this.config.pauseTimeUnit
             ),
-          },
+          } as AutomationGateNodeMessage,
           { send: data.send, output: 1 }
         );
       }

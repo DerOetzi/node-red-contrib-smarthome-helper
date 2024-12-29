@@ -1,3 +1,4 @@
+import { NodeMessage } from "node-red";
 import { NodeColor, NodeType } from "../../types";
 import {
   BaseNodeConfig,
@@ -55,7 +56,12 @@ export interface MatchJoinNodeEditorProperties
 }
 
 export interface MatchJoinNodeData extends BaseNodeDebounceData {
+  msg: MatchJoinNodeMessage;
   input: any;
+}
+
+export interface MatchJoinNodeMessage extends NodeMessage {
+  originalTopic?: string;
 }
 
 export const MatchJoinNodeType = new NodeType(
