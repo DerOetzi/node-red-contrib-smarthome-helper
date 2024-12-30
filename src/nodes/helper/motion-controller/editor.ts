@@ -1,111 +1,152 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
+import BaseNodeEditor, {
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
+import MotionControllerNode from "./";
+import { motionControllerMigration } from "./migration";
 import {
-  getMatchers,
-  initializeMatcherRows,
-  removeTarget,
-  showHideTarget,
-} from "../../flowctrl/match-join/editor";
-import {
-  defaultMotionControllerNodeConfig,
-  MotionControllerNodeEditorProperties,
-  MotionControllerNodeType,
+  MotionControllerEditorNodeProperties,
+  MotionControllerEditorNodePropertiesDefaults,
+  MotionControllerNodeOptionsDefaults,
+  MotionControllerTarget,
 } from "./types";
 
-const MotionControllerNodeEditor: EditorNodeDef<MotionControllerNodeEditorProperties> =
+const inputMatcherList = new MatchJoinEditableList({
+  targets: Object.values(MotionControllerTarget),
+  translatePrefix: "helper.motion-controller",
+});
+
+const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProperties> =
   {
-    ...BaseNodeEditor,
-    category: MotionControllerNodeType.categoryLabel,
-    color: MotionControllerNodeType.color,
-    defaults: {
-      ...BaseNodeEditor.defaults,
-      matchers: {
-        value: defaultMotionControllerNodeConfig.matchers!,
-        required: true,
-      },
-      join: {
-        value: defaultMotionControllerNodeConfig.join!,
-        required: true,
-      },
-      discardNotMatched: {
-        value: defaultMotionControllerNodeConfig.discardNotMatched!,
-        required: true,
-      },
-      minMsgCount: {
-        value: defaultMotionControllerNodeConfig.minMsgCount!,
-        required: true,
-      },
-      timer: {
-        value: defaultMotionControllerNodeConfig.timer!,
-        required: true,
-      },
-      timerUnit: {
-        value: defaultMotionControllerNodeConfig.timerUnit!,
-        required: true,
-      },
-      onlyDarkness: {
-        value: defaultMotionControllerNodeConfig.onlyDarkness!,
-        required: true,
-      },
-      nightmodeEnabled: {
-        value: defaultMotionControllerNodeConfig.nightmodeEnabled!,
-        required: true,
-      },
-      onCommand: {
-        value: defaultMotionControllerNodeConfig.onCommand!,
-        required: true,
-      },
-      offCommand: {
-        value: defaultMotionControllerNodeConfig.offCommand!,
-        required: true,
-      },
-      nightmodeCommand: {
-        value: defaultMotionControllerNodeConfig.nightmodeCommand!,
-        required: true,
-      },
-      statusDelay: {
-        value: defaultMotionControllerNodeConfig.statusDelay!,
-        required: true,
-      },
-      outputs: {
-        value: defaultMotionControllerNodeConfig.outputs!,
-        required: true,
-      },
-    },
-    icon: "motion.svg",
+    category: MotionControllerNode.NodeCategory.label,
+    color: MotionControllerNode.NodeColor,
+    icon: "font-awesome/fa-male",
+    defaults: MotionControllerEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || MotionControllerNodeType.name;
+      return this.name || i18n("helper.motion-controller.name");
     },
-    outputLabels: ["Action", "Status"],
+    inputs: MotionControllerNodeOptionsDefaults.inputs,
+    outputs: MotionControllerNodeOptionsDefaults.outputs,
+    outputLabels: function (index: number) {
+      const outputs = ["action", "status"];
+      return i18n(`helper.motion-controller.output.${outputs[index]}`);
+    },
+    onadd: function () {
+      this.onCommand = i18n("helper.light-controller.default.onCommand");
+      this.offCommand = i18n("helper.light-controller.default.offCommand");
+      this.nightmodeCommand = i18n(
+        "helper.light-controller.default.nightmodeCommand"
+      );
+    },
     oneditprepare: function () {
+      motionControllerMigration.checkAndMigrate(this);
+
       BaseNodeEditor.oneditprepare!.call(this);
 
-      initializeMatcherRows(this.matchers, {
-        targets: ["motion", "darkness", "night", "manual_control", "command"],
-        translatePrefix: "helper.motion-controller.target",
-        t: this._.bind(this),
+      inputMatcherList.initialize("matcher-rows", this.matchers, {
+        translatePrefix: "flowctrl.match-join",
       });
 
-      showHideTarget(this.onlyDarkness, "darkness");
+      const motionControllerOptionsBuilder = new NodeEditorFormBuilder(
+        $("#motion-controller-options"),
+        {
+          translatePrefix: "helper.motion-controller",
+        }
+      );
 
-      let nightmodeCommandRow = $("#node-input-nightmodeCommand")
+      motionControllerOptionsBuilder.createTimeInput({
+        id: "node-input-timer",
+        idType: "timerUnit",
+        label: "timer",
+        value: this.timer,
+        valueType: this.timerUnit,
+        icon: "clock-o",
+      });
+
+      motionControllerOptionsBuilder
+        .createCheckboxInput({
+          id: "node-input-onlyDarkness",
+          label: "onlyDarkness",
+          value: this.onlyDarkness,
+          icon: "lightbulb-o",
+        })
+        .on("change", function () {
+          inputMatcherList.showHideTarget(
+            $(this).is(":checked"),
+            MotionControllerTarget.darkness
+          );
+        });
+
+      inputMatcherList.showHideTarget(
+        this.onlyDarkness,
+        MotionControllerTarget.darkness
+      );
+
+      const nightmodeEnabledCheckbox =
+        motionControllerOptionsBuilder.createCheckboxInput({
+          id: "node-input-nightmodeEnabled",
+          label: "nightmodeEnabled",
+          value: this.nightmodeEnabled,
+          icon: "moon-o",
+        });
+
+      inputMatcherList.showHideTarget(
+        this.nightmodeEnabled,
+        MotionControllerTarget.night
+      );
+
+      motionControllerOptionsBuilder.createTimeInput({
+        id: "node-input-initializeDelay",
+        idType: "node-input-initializeDelayUnit",
+        label: "initializeDelay",
+        value: this.initializeDelay!,
+        valueType: this.initializeDelayUnit!,
+        icon: "pause",
+      });
+
+      motionControllerOptionsBuilder.line();
+
+      motionControllerOptionsBuilder.createTextInput({
+        id: "node-input-onCommand",
+        label: "onCommand",
+        value: this.onCommand,
+        icon: "play",
+        translatePrefix: "helper.light-controller",
+      });
+
+      motionControllerOptionsBuilder.createTextInput({
+        id: "node-input-offCommand",
+        label: "offCommand",
+        value: this.offCommand,
+        icon: "stop",
+        translatePrefix: "helper.light-controller",
+      });
+
+      const nightmodeCommandRow = motionControllerOptionsBuilder
+        .createTextInput({
+          id: "node-input-nightmodeCommand",
+          label: "nightmodeCommand",
+          value: this.nightmodeCommand,
+          icon: "moon-o",
+          translatePrefix: "helper.light-controller",
+        })
         .parent()
         .toggle(this.nightmodeEnabled);
 
-      showHideTarget(this.nightmodeEnabled, "night");
-
-      $("#node-input-onlyDarkness").on("change", function () {
-        removeTarget($(this).is(":checked"), "darkness");
-      });
-
-      $("#node-input-nightmodeEnabled").on("change", function () {
-        nightmodeCommandRow.toggle($(this).is(":checked"));
-        removeTarget($(this).is(":checked"), "night");
+      nightmodeEnabledCheckbox.on("change", function () {
+        const nightmodeEnabled = $(this).is(":checked");
+        inputMatcherList.removeTarget(
+          nightmodeEnabled,
+          MotionControllerTarget.night
+        );
+        nightmodeCommandRow.toggle(nightmodeEnabled);
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers();
+      this.matchers = inputMatcherList.values();
     },
   };
 
-export default MotionControllerNodeEditor;
+export default MotionControllerEditorNode;

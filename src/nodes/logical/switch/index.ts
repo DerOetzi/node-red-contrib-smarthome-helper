@@ -1,31 +1,29 @@
-import { Node } from "node-red";
-import { RED } from "../../../globals";
+import { Node, NodeAPI } from "node-red";
 import BaseNode from "../../flowctrl/base";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import { NodeCategory, NodeColor } from "../../types";
+import { logicalCategory } from "../types";
 import {
-  BaseNodeDebounceData,
-  BaseNodeOptions,
-} from "../../flowctrl/base/types";
-import { NodeType } from "../../types";
-import {
-  defaultSwitchNodeConfig,
-  SwitchNodeConfig,
-  SwitchNodeType,
+  SwitchNodeDef,
+  SwitchNodeOptions,
+  SwitchNodeOptionsDefaults,
 } from "./types";
 
 export default class SwitchNode<
-  T extends SwitchNodeConfig = SwitchNodeConfig,
-> extends BaseNode<T> {
-  constructor(
-    node: Node,
-    config: SwitchNodeConfig,
-    options: BaseNodeOptions = {}
-  ) {
-    config = { ...defaultSwitchNodeConfig, ...config };
-    super(node, config as T, options);
-  }
+  T extends SwitchNodeDef = SwitchNodeDef,
+  U extends SwitchNodeOptions = SwitchNodeOptions,
+> extends BaseNode<T, U> {
+  public static readonly NodeCategory: NodeCategory = logicalCategory;
+  public static readonly NodeType: string = "switch";
+  public static readonly NodeColor: NodeColor = NodeColor.Logical;
 
-  static get type(): NodeType {
-    return SwitchNodeType;
+  constructor(
+    RED: NodeAPI,
+    node: Node,
+    config: T,
+    defaultConfig: U = SwitchNodeOptionsDefaults as U
+  ) {
+    super(RED, node, config, defaultConfig);
   }
 
   protected debounceListener(data: BaseNodeDebounceData): void {
@@ -46,7 +44,7 @@ export default class SwitchNode<
       return;
     }
 
-    const targetValue = RED.util.evaluateNodeProperty(
+    const targetValue = this.RED.util.evaluateNodeProperty(
       configValue,
       configType,
       this.node,

@@ -1,54 +1,95 @@
-import { NodeColor, NodeType } from "../../types";
+import { EditorNodePropertiesDef } from "node-red";
 import {
-  defaultMatcherRow,
-  MatchJoinNodeConfig,
-  MatchJoinNodeData,
-  MatchJoinNodeEditorProperties,
-  MatchJoinNodeMessage,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeOptionsDefaults,
+} from "../../flowctrl/base/types";
+import {
+  MatcherRowDefaults,
+  MatchJoinEditorNodeProperties,
+  MatchJoinNodeDef,
+  MatchJoinNodeOptions,
 } from "../../flowctrl/match-join/types";
-import { operatorCategory } from "../types";
+
+export enum ArithmeticFunction {
+  add = "add",
+  sub = "sub",
+  mul = "mul",
+  round = "round",
+  mean = "mean",
+  min = "min",
+  max = "max",
+}
+
+export enum ArithmeticTarget {
+  value = "value",
+  minuend = "minuend",
+}
 
 export interface AdditionalValueRow {
   value: string;
   valueType: string;
 }
 
-export interface ArithmeticNodeConfig extends MatchJoinNodeConfig {
-  operation: string;
-  minValueCount: number;
-  precision: number;
-  additionalValues?: AdditionalValueRow[];
-}
-
-export const defaultArithmeticNodeConfig: Partial<ArithmeticNodeConfig> = {
-  matchers: [{ ...defaultMatcherRow, target: "value", targetType: "str" }],
-  operation: "add",
-  precision: 0,
-  join: false,
-  minMsgCount: 1,
-  minValueCount: 1,
-  discardNotMatched: true,
-  additionalValues: [],
-};
-
-export interface ArithmeticNodeEditorProperties
-  extends MatchJoinNodeEditorProperties {
-  operation: string;
+export interface ArithmeticNodeOptions extends MatchJoinNodeOptions {
+  operation: ArithmeticFunction;
   minValueCount: number;
   precision: number;
   additionalValues: AdditionalValueRow[];
 }
 
-export interface ArithmeticNodeMessage extends MatchJoinNodeMessage {
-  originalTopic: string;
-}
+export const ArithmeticNodeOptionsDefaults: ArithmeticNodeOptions = {
+  ...BaseNodeOptionsDefaults,
+  matchers: [{ ...MatcherRowDefaults, target: "value", targetType: "str" }],
+  discardNotMatched: true,
+  join: false,
+  minMsgCount: 1,
+  operation: ArithmeticFunction.add,
+  minValueCount: 1,
+  precision: 0,
+  additionalValues: [],
+};
 
-export interface ArithmeticNodeData extends MatchJoinNodeData {
-  msg: ArithmeticNodeMessage;
-}
+export interface ArithmeticNodeDef
+  extends MatchJoinNodeDef,
+    ArithmeticNodeOptions {}
 
-export const ArithmeticNodeType = new NodeType(
-  operatorCategory,
-  "arithmetic",
-  NodeColor.Base
-);
+export interface ArithmeticEditorNodeProperties
+  extends MatchJoinEditorNodeProperties,
+    ArithmeticNodeOptions {}
+
+export const ArithmeticEditorNodePropertiesDefaults: EditorNodePropertiesDef<ArithmeticEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    matchers: {
+      value: ArithmeticNodeOptionsDefaults.matchers,
+      required: true,
+    },
+    discardNotMatched: {
+      value: ArithmeticNodeOptionsDefaults.discardNotMatched,
+      required: true,
+    },
+    join: {
+      value: ArithmeticNodeOptionsDefaults.join,
+      required: true,
+    },
+    minMsgCount: {
+      value: ArithmeticNodeOptionsDefaults.minMsgCount,
+      required: true,
+    },
+    operation: {
+      value: ArithmeticNodeOptionsDefaults.operation,
+      required: true,
+    },
+    minValueCount: {
+      value: ArithmeticNodeOptionsDefaults.minValueCount,
+      required: true,
+    },
+    precision: {
+      value: ArithmeticNodeOptionsDefaults.precision,
+      required: true,
+    },
+    additionalValues: {
+      value: ArithmeticNodeOptionsDefaults.additionalValues,
+      required: false,
+    },
+  };

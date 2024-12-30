@@ -1,61 +1,74 @@
-import { Node } from "node-red";
+import { Node, NodeAPI } from "node-red";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { NodeType } from "../../types";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
+import { NodeCategory, NodeColor } from "../../types";
+import { helperCategory } from "../types";
 import {
-  defaultNotifyDispatcherNodeConfig,
-  NotifyDispatcherNodeConfig,
-  NotifyDispatcherNodeData,
-  NotifyDispatcherNodeType,
+  NotifyDispatcherNodeDef,
+  NotifyDispatcherNodeMessage,
+  NotifyDispatcherNodeOptions,
+  NotifyDispatcherNodeOptionsDefaults,
+  NotifyDispatcherPersonMetadata,
+  NotifyDispatcherTarget,
 } from "./types";
 
-export default class NotifyDispatcherNode extends MatchJoinNode<NotifyDispatcherNodeConfig> {
-  constructor(node: Node, config: NotifyDispatcherNodeConfig) {
-    config = { ...defaultNotifyDispatcherNodeConfig, ...config };
+export default class NotifyDispatcherNode extends MatchJoinNode<
+  NotifyDispatcherNodeDef,
+  NotifyDispatcherNodeOptions
+> {
+  public static readonly NodeCategory: NodeCategory = helperCategory;
+  public static readonly NodeType = "notify-dispatcher";
+  public static readonly NodeColor: NodeColor = NodeColor.Notification;
 
-    config.matchers.push({
-      property: "notify",
-      propertyType: "msg",
-      operator: "not_empty",
-      compare: "",
-      compareType: "str",
-      target: "message",
-      targetType: "str",
-    });
+  private personStates: Partial<Record<NotifyDispatcherTarget, boolean>> = {};
 
-    super(node, config);
+  constructor(RED: NodeAPI, node: Node, config: NotifyDispatcherNodeDef) {
+    super(RED, node, config, NotifyDispatcherNodeOptionsDefaults);
   }
 
-  static get type(): NodeType {
-    return NotifyDispatcherNodeType;
-  }
-
-  protected matched(data: NotifyDispatcherNodeData): void {
+  protected matched(data: MatchJoinNodeData): void {
     const msg = data.msg;
 
-    if (msg.topic === "message") {
-      const notify = msg.notify;
-      data.payload = notify;
+    if (msg.topic === NotifyDispatcherTarget.message) {
+      this.dispatchMessage(data);
+    } else if (this.isPersonTarget(msg.topic as string)) {
+      this.personStates[msg.topic as NotifyDispatcherTarget] =
+        msg.payload as boolean;
+    }
+  }
 
-      let found = false;
-      const onlyAtHome = notify.onlyAtHome ?? false;
-      if (onlyAtHome) {
-        this.config.matchers.forEach((matcher, index) => {
-          let target = matcher.target;
-          if (target.startsWith("person")) {
-            const person = data.input[target];
-            if (person === true) {
-              data.output = index + 1;
-              this.debounce(data);
-              found = true;
-            }
-          }
-        });
-      }
+  private dispatchMessage(data: MatchJoinNodeData) {
+    const msg = data.msg as NotifyDispatcherNodeMessage;
+    const notify = msg.notify;
+    data.payload = notify;
 
-      if (!(onlyAtHome && found)) {
-        data.output = 0;
-        this.debounce(data);
+    let broadcast = !(notify.onlyAtHome ?? false);
+
+    if (!broadcast) {
+      broadcast = true;
+
+      for (const [key, value] of Object.entries(this.personStates)) {
+        if (value) {
+          const metadata =
+            NotifyDispatcherPersonMetadata[key as NotifyDispatcherTarget];
+          data.output = metadata.output;
+          broadcast = false;
+          this.debounce(data);
+        }
       }
     }
+
+    if (broadcast) {
+      data.output = 0;
+      this.debounce(data);
+    }
+  }
+
+  private isPersonTarget(target: string): boolean {
+    return (
+      Object.values(NotifyDispatcherTarget).includes(
+        target as NotifyDispatcherTarget
+      ) && target.startsWith("person")
+    );
   }
 }

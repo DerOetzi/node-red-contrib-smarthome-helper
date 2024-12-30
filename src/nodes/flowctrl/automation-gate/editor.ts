@@ -1,68 +1,101 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../base/editor";
+import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "../base/editor";
+import AutomationGateNode from "./";
 import {
-  AutomationGateNodeEditorProperties,
-  AutomationGateNodeType,
-  defaultAutomationGateNodeConfig,
+  AutomationGateEditorNodeProperties,
+  AutomationGateEditorNodePropertiesDefaults,
+  AutomationGateNodeOptionsDefaults,
 } from "./types";
 
-const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties> =
+const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties> =
   {
-    ...BaseNodeEditor,
-    color: AutomationGateNodeType.color,
-    defaults: {
-      ...BaseNodeEditor.defaults,
-      startupState: {
-        value: defaultAutomationGateNodeConfig.startupState!,
-        required: false,
-      },
-      statusDelay: {
-        value: defaultAutomationGateNodeConfig.statusDelay!,
-        required: false,
-      },
-      autoReplay: {
-        value: defaultAutomationGateNodeConfig.autoReplay!,
-        required: false,
-      },
-      stateOpenLabel: {
-        value: defaultAutomationGateNodeConfig.stateOpenLabel!,
-        required: true,
-      },
-      stateClosedLabel: {
-        value: defaultAutomationGateNodeConfig.stateClosedLabel!,
-        required: true,
-      },
-      setAutomationInProgress: {
-        value: defaultAutomationGateNodeConfig.setAutomationInProgress!,
-        required: false,
-      },
-      automationProgressId: {
-        value: defaultAutomationGateNodeConfig.automationProgressId!,
-        required: false,
-      },
-      outputs: {
-        value: defaultAutomationGateNodeConfig.outputs!,
-        required: true,
-      },
-    },
+    category: AutomationGateNode.NodeCategory.label,
+    color: AutomationGateNode.NodeColor,
+    icon: "font-awesome/fa-chain-broken",
+    defaults: AutomationGateEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || AutomationGateNodeType.name;
+      return this.name || i18n("flowctrl.automation-gate.name");
     },
+    inputs: AutomationGateNodeOptionsDefaults.inputs,
+    outputs: AutomationGateNodeOptionsDefaults.outputs,
     outputLabels: ["Messages when gate is open", "Gate state updates"],
-    icon: "gate.png",
+    onadd: function () {
+      this.stateOpenLabel = i18n("flowctrl.automation-gate.stateOpenLabel");
+      this.stateClosedLabel = i18n("flowctrl.automation-gate.stateClosedLabel");
+    },
     oneditprepare: function () {
-      BaseNodeEditor.oneditprepare!.call(this);
+      BaseEditorNode.oneditprepare!.call(this);
 
-      const automationProgressIdRow = $("#node-input-automationProgressId")
+      const automationGateOptionsBuilder = new NodeEditorFormBuilder(
+        $("#automation-gate-options"),
+        {
+          translatePrefix: "flowctrl.automation-gate",
+        }
+      );
+
+      automationGateOptionsBuilder.createCheckboxInput({
+        id: "node-input-startupState",
+        label: "startupState",
+        value: this.startupState,
+        icon: "play",
+      });
+
+      automationGateOptionsBuilder.createTimeInput({
+        id: "node-input-initializeDelay",
+        idType: "node-input-initializeDelayUnit",
+        label: "initializeDelay",
+        value: this.initializeDelay,
+        valueType: this.initializeDelayUnit,
+        icon: "pause",
+      });
+
+      automationGateOptionsBuilder.createCheckboxInput({
+        id: "node-input-autoReplay",
+        label: "autoReplay",
+        value: this.autoReplay,
+        icon: "refresh",
+      });
+
+      automationGateOptionsBuilder.line();
+
+      automationGateOptionsBuilder.createTextInput({
+        id: "node-input-stateOpenLabel",
+        label: "stateOpenLabel",
+        value: this.stateOpenLabel,
+        icon: "tag",
+      });
+
+      automationGateOptionsBuilder.createTextInput({
+        id: "node-input-stateClosedLabel",
+        label: "stateClosedLabel",
+        value: this.stateClosedLabel,
+        icon: "tag",
+      });
+
+      automationGateOptionsBuilder.line();
+
+      const setAutomationInProgressCheckbox =
+        automationGateOptionsBuilder.createCheckboxInput({
+          id: "node-input-setAutomationInProgress",
+          label: "setAutomationInProgress",
+          value: this.setAutomationInProgress,
+          icon: "play-circle",
+        });
+
+      const automationProgressIdInputRow = automationGateOptionsBuilder
+        .createTextInput({
+          id: "node-input-automationProgressId",
+          label: "automationProgressId",
+          value: this.automationProgressId!,
+          icon: "tag",
+        })
         .parent()
         .toggle(this.setAutomationInProgress);
 
-      $("#node-input-setAutomationInProgress").on("change", function () {
-        automationProgressIdRow.toggle($(this).is(":checked"));
+      setAutomationInProgressCheckbox.on("change", function () {
+        automationProgressIdInputRow.toggle($(this).is(":checked"));
       });
     },
   };
 
-export default AutomationGateNodeEditor;
-
-export { AutomationGateNodeType };
+export default AutomationGateEditorNode;

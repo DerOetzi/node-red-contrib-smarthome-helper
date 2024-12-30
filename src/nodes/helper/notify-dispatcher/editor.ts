@@ -1,71 +1,82 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
+import BaseNodeEditor, {
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
+import NotifyDispatcherNode from "./";
+import { notifyDispatcherMigration } from "./migration";
 import {
-  getMatchers,
-  initializeMatcherRows,
-} from "../../flowctrl/match-join/editor";
-import {
-  defaultNotifyDispatcherNodeConfig,
-  NotifyDispatcherNodeEditorProperties,
-  NotifyDispatcherNodeType,
+  NotifyDispatcherEditorNodeDefaults,
+  NotifyDispatcherEditorNodeProperties,
+  NotifyDispatcherNodeOptionsDefaults,
+  NotifyDispatcherTarget,
 } from "./types";
 
-const NotifyDispatcherNodeEditor: EditorNodeDef<NotifyDispatcherNodeEditorProperties> =
+const inputMatcherList = new MatchJoinEditableList({
+  targets: Object.values(NotifyDispatcherTarget),
+  translatePrefix: "helper.notify-dispatcher",
+});
+
+const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProperties> =
   {
-    ...BaseNodeEditor,
-    category: NotifyDispatcherNodeType.categoryLabel,
-    color: NotifyDispatcherNodeType.color,
-    defaults: {
-      ...BaseNodeEditor.defaults,
-      matchers: {
-        value: defaultNotifyDispatcherNodeConfig.matchers!,
-        required: true,
-      },
-      join: { value: defaultNotifyDispatcherNodeConfig.join!, required: false },
-      discardNotMatched: {
-        value: defaultNotifyDispatcherNodeConfig.discardNotMatched!,
-        required: false,
-      },
-      minMsgCount: {
-        value: defaultNotifyDispatcherNodeConfig.minMsgCount!,
-        required: true,
-      },
-      outputs: {
-        value: defaultNotifyDispatcherNodeConfig.outputs!,
-        required: true,
-      },
+    category: NotifyDispatcherNode.NodeCategory.label,
+    color: NotifyDispatcherNode.NodeColor,
+    icon: "font-awesome/fa-bell",
+    defaults: NotifyDispatcherEditorNodeDefaults,
+    label: function () {
+      return this.name || i18n("helper.notify-dispatcher.name");
     },
+    inputs: NotifyDispatcherNodeOptionsDefaults.inputs,
+    outputs: NotifyDispatcherNodeOptionsDefaults.outputs,
     outputLabels: (index: number) => {
       return index === 0 ? "broadcast" : "person " + index;
     },
-    icon: "person.svg",
-    label: function () {
-      return this.name || NotifyDispatcherNodeType.name;
-    },
     oneditprepare: function () {
+      notifyDispatcherMigration.checkAndMigrate(this);
       BaseNodeEditor.oneditprepare!.call(this);
-      initializeMatcherRows(this.matchers, {
-        targets: [
-          "person1",
-          "person2",
-          "person3",
-          "person4",
-          "person5",
-          "person6",
-          "person7",
-          "person8",
-        ],
-        translatePrefix: "helper.notify-dispatcher.target",
-        t: this._.bind(this),
+
+      inputMatcherList.initialize("matcher-rows", this.matchers, {
+        translatePrefix: "flowctrl.match-join",
       });
+
+      const notifyDispatcherOptionsBuilder = new NodeEditorFormBuilder(
+        $("#notify-dispatcher-options"),
+        {
+          translatePrefix: "helper.notify-dispatcher",
+        }
+      );
+
+      for (let i = 1; i <= 10; i++) {
+        inputMatcherList.showHideTarget(i <= this.persons, `person${i}`);
+      }
+
+      const outputsHidden = notifyDispatcherOptionsBuilder.createHiddenInput({
+        id: "node-input-outputs",
+        value: this.outputs,
+      });
+
+      notifyDispatcherOptionsBuilder
+        .createNumberInput({
+          id: "node-input-persons",
+          label: "persons",
+          value: this.persons,
+          icon: "hashtag",
+          min: 0,
+          max: 10,
+        })
+        .on("change", function () {
+          const persons = parseInt($(this).val() as string, 10);
+          for (let i = 1; i <= 10; i++) {
+            inputMatcherList.removeTarget(i <= persons, `person${i}`);
+          }
+
+          outputsHidden.val(persons + 1);
+        });
     },
     oneditsave: function () {
-      this.matchers = getMatchers();
-      this.outputs = this.matchers.length + 1;
-      this.minMsgCount = this.matchers.length + 1;
+      this.matchers = inputMatcherList.values();
     },
   };
 
-export default NotifyDispatcherNodeEditor;
-
-export { NotifyDispatcherNodeType };
+export default NotifyDispatcherEditorNode;

@@ -1,0 +1,10 @@
+{
+    "errorLens.delay": 1000,
+    "errorLens.fontSize": "0.8em",
+    "errorLens.fontStyleItalic": true,
+    "errorLens.gutterIconsEnabled": true,
+    "errorLens.ignoreDirty": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
+}

@@ -130,3 +130,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+src/version.ts
+
+.devcontainer/node-red-data/.config.*.json
+.devcontainer/node-red-data/**/*.backup
+.devcontainer/node-red-data/package.json

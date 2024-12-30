@@ -1,0 +1,16 @@
+{
+    "name": "Automatisierungsschleuse",
+    "label": {
+        "startupState": "Beim Start öffnen",
+        "initializeDelay": "Verzögerung init. Status",
+        "autoReplay": "Autom. Wiederholung bei Fortsetzung",
+        "stateOpenLabel": "Beschriftung offen",
+        "stateClosedLabel": "Beschriftung geschlossen",
+        "setAutomationInProgress": "Automatisierung läuft setzen",
+        "automationProgressId": "Kennung"
+    },
+    "default": {
+        "stateOpenLabel": "Automatisch",
+        "stateClosedLabel": "Manuell"
+    }
+}

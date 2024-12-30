@@ -1,0 +1,14 @@
+{
+    "name": "Logical Switch",
+    "label": {
+        "target": "Set property",
+        "trueValue": "True",
+        "falseValue": "False",
+        "seperatedOutputs": "Seperated Outputs"
+    },
+    "output": {
+        "true": "True",
+        "false": "False",
+        "result": "Logical result"
+    }
+}

@@ -1,11 +1,38 @@
 {
-    "target": {
-        "activeCondition": "Bedingung aktiv",
-        "comfortTemperature": "Komforttemperatur",
-        "ecoTemperatureOffset": "Offset ECO-Temperatur",
-        "windowOpen": "Fenster offen",
-        "manual_control": "Manuelle Bedienung",
-        "command": "Befehl"
+    "name": "Heizungssteuerung",
+    "label": {
+        "target": "Parameter",
+        "pause": "Pause",
+        "boostTemperatureOffset": "Boost Temperatur-Offset",
+        "frostProtectionTemperature": "Frostschutz Temperature",
+        "initializeDelay": "Verzögerung init. Status",
+        "comfortCommand": "Komfortbefehl",
+        "ecoCommand": "Absenk Befehl",
+        "boostCommand": "Boost Befehl",
+        "frostProtectionCommand": "Frostschutz Befehl"
+    },
+    "matcher-rows": "Eingabeparameter",
+    "default": {
+        "comfortCommand": "Komfort",
+        "ecoCommand": "Absenk",
+        "boostCommand": "Boost",
+        "frostProtectionCommand": "Frostschutz"
+    },
+    "select": {
+        "target": {
+            "activeCondition": "Bedingung aktiv",
+            "comfortTemperature": "Komforttemperatur",
+            "ecoTemperatureOffset": "Offset Absenktemperatur",
+            "windowOpen": "Fenster offen",
+            "manualControl": "Manuelle Bedienung",
+            "command": "Befehl"
+        }
+    },
+    "output": {
+        "heatmode": "Heizmodus",
+        "temperature": "Temperatur",
+        "window": "Fenster offen",
+        "status": "Status"
     },
     "status": {
         "automationOn": "Automatisch",

@@ -1,0 +1,17 @@
+{
+    "label": {
+        "operation": "Operation",
+        "minMsgCount": "Minimale Nachrichtenzahl"
+    },
+    "select": {
+        "operation": {
+            "and": "UND",
+            "or": "ODER",
+            "not": "NICHT",
+            "xor": "EXKLUSIV ODER",
+            "nand": "NICHT UND",
+            "nor": "NICHT ODER",
+            "nxor": "NICHT EXKLUSIV ODER"
+        }
+    }
+}

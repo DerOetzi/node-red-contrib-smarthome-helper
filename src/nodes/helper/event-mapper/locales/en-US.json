@@ -1,5 +1,14 @@
 {
-    "target": {
-        "event": "event"
+    "name": "Event Mapper",
+    "rule-rows": "Mapping rules",
+    "label": {
+        "event": "Input",
+        "mapped": "Mappe event",
+        "ignoreUnknownEvents": "Ignore unknown events"
+    },
+    "select": {
+        "target": {
+            "event": "event"
+        }
     }
 }

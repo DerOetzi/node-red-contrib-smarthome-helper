@@ -1,39 +1,32 @@
-import { Node, NodeStatusFill } from "node-red";
-import { RED } from "../../../globals";
-import { NodeRedDone, NodeRedSend } from "../../../types";
-import { comparators } from "../../logical/compare/operations";
-import { NodeType } from "../../types";
+import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
+import { CompareOperation } from "../../logical/compare";
+import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
 import BaseNode from "../base";
-import { BaseNodeOptions } from "../base/types";
+import { NodeStatus } from "../base/types";
 import {
-  defaultMatchJoinNodeConfig,
-  MatchJoinNodeConfig,
   MatchJoinNodeData,
+  MatchJoinNodeDef,
   MatchJoinNodeMessage,
-  MatchJoinNodeType,
+  MatchJoinNodeOptions,
+  MatchJoinNodeOptionsDefaults,
 } from "./types";
 
 export default class MatchJoinNode<
-  T extends MatchJoinNodeConfig = MatchJoinNodeConfig,
-> extends BaseNode<T> {
+  T extends MatchJoinNodeDef = MatchJoinNodeDef,
+  U extends MatchJoinNodeOptions = MatchJoinNodeOptions,
+> extends BaseNode<T, U> {
+  public static readonly NodeType: string = "match-join";
+  public static readonly NodeColor: NodeColor = NodeColor.Base;
+
   private messages: Record<string, any> = {};
 
-  static get type(): NodeType {
-    return MatchJoinNodeType;
-  }
-
   constructor(
+    RED: NodeAPI,
     node: Node,
-    config: MatchJoinNodeConfig,
-    options: BaseNodeOptions = {}
+    config: T,
+    defaultConfig: U = MatchJoinNodeOptionsDefaults as U
   ) {
-    config = { ...defaultMatchJoinNodeConfig, ...config };
-    if (config.join) {
-      options = {
-        filterkey: "filterMessages",
-      };
-    }
-    super(node, config as T, options);
+    super(RED, node, config, defaultConfig);
   }
 
   protected onClose() {
@@ -42,43 +35,47 @@ export default class MatchJoinNode<
   }
 
   public onInput(
-    msg: MatchJoinNodeMessage,
-    send: NodeRedSend,
-    done: NodeRedDone
+    msg: NodeMessage,
+    send: NodeSendFunction,
+    done: NodeDoneFunction
   ) {
     const matcher = this.config.matchers.find((matcher) => {
-      const propertyValue = RED.util.getMessageProperty(msg, matcher.property);
-      const compareValue = RED.util.evaluateNodeProperty(
+      const propertyValue = this.RED.util.getMessageProperty(
+        msg,
+        matcher.property
+      );
+      const compareValue = this.RED.util.evaluateNodeProperty(
         matcher.compare,
         matcher.compareType,
         this.node,
         msg
       );
 
-      const comparator = comparators[matcher.operator];
-      let result: boolean;
-      if (comparator.propertyOnly) {
-        result = comparator.func(propertyValue);
-      } else {
-        result = comparator.func(propertyValue, compareValue);
-      }
+      const result = CompareOperation.func(
+        matcher.operation,
+        propertyValue,
+        compareValue
+      );
 
       return result;
     });
 
-    if (matcher) {
-      const targetValue = RED.util.evaluateNodeProperty(
-        matcher.target,
-        matcher.targetType,
-        this.node,
-        msg
-      );
-
-      msg.originalTopic = msg.topic;
-      msg.topic = targetValue;
-    }
-
     if (matcher || !this.config.discardNotMatched) {
+      let matchedMsg: MatchJoinNodeMessage = {
+        ...msg,
+        originalTopic: msg.topic ?? "",
+        input: msg.payload,
+      };
+
+      if (matcher) {
+        matchedMsg.topic = this.RED.util.evaluateNodeProperty(
+          matcher.target,
+          matcher.targetType,
+          this.node,
+          msg
+        );
+      }
+
       if (this.config.join) {
         if (!msg.topic) {
           this.node.error("No topic set for message");
@@ -88,23 +85,20 @@ export default class MatchJoinNode<
         this.messages[msg.topic] = msg.payload;
 
         if (Object.keys(this.messages).length >= this.config.minMsgCount) {
+          matchedMsg.input = this.messages;
           this.matched({
-            input: this.messages,
-            msg,
+            msg: matchedMsg,
             send,
             payload: this.messages,
-            additionalAttributes: { input: this.messages },
           });
         } else {
           this.nodeStatus = "waiting";
         }
       } else {
-        //TODO Possible bug payload is not set
         this.matched({
-          input: msg.payload,
-          msg,
+          msg: matchedMsg,
           send,
-          additionalAttributes: { input: msg.payload },
+          payload: msg.payload,
         });
       }
     }
@@ -118,7 +112,7 @@ export default class MatchJoinNode<
     this.debounce(data);
   }
 
-  protected statusColor(status: any): NodeStatusFill {
+  protected statusColor(status: NodeStatus): NodeStatusFill {
     let color: NodeStatusFill = "red";
     if (status === null || status === undefined || status === "") {
       color = "grey";

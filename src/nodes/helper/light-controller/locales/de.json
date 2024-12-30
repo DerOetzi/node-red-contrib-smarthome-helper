@@ -1,8 +1,40 @@
 {
-    "target": {
-        "command": "Befehl",
-        "colorTemperature": "Farbspektrum",
-        "hue": "Hue",
-        "saturation": "Sättigung"
+    "label": {
+        "identifier": "Lampe",
+        "lightbulbType": "Lampentyp",
+        "homeAssistantOutput": "Home Assistant Ausgabe",
+        "onBrightness": "Helligkeit",
+        "transitionTime": "Übergangszeit",
+        "colorTemperature": "Farbtemperatur",
+        "nightmodeBrightness": "Nachtmodus Helligkeit",
+        "colorCycle": "Farbzyklus",
+        "fixColorHue": "Farbton",
+        "fixColorSaturation": "Sättigung",
+        "onCommand": "Befehl Ein",
+        "offCommand": "Befehl Aus",
+        "nightmodeCommand": "Befehl Nachtmodus"
+    },
+    "identifier-rows": "Glühbirnen",
+    "default": {
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht"
+    },
+    "select": {
+        "target": {
+            "command": "Befehl",
+            "colorTemperature": "Farbtemperatur",
+            "hue": "Farbton",
+            "saturation": "Sättigung"
+        },
+        "lightbulbType": {
+            "dimmable": "Dimmbar",
+            "colortemperature": "Farbtemperatur",
+            "switch": "Schalter",
+            "rgb": "RGB"
+        }
+    },
+    "output": {
+        "command": "Befehl"
     }
 }

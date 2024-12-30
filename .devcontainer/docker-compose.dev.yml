@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  dev-container:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm
+    volumes:
+      - ${LOCAL_WORKSPACE_FOLDER:-../}:/workspace
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+  node-red:
+    image: nodered/node-red:latest
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./node-red-data:/data
+      - ${LOCAL_WORKSPACE_FOLDER:-../}:/data/node_modules/node-red-contrib-smarthome-helper
+    environment:
+      - NODE_ENV=development
+

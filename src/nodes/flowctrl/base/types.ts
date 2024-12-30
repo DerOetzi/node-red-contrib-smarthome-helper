@@ -1,55 +1,134 @@
-import { EditorNodeProperties, NodeDef, NodeMessage } from "node-red";
-import { NodeRedSend } from "../../../types";
-import { NodeColor, NodeType } from "../../types";
-import { flowctrlCategory } from "../types";
+import {
+  EditorNodeProperties,
+  EditorNodePropertiesDef,
+  EditorWidgetTypedInputType,
+  EditorWidgetTypedInputTypeDefinition,
+  NodeDef,
+  NodeMessage,
+} from "node-red";
+import { TimeIntervalUnit } from "../../../helpers/time.helper";
+import version from "../../../version";
+import { NodeSendFunction } from "../../types";
 
-export interface BaseNodeConfig extends NodeDef {
+interface BaseNodeCommonOptions {
+  version: string;
   topic: string;
   topicType: string;
+  filterUniquePayload: boolean;
+  newMsg: boolean;
+  outputs: number;
+  inputs?: 0 | 1;
+  initializeDelay: number;
+  initializeDelayUnit: TimeIntervalUnit;
+  filterkey?: string;
+}
+
+const BaseNodeCommonOptionsDefaults: BaseNodeCommonOptions = {
+  version: version,
+  topic: "topic",
+  topicType: "msg",
+  filterUniquePayload: false,
+  newMsg: false,
+  outputs: 1,
+  inputs: 1,
+  initializeDelay: 100,
+  initializeDelayUnit: TimeIntervalUnit.ms,
+};
+
+interface BaseNodeDebounceOptions {
   debounce: boolean;
   debounceTopic: boolean;
   debounceShowStatus: boolean;
   debounceTime: number;
-  debounceUnit: string;
+  debounceUnit: TimeIntervalUnit;
   debounceLeading: boolean;
   debounceTrailing: boolean;
-  filterUniquePayload: boolean;
-  newMsg: boolean;
-  outputs: number;
 }
 
-export const defaultBaseNodeConfig: Partial<BaseNodeConfig> = {
-  topic: "topic",
-  topicType: "msg",
+const BaseNodeDebounceOptionsDefaults: BaseNodeDebounceOptions = {
   debounce: false,
   debounceTopic: false,
   debounceShowStatus: false,
   debounceTime: 100,
-  debounceUnit: "ms",
+  debounceUnit: TimeIntervalUnit.ms,
   debounceLeading: false,
   debounceTrailing: true,
-  filterUniquePayload: false,
-  newMsg: false,
-  outputs: 1,
 };
 
-export interface BaseNodeEditorProperties extends EditorNodeProperties {
-  topic: string;
-  topicType: string;
-  debounce: boolean;
-  debounceTopic: boolean;
-  debounceShowStatus: boolean;
-  debounceTime: number;
-  debounceUnit: string;
-  debounceLeading: boolean;
-  debounceTrailing: boolean;
-  filterUniquePayload: boolean;
-  newMsg: boolean;
-  outputs: number;
+export interface BaseNodeOptions
+  extends BaseNodeCommonOptions,
+    BaseNodeDebounceOptions {}
+
+export const BaseNodeOptionsDefaults: BaseNodeOptions = {
+  ...BaseNodeCommonOptionsDefaults,
+  ...BaseNodeDebounceOptionsDefaults,
+};
+
+export interface BaseNodeDef extends NodeDef, BaseNodeOptions {}
+
+export interface BaseEditorNodeProperties
+  extends EditorNodeProperties,
+    BaseNodeOptions {
+  migrated: boolean;
 }
 
+export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEditorNodeProperties> =
+  {
+    name: { value: "", required: false },
+    version: { value: BaseNodeOptionsDefaults.version, required: true },
+    migrated: { value: false, required: true },
+    topic: { value: BaseNodeOptionsDefaults.topic, required: true },
+    topicType: {
+      value: BaseNodeOptionsDefaults.topicType,
+      required: true,
+    },
+    initializeDelay: {
+      value: BaseNodeOptionsDefaults.initializeDelay,
+      required: true,
+    },
+    initializeDelayUnit: {
+      value: BaseNodeOptionsDefaults.initializeDelayUnit,
+      required: true,
+    },
+    debounce: {
+      value: BaseNodeOptionsDefaults.debounce,
+      required: false,
+    },
+    debounceTopic: {
+      value: BaseNodeOptionsDefaults.debounceTopic,
+      required: false,
+    },
+    debounceTime: {
+      value: BaseNodeOptionsDefaults.debounceTime,
+      required: false,
+    },
+    debounceShowStatus: {
+      value: BaseNodeOptionsDefaults.debounceShowStatus,
+      required: false,
+    },
+    debounceUnit: {
+      value: BaseNodeOptionsDefaults.debounceUnit,
+      required: false,
+    },
+    debounceLeading: {
+      value: BaseNodeOptionsDefaults.debounceLeading,
+      required: false,
+    },
+    debounceTrailing: {
+      value: BaseNodeOptionsDefaults.debounceTrailing,
+      required: false,
+    },
+    filterUniquePayload: {
+      value: BaseNodeOptionsDefaults.filterUniquePayload,
+      required: false,
+    },
+    newMsg: { value: BaseNodeOptionsDefaults.newMsg, required: false },
+    outputs: { value: BaseNodeOptionsDefaults.outputs, required: true },
+    inputs: { value: BaseNodeOptionsDefaults.inputs!, required: true },
+  };
+
 export interface NodeSendOptions {
-  send?: NodeRedSend;
+  send?: NodeSendFunction;
   payload?: any;
   output?: number;
   additionalAttributes?: Record<string, any>;
@@ -61,15 +140,7 @@ export interface NodeStatusOutputConfig {
   topic: string;
 }
 
-export interface BaseNodeOptions {
-  statusOutput?: NodeStatusOutputConfig;
-  initializeDelay?: number;
-  filterkey?: string;
-}
-
-export const defaultBaseNodeOptions: BaseNodeOptions = {
-  initializeDelay: 100,
-};
+export type NodeStatus = string | number | boolean | Date | null;
 
 export interface BaseNodeDebounceData extends NodeSendOptions {
   msg: NodeMessage;
@@ -80,8 +151,64 @@ export interface BaseNodeDebounceRunning {
   lastData: BaseNodeDebounceData;
 }
 
-export const BaseNodeType = new NodeType(
-  flowctrlCategory,
-  "base",
-  NodeColor.Base
-);
+export interface NodeEditorFormBuilderParams {
+  translatePrefix: string;
+  createUniqueIds?: boolean;
+  defaultTypeInputWidth?: number;
+}
+
+export interface NodeEditorFormBuilderInputParams {
+  id: string;
+  label: string;
+  icon: string;
+  value?: string | number | boolean;
+  translatePrefix?: string;
+  translateLabelPrefix?: string;
+}
+
+export interface NodeEditorFormBuilderNumberInputParams
+  extends NodeEditorFormBuilderInputParams {
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+export interface NodeEditorFormBuilderTypedInputParams
+  extends NodeEditorFormBuilderInputParams {
+  idType: string;
+  valueType: string;
+  types?: (EditorWidgetTypedInputType | EditorWidgetTypedInputTypeDefinition)[];
+  width?: number;
+}
+
+export interface NodeEditorFormBuilderAutocompleteMatch {
+  value: string;
+  label: string;
+  i: number;
+}
+
+export interface NodeEditorFormBuilderAutocompleteInputParams
+  extends NodeEditorFormBuilderInputParams {
+  search: (term: string) => Promise<NodeEditorFormBuilderAutocompleteMatch[]>;
+}
+
+export interface NodeEditorFormBuilderTimeInputParams
+  extends NodeEditorFormBuilderInputParams {
+  idType: string;
+  valueType?: TimeIntervalUnit;
+}
+
+export interface NodeEditorFormBuilderSelectOption {
+  value: string;
+  label: string;
+}
+
+export interface NodeEditorFormBuilderSelectParams
+  extends NodeEditorFormBuilderInputParams {
+  options: (string | NodeEditorFormBuilderSelectOption)[];
+}
+
+export interface NodeEditorFormBuilderHiddenInputParams {
+  id: string;
+  value: string | number | boolean;
+}

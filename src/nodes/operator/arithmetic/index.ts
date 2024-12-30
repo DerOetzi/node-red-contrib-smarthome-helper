@@ -1,40 +1,69 @@
-import { Node } from "node-red";
-import { RED } from "../../../globals";
+import { Node, NodeAPI } from "node-red";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { NodeType } from "../../types";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
+import { NodeCategory, NodeColor } from "../../types";
+import { operatorCategory } from "../types";
 import {
-  addOp,
-  maxOp,
-  meanOp,
-  minOp,
-  mulOp,
-  roundOp,
-  subOp,
-} from "./operations";
-import {
-  ArithmeticNodeConfig,
-  ArithmeticNodeData,
-  ArithmeticNodeType,
-  defaultArithmeticNodeConfig,
+  ArithmeticFunction,
+  ArithmeticNodeDef,
+  ArithmeticNodeOptions,
+  ArithmeticNodeOptionsDefaults,
+  ArithmeticTarget,
 } from "./types";
 
-export default class ArithmeticNode extends MatchJoinNode<ArithmeticNodeConfig> {
-  static get type(): NodeType {
-    return ArithmeticNodeType;
+export class ArithmeticOperation {
+  public static add(addends: number[]): number {
+    return addends.reduce((acc, value) => acc + value, 0);
   }
 
+  public static sub(minuend: number, subtrahends: number[]): number {
+    return subtrahends.reduce((acc, value) => acc - value, minuend);
+  }
+
+  public static mul(factors: number[]): number {
+    return factors.reduce((acc, value) => acc * value, 1);
+  }
+
+  public static round(value: number, precision: number = 0): number {
+    const factor = Math.pow(10, precision);
+    return Math.round(value * factor) / factor;
+  }
+
+  public static mean(values: number[]): number {
+    return values.length > 0
+      ? values.reduce((acc, value) => acc + value, 0) / values.length
+      : 0;
+  }
+
+  public static min(values: number[]): number {
+    return Math.min(...values);
+  }
+
+  public static max(values: number[]): number {
+    return Math.max(...values);
+  }
+}
+
+export default class ArithmeticNode extends MatchJoinNode<
+  ArithmeticNodeDef,
+  ArithmeticNodeOptions
+> {
+  public static readonly NodeCategory: NodeCategory = operatorCategory;
+  public static readonly NodeType: string = "arithmetic";
+  public static readonly NodeColor: NodeColor = NodeColor.Base;
+
   constructor(
+    RED: NodeAPI,
     node: Node,
-    config: ArithmeticNodeConfig,
+    config: ArithmeticNodeDef,
     private minuend: number,
     private values: Record<string, number> = {}
   ) {
-    config = { ...defaultArithmeticNodeConfig, ...config };
-    super(node, config);
+    super(RED, node, config, ArithmeticNodeOptionsDefaults);
   }
 
-  protected matched(data: ArithmeticNodeData): void {
+  protected matched(data: MatchJoinNodeData): void {
     const msg = data.msg;
     const valueType = msg.topic;
 
@@ -44,10 +73,10 @@ export default class ArithmeticNode extends MatchJoinNode<ArithmeticNodeConfig> 
     }
 
     switch (valueType) {
-      case "minuend":
+      case ArithmeticTarget.minuend:
         this.minuend = msg.payload;
         break;
-      case "value":
+      case ArithmeticTarget.value:
         this.values[msg.originalTopic] = msg.payload;
         break;
     }
@@ -64,35 +93,43 @@ export default class ArithmeticNode extends MatchJoinNode<ArithmeticNodeConfig> 
 
     this.config.additionalValues?.forEach((row) => {
       values.push(
-        RED.util.evaluateNodeProperty(row.value, row.valueType, this.node, msg)
+        this.RED.util.evaluateNodeProperty(
+          row.value,
+          row.valueType,
+          this.node,
+          msg
+        )
       );
     });
 
     switch (this.config.operation) {
-      case "add":
-        data.payload = addOp(values);
+      case ArithmeticFunction.add:
+        data.payload = ArithmeticOperation.add(values);
         break;
-      case "sub":
-        data.payload = subOp(this.minuend, values);
+      case ArithmeticFunction.sub:
+        data.payload = ArithmeticOperation.sub(this.minuend, values);
         break;
-      case "mul":
-        data.payload = mulOp(values);
+      case ArithmeticFunction.mul:
+        data.payload = ArithmeticOperation.mul(values);
         break;
-      case "round":
+      case ArithmeticFunction.round:
         data.payload = msg.payload;
         break;
-      case "mean":
-        data.payload = meanOp(values);
+      case ArithmeticFunction.mean:
+        data.payload = ArithmeticOperation.mean(values);
         break;
-      case "min":
-        data.payload = minOp(values);
+      case ArithmeticFunction.min:
+        data.payload = ArithmeticOperation.min(values);
         break;
-      case "max":
-        data.payload = maxOp(values);
+      case ArithmeticFunction.max:
+        data.payload = ArithmeticOperation.max(values);
         break;
     }
 
-    data.payload = roundOp(data.payload, this.config.precision);
+    data.payload = ArithmeticOperation.round(
+      data.payload,
+      this.config.precision
+    );
 
     this.debounce(data);
   }

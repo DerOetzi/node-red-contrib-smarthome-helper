@@ -1,41 +1,46 @@
-import { Node } from "node-red";
-import { RED } from "../../../globals";
+import { Node, NodeAPI } from "node-red";
+import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { NodeType } from "../../types";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
+import { LogicalOperation } from "../../logical/op";
+import { NodeCategory, NodeColor } from "../../types";
 import {
   NotifyDispatcherNodeMessage,
   NotifyMessage,
 } from "../notify-dispatcher/types";
+import { helperCategory } from "../types";
 import {
-  defaultWindowReminderNodeConfig,
-  WindowReminderNodeConfig,
-  WindowReminderNodeType,
+  WindowReminderNodeDef,
+  WindowReminderNodeOptions,
+  WindowReminderNodeOptionsDefaults,
+  WindowReminderTarget,
 } from "./types";
-import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
-import NotifyDispatcherNode from "../notify-dispatcher";
 
-export default class WindowReminderNode extends MatchJoinNode<WindowReminderNodeConfig> {
+export default class WindowReminderNode extends MatchJoinNode<
+  WindowReminderNodeDef,
+  WindowReminderNodeOptions
+> {
+  public static readonly NodeCategory: NodeCategory = helperCategory;
+  public static readonly NodeType: string = "window-reminder";
+  public static readonly NodeColor: NodeColor = NodeColor.Notification;
+
+  private windows: Record<string, boolean> = {};
+  private presence: boolean = true;
   private timer: NodeJS.Timeout | null = null;
 
-  constructor(node: Node, config: WindowReminderNodeConfig) {
-    config = { ...defaultWindowReminderNodeConfig, ...config };
-    super(node, config);
-  }
-
-  static get type(): NodeType {
-    return WindowReminderNodeType;
+  constructor(RED: NodeAPI, node: Node, config: WindowReminderNodeDef) {
+    super(RED, node, config, WindowReminderNodeOptionsDefaults);
   }
 
   protected matched(data: MatchJoinNodeData): void {
-    const trigger = data.msg.topic;
-    const window = data.payload.window;
-    const presence = data.payload.presence;
+    const msg = data.msg;
 
-    if (trigger === "window") {
-      if (window === true) {
+    if (msg.topic === WindowReminderTarget.window) {
+      this.windows[msg.originalTopic] = msg.payload as boolean;
+      if (this.isWindowOpen()) {
         this.setTimer();
-        if (presence === false) {
+        if (!this.presence) {
           this.sendMsg({
             topic: "alarm",
             notify: this.prepareNotification("alarm"),
@@ -44,8 +49,9 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
       } else {
         this.clearTimer();
       }
-    } else if (trigger === "presence" && window) {
-      if (presence === false) {
+    } else if (msg.topic === WindowReminderTarget.presence) {
+      this.presence = msg.payload as boolean;
+      if (this.isWindowOpen() && !this.presence) {
         this.sendMsg({
           topic: "leaving",
           notify: this.prepareNotification("leaving"),
@@ -53,22 +59,33 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
       }
     }
 
-    this.nodeStatus = window;
+    this.nodeStatus = this.isWindowOpen();
+  }
+
+  private isWindowOpen(): boolean {
+    return LogicalOperation.or(Object.values(this.windows));
   }
 
   private setTimer(): void {
     this.clearTimer();
     const notification = this.prepareNotification("normal", true);
     if (this.config.interval > 0) {
-      this.timer = setInterval(() => {
-        this.debounce({
-          msg: {
-            topic: "reminder",
-            notify: notification,
-          } as NotifyDispatcherNodeMessage,
-        });
-      }, this.config.interval * 60000);
+      this.timer = setInterval(
+        () => {
+          this.debounce({
+            msg: {
+              topic: "reminder",
+              notify: notification,
+            } as NotifyDispatcherNodeMessage,
+          });
+        },
+        convertToMilliseconds(this.config.interval, this.config.intervalUnit)
+      );
     }
+  }
+
+  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+    this.nodeStatus = this.isWindowOpen();
   }
 
   private prepareNotification(
@@ -76,10 +93,12 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
     onlyAtHome: boolean = false
   ): NotifyMessage {
     return {
-      title: RED._("helper.window-reminder.notification.title"),
-      message: RED._(
+      title: this.RED._("helper.window-reminder.notification.title"),
+      message: this.RED._(
         `helper.window-reminder.notification.${messageIdentifier}`
-      ).replace("{windowName}", this.config.name),
+      )
+        .replace("{windowName}", this.config.name)
+        .replace("  ", " "),
       onlyAtHome: onlyAtHome,
     };
   }
@@ -95,9 +114,9 @@ export default class WindowReminderNode extends MatchJoinNode<WindowReminderNode
     status = super.statusTextFormatter(status);
 
     if (status === "true") {
-      status = RED._("helper.window-reminder.status.open");
+      status = this.RED._("helper.window-reminder.status.open");
     } else if (status === "false") {
-      status = RED._("helper.window-reminder.status.closed");
+      status = this.RED._("helper.window-reminder.status.closed");
     }
 
     return status;

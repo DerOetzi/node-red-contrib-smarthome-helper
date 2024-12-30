@@ -1,43 +1,46 @@
-import { Node, NodeMessageInFlow } from "node-red";
+import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
-import { NodeRedDone, NodeRedSend } from "../../../types";
-import { NodeType } from "../../types";
+import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
 import {
   AutomationGateCommand,
   AutomationGateNodeMessage,
 } from "../automation-gate/types";
 import BaseNode from "../base";
 import {
-  defaultGateControlNodeConfig,
-  GateControlNodeConfig,
-  GateControlNodeType,
+  GateControlNodeDef,
+  GateControlNodeOptions,
+  GateControlNodeOptionsDefaults,
 } from "./types";
 
-export default class GateControlNode extends BaseNode<GateControlNodeConfig> {
+export default class GateControlNode extends BaseNode<
+  GateControlNodeDef,
+  GateControlNodeOptions
+> {
+  public static readonly NodeType: string = "gate-control";
+  public static readonly NodeColor: NodeColor = NodeColor.AutomationGate;
+
   private readonly gateControlMsg: AutomationGateNodeMessage;
 
-  constructor(node: Node, config: GateControlNodeConfig) {
-    config = { ...defaultGateControlNodeConfig, ...config };
-
-    super(node, config);
+  constructor(RED: NodeAPI, node: Node, config: GateControlNodeDef) {
+    super(RED, node, config, GateControlNodeOptionsDefaults);
 
     this.gateControlMsg = {
-      gate: config.gateCommand,
+      gate: this.config.gateCommand,
     };
 
     if (config.gateCommand === AutomationGateCommand.Pause) {
       this.gateControlMsg.pause = convertToMilliseconds(
-        config.pauseTime!,
-        config.pauseUnit
+        this.config.pauseTime!,
+        this.config.pauseUnit
       );
     }
   }
 
-  static get type(): NodeType {
-    return GateControlNodeType;
-  }
-
-  public onInput(msg: NodeMessageInFlow, send: NodeRedSend, done: NodeRedDone) {
+  public onInput(
+    msg: NodeMessageInFlow,
+    send: NodeSendFunction,
+    done: NodeDoneFunction
+  ) {
     const gateControlMsg: AutomationGateNodeMessage = {
       ...this.gateControlMsg,
       originalMsg: msg,

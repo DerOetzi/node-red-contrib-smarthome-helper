@@ -1,236 +1,281 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
+import BaseNodeEditor, {
+  i18n,
+  NodeEditorFormBuilder,
+  NodeEditorFormEditableList,
+} from "../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
+import LightControllerNode from "./";
+import { lightControllerMigration } from "./migration";
 import {
-  removeTarget,
-  getMatchers,
-  initializeMatcherRows,
-  showHideTarget,
-} from "../../flowctrl/match-join/editor";
-import {
-  defaultLightControllerNodeConfig,
-  LightControllerNodeEditorProperties,
-  LightControllerNodeType,
+  LightControllerEditorNodeProperties,
+  LightControllerEditorNodePropertiesDefaults,
+  LightControllerNodeOptionsDefaults,
+  LightControllerTarget,
   LightIdentifierRow,
+  LightType,
 } from "./types";
+const inputMatcherList = new MatchJoinEditableList({
+  targets: Object.values(LightControllerTarget),
+  translatePrefix: "helper.light-controller",
+});
 
-const LightControllerNodeEditor: EditorNodeDef<LightControllerNodeEditorProperties> =
+class LightbulbIdentifiersEditableList extends NodeEditorFormEditableList<LightIdentifierRow> {
+  protected addItem(data: LightIdentifierRow) {
+    this.rowBuilder!.createTypedInput({
+      id: "identifier",
+      idType: "identifierType",
+      label: "identifier",
+      value: data.identifier ?? "",
+      valueType: data.identifierType ?? "str",
+      icon: "tag",
+      types: ["str", "msg"],
+    });
+  }
+}
+
+const identifierList = new LightbulbIdentifiersEditableList();
+
+const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperties> =
   {
-    ...BaseNodeEditor,
-    category: LightControllerNodeType.categoryLabel,
-    color: LightControllerNodeType.color,
-    defaults: {
-      ...BaseNodeEditor.defaults,
-      matchers: {
-        value: defaultLightControllerNodeConfig.matchers!,
-        required: true,
-      },
-      join: {
-        value: defaultLightControllerNodeConfig.join!,
-        required: true,
-      },
-      discardNotMatched: {
-        value: defaultLightControllerNodeConfig.discardNotMatched!,
-        required: true,
-      },
-      minMsgCount: {
-        value: defaultLightControllerNodeConfig.minMsgCount!,
-        required: true,
-      },
-      identifiers: {
-        value: defaultLightControllerNodeConfig.identifiers!,
-        required: true,
-      },
-      lightbulbType: {
-        value: defaultLightControllerNodeConfig.lightbulbType!,
-        required: true,
-      },
-      homeAssistantOutput: {
-        value: defaultLightControllerNodeConfig.homeAssistantOutput!,
-        required: false,
-      },
-      onBrightness: {
-        value: defaultLightControllerNodeConfig.onBrightness!,
-        required: true,
-      },
-      transitionTime: {
-        value: defaultLightControllerNodeConfig.transitionTime!,
-        required: true,
-      },
-      colorTemperature: {
-        value: defaultLightControllerNodeConfig.colorTemperature!,
-        required: true,
-      },
-      nightmodeBrightness: {
-        value: defaultLightControllerNodeConfig.nightmodeBrightness!,
-        required: true,
-      },
-      onCommand: {
-        value: defaultLightControllerNodeConfig.onCommand!,
-        required: true,
-      },
-      offCommand: {
-        value: defaultLightControllerNodeConfig.offCommand!,
-        required: true,
-      },
-      nightmodeCommand: {
-        value: defaultLightControllerNodeConfig.nightmodeCommand!,
-        required: true,
-      },
-      colorCycle: {
-        value: defaultLightControllerNodeConfig.colorCycle!,
-        required: false,
-      },
-      fixColorHue: {
-        value: defaultLightControllerNodeConfig.fixColorHue!,
-        required: true,
-      },
-      fixColorSaturation: {
-        value: defaultLightControllerNodeConfig.fixColorSaturation!,
-        required: true,
-      },
-    },
-    icon: "lightbulb.svg",
+    category: LightControllerNode.NodeCategory.label,
+    color: LightControllerNode.NodeColor,
+    icon: "font-awesome/fa-lightbulb-o",
+    defaults: LightControllerEditorNodePropertiesDefaults,
     label: function () {
-      const label = this.lightbulbType;
+      const label = i18n(
+        "helper.light-controller.select.lightbulbType." + this.lightbulbType
+      );
       return this.name ? `${this.name} (${label})` : label;
     },
+    inputs: LightControllerNodeOptionsDefaults.inputs,
+    outputs: LightControllerNodeOptionsDefaults.outputs,
+    outputLabels: function (_: number) {
+      return i18n("helper.light-controller.output.command");
+    },
+    onadd: function () {
+      this.onCommand = i18n("helper.light-controller.default.onCommand");
+      this.offCommand = i18n("helper.light-controller.default.offCommand");
+      this.nightmodeCommand = i18n(
+        "helper.light-controller.default.nightmodeCommand"
+      );
+    },
     oneditprepare: function () {
+      lightControllerMigration.checkAndMigrate(this);
+
       BaseNodeEditor.oneditprepare!.call(this);
 
-      initializeMatcherRows(this.matchers, {
-        targets: ["command", "colorTemperature", "hue", "saturation"],
-        translatePrefix: "helper.light-controller.target",
-        t: this._.bind(this),
+      inputMatcherList.initialize("matcher-rows", this.matchers, {
+        translatePrefix: "flowctrl.match-join",
       });
 
-      initializeIdentifierRows("#identifier-rows", this.identifiers);
+      identifierList.initialize("identifier-rows", this.identifiers, {
+        translatePrefix: "helper.light-controller",
+      });
 
-      let brightnessRow = $("#node-input-onBrightness")
-        .parent()
-        .toggle(this.lightbulbType !== "switch");
-
-      let transitionTimeRow = $("#node-input-transitionTime")
-        .parent()
-        .toggle(this.lightbulbType !== "switch");
-
-      let colortemperatureRow = $("#node-input-colorTemperature")
-        .parent()
-        .toggle(this.lightbulbType === "colortemperature");
-
-      showHideTarget(
-        this.lightbulbType === "colortemperature",
-        "colorTemperature"
+      const lightControllerOptionsBuilder = new NodeEditorFormBuilder(
+        $("#light-controller-options"),
+        { translatePrefix: "helper.light-controller" }
       );
 
-      let nightmodeBrightnessRow = $("#node-input-nightmodeBrightness")
+      const lightbulbTypeSelect =
+        lightControllerOptionsBuilder.createSelectInput({
+          id: "node-input-lightbulbType",
+          label: "lightbulbType",
+          value: this.lightbulbType,
+          options: Object.keys(LightType),
+          icon: "lightbulb-o",
+        });
+
+      const isColorTemperature =
+        this.lightbulbType === LightType.colortemperature;
+      const isSwitch = this.lightbulbType === LightType.switch;
+      const isRGB = this.lightbulbType === LightType.rgb;
+
+      lightControllerOptionsBuilder.createCheckboxInput({
+        id: "node-input-homeAssistantOutput",
+        label: "homeAssistantOutput",
+        value: this.homeAssistantOutput,
+        icon: "home",
+      });
+
+      lightControllerOptionsBuilder.line();
+
+      const brightnessRow = lightControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-onBrightness",
+          label: "onBrightness",
+          value: this.onBrightness,
+          icon: "sun",
+          min: 10,
+          max: 100,
+          step: 5,
+        })
         .parent()
-        .toggle(this.lightbulbType !== "switch");
+        .toggle(!isSwitch);
 
-      let nightmodeCommandRow = $("#node-input-nightmodeCommand")
+      const transitionTimeRow = lightControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-transitionTime",
+          label: "transitionTime",
+          value: this.transitionTime,
+          icon: "clock-o",
+          min: 0,
+          max: 10,
+          step: 0.1,
+        })
         .parent()
-        .toggle(this.lightbulbType !== "switch");
+        .toggle(!isSwitch);
 
-      let colorCycleRow = $("#node-input-colorCycle")
+      const colorTemperatureRow = lightControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-colorTemperature",
+          label: "colorTemperature",
+          value: this.colorTemperature,
+          icon: "lightbulb-o",
+          min: 153,
+          max: 500,
+          step: 1,
+        })
         .parent()
-        .toggle(this.lightbulbType === "rgb");
+        .toggle(isColorTemperature);
 
-      const showColor = this.lightbulbType === "rgb" && !this.colorCycle;
+      inputMatcherList.showHideTarget(
+        isColorTemperature,
+        LightControllerTarget.colorTemperature
+      );
 
-      let fixColorRow = $("#node-input-fixColorHue").parent().toggle(showColor);
+      const nightmodeBrightnessRow = lightControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-nightmodeBrightness",
+          label: "nightmodeBrightness",
+          value: this.nightmodeBrightness,
+          icon: "moon-o",
+          min: 5,
+          max: 40,
+          step: 5,
+        })
+        .parent()
+        .toggle(!isSwitch);
 
-      showHideTarget(showColor, "hue");
-      showHideTarget(showColor, "saturation");
+      const colorCycleInput = lightControllerOptionsBuilder.createCheckboxInput(
+        {
+          id: "node-input-colorCycle",
+          label: "colorCycle",
+          value: this.colorCycle,
+          icon: "refresh",
+        }
+      );
 
-      $("#node-input-lightbulbType").on("change", function () {
-        let lightbulbType = $(this).val() as string;
-        let isSwitch = lightbulbType === "switch";
+      const colorCycleRow = colorCycleInput.parent().toggle(isRGB);
+
+      const showColor = isRGB && !this.colorCycle;
+
+      const fixColorHueRow = lightControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-fixColorHue",
+          label: "fixColorHue",
+          value: this.fixColorHue,
+          icon: "paint-brush",
+          min: 0,
+          max: 360,
+        })
+        .parent()
+        .toggle(showColor);
+
+      const fixColorSaturationRow = lightControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-fixColorSaturation",
+          label: "fixColorSaturation",
+          value: this.fixColorSaturation,
+          icon: "adjust",
+          min: 0,
+          max: 100,
+        })
+        .parent()
+        .toggle(showColor);
+
+      inputMatcherList.showHideTarget(showColor, LightControllerTarget.hue);
+      inputMatcherList.showHideTarget(
+        showColor,
+        LightControllerTarget.saturation
+      );
+
+      lightControllerOptionsBuilder.line();
+
+      lightControllerOptionsBuilder.createTextInput({
+        id: "node-input-onCommand",
+        label: "onCommand",
+        value: this.onCommand,
+        icon: "play",
+      });
+
+      lightControllerOptionsBuilder.createTextInput({
+        id: "node-input-offCommand",
+        label: "offCommand",
+        value: this.offCommand,
+        icon: "stop",
+      });
+
+      const nightmodeCommandRow = lightControllerOptionsBuilder
+        .createTextInput({
+          id: "node-input-nightmodeCommand",
+          label: "nightmodeCommand",
+          value: this.nightmodeCommand,
+          icon: "moon-o",
+        })
+        .parent()
+        .toggle(!isSwitch);
+
+      lightbulbTypeSelect.on("change", function () {
+        const lightbulbType = $(this).val() as LightType;
+        const isColorTemperature = lightbulbType === LightType.colortemperature;
+        const isSwitch = lightbulbType === LightType.switch;
+        const isRGB = lightbulbType === LightType.rgb;
+        const showColor = isRGB && !colorCycleInput.is(":checked");
 
         brightnessRow.toggle(!isSwitch);
         transitionTimeRow.toggle(!isSwitch);
+
+        colorTemperatureRow.toggle(isColorTemperature);
+        inputMatcherList.removeTarget(
+          isColorTemperature,
+          LightControllerTarget.colorTemperature
+        );
+
         nightmodeBrightnessRow.toggle(!isSwitch);
+
+        colorCycleRow.toggle(isRGB);
+
+        fixColorHueRow.toggle(showColor);
+        fixColorSaturationRow.toggle(showColor);
+        inputMatcherList.removeTarget(showColor, LightControllerTarget.hue);
+        inputMatcherList.removeTarget(
+          showColor,
+          LightControllerTarget.saturation
+        );
+
         nightmodeCommandRow.toggle(!isSwitch);
-
-        colortemperatureRow.toggle(lightbulbType === "colortemperature");
-        removeTarget(lightbulbType === "colortemperature", "colorTemperature");
-
-        const showColor =
-          lightbulbType === "rgb" &&
-          !$("#node-input-colorCycle").is(":checked");
-
-        colorCycleRow.toggle(lightbulbType === "rgb");
-        fixColorRow.toggle(showColor);
-        removeTarget(showColor, "hue");
-        removeTarget(showColor, "saturation");
       });
 
-      $("#node-input-colorCycle").on("change", function () {
-        const showColor = !$(this).is(":checked");
-        fixColorRow.toggle(showColor);
-        removeTarget(showColor, "hue");
-        removeTarget(showColor, "saturation");
+      colorCycleInput.on("change", function () {
+        const isRGB =
+          (lightbulbTypeSelect.val() as LightType) === LightType.rgb;
+        const showColor = isRGB && !$(this).is(":checked");
+
+        fixColorHueRow.toggle(showColor);
+        fixColorSaturationRow.toggle(showColor);
+        inputMatcherList.removeTarget(showColor, LightControllerTarget.hue);
+        inputMatcherList.removeTarget(
+          showColor,
+          LightControllerTarget.saturation
+        );
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers();
-      this.identifiers = getIdentifiers("#identifier-rows");
+      this.matchers = inputMatcherList.values();
+      this.identifiers = identifierList.values();
     },
   };
 
-export function initializeIdentifierRows(
-  containerId: string,
-  identifiers: LightIdentifierRow[]
-) {
-  $(containerId)
-    .editableList({
-      addButton: true,
-      removable: true,
-      sortable: true,
-      height: "auto",
-      header: $("<div>").append($("<label>").text("Identifiers")),
-      addItem: function (container, index, data: LightIdentifierRow) {
-        container.css({
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-        });
-
-        container.attr("data-row", index);
-
-        const $row = $("<div />").appendTo(container);
-        const $row1 = $("<div />").appendTo($row).css("margin-bottom", "6px");
-
-        const identifierName = $("<input/>", {
-          class: "identifier-name",
-          type: "text",
-        })
-          .css("width", "100%")
-          .appendTo($row1)
-          .typedInput({
-            types: ["str", "msg"],
-          });
-
-        identifierName.typedInput("value", data.identifier ?? "");
-        identifierName.typedInput("type", data.identifierType ?? "str");
-      },
-    })
-    .editableList("addItems", identifiers || []);
-}
-
-export function getIdentifiers(containerId: string): LightIdentifierRow[] {
-  let identifiersList = $(containerId).editableList("items");
-  let identifiers: LightIdentifierRow[] = [];
-
-  identifiersList.each((_, row) => {
-    let identifier = $(row);
-
-    identifiers.push({
-      identifier: identifier.find(".identifier-name").typedInput("value"),
-      identifierType: identifier.find(".identifier-name").typedInput("type"),
-    });
-  });
-
-  return identifiers;
-}
-
-export default LightControllerNodeEditor;
-
-export { LightControllerNodeType };
+export default LightControllerEditorNode;

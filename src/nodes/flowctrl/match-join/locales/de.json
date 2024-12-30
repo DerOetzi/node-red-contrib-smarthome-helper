@@ -1,0 +1,15 @@
+{
+    "label": {
+        "discardNotMatched": "Nicht Übereinstimmende verwerfen",
+        "join": "Verbinden",
+        "minMsgCount": "Minimale Nachrichtenzahl",
+        "target": "Topic festlegen"
+    },
+    "fixedTargets": {
+        "matcher-rows": "Eingabeparameter",
+        "label": {
+            "target": "Parameter"
+        }
+    },
+    "matcher-rows": "Übereinstimmungen"
+}

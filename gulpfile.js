@@ -7,12 +7,12 @@ const lazypipe = require("lazypipe");
 const merge = require("merge-stream");
 const wrap = require("gulp-wrap");
 const { src, dest, task, parallel, watch, series } = require("gulp");
-const appendPrepend = require("gulp-append-prepend");
 
 // Source
 const buffer = require("gulp-buffer");
 const rollupStream = require("@rollup/stream");
 const rollupTypescript = require("@rollup/plugin-typescript");
+
 const source = require("vinyl-source-stream");
 
 const path = require("path");
@@ -112,13 +112,7 @@ task("buildEditorFiles", () => {
         /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]editor\.html/,
       );
       currentNode = category + "-" + node;
-      if (category === "flowctrl" && node === "base") {
-        return stream.pipe(buildForm());
-      } else {
-        return stream
-          .pipe(appendPrepend.appendFile("src/nodes/flowctrl/base/editor.html"))
-          .pipe(buildForm());
-      }
+      return stream.pipe(buildForm());
     }),
   );
 
@@ -143,6 +137,19 @@ task("buildEditorFiles", () => {
 
 task("buildSourceFiles", () => {
   return tsProject.src().pipe(tsProject()).js.pipe(dest(editorFilePath));
+});
+
+task("generateVersionFile", (cb) => {
+  const packageJsonPath = path.join(__dirname, "package.json");
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+  const versionFilePath = path.join("src", "version.ts");
+  const versionFileContent = `export default "${packageJson.version}";\n`;
+
+  fs.writeFileSync(versionFilePath, versionFileContent);
+  console.log(
+    `Generated ${versionFilePath} with version ${packageJson.version}`,
+  );
+  cb();
 });
 
 task("copyIcons", () => {
@@ -182,19 +189,22 @@ task("buildLocales", () => {
 
 task(
   "default",
-  parallel([
-    "buildEditorFiles",
-    "buildSourceFiles",
-    "copyIcons",
-    "buildLocales",
-  ]),
+  series(
+    "generateVersionFile",
+    parallel([
+      "buildEditorFiles",
+      "buildSourceFiles",
+      "copyIcons",
+      "buildLocales",
+    ]),
+  ),
 );
 
 task("watch", () => {
+  watch(["package.json"], series("generateVersionFile"));
   watch(["src/nodes/**/*.scss"], series("buildEditorFiles"));
   watch(["src/nodes/**/*.html"], series("buildEditorFiles"));
-  watch(["src/**/editor.ts"], series("buildEditorFiles"));
-  watch(["src/**/types.ts"], series("buildEditorFiles"));
+  watch(["src/**/*.ts"], series("buildEditorFiles"));
 
   watch(["src/**/*.ts", "!src/**/editor.ts"], series("buildSourceFiles"));
 

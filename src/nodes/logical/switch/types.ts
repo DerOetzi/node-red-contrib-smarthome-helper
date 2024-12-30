@@ -1,44 +1,76 @@
-import { NodeColor, NodeType } from "../../types";
+import { EditorNodePropertiesDef } from "node-red";
 import {
-  BaseNodeConfig,
-  BaseNodeEditorProperties,
+  BaseEditorNodeProperties,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeDef,
+  BaseNodeOptions,
+  BaseNodeOptionsDefaults,
 } from "../../flowctrl/base/types";
-import { logicalCategory } from "../types";
 
 type ValueType = "msg" | "str" | "num" | "bool";
 
-export interface SwitchNodeConfig extends BaseNodeConfig {
+export interface SwitchNodeOptions extends BaseNodeOptions {
   target: string;
-  trueValue: string;
+  targetType: string;
+  trueValue?: string;
   trueType: ValueType;
-  falseValue: string;
+  falseValue?: string;
   falseType: ValueType;
   seperatedOutputs: boolean;
   outputs: number;
 }
 
-export const defaultSwitchNodeConfig: Partial<SwitchNodeConfig> = {
+export const SwitchNodeOptionsDefaults: SwitchNodeOptions = {
+  ...BaseNodeOptionsDefaults,
   target: "payload",
-  trueValue: "payload",
-  trueType: "msg",
-  falseValue: "payload",
-  falseType: "msg",
+  targetType: "msg",
+  trueValue: "true",
+  trueType: "bool",
+  falseValue: "false",
+  falseType: "bool",
   seperatedOutputs: true,
   outputs: 2,
 };
 
-export interface SwitchNodeEditorProperties extends BaseNodeEditorProperties {
-  target: string;
-  trueValue: string;
-  trueType: ValueType;
-  falseValue: string;
-  falseType: ValueType;
-  seperatedOutputs: boolean;
-  outputs: number;
-}
+export interface SwitchNodeDef extends BaseNodeDef, SwitchNodeOptions {}
 
-export const SwitchNodeType = new NodeType(
-  logicalCategory,
-  "switch",
-  NodeColor.Logical
-);
+export interface SwitchEditorNodeProperties
+  extends BaseEditorNodeProperties,
+    SwitchNodeOptions {}
+
+export const SwitchEditorNodePropertiesDefaults: EditorNodePropertiesDef<SwitchEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    target: {
+      value: SwitchNodeOptionsDefaults.target,
+      required: true,
+    },
+    targetType: {
+      value: SwitchNodeOptionsDefaults.targetType,
+      required: true,
+    },
+    trueValue: {
+      value: SwitchNodeOptionsDefaults.trueValue,
+      required: false,
+    },
+    trueType: {
+      value: SwitchNodeOptionsDefaults.trueType,
+      required: true,
+    },
+    falseValue: {
+      value: SwitchNodeOptionsDefaults.falseValue,
+      required: false,
+    },
+    falseType: {
+      value: SwitchNodeOptionsDefaults.falseType,
+      required: true,
+    },
+    seperatedOutputs: {
+      value: SwitchNodeOptionsDefaults.seperatedOutputs,
+      required: true,
+    },
+    outputs: {
+      value: SwitchNodeOptionsDefaults.outputs,
+      required: true,
+    },
+  };

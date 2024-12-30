@@ -1,40 +1,46 @@
-import { Node, NodeStatusFill } from "node-red";
-import { RED } from "../../../globals";
+import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { andOp, orOp } from "../../logical/op/operations";
-import { NodeType } from "../../types";
+import { LogicalOperation } from "../../logical/op";
+import { NodeCategory, NodeColor } from "../../types";
+import { helperCategory } from "../types";
 import {
-  defaultHeatingControllerNodeConfig,
   HeatingControllerCommand,
-  HeatingControllerNodeConfig,
   HeatingControllerNodeData,
-  HeatingControllerNodeType,
+  HeatingControllerNodeDef,
+  HeatingControllerNodeOptions,
+  HeatingControllerNodeOptionsDefaults,
+  HeatingControllerTarget,
   HeatMode,
 } from "./types";
 
-export default class HeatingControllerNode extends MatchJoinNode<HeatingControllerNodeConfig> {
-  static get type(): NodeType {
-    return HeatingControllerNodeType;
-  }
+export default class HeatingControllerNode extends MatchJoinNode<
+  HeatingControllerNodeDef,
+  HeatingControllerNodeOptions
+> {
+  public static readonly NodeCategory: NodeCategory = helperCategory;
+  public static readonly NodeType: string = "heating-controller";
+  public static readonly NodeColor: NodeColor = NodeColor.Climate;
 
   private timer: NodeJS.Timeout | null = null;
 
-  constructor(
-    node: Node,
-    config: HeatingControllerNodeConfig,
-    private activeConditions: Record<string, boolean> = {},
-    private windowsStates: Record<string, boolean> = {},
-    private _blocked: boolean = false,
-    private comfortTemperature: number = 22,
-    private ecoTemperatureOffset: number = -2,
-    private lastHeatmode: string = ""
-  ) {
-    config = { ...defaultHeatingControllerNodeConfig, ...config };
-    super(node, config, {
-      statusOutput: { output: 3, topic: "controller_status", automatic: false },
-      initializeDelay: config.statusDelay,
+  private activeConditions: Record<string, boolean> = {};
+  private windowsStates: Record<string, boolean> = {};
+
+  private _blocked: boolean = false;
+  private lastHeatmode: string = "";
+
+  private comfortTemperature: number = 22;
+  private ecoTemperatureOffset: number = -2;
+
+  constructor(RED: NodeAPI, node: Node, config: HeatingControllerNodeDef) {
+    super(RED, node, config, HeatingControllerNodeOptionsDefaults);
+
+    this.registerStatusOutput({
+      output: 3,
+      topic: "controller_status",
+      automatic: false,
     });
   }
 
@@ -54,27 +60,26 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
     const topic = msg.topic;
 
     switch (topic) {
-      case "activeCondition":
+      case HeatingControllerTarget.activeCondition:
         this.activeConditions[msg.originalTopic] = msg.payload as boolean;
         this.handleActiveCondition();
         break;
-      case "comfortTemperature":
+      case HeatingControllerTarget.comfortTemperature:
         this.comfortTemperature = msg.payload as number;
-        this.sendAction(this.nodeStatus);
+        this.sendAction((this.nodeStatus as string) ?? "");
         break;
-      case "ecoTemperatureOffset":
+      case HeatingControllerTarget.ecoTemperatureOffset:
         this.ecoTemperatureOffset = msg.payload as number;
-        this.sendAction(this.nodeStatus);
+        this.sendAction((this.nodeStatus as string) ?? "");
         break;
-      case "command":
+      case HeatingControllerTarget.command:
         this.blocked = msg.command === HeatingControllerCommand.block;
-
         this.handleCommand(msg);
         break;
-      case "manual_control":
+      case HeatingControllerTarget.manualControl:
         this.handleManualControl(msg);
         break;
-      case "windowOpen":
+      case HeatingControllerTarget.windowOpen:
         this.windowsStates[msg.originalTopic] = msg.payload as boolean;
         this.handleWindowOpen(msg);
         break;
@@ -84,15 +89,15 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
   private handleActiveCondition() {
     if (!this.blocked) {
       if (this.isComfort()) {
-        this.sendAction(this.config.comfortCommand);
+        this.sendAction(this.config.comfortCommand!);
       } else {
-        this.sendAction(this.config.ecoCommand);
+        this.sendAction(this.config.ecoCommand!);
       }
     }
   }
 
   private isComfort(): boolean {
-    return andOp(Object.values(this.activeConditions));
+    return LogicalOperation.and(Object.values(this.activeConditions));
   }
 
   private handleManualControl(msg: any) {
@@ -158,13 +163,13 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
   }
 
   private handleWindowOpen(msg: any) {
-    const windowOpen = orOp(Object.values(this.windowsStates));
+    const windowOpen = LogicalOperation.or(Object.values(this.windowsStates));
 
     let ha_action = "";
 
     if (windowOpen) {
       this.blocked = true;
-      this.sendAction(this.config.frostProtectionCommand, true);
+      this.sendAction(this.config.frostProtectionCommand!, true);
       ha_action = "switch.turn_on";
     } else {
       this.blocked = false;
@@ -212,6 +217,7 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
       this.nodeStatus = this.lastHeatmode;
     }
   }
+
   protected statusColor(status: any): NodeStatusFill {
     let color: NodeStatusFill = "green";
 
@@ -229,15 +235,19 @@ export default class HeatingControllerNode extends MatchJoinNode<HeatingControll
     if (status === null) {
       text = "Unknown";
     } else if (this.blocked) {
-      text = RED._("helper.heating-controller.status.automationOff");
+      text = this.RED._("helper.heating-controller.status.automationOff");
     } else {
-      text = RED._("helper.heating-controller.status.automationOn");
+      text = this.RED._("helper.heating-controller.status.automationOn");
     }
 
     const targetTemperature = this.determineHeatingSetpoint(status);
 
-    text += " - " + status;
-    text += " (" + targetTemperature + " °C)";
+    if (targetTemperature >= 0) {
+      text += " - " + status;
+      text += " (" + targetTemperature + " °C)";
+    } else {
+      text += " - Unknown";
+    }
 
     return text;
   }

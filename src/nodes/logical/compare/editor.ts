@@ -1,68 +1,92 @@
 import { EditorNodeDef } from "node-red";
-import SwitchNodeEditor from "../switch/editor";
+import { i18n, NodeEditorFormBuilder } from "../../flowctrl/base/editor";
+import SwitchEditorNode from "../switch/editor";
+import CompareNode from "./";
+import { compareMigration } from "./migration";
 import {
-  CompareNodeEditorProperties,
-  CompareNodeType,
-  defaultCompareNodeConfig,
+  ApplicableCompareFunction,
+  CompareEditorNodeProperties,
+  CompareEditorNodePropertiesDefaults,
+  CompareNodeOptionsDefaults,
+  NotApplicableCompareFunction,
 } from "./types";
 
-const CompareNodeEditor: EditorNodeDef<CompareNodeEditorProperties> = {
-  ...SwitchNodeEditor,
-  category: CompareNodeType.categoryLabel,
-  color: CompareNodeType.color,
-  defaults: {
-    ...SwitchNodeEditor.defaults,
-    property: { value: defaultCompareNodeConfig.property!, required: true },
-    propertyType: {
-      value: defaultCompareNodeConfig.propertyType!,
-      required: true,
-    },
-    operator: { value: defaultCompareNodeConfig.operator!, required: true },
-    value: { value: defaultCompareNodeConfig.value!, required: true },
-    valueType: { value: defaultCompareNodeConfig.valueType!, required: true },
-    outputs: { value: defaultCompareNodeConfig.outputs!, required: true },
-  },
-  outputLabels: ["Result of comparison"],
-  icon: "compare.svg",
+const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
+  category: CompareNode.NodeCategory.label,
+  color: CompareNode.NodeColor,
+  icon: "font-awesome/fa-search",
+  defaults: CompareEditorNodePropertiesDefaults,
   label: function () {
-    const operator = this.operator;
-    let label: string = operator;
+    const operation = i18n(
+      "logical.compare.select.operation." + this.operation
+    );
+    let label: string = operation;
 
     if (this.name) {
-      label = `${this.name} (${operator})`;
+      label = `${this.name} (${operation})`;
     }
 
     return label;
   },
+  inputs: CompareNodeOptionsDefaults.inputs,
+  outputs: CompareNodeOptionsDefaults.outputs,
+  outputLabels: function (index) {
+    if (typeof SwitchEditorNode.outputLabels === "function") {
+      return SwitchEditorNode.outputLabels.call(this, index);
+    }
+    return undefined;
+  },
   oneditprepare: function () {
-    SwitchNodeEditor.oneditprepare!.call(this);
+    compareMigration.checkAndMigrate(this);
 
-    $("#node-input-property").typedInput({
-      types: ["msg"],
-      typeField: "#node-input-propertyType",
-    });
+    SwitchEditorNode.oneditprepare!.call(this);
 
-    const valueRow = $("#node-input-value")
-      .typedInput({
-        types: ["str", "num", "msg"],
-        typeField: "#node-input-valueType",
-      })
-      .parent();
-
-    valueRow.toggle(
-      !["true", "false", "empty", "not_empty"].includes(this.operator)
+    const compareOptionsBuilder = new NodeEditorFormBuilder(
+      $("#logical-compare-options"),
+      { translatePrefix: "logical.compare" }
     );
 
-    $("#node-input-operator").on("change", function () {
-      valueRow.toggle(
-        !["true", "false", "empty", "not_empty"].includes(
-          $(this).val() as string
-        )
+    compareOptionsBuilder.createTypedInput({
+      id: "node-input-property",
+      idType: "node-input-propertyType",
+      label: "property",
+      value: this.property,
+      valueType: this.propertyType,
+      types: ["msg"],
+      icon: "envelope-o",
+    });
+
+    const operationSelect = compareOptionsBuilder.createSelectInput({
+      id: "node-input-operation",
+      label: "operation",
+      value: this.operation,
+      icon: "search",
+      options: [
+        ...Object.keys(ApplicableCompareFunction),
+        ...Object.keys(NotApplicableCompareFunction),
+      ],
+    });
+
+    const valueInput = compareOptionsBuilder.createTypedInput({
+      id: "node-input-compare",
+      idType: "node-input-compareType",
+      label: "compare",
+      value: this.compare,
+      valueType: this.compareType,
+      types: ["str", "num", "bool", "msg"],
+      icon: "search",
+    });
+
+    const valueInputRow = valueInput
+      .parent()
+      .toggle(this.operation in ApplicableCompareFunction);
+
+    valueInput.on("change", function () {
+      valueInputRow.toggle(
+        (operationSelect.val() as string) in ApplicableCompareFunction
       );
     });
   },
 };
 
-export default CompareNodeEditor;
-
-export { CompareNodeType };
+export default CompareEditorNode;

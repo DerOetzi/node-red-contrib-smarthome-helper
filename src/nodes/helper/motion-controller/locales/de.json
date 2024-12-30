@@ -1,10 +1,23 @@
 {
-    "target": {
-        "motion": "Bewegung",
-        "darkness": "Dunkelheit",
-        "night": "Nachtmodus",
-        "manual_control": "Manuelle Kontrolle",
-        "command": "Befehl"
+    "name": "Bewegungssteuerung",
+    "label": {
+        "timer": "Timer",
+        "onlyDarkness": "Nur bei Dunkelheit",
+        "nightmodeEnabled": "Nachtmodus aktiviert",
+        "initializeDelay": "Verzögerung init. Status"
+    },
+    "select": {
+        "target": {
+            "motion": "Bewegung",
+            "darkness": "Dunkelheit",
+            "night": "Nachtmodus",
+            "manualControl": "Manuelle Kontrolle",
+            "command": "Befehl"
+        }
+    },
+    "output": {
+        "action": "Aktion",
+        "status": "Status"
     },
     "status": {
         "automationOn": "Automatisch",

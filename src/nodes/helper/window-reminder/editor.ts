@@ -1,56 +1,64 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
+import BaseNodeEditor, {
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
+import WindowReminderNode from "./";
+import { windowReminderMigration } from "./migration";
 import {
-  getMatchers,
-  initializeMatcherRows,
-} from "../../flowctrl/match-join/editor";
-import {
-  defaultWindowReminderNodeConfig,
-  WindowReminderNodeEditorProperties,
-  WindowReminderNodeType,
+  WindowReminderEditorNodeProperties,
+  WindowReminderEditorNodePropertiesDefaults,
+  WindowReminderNodeOptionsDefaults,
+  WindowReminderTarget,
 } from "./types";
 
-const WindowReminderNodeEditor: EditorNodeDef<WindowReminderNodeEditorProperties> =
+const inputMatcherList = new MatchJoinEditableList({
+  targets: Object.values(WindowReminderTarget),
+  translatePrefix: "helper.window-reminder",
+});
+
+const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties> =
   {
-    ...BaseNodeEditor,
-    category: WindowReminderNodeType.categoryLabel,
-    color: WindowReminderNodeType.color,
-    defaults: {
-      ...BaseNodeEditor.defaults,
-      matchers: {
-        value: defaultWindowReminderNodeConfig.matchers!,
-        required: true,
-      },
-      join: { value: defaultWindowReminderNodeConfig.join!, required: false },
-      discardNotMatched: {
-        value: defaultWindowReminderNodeConfig.discardNotMatched!,
-        required: false,
-      },
-      minMsgCount: {
-        value: defaultWindowReminderNodeConfig.minMsgCount!,
-        required: true,
-      },
-      interval: {
-        value: defaultWindowReminderNodeConfig.interval!,
-        required: true,
-      },
-    },
-    outputLabels: ["notification"],
-    icon: "window.svg",
+    category: WindowReminderNode.NodeCategory.label,
+    color: WindowReminderNode.NodeColor,
+    icon: "font-awesome/fa-window-restore",
+    defaults: WindowReminderEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || WindowReminderNodeType.name;
+      return this.name || i18n("helper.window-reminder.name");
+    },
+    inputs: WindowReminderNodeOptionsDefaults.inputs,
+    outputs: WindowReminderNodeOptionsDefaults.outputs,
+    outputLabels: (_: number) => {
+      return i18n("helper.window-reminder.output.notification");
     },
     oneditprepare: function () {
+      windowReminderMigration.checkAndMigrate(this);
       BaseNodeEditor.oneditprepare!.call(this);
-      initializeMatcherRows(this.matchers, {
-        targets: ["window", "presence"],
-        translatePrefix: "helper.window-reminder.target",
-        t: this._.bind(this),
+
+      inputMatcherList.initialize("matcher-rows", this.matchers, {
+        translatePrefix: "flowctrl.match-join",
+      });
+
+      const windowReminderOptionsBuilder = new NodeEditorFormBuilder(
+        $("#window-reminder-options"),
+        {
+          translatePrefix: "helper.window-reminder",
+        }
+      );
+
+      windowReminderOptionsBuilder.createTimeInput({
+        id: "node-input-interval",
+        idType: "node-input-intervalUnit",
+        label: "interval",
+        value: this.interval,
+        valueType: this.intervalUnit,
+        icon: "clock-o",
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers();
+      this.matchers = inputMatcherList.values();
     },
   };
 
-export default WindowReminderNodeEditor;
+export default WindowReminderEditorNode;
