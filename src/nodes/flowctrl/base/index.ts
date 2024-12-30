@@ -270,10 +270,8 @@ export default class BaseNode<T extends BaseNodeConfig = BaseNodeConfig> {
     let msgs = Array(this.config.outputs ?? 1).fill(null);
     msgs[options.output ?? 0] = msg;
 
-    this.node.send(msgs);
-
-    // TODO   const send = options.send ?? this.node.send.bind(this.node);
-    //    send(msgs);
+    const send = options.send ?? this.node.send.bind(this.node);
+    send(msgs);
   }
 
   public cleanupStorage() {

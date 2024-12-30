@@ -26,7 +26,7 @@ export default class EventMapperNode extends MatchJoinNode<EventMapperNodeConfig
 
     const rule = this.getRule(event);
     if (!rule) {
-      if (!this.config.ignoreUnknownEvents) {
+      if (!(this.config.ignoreUnknownEvents && event)) {
         this.node.error("No rule found for event: " + event);
       }
       return;
