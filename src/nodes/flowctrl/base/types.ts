@@ -12,6 +12,7 @@ interface BaseNodeCommonOptions {
   filterUniquePayload: boolean;
   newMsg: boolean;
   outputs: number;
+  inputs?: 0 | 1;
   initializeDelay?: number;
   filterkey?: string;
 }
@@ -22,6 +23,7 @@ const BaseNodeCommonOptionsDefaults: Partial<BaseNodeCommonOptions> = {
   filterUniquePayload: false,
   newMsg: false,
   outputs: 1,
+  inputs: 1,
   initializeDelay: 100,
 };
 
@@ -46,11 +48,12 @@ const BaseNodeDebounceOptionsDefaults: Partial<BaseNodeDebounceOptions> = {
 };
 
 export interface BaseNodeOptions
-  extends NodeDef,
-    BaseNodeDebounceOptions,
-    BaseNodeCommonOptions {}
+  extends BaseNodeCommonOptions,
+    BaseNodeDebounceOptions {}
 
-export const BaseNodeOptionsDefaults: Partial<BaseNodeOptions> = {
+export interface BaseNodeDef extends NodeDef, BaseNodeOptions {}
+
+export const BaseNodeOptionsDefaults: Partial<BaseNodeDef> = {
   name: "",
   ...BaseNodeCommonOptionsDefaults,
   ...BaseNodeDebounceOptionsDefaults,
@@ -58,8 +61,7 @@ export const BaseNodeOptionsDefaults: Partial<BaseNodeOptions> = {
 
 export interface BaseEditorNodeProperties
   extends EditorNodeProperties,
-    BaseNodeDebounceOptions,
-    BaseNodeCommonOptions {}
+    BaseNodeOptions {}
 
 export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEditorNodeProperties> =
   {
@@ -103,6 +105,7 @@ export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEdito
     },
     newMsg: { value: BaseNodeCommonOptionsDefaults.newMsg!, required: false },
     outputs: { value: BaseNodeCommonOptionsDefaults.outputs!, required: true },
+    inputs: { value: BaseNodeCommonOptionsDefaults.inputs!, required: true },
   };
 
 export interface NodeSendOptions {

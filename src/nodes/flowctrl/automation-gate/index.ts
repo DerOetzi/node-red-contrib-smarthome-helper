@@ -1,30 +1,28 @@
-import { Node, NodeMessage, NodeStatusFill } from "node-red";
-import { NodeRedDone, NodeRedSend } from "../../../types";
-import { NodeType } from "../../types";
+import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
+import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
 import BaseNode from "../base";
-import { BaseNodeDebounceData, NodeSendOptions } from "../base/types";
+import {
+  BaseNodeDebounceData,
+  NodeSendOptions,
+  NodeStatus,
+} from "../base/types";
 import {
   AutomationGateCommand,
-  AutomationGateNodeConfig,
+  AutomationGateNodeDef,
   AutomationGateNodeMessage,
-  AutomationGateNodeType,
-  defaultAutomationGateNodeConfig,
+  AutomationGateNodeOptionsDefaults,
 } from "./types";
 
-export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfig> {
+export default class AutomationGateNode extends BaseNode<AutomationGateNodeDef> {
+  public static readonly NodeType: string = "automation-gate";
+  public static readonly NodeColor: NodeColor = NodeColor.AutomationGate;
+
   private pauseTimer: NodeJS.Timeout | null = null;
   private lastMessages: Record<string, NodeMessage> = {};
 
-  static get type(): NodeType {
-    return AutomationGateNodeType;
-  }
-
-  constructor(node: Node, config: AutomationGateNodeConfig) {
-    config = { ...defaultAutomationGateNodeConfig, ...config };
-    super(node, config, {
-      statusOutput: { output: 1, topic: "automation_status" },
-      initializeDelay: config.statusDelay,
-    });
+  constructor(RED: NodeAPI, node: Node, config: AutomationGateNodeDef) {
+    super(RED, node, config, AutomationGateNodeOptionsDefaults);
+    this.registerStatusOutput({ output: 1, topic: "automation_status" });
   }
 
   protected initialize() {
@@ -49,8 +47,8 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
 
   protected onInput(
     msg: AutomationGateNodeMessage,
-    send: NodeRedSend,
-    done: NodeRedDone
+    send: NodeSendFunction,
+    done: NodeDoneFunction
   ) {
     if (msg.gate) {
       switch (msg.gate) {
@@ -76,7 +74,7 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     } else {
       this.saveLastMessage(msg);
 
-      this.debounce({ msg: msg, send: send });
+      this.debounce({ msg, send });
     }
 
     if (done) {
@@ -145,7 +143,7 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     }
   }
 
-  private replayMessages(send?: NodeRedSend) {
+  private replayMessages(send?: NodeSendFunction) {
     this.startGate();
     this.resetFilter();
 
@@ -159,7 +157,7 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     }
   }
 
-  protected statusColor(status: boolean): NodeStatusFill {
+  protected statusColor(status: NodeStatus): NodeStatusFill {
     let color: NodeStatusFill = "red";
     if (status === null || status === undefined) {
       color = "grey";
@@ -172,13 +170,13 @@ export default class AutomationGateNode extends BaseNode<AutomationGateNodeConfi
     return color;
   }
 
-  protected statusTextFormatter(status: any): string {
+  protected statusTextFormatter(status: NodeStatus): string {
     if (status === true) {
       status = this.config.stateOpenLabel ?? "Automated";
     } else if (status === false) {
       status = this.config.stateClosedLabel ?? "Manual";
     }
 
-    return status;
+    return String(status);
   }
 }

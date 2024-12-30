@@ -12,8 +12,8 @@ import {
 const BaseNodeEditor: EditorNodeDef<BaseEditorNodeProperties> = {
   category: BaseNode.NodeCategory.label,
   color: BaseNode.NodeColor,
-  defaults: BaseEditorNodePropertiesDefaults,
   icon: "font-awesome/fa-cogs",
+  defaults: BaseEditorNodePropertiesDefaults,
   inputs: 1,
   label: function () {
     return this.name || BaseNode.NodeType;
@@ -68,7 +68,7 @@ const BaseNodeEditor: EditorNodeDef<BaseEditorNodeProperties> = {
         "line-chart"
       )
       .on("change", function () {
-        debounceOptions.toggle($(this).prop("checked"));
+        debounceOptions.toggle($(this).is(":checked"));
       });
 
     const debounceOptionsBuilder = new NodeEditorFormBuilder(
@@ -104,14 +104,14 @@ const BaseNodeEditor: EditorNodeDef<BaseEditorNodeProperties> = {
       "node-input-debounceLeading",
       "debounceLeading",
       this.debounceLeading,
-      "angle-double-down"
+      "hourglass-1"
     );
 
     debounceOptionsBuilder.createCheckboxInput(
       "node-input-debounceTrailing",
       "debounceTrailing",
       this.debounceTrailing,
-      "angle-double-up"
+      "hourglass-end"
     );
   },
 };
@@ -188,6 +188,22 @@ export class NodeEditorFormBuilder {
   ): JQuery {
     const formRow = this.createFormRowWithLabel(id, label, icon);
     const input = $("<input/>", { id, type: "text" }).appendTo(formRow);
+
+    if (value) {
+      input.val(value);
+    }
+
+    return input;
+  }
+
+  public createNumberInput(
+    id: string,
+    label: string,
+    value: number,
+    icon?: string
+  ): JQuery {
+    const formRow = this.createFormRowWithLabel(id, label, icon);
+    const input = $("<input/>", { id, type: "number" }).appendTo(formRow);
 
     if (value) {
       input.val(value);

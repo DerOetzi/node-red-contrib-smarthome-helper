@@ -1,68 +1,103 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../base/editor";
+import BaseNodeEditor, { NodeEditorFormBuilder } from "../base/editor";
+import AutomationGateNode from "./";
 import {
-  AutomationGateNodeEditorProperties,
-  AutomationGateNodeType,
-  defaultAutomationGateNodeConfig,
+  AutomationGateEditorNodeProperties,
+  AutomationGateEditorNodePropertiesDefaults,
 } from "./types";
 
-const AutomationGateNodeEditor: EditorNodeDef<AutomationGateNodeEditorProperties> =
+const AutomationGateNodeEditor: EditorNodeDef<AutomationGateEditorNodeProperties> =
   {
-    ...BaseNodeEditor,
-    color: AutomationGateNodeType.color,
-    defaults: {
-      ...BaseNodeEditor.defaults,
-      startupState: {
-        value: defaultAutomationGateNodeConfig.startupState!,
-        required: false,
-      },
-      statusDelay: {
-        value: defaultAutomationGateNodeConfig.statusDelay!,
-        required: false,
-      },
-      autoReplay: {
-        value: defaultAutomationGateNodeConfig.autoReplay!,
-        required: false,
-      },
-      stateOpenLabel: {
-        value: defaultAutomationGateNodeConfig.stateOpenLabel!,
-        required: true,
-      },
-      stateClosedLabel: {
-        value: defaultAutomationGateNodeConfig.stateClosedLabel!,
-        required: true,
-      },
-      setAutomationInProgress: {
-        value: defaultAutomationGateNodeConfig.setAutomationInProgress!,
-        required: false,
-      },
-      automationProgressId: {
-        value: defaultAutomationGateNodeConfig.automationProgressId!,
-        required: false,
-      },
-      outputs: {
-        value: defaultAutomationGateNodeConfig.outputs!,
-        required: true,
-      },
-    },
+    category: AutomationGateNode.NodeCategory.label,
+    color: AutomationGateNode.NodeColor,
+    icon: "font-awesome/fa-chain-broken",
+    defaults: AutomationGateEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || AutomationGateNodeType.name;
+      return this.name || AutomationGateNode.NodeType;
     },
     outputLabels: ["Messages when gate is open", "Gate state updates"],
-    icon: "gate.png",
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);
 
-      const automationProgressIdRow = $("#node-input-automationProgressId")
+      const automationGateOptionsBuilder = new NodeEditorFormBuilder(
+        $("#automation-gate-options"),
+        "flowctrl.automation-gate",
+        this._.bind(this)
+      );
+
+      automationGateOptionsBuilder.createCheckboxInput(
+        "node-input-startupState",
+        "startupState",
+        this.startupState,
+        "play"
+      );
+
+      automationGateOptionsBuilder.createNumberInput(
+        "node-input-initializeDelay",
+        "initializeDelay",
+        this.initializeDelay!,
+        "pause"
+      );
+
+      automationGateOptionsBuilder.createCheckboxInput(
+        "node-input-autoReplay",
+        "autoReplay",
+        this.autoReplay,
+        "refresh"
+      );
+
+      automationGateOptionsBuilder.line();
+
+      if (!this.stateOpenLabel) {
+        this.stateOpenLabel = this._(
+          "flowctrl.automation-gate.default.stateOpenLabel"
+        );
+      }
+
+      automationGateOptionsBuilder.createTextInput(
+        "node-input-stateOpenLabel",
+        "stateOpenLabel",
+        this.stateOpenLabel!,
+        "tag"
+      );
+
+      if (!this.stateClosedLabel) {
+        this.stateClosedLabel = this._(
+          "flowctrl.automation-gate.default.stateClosedLabel"
+        );
+      }
+
+      automationGateOptionsBuilder.createTextInput(
+        "node-input-stateClosedLabel",
+        "stateClosedLabel",
+        this.stateClosedLabel!,
+        "tag"
+      );
+
+      automationGateOptionsBuilder.line();
+
+      const setAutomationInProgressCheckbox =
+        automationGateOptionsBuilder.createCheckboxInput(
+          "node-input-setAutomationInProgress",
+          "setAutomationInProgress",
+          this.setAutomationInProgress,
+          "play-circle"
+        );
+
+      const automationProgressIdInputRow = automationGateOptionsBuilder
+        .createTextInput(
+          "node-input-automationProgressId",
+          "automationProgressId",
+          this.automationProgressId!,
+          "tag"
+        )
         .parent()
         .toggle(this.setAutomationInProgress);
 
-      $("#node-input-setAutomationInProgress").on("change", function () {
-        automationProgressIdRow.toggle($(this).is(":checked"));
+      setAutomationInProgressCheckbox.on("change", function () {
+        automationProgressIdInputRow.toggle($(this).is(":checked"));
       });
     },
   };
 
 export default AutomationGateNodeEditor;
-
-export { AutomationGateNodeType };

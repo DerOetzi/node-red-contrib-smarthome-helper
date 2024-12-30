@@ -18,14 +18,14 @@ import { flowctrlCategory } from "../types";
 import {
   BaseNodeDebounceData,
   BaseNodeDebounceRunning,
-  BaseNodeOptions,
+  BaseNodeDef,
   BaseNodeOptionsDefaults,
   NodeSendOptions,
   NodeStatus,
   NodeStatusOutputConfig,
 } from "./types";
 
-export default class BaseNode<T extends BaseNodeOptions = BaseNodeOptions> {
+export default class BaseNode<T extends BaseNodeDef = BaseNodeDef> {
   public static readonly NodeCategory: NodeCategory = flowctrlCategory;
   public static readonly NodeType: string = "base";
   public static readonly NodeColor: NodeColor = NodeColor.Base;

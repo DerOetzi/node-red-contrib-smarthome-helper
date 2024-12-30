@@ -1,11 +1,14 @@
-import { NodeMessage } from "node-red";
-import { NodeColor, NodeType } from "../../types";
-import { BaseNodeConfig, BaseNodeEditorProperties } from "../base/types";
-import { flowctrlCategory } from "../types";
+import { EditorNodePropertiesDef, NodeMessage } from "node-red";
+import {
+  BaseEditorNodeProperties,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeDef,
+  BaseNodeOptions,
+  BaseNodeOptionsDefaults,
+} from "../base/types";
 
-export interface AutomationGateNodeConfig extends BaseNodeConfig {
+export interface AutomationGateNodeOptions extends BaseNodeOptions {
   startupState: boolean;
-  statusDelay: number;
   autoReplay: boolean;
   stateOpenLabel: string;
   stateClosedLabel: string;
@@ -13,34 +16,63 @@ export interface AutomationGateNodeConfig extends BaseNodeConfig {
   automationProgressId: string;
 }
 
-export const defaultAutomationGateNodeConfig: Partial<AutomationGateNodeConfig> =
+export interface AutomationGateNodeDef
+  extends BaseNodeDef,
+    AutomationGateNodeOptions {}
+
+export const AutomationGateNodeOptionsDefaults: Partial<AutomationGateNodeDef> =
   {
+    ...BaseNodeOptionsDefaults,
     startupState: true,
-    statusDelay: 100,
+    initializeDelay: 100,
     autoReplay: true,
-    stateOpenLabel: "Automated",
-    stateClosedLabel: "Manual",
+    stateOpenLabel: "",
+    stateClosedLabel: "",
     setAutomationInProgress: false,
     automationProgressId: "",
     outputs: 2,
   };
 
-export interface AutomationGateNodeEditorProperties
-  extends BaseNodeEditorProperties {
-  startupState: boolean;
-  statusDelay: number;
-  autoReplay: boolean;
-  stateOpenLabel: string;
-  stateClosedLabel: string;
-  setAutomationInProgress: boolean;
-  automationProgressId: string;
-}
+export interface AutomationGateEditorNodeProperties
+  extends BaseEditorNodeProperties,
+    AutomationGateNodeOptions {}
 
-export const AutomationGateNodeType = new NodeType(
-  flowctrlCategory,
-  "automation-gate",
-  NodeColor.AutomationGate
-);
+export const AutomationGateEditorNodePropertiesDefaults: EditorNodePropertiesDef<AutomationGateEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    startupState: {
+      value: AutomationGateNodeOptionsDefaults.startupState!,
+      required: true,
+    },
+    initializeDelay: {
+      value: AutomationGateNodeOptionsDefaults.initializeDelay!,
+      required: true,
+    },
+    autoReplay: {
+      value: AutomationGateNodeOptionsDefaults.autoReplay!,
+      required: true,
+    },
+    stateOpenLabel: {
+      value: AutomationGateNodeOptionsDefaults.stateOpenLabel!,
+      required: true,
+    },
+    stateClosedLabel: {
+      value: AutomationGateNodeOptionsDefaults.stateClosedLabel!,
+      required: true,
+    },
+    setAutomationInProgress: {
+      value: AutomationGateNodeOptionsDefaults.setAutomationInProgress!,
+      required: false,
+    },
+    automationProgressId: {
+      value: AutomationGateNodeOptionsDefaults.automationProgressId!,
+      required: false,
+    },
+    outputs: {
+      value: AutomationGateNodeOptionsDefaults.outputs!,
+      required: true,
+    },
+  };
 
 export enum AutomationGateCommand {
   Pause = "pause",
