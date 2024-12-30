@@ -1,11 +1,31 @@
-import { EditorNodeProperties, NodeDef, NodeMessage } from "node-red";
-import { NodeRedSend } from "../../../types";
-import { NodeColor, NodeType } from "../../types";
-import { flowctrlCategory } from "../types";
+import {
+  EditorNodeProperties,
+  EditorNodePropertiesDef,
+  NodeDef,
+  NodeMessage,
+} from "node-red";
+import { NodeSendFunction } from "../../types";
 
-export interface BaseNodeConfig extends NodeDef {
+interface BaseNodeCommonOptions {
   topic: string;
   topicType: string;
+  filterUniquePayload: boolean;
+  newMsg: boolean;
+  outputs: number;
+  initializeDelay?: number;
+  filterkey?: string;
+}
+
+const BaseNodeCommonOptionsDefaults: Partial<BaseNodeCommonOptions> = {
+  topic: "topic",
+  topicType: "msg",
+  filterUniquePayload: false,
+  newMsg: false,
+  outputs: 1,
+  initializeDelay: 100,
+};
+
+interface BaseNodeDebounceOptions {
   debounce: boolean;
   debounceTopic: boolean;
   debounceShowStatus: boolean;
@@ -13,14 +33,9 @@ export interface BaseNodeConfig extends NodeDef {
   debounceUnit: string;
   debounceLeading: boolean;
   debounceTrailing: boolean;
-  filterUniquePayload: boolean;
-  newMsg: boolean;
-  outputs: number;
 }
 
-export const defaultBaseNodeConfig: Partial<BaseNodeConfig> = {
-  topic: "topic",
-  topicType: "msg",
+const BaseNodeDebounceOptionsDefaults: Partial<BaseNodeDebounceOptions> = {
   debounce: false,
   debounceTopic: false,
   debounceShowStatus: false,
@@ -28,28 +43,70 @@ export const defaultBaseNodeConfig: Partial<BaseNodeConfig> = {
   debounceUnit: "ms",
   debounceLeading: false,
   debounceTrailing: true,
-  filterUniquePayload: false,
-  newMsg: false,
-  outputs: 1,
 };
 
-export interface BaseNodeEditorProperties extends EditorNodeProperties {
-  topic: string;
-  topicType: string;
-  debounce: boolean;
-  debounceTopic: boolean;
-  debounceShowStatus: boolean;
-  debounceTime: number;
-  debounceUnit: string;
-  debounceLeading: boolean;
-  debounceTrailing: boolean;
-  filterUniquePayload: boolean;
-  newMsg: boolean;
-  outputs: number;
-}
+export interface BaseNodeOptions
+  extends NodeDef,
+    BaseNodeDebounceOptions,
+    BaseNodeCommonOptions {}
+
+export const BaseNodeOptionsDefaults: Partial<BaseNodeOptions> = {
+  name: "",
+  ...BaseNodeCommonOptionsDefaults,
+  ...BaseNodeDebounceOptionsDefaults,
+};
+
+export interface BaseEditorNodeProperties
+  extends EditorNodeProperties,
+    BaseNodeDebounceOptions,
+    BaseNodeCommonOptions {}
+
+export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEditorNodeProperties> =
+  {
+    name: { value: "", required: false },
+    topic: { value: BaseNodeCommonOptionsDefaults.topic!, required: true },
+    topicType: {
+      value: BaseNodeCommonOptionsDefaults.topicType!,
+      required: true,
+    },
+    debounce: {
+      value: BaseNodeDebounceOptionsDefaults.debounce!,
+      required: false,
+    },
+    debounceTopic: {
+      value: BaseNodeDebounceOptionsDefaults.debounceTopic!,
+      required: false,
+    },
+    debounceTime: {
+      value: BaseNodeDebounceOptionsDefaults.debounceTime!,
+      required: false,
+    },
+    debounceShowStatus: {
+      value: BaseNodeDebounceOptionsDefaults.debounceShowStatus!,
+      required: false,
+    },
+    debounceUnit: {
+      value: BaseNodeDebounceOptionsDefaults.debounceUnit!,
+      required: false,
+    },
+    debounceLeading: {
+      value: BaseNodeDebounceOptionsDefaults.debounceLeading!,
+      required: false,
+    },
+    debounceTrailing: {
+      value: BaseNodeDebounceOptionsDefaults.debounceTrailing!,
+      required: false,
+    },
+    filterUniquePayload: {
+      value: BaseNodeCommonOptionsDefaults.filterUniquePayload!,
+      required: false,
+    },
+    newMsg: { value: BaseNodeCommonOptionsDefaults.newMsg!, required: false },
+    outputs: { value: BaseNodeCommonOptionsDefaults.outputs!, required: true },
+  };
 
 export interface NodeSendOptions {
-  send?: NodeRedSend;
+  send?: NodeSendFunction;
   payload?: any;
   output?: number;
   additionalAttributes?: Record<string, any>;
@@ -61,15 +118,7 @@ export interface NodeStatusOutputConfig {
   topic: string;
 }
 
-export interface BaseNodeOptions {
-  statusOutput?: NodeStatusOutputConfig;
-  initializeDelay?: number;
-  filterkey?: string;
-}
-
-export const defaultBaseNodeOptions: BaseNodeOptions = {
-  initializeDelay: 100,
-};
+export type NodeStatus = string | number | boolean | Date | null;
 
 export interface BaseNodeDebounceData extends NodeSendOptions {
   msg: NodeMessage;
@@ -79,9 +128,3 @@ export interface BaseNodeDebounceRunning {
   timer: NodeJS.Timeout | null;
   lastData: BaseNodeDebounceData;
 }
-
-export const BaseNodeType = new NodeType(
-  flowctrlCategory,
-  "base",
-  NodeColor.Base
-);

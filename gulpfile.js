@@ -7,7 +7,6 @@ const lazypipe = require("lazypipe");
 const merge = require("merge-stream");
 const wrap = require("gulp-wrap");
 const { src, dest, task, parallel, watch, series } = require("gulp");
-const appendPrepend = require("gulp-append-prepend");
 
 // Source
 const buffer = require("gulp-buffer");
@@ -112,13 +111,7 @@ task("buildEditorFiles", () => {
         /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]editor\.html/,
       );
       currentNode = category + "-" + node;
-      if (category === "flowctrl" && node === "base") {
-        return stream.pipe(buildForm());
-      } else {
-        return stream
-          .pipe(appendPrepend.appendFile("src/nodes/flowctrl/base/editor.html"))
-          .pipe(buildForm());
-      }
+      return stream.pipe(buildForm());
     }),
   );
 

@@ -1,0 +1,14 @@
+{
+    "label": {
+        "name": "Name",
+        "topic": "Topic",
+        "filterUniquePayload": "Einzigartiger Filter",
+        "newMsg": "Neue Nachricht",
+        "debounce": "Debounce",
+        "debounceTopic": "Pro Topic",
+        "debounceShowStatus": "Status anzeigen",
+        "debounceTime": "Verzögerung",
+        "debounceLeading": "Führend (sofort)",
+        "debounceTrailing": "Nachlaufend (verzögert)"
+    }
+}

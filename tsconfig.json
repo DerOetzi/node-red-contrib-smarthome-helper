@@ -17,8 +17,6 @@
   "include": ["./src/**/*.js", "./src/**/*.ts"],
   "exclude": [
     "./src/editor.ts",
-    "./src/nodes/**/editor.*",
-    "./src/types",
-    "./test"
+    "./src/nodes/**/editor.*"
   ]
 }

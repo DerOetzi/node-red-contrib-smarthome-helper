@@ -1,3 +1,5 @@
+import { NodeMessage } from "node-red";
+
 export interface NodeCategory {
   label: string;
   name: string;
@@ -12,22 +14,8 @@ export enum NodeColor {
   Switch = "#ff8c00",
 }
 
-export class NodeType {
-  constructor(
-    public readonly category: NodeCategory,
-    public readonly name: string,
-    private readonly _color: NodeColor
-  ) {}
+export type NodeSendFunction = (
+  msg: NodeMessage | Array<NodeMessage | NodeMessage[] | null>
+) => void;
 
-  get fullName(): string {
-    return `${this.category.name}-${this.name}`;
-  }
-
-  get categoryLabel(): string {
-    return this.category.label;
-  }
-
-  get color(): string {
-    return this._color;
-  }
-}
+export type NodeDoneFunction = (err?: Error, msg?: NodeMessage) => void;

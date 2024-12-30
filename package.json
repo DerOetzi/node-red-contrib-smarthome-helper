@@ -54,7 +54,6 @@
         "gulp-typescript": "^6.0.0-alpha.1",
         "gulp-wrap": "^0.15.0",
         "lazypipe": "^1.0.2",
-        "lodash": "^4.17.21",
         "merge-stream": "^2.0.0",
         "prettier": "^3.3.3",
         "sass": "^1.81.0",

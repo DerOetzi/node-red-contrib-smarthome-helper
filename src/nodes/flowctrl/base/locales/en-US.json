@@ -1,0 +1,14 @@
+{
+    "label": {
+        "name": "Name",
+        "topic": "Topic",
+        "filterUniquePayload": "Unique filter",
+        "newMsg": "New message",
+        "debounce": "Debounce",
+        "debounceTopic": "Per topic",
+        "debounceShowStatus": "Show status",
+        "debounceTime": "Delay",
+        "debounceLeading": "Leading (immediate)",
+        "debounceTrailing": "Trailing (delayed)"
+    }
+}
