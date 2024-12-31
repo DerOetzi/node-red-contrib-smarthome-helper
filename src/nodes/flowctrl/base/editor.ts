@@ -7,6 +7,7 @@ import BaseNode from "./";
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
+  BaseNodeOptionsDefaults,
 } from "./types";
 
 const BaseNodeEditor: EditorNodeDef<BaseEditorNodeProperties> = {
@@ -14,10 +15,11 @@ const BaseNodeEditor: EditorNodeDef<BaseEditorNodeProperties> = {
   color: BaseNode.NodeColor,
   icon: "font-awesome/fa-cogs",
   defaults: BaseEditorNodePropertiesDefaults,
-  inputs: 1,
   label: function () {
     return this.name || BaseNode.NodeType;
   },
+  inputs: BaseNodeOptionsDefaults.inputs,
+  outputs: BaseNodeOptionsDefaults.outputs,
   oneditprepare: function () {
     const commonOptionsBuilder = new NodeEditorFormBuilder(
       $("#base-common-options"),
@@ -226,6 +228,32 @@ export class NodeEditorFormBuilder {
     }
 
     return input;
+  }
+
+  public createSelectInput(
+    id: string,
+    label: string,
+    value: string,
+    options: string[],
+    icon?: string
+  ): JQuery {
+    const formRow = this.createFormRowWithLabel(id, label, icon);
+    const select = $("<select/>", { id }).appendTo(formRow);
+
+    options.forEach((value) => {
+      $("<option/>", {
+        value: value,
+        text: this.translate(
+          `${this.translatePrefix}.select.${label}.${value}`
+        ),
+      }).appendTo(select);
+    });
+
+    if (value) {
+      select.val(value);
+    }
+
+    return select;
   }
 
   private createFormRowWithLabel(

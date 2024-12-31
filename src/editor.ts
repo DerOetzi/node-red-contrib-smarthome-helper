@@ -3,12 +3,15 @@ import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import AutomationGateNodeEditor from "./nodes/flowctrl/automation-gate/editor";
 import BaseNode from "./nodes/flowctrl/base";
 import BaseNodeEditor from "./nodes/flowctrl/base/editor";
+import GateControlNode from "./nodes/flowctrl/gate-control";
+import GateControlNodeEditor from "./nodes/flowctrl/gate-control/editor";
 
 declare const RED: EditorRED;
 
 const nodes: Record<string, any> = {
   [AutomationGateNode.nodeTypeName]: AutomationGateNodeEditor,
   [BaseNode.nodeTypeName]: BaseNodeEditor,
+  [GateControlNode.nodeTypeName]: GateControlNodeEditor,
 };
 
 let type: string;

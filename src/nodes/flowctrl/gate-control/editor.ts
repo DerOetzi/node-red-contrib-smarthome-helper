@@ -1,34 +1,17 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../base/editor";
+import BaseNodeEditor, { NodeEditorFormBuilder } from "../base/editor";
+import GateControlNode from "./";
 import {
-  defaultGateControlNodeConfig,
-  GateControlNodeEditorProperties,
-  GateControlNodeType,
+  GateControlEditorNodeProperties,
+  GateControlEditorNodePropertiesDefaults,
+  GateControlNodeOptionsDefaults,
 } from "./types";
 
-const GateControlNodeEditor: EditorNodeDef<GateControlNodeEditorProperties> = {
-  ...BaseNodeEditor,
-  color: GateControlNodeType.color,
-  defaults: {
-    ...BaseNodeEditor.defaults,
-    delay: { value: defaultGateControlNodeConfig.delay!, required: true },
-    gateCommand: {
-      value: defaultGateControlNodeConfig.gateCommand!,
-      required: true,
-    },
-    pauseTime: {
-      value: defaultGateControlNodeConfig.pauseTime!,
-      required: false,
-    },
-    pauseUnit: {
-      value: defaultGateControlNodeConfig.pauseUnit!,
-      required: false,
-    },
-    outputs: { value: defaultGateControlNodeConfig.outputs!, required: true },
-  },
-  outputs: 2,
-  outputLabels: ["Delayed Message Output", "Gate Command Output"],
-  icon: "timer.svg",
+const GateControlNodeEditor: EditorNodeDef<GateControlEditorNodeProperties> = {
+  category: GateControlNode.NodeCategory.label,
+  color: GateControlNode.NodeColor,
+  icon: "font-awesome/fa-key",
+  defaults: GateControlEditorNodePropertiesDefaults,
   label: function () {
     let label = this.name || this.gateCommand;
 
@@ -38,19 +21,49 @@ const GateControlNodeEditor: EditorNodeDef<GateControlNodeEditorProperties> = {
 
     return label;
   },
+  inputs: GateControlNodeOptionsDefaults.inputs,
+  outputs: GateControlNodeOptionsDefaults.outputs,
+  outputLabels: ["Delayed Message Output", "Gate Command Output"],
   oneditprepare: function () {
-    if (BaseNodeEditor.oneditprepare) {
-      BaseNodeEditor.oneditprepare.call(this);
-    }
+    BaseNodeEditor.oneditprepare!.call(this);
 
-    $("#pause-options").toggle($("#node-input-gateCommand").val() === "pause");
+    const gateControlOptionsBuilder = new NodeEditorFormBuilder(
+      $("#gate-control-options"),
+      "flowctrl.gate-control",
+      this._.bind(this)
+    );
 
-    $("#node-input-gateCommand").on("change", function () {
-      $("#pause-options").toggle($(this).val() === "pause");
+    gateControlOptionsBuilder.createNumberInput(
+      "node-input-delay",
+      "delay",
+      this.delay,
+      "clock-o"
+    );
+
+    const gateCommandSelect = gateControlOptionsBuilder.createSelectInput(
+      "node-input-gateCommand",
+      "gateCommand",
+      this.gateCommand,
+      ["start", "stop", "pause", "replay", "reset_filter"],
+      "comment"
+    );
+
+    const gatePauseTimeRow = gateControlOptionsBuilder
+      .createTimeInput(
+        "node-input-pauseTime",
+        "node-input-pauseUnit",
+        "pauseTime",
+        this.pauseTime!,
+        this.pauseUnit!,
+        "hourglass-half"
+      )
+      .parent()
+      .toggle(this.gateCommand === "pause");
+
+    gateCommandSelect.on("change", function () {
+      gatePauseTimeRow.toggle($(this).val() === "pause");
     });
   },
 };
 
 export default GateControlNodeEditor;
-
-export { GateControlNodeType };

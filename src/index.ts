@@ -1,9 +1,10 @@
 import { Node, NodeAPI } from "node-red";
 import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import BaseNode from "./nodes/flowctrl/base";
+import GateControlNode from "./nodes/flowctrl/gate-control";
 import version from "./version";
 
-const nodes = [AutomationGateNode, BaseNode];
+const nodes = [AutomationGateNode, BaseNode, GateControlNode];
 
 export default async (RED: NodeAPI): Promise<void> => {
   for (const NodeClass of nodes) {

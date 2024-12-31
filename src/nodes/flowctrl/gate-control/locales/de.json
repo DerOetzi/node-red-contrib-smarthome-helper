@@ -1,0 +1,16 @@
+{
+    "label": {
+        "delay": "Nachricht verzögern (ms)",
+        "gateCommand": "Befehl",
+        "pauseTime": "Pausenzeit"
+    },
+    "select": {
+        "gateCommand": {
+            "start": "Start",
+            "stop": "Stopp",
+            "pause": "Pause",
+            "replay": "Wiederholen",
+            "reset_filter": "Filter zurücksetzen"
+        }
+    }
+}

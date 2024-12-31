@@ -4,6 +4,7 @@ import AutomationGateNode from "./";
 import {
   AutomationGateEditorNodeProperties,
   AutomationGateEditorNodePropertiesDefaults,
+  AutomationGateNodeOptionsDefaults,
 } from "./types";
 
 const AutomationGateNodeEditor: EditorNodeDef<AutomationGateEditorNodeProperties> =
@@ -15,6 +16,8 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateEditorNodeProperties
     label: function () {
       return this.name || AutomationGateNode.NodeType;
     },
+    inputs: AutomationGateNodeOptionsDefaults.inputs,
+    outputs: AutomationGateNodeOptionsDefaults.outputs,
     outputLabels: ["Messages when gate is open", "Gate state updates"],
     oneditprepare: function () {
       BaseNodeEditor.oneditprepare!.call(this);

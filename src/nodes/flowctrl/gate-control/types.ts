@@ -1,16 +1,26 @@
-import { NodeColor, NodeType } from "../../types";
+import { EditorNodePropertiesDef } from "node-red";
 import { AutomationGateCommand } from "../automation-gate/types";
-import { BaseNodeConfig, BaseNodeEditorProperties } from "../base/types";
-import { flowctrlCategory } from "../types";
+import {
+  BaseEditorNodeProperties,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeDef,
+  BaseNodeOptions,
+  BaseNodeOptionsDefaults,
+} from "../base/types";
 
-export interface GateControlNodeConfig extends BaseNodeConfig {
+export interface GateControlNodeOptions extends BaseNodeOptions {
   delay: number;
   gateCommand: AutomationGateCommand;
   pauseTime?: number;
   pauseUnit?: string;
 }
 
-export const defaultGateControlNodeConfig: Partial<GateControlNodeConfig> = {
+export interface GateControlNodeDef
+  extends BaseNodeDef,
+    GateControlNodeOptions {}
+
+export const GateControlNodeOptionsDefaults: Partial<GateControlNodeDef> = {
+  ...BaseNodeOptionsDefaults,
   delay: 100,
   gateCommand: AutomationGateCommand.Start,
   pauseTime: 1,
@@ -18,16 +28,31 @@ export const defaultGateControlNodeConfig: Partial<GateControlNodeConfig> = {
   outputs: 2,
 };
 
-export interface GateControlNodeEditorProperties
-  extends BaseNodeEditorProperties {
-  delay: number;
-  gateCommand: string;
-  pauseTime?: number;
-  pauseUnit?: string;
-}
+export interface GateControlEditorNodeProperties
+  extends BaseEditorNodeProperties,
+    GateControlNodeOptions {}
 
-export const GateControlNodeType = new NodeType(
-  flowctrlCategory,
-  "gate-control",
-  NodeColor.AutomationGate
-);
+export const GateControlEditorNodePropertiesDefaults: EditorNodePropertiesDef<GateControlEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    delay: {
+      value: GateControlNodeOptionsDefaults.delay!,
+      required: true,
+    },
+    gateCommand: {
+      value: GateControlNodeOptionsDefaults.gateCommand!,
+      required: true,
+    },
+    pauseTime: {
+      value: GateControlNodeOptionsDefaults.pauseTime!,
+      required: false,
+    },
+    pauseUnit: {
+      value: GateControlNodeOptionsDefaults.pauseUnit!,
+      required: false,
+    },
+    outputs: {
+      value: GateControlNodeOptionsDefaults.outputs!,
+      required: true,
+    },
+  };
