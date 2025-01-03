@@ -1,6 +1,8 @@
 import {
   EditorNodeProperties,
   EditorNodePropertiesDef,
+  EditorWidgetTypedInputType,
+  EditorWidgetTypedInputTypeDefinition,
   NodeDef,
   NodeMessage,
 } from "node-red";
@@ -14,6 +16,7 @@ interface BaseNodeCommonOptions {
   outputs: number;
   inputs?: 0 | 1;
   initializeDelay?: number;
+  initializeDelayUnit?: string;
   filterkey?: string;
 }
 
@@ -25,6 +28,7 @@ const BaseNodeCommonOptionsDefaults: Partial<BaseNodeCommonOptions> = {
   outputs: 1,
   inputs: 1,
   initializeDelay: 100,
+  initializeDelayUnit: "ms",
 };
 
 interface BaseNodeDebounceOptions {
@@ -130,4 +134,37 @@ export interface BaseNodeDebounceData extends NodeSendOptions {
 export interface BaseNodeDebounceRunning {
   timer: NodeJS.Timeout | null;
   lastData: BaseNodeDebounceData;
+}
+
+export interface NodeEditorFormBuilderParams {
+  translatePrefix: string;
+  translate: (key: string) => string;
+  createUniqueIds?: boolean;
+  defaultTypeInputWidth?: number;
+}
+
+export interface NodeEditorFormBuilderInputParams {
+  id: string;
+  label: string;
+  icon: string;
+  value: string | number | boolean;
+}
+
+export interface NodeEditorFormBuilderTypedInputParams
+  extends NodeEditorFormBuilderInputParams {
+  idType: string;
+  valueType: string;
+  types?: (EditorWidgetTypedInputType | EditorWidgetTypedInputTypeDefinition)[];
+  width?: number;
+}
+
+export interface NodeEditorFormBuilderTimeInputParams
+  extends NodeEditorFormBuilderInputParams {
+  idType: string;
+  valueType?: string;
+}
+
+export interface NodeEditorFormBuilderSelectParams
+  extends NodeEditorFormBuilderInputParams {
+  options: string[] | { value: string; label: string }[];
 }

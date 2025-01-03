@@ -8,7 +8,7 @@ const timeUnits: Record<string, any> = {
 
 export function convertToMilliseconds(
   time: number,
-  unit: string = "s"
+  unit: string = "ms"
 ): number {
   return time * timeUnits[unit];
 }

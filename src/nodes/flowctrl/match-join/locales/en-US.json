@@ -1,0 +1,12 @@
+{
+    "label": {
+        "discardNotMatched": "Discard Not Matched",
+        "join": "Join",
+        "minMsgCount": "Min Message Count",
+        "property": "Compare",
+        "operator": "Operator",
+        "compare": "With",
+        "target": "Set Topic",
+        "matchers": "Topic Matchers"
+    }
+}

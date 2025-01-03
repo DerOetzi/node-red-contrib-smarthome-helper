@@ -2,9 +2,10 @@ import { Node, NodeAPI } from "node-red";
 import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import BaseNode from "./nodes/flowctrl/base";
 import GateControlNode from "./nodes/flowctrl/gate-control";
+import MatchJoinNode from "./nodes/flowctrl/match-join";
 import version from "./version";
 
-const nodes = [AutomationGateNode, BaseNode, GateControlNode];
+const nodes = [AutomationGateNode, BaseNode, GateControlNode, MatchJoinNode];
 
 export default async (RED: NodeAPI): Promise<void> => {
   for (const NodeClass of nodes) {
@@ -16,7 +17,7 @@ export default async (RED: NodeAPI): Promise<void> => {
       function (this: Node, config: any) {
         RED.nodes.createNode(this, config);
         const node = this;
-        const nodeController = new NodeClass(RED, node, config);
+        const nodeController = new (NodeClass as any)(RED, node, config);
         nodeController.registerListenerAndInitialize();
       }
     );

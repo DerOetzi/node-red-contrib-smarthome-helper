@@ -1,46 +1,66 @@
 import { EditorNodeDef } from "node-red";
 import { comparators } from "../../logical/compare/operations";
-import BaseNodeEditor from "../base/editor";
+import BaseNodeEditor, { NodeEditorFormBuilder } from "../base/editor";
 import {
-  defaultMatchJoinNodeConfig,
   MatcherRow,
+  MatcherRowDefaults,
   MatchFixedTargets,
-  MatchJoinNodeEditorProperties,
-  MatchJoinNodeType,
+  MatchJoinEditorNodeProperties,
+  MatchJoinEditorNodePropertiesDefaults,
+  MatchJoinNodeOptionsDefaults,
 } from "./types";
+import MatchJoinNode from "./";
 
-const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
-  ...BaseNodeEditor,
-  color: MatchJoinNodeType.color,
-  defaults: {
-    ...BaseNodeEditor.defaults,
-    join: { value: defaultMatchJoinNodeConfig.join!, required: false },
-    matchers: { value: defaultMatchJoinNodeConfig.matchers!, required: true },
-    discardNotMatched: {
-      value: defaultMatchJoinNodeConfig.discardNotMatched!,
-      required: false,
-    },
-    minMsgCount: {
-      value: defaultMatchJoinNodeConfig.minMsgCount!,
-      required: true,
-    },
-  },
+const MatchJoinNodeEditor: EditorNodeDef<MatchJoinEditorNodeProperties> = {
+  category: MatchJoinNode.NodeCategory.label,
+  color: MatchJoinNode.NodeColor,
   icon: "join.svg",
+  defaults: MatchJoinEditorNodePropertiesDefaults,
   label: function () {
     const label = this.join ? "join" : "match";
     return this.name ? `${this.name} (${label})` : label;
   },
+  inputs: MatchJoinNodeOptionsDefaults.inputs,
+  outputs: MatchJoinNodeOptionsDefaults.outputs,
   oneditprepare: function () {
-    if (BaseNodeEditor.oneditprepare) {
-      BaseNodeEditor.oneditprepare.call(this);
-    }
+    BaseNodeEditor.oneditprepare!.call(this);
 
-    initializeMatcherRows(this.matchers);
+    initializeMatcherRows(this.matchers, this._.bind(this));
 
-    $("#row-minMsgCount").toggle(this.join);
+    const matchJoinOptionsBuilder = new NodeEditorFormBuilder(
+      $("#matcher-join-options"),
+      {
+        translatePrefix: "flowctrl.match-join",
+        translate: this._.bind(this),
+      }
+    );
 
-    $("#node-input-join").on("change", function () {
-      $("#row-minMsgCount").toggle($(this).is(":checked"));
+    matchJoinOptionsBuilder.createCheckboxInput({
+      id: "node-input-discardNotMatched",
+      label: "discardNotMatched",
+      value: this.discardNotMatched,
+      icon: "stop-circle-o",
+    });
+
+    const joinCheckbox = matchJoinOptionsBuilder.createCheckboxInput({
+      id: "node-input-join",
+      label: "join",
+      value: this.join,
+      icon: "compress",
+    });
+
+    const minMsgCountInputRow = matchJoinOptionsBuilder
+      .createNumberInput({
+        id: "node-input-minMsgCount",
+        label: "minMsgCount",
+        value: this.minMsgCount,
+        icon: "hashtag",
+      })
+      .parent()
+      .toggle(this.join);
+
+    joinCheckbox.on("change", function () {
+      minMsgCountInputRow.toggle($(this).is(":checked"));
     });
   },
   oneditsave: function () {
@@ -50,129 +70,119 @@ const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
 
 const matcherRowsId = "#matcher-rows";
 
+const applicableComparators = Object.keys(comparators).filter(
+  (key) => !comparators[key].propertyOnly
+);
+
 export function initializeMatcherRows(
   matchers: MatcherRow[],
+  translate: (key: string) => string,
   fixedTargets?: MatchFixedTargets
 ) {
+  const matcherRowFormBuilder = new NodeEditorFormBuilder($("<div/>"), {
+    translatePrefix: "flowctrl.match-join",
+    translate: translate.bind(this),
+    createUniqueIds: true,
+    defaultTypeInputWidth: 280,
+  });
+
+  const headerPrefix = fixedTargets ? fixedTargets.translatePrefix : "flowctrl.match-join";
+
   $(matcherRowsId)
     .editableList({
       addButton: true,
       removable: true,
       sortable: true,
       height: "auto",
-      header: $("<div>").append($("<label>").text("Input mappings")),
-      addItem: function (container, _, data: MatcherRow) {
+      header: $("<div>").append($("<label>").text(translate(`${headerPrefix}.label.matchers`))),
+      addItem: function (container, _: number, data: MatcherRow) {
         container.css({
           overflow: "hidden",
           whiteSpace: "nowrap",
         });
 
-        const $row = $("<div />").appendTo(container);
-        const $row1 = $("<div />").appendTo($row).css("margin-bottom", "6px");
+        matcherRowFormBuilder.newContainer(container);
 
-        const propertyName = $("<input/>", {
-          class: "property-name",
-          type: "text",
-        })
-          .css("width", "100%")
-          .appendTo($row1)
-          .typedInput({
-            types: ["msg"],
-          });
-
-        propertyName.typedInput("value", data.property ?? "topic");
-        propertyName.typedInput("type", data.propertyType ?? "msg");
-
-        const $row2 = $("<div />").appendTo($row).css("margin-bottom", "6px");
-
-        const operator = $("<select/>", {}).css("width", "30%").appendTo($row2);
-
-        Object.entries(comparators).forEach(([key, comparator]) => {
-          $("<option/>", {
-            value: key,
-            text: comparator.label,
-          }).appendTo(operator);
+        matcherRowFormBuilder.createTypedInput({
+          id: "property",
+          idType: "propertyType",
+          label: "property",
+          value: data.property ?? MatcherRowDefaults.property,
+          valueType: data.propertyType ?? MatcherRowDefaults.propertyType,
+          types: ["msg"],
+          icon: "envelope-o",
         });
 
-        operator.val(data.operator ?? "eq");
+        const operatorSelect = matcherRowFormBuilder.createSelectInput({
+          id: "operator",
+          label: "operator",
+          value: data.operator ?? MatcherRowDefaults.operator,
+          options: Object.entries(comparators).map(([key, comparator]) => ({
+            value: key,
+            label: comparator.label,
+          })),
+          icon: "search",
+        });
 
-        const compareWrap = $("<span/>", {
-          class: "propery-compare-wrap",
-        })
-          .css("display", "inline-block")
-          .css("width", "70%")
-          .appendTo($row2);
-
-        const propertyCompare = $("<input/>", {
-          class: "property-compare",
-          type: "text",
-        })
-          .appendTo(compareWrap)
-          .css("width", "100%")
-          .typedInput({
-            types: ["msg", "str", "num", "bool"],
-          });
-
-        propertyCompare.typedInput("value", data.compare ?? "");
-        propertyCompare.typedInput("type", data.compareType ?? "str");
-
-        const $row3 = $("<div />").appendTo($row);
-        $("<div/>", { style: "display:inline-block; padding:0px 6px;" })
-          .text("=>")
-          .appendTo($row3);
-
-        const propertyTarget = $("<input/>", {
-          class: "property-target",
-          type: "text",
-        })
-          .css("width", "calc(100% - 40px)")
-          .appendTo($row3)
-          .typedInput({
-            types: ["msg", "str"],
-          });
-
-        propertyTarget.typedInput("value", data.target ?? "");
-        propertyTarget.typedInput("type", data.targetType ?? "str");
-
-        if (fixedTargets) {
-          const propertyTargetSelect = $("<select/>", {
-            class: "property-target-select",
+        const compareInputRow = matcherRowFormBuilder
+          .createTypedInput({
+            id: "compare",
+            idType: "compareType",
+            label: "compare",
+            value: data.compare ?? MatcherRowDefaults.compare,
+            valueType: data.compareType ?? MatcherRowDefaults.compareType,
+            icon: "file-text-o",
           })
-            .css("width", "calc(100% - 40px)")
-            .appendTo($row3);
-
-          const matchers = $(matcherRowsId);
-
-          fixedTargets.targets.forEach((target) => {
-            const option = $("<option/>", {
-              value: target,
-              text: fixedTargets.t(fixedTargets.translatePrefix + "." + target),
-            }).appendTo(propertyTargetSelect);
-
-            option.toggle(matchers.data("showHide_" + target) ?? true);
-          });
-
-          propertyTargetSelect.val(data.target ?? "");
-          propertyTargetSelect.on("change", function () {
-            const value = $(this).val() as string;
-            propertyTarget.typedInput("value", value);
-          });
-          (propertyTarget as any).typedInput("hide");
-        }
-
-        compareWrap.toggle(
-          !["true", "false", "empty", "not_empty"].includes(
-            operator.val() as string
-          )
-        );
-
-        operator.on("change", function () {
-          compareWrap.toggle(
-            !["true", "false", "empty", "not_empty"].includes(
-              $(this).val() as string
+          .parent()
+          .toggle(
+            applicableComparators.includes(
+              (data.operator ?? MatcherRowDefaults.operator) as string
             )
           );
+
+        operatorSelect.on("change", function () {
+          compareInputRow.toggle(
+            applicableComparators.includes($(this).val() as string)
+          );
         });
+
+        matcherRowFormBuilder.createTypedInput({
+          id: "target",
+          idType: "targetType",
+          label: "target",
+          value: data.target ?? MatcherRowDefaults.target,
+          valueType: data.targetType ?? MatcherRowDefaults.targetType,
+          types: ["msg", "str"],
+          icon: "tag",
+        });
+
+        // TODO Implement fixedTargets when needed
+        //
+        // if (fixedTargets) {
+        //   const propertyTargetSelect = $("<select/>", {
+        //     class: "property-target-select",
+        //   })
+        //     .css("width", "calc(100% - 40px)")
+        //     .appendTo($row3);
+
+        //   const matchers = $(matcherRowsId);
+
+        //   fixedTargets.targets.forEach((target) => {
+        //     const option = $("<option/>", {
+        //       value: target,
+        //       text: fixedTargets.t(fixedTargets.translatePrefix + "." + target),
+        //     }).appendTo(propertyTargetSelect);
+
+        //     option.toggle(matchers.data("showHide_" + target) ?? true);
+        //   });
+
+        //   propertyTargetSelect.val(data.target ?? "");
+        //   propertyTargetSelect.on("change", function () {
+        //     const value = $(this).val() as string;
+        //     propertyTarget.typedInput("value", value);
+        //   });
+        //   (propertyTarget as any).typedInput("hide");
+        // }
       },
     })
     .editableList("addItems", matchers || []);
@@ -184,18 +194,15 @@ export function getMatchers(): MatcherRow[] {
 
   matchersList.each((_, row) => {
     let matcher = $(row);
-    let target: string | null = null;
-    let targetType: string | null = null;
 
     matchers.push({
-      property: matcher.find(".property-name").typedInput("value"),
-      propertyType: matcher.find(".property-name").typedInput("type"),
-      operator: matcher.find("select").val() as string,
-      compare: matcher.find(".property-compare").typedInput("value"),
-      compareType: matcher.find(".property-compare").typedInput("type"),
-      target: target ?? matcher.find(".property-target").typedInput("value"),
-      targetType:
-        targetType ?? matcher.find(".property-target").typedInput("type"),
+      property: matcher.find(".property").val() as string,
+      propertyType: matcher.find(".propertyType").val() as string,
+      operator: matcher.find(".operator").val() as string,
+      compare: matcher.find(".compare").val() as string,
+      compareType: matcher.find(".compareType").val() as string,
+      target: matcher.find(".target").val() as string,
+      targetType: matcher.find(".targetType").val() as string,
     });
   });
 
@@ -225,5 +232,3 @@ export function removeTarget(keep: boolean, option: string) {
 }
 
 export default MatchJoinNodeEditor;
-
-export { MatchJoinNodeType };

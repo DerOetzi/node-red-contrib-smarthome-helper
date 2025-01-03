@@ -1,13 +1,14 @@
-import {
-  EditorNodeDef,
-  EditorWidgetTypedInputType,
-  EditorWidgetTypedInputTypeDefinition,
-} from "node-red";
+import { EditorNodeDef } from "node-red";
 import BaseNode from "./";
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
+  NodeEditorFormBuilderInputParams,
+  NodeEditorFormBuilderParams,
+  NodeEditorFormBuilderSelectParams,
+  NodeEditorFormBuilderTimeInputParams,
+  NodeEditorFormBuilderTypedInputParams,
 } from "./types";
 
 const BaseNodeEditor: EditorNodeDef<BaseEditorNodeProperties> = {
@@ -23,234 +24,247 @@ const BaseNodeEditor: EditorNodeDef<BaseEditorNodeProperties> = {
   oneditprepare: function () {
     const commonOptionsBuilder = new NodeEditorFormBuilder(
       $("#base-common-options"),
-      "flowctrl.base",
-      this._.bind(this)
+      { translatePrefix: "flowctrl.base", translate: this._.bind(this) }
     );
 
-    commonOptionsBuilder.createTextInput(
-      "node-input-name",
-      "name",
-      this.name!,
-      "code"
-    );
+    commonOptionsBuilder.createTextInput({
+      id: "node-input-name",
+      label: "name",
+      value: this.name!,
+      icon: "code",
+    });
 
-    commonOptionsBuilder.createTypedInput(
-      "node-input-topic",
-      "node-input-topicType",
-      "topic",
-      this.topic,
-      this.topicType,
-      ["msg", "str"],
-      "tag"
-    );
+    commonOptionsBuilder.createTypedInput({
+      id: "node-input-topic",
+      idType: "node-input-topicType",
+      label: "topic",
+      value: this.topic,
+      valueType: this.topicType,
+      types: ["msg", "str"],
+      icon: "tag",
+    });
 
     commonOptionsBuilder.line();
 
-    commonOptionsBuilder.createCheckboxInput(
-      "node-input-newMsg",
-      "newMsg",
-      this.newMsg,
-      "pencil-square-o"
-    );
+    commonOptionsBuilder.createCheckboxInput({
+      id: "node-input-newMsg",
+      label: "newMsg",
+      value: this.newMsg,
+      icon: "pencil-square-o",
+    });
 
-    commonOptionsBuilder.createCheckboxInput(
-      "node-input-filterUniquePayload",
-      "filterUniquePayload",
-      this.filterUniquePayload,
-      "filter"
-    );
+    commonOptionsBuilder.createCheckboxInput({
+      id: "node-input-filterUniquePayload",
+      label: "filterUniquePayload",
+      value: this.filterUniquePayload,
+      icon: "filter",
+    });
 
     const debounceOptions = $("#base-debounce-options").toggle(this.debounce);
 
     commonOptionsBuilder
-      .createCheckboxInput(
-        "node-input-debounce",
-        "debounce",
-        this.debounce,
-        "line-chart"
-      )
+      .createCheckboxInput({
+        id: "node-input-debounce",
+        label: "debounce",
+        value: this.debounce,
+        icon: "line-chart",
+      })
       .on("change", function () {
         debounceOptions.toggle($(this).is(":checked"));
       });
 
-    const debounceOptionsBuilder = new NodeEditorFormBuilder(
-      debounceOptions,
-      "flowctrl.base",
-      this._.bind(this)
-    );
+    const debounceOptionsBuilder = new NodeEditorFormBuilder(debounceOptions, {
+      translatePrefix: "flowctrl.base",
+      translate: this._.bind(this),
+    });
 
-    debounceOptionsBuilder.createCheckboxInput(
-      "node-input-debounceTopic",
-      "debounceTopic",
-      this.debounceTopic,
-      "tags"
-    );
+    debounceOptionsBuilder.createCheckboxInput({
+      id: "node-input-debounceTopic",
+      label: "debounceTopic",
+      value: this.debounceTopic,
+      icon: "tags",
+    });
 
-    debounceOptionsBuilder.createCheckboxInput(
-      "node-input-debounceShowStatus",
-      "debounceShowStatus",
-      this.debounceShowStatus,
-      "eye"
-    );
+    debounceOptionsBuilder.createCheckboxInput({
+      id: "node-input-debounceShowStatus",
+      label: "debounceShowStatus",
+      value: this.debounceShowStatus,
+      icon: "eye",
+    });
 
-    debounceOptionsBuilder.createTimeInput(
-      "node-input-debounceTime",
-      "node-input-debounceUnit",
-      "debounceTime",
-      this.debounceTime,
-      this.debounceUnit,
-      "clock-o"
-    );
+    debounceOptionsBuilder.createTimeInput({
+      id: "node-input-debounceTime",
+      idType: "node-input-debounceUnit",
+      label: "debounceTime",
+      value: this.debounceTime,
+      valueType: this.debounceUnit,
+      icon: "clock-o",
+    });
 
-    debounceOptionsBuilder.createCheckboxInput(
-      "node-input-debounceLeading",
-      "debounceLeading",
-      this.debounceLeading,
-      "hourglass-1"
-    );
+    debounceOptionsBuilder.createCheckboxInput({
+      id: "node-input-debounceLeading",
+      label: "debounceLeading",
+      value: this.debounceLeading,
+      icon: "hourglass-1",
+    });
 
-    debounceOptionsBuilder.createCheckboxInput(
-      "node-input-debounceTrailing",
-      "debounceTrailing",
-      this.debounceTrailing,
-      "hourglass-end"
-    );
+    debounceOptionsBuilder.createCheckboxInput({
+      id: "node-input-debounceTrailing",
+      label: "debounceTrailing",
+      value: this.debounceTrailing,
+      icon: "hourglass-end",
+    });
   },
 };
 
 export default BaseNodeEditor;
 
 export class NodeEditorFormBuilder {
+  private readonly uniqueIdCounters: Record<string, number> = {};
+
   constructor(
-    private readonly container: JQuery,
-    private readonly translatePrefix: string,
-    private readonly translate: Function
+    private container: JQuery,
+    private readonly params: NodeEditorFormBuilderParams
   ) {}
+
+  public newContainer(container: JQuery) {
+    this.container = container;
+  }
 
   public line(): JQuery {
     return $("<hr/>").appendTo(this.container);
   }
 
-  public createTimeInput(
-    id: string,
-    idUnit: string,
-    label: string,
-    value: number,
-    valueUnit: string,
-    icon?: string
-  ): JQuery {
-    return this.createTypedInput(
-      id,
-      idUnit,
-      label,
-      value.toString(),
-      valueUnit,
-      [
-        { value: "ms", label: "ms" },
-        { value: "s", label: "s" },
-        { value: "m", label: "m" },
-        { value: "h", label: "h" },
+  public createTimeInput(params: NodeEditorFormBuilderTimeInputParams): JQuery {
+    return this.createTypedInput({
+      ...params,
+      types: [
+        { value: "ms", label: "ms", validate: /^\d+$/ },
+        { value: "s", label: "s", validate: /^\d+$/ },
+        { value: "m", label: "m", validate: /^\d+$/ },
+        { value: "h", label: "h", validate: /^\d+$/ },
       ],
-      icon
-    );
+      valueType: params.valueType ?? "ms",
+      width: 100,
+    });
   }
 
   public createTypedInput(
-    id: string,
-    idType: string,
-    label: string,
-    value: string,
-    valueType: string,
-    types: (
-      | EditorWidgetTypedInputType
-      | EditorWidgetTypedInputTypeDefinition
-    )[],
-    icon?: string
+    params: NodeEditorFormBuilderTypedInputParams
   ): JQuery {
-    const input = this.createTextInput(id, label, value, icon);
-    const inputType = $("<input/>", { id: idType, type: "hidden" }).appendTo(
-      input.parent() as JQuery
+    const input = this.createTextInput(params);
+
+    const uniqueIdType = this.uniqueId(params.idType);
+    const inputType = $("<input/>", {
+      id: uniqueIdType,
+      type: "hidden",
+      class: params.idType,
+    }).appendTo(input.parent() as JQuery);
+
+    inputType.val(params.valueType ?? "str");
+
+    input
+      .typedInput({
+        types: params.types ?? ["msg", "str", "num", "bool"],
+        typeField: `#${uniqueIdType}`,
+      })
+      .typedInput(
+        "width",
+        params.width ?? this.params.defaultTypeInputWidth ?? 310
+      );
+
+    return input;
+  }
+
+  public createTextInput(params: NodeEditorFormBuilderInputParams): JQuery {
+    const uniqueId = this.uniqueId(params.id);
+    const formRow = this.createFormRowWithLabel(
+      uniqueId,
+      params.label,
+      params.icon
     );
+    const input = $("<input/>", {
+      id: uniqueId,
+      type: "text",
+      class: params.id,
+    }).appendTo(formRow);
 
-    inputType.val(valueType ?? "str");
-
-    input.typedInput({
-      types,
-      typeField: `#${idType}`,
-    });
-
-    return input;
-  }
-
-  public createTextInput(
-    id: string,
-    label: string,
-    value: string,
-    icon?: string
-  ): JQuery {
-    const formRow = this.createFormRowWithLabel(id, label, icon);
-    const input = $("<input/>", { id, type: "text" }).appendTo(formRow);
-
-    if (value) {
-      input.val(value);
+    if (params.value) {
+      input.val(params.value as string);
     }
 
     return input;
   }
 
-  public createNumberInput(
-    id: string,
-    label: string,
-    value: number,
-    icon?: string
-  ): JQuery {
-    const formRow = this.createFormRowWithLabel(id, label, icon);
-    const input = $("<input/>", { id, type: "number" }).appendTo(formRow);
+  public createNumberInput(params: NodeEditorFormBuilderInputParams): JQuery {
+    const uniqueId = this.uniqueId(params.id);
+    const formRow = this.createFormRowWithLabel(
+      uniqueId,
+      params.label,
+      params.icon
+    );
+    const input = $("<input/>", {
+      id: uniqueId,
+      type: "number",
+      class: params.id,
+    }).appendTo(formRow);
 
-    if (value) {
-      input.val(value);
+    if (params.value) {
+      input.val(params.value as number);
     }
 
     return input;
   }
 
-  public createCheckboxInput(
-    id: string,
-    label: string,
-    value: boolean,
-    icon?: string
-  ): JQuery {
-    const formRow = this.createFormRowWithLabel(id, label, icon);
-    const input = $("<input/>", { id, type: "checkbox" }).appendTo(formRow);
+  public createCheckboxInput(params: NodeEditorFormBuilderInputParams): JQuery {
+    const uniqueId = this.uniqueId(params.id);
+    const formRow = this.createFormRowWithLabel(
+      uniqueId,
+      params.label,
+      params.icon
+    );
+    const input = $("<input/>", {
+      id: uniqueId,
+      type: "checkbox",
+      class: params.id,
+    }).appendTo(formRow);
 
-    if (value) {
+    if (params.value) {
       input.prop("checked", true);
     }
 
     return input;
   }
 
-  public createSelectInput(
-    id: string,
-    label: string,
-    value: string,
-    options: string[],
-    icon?: string
-  ): JQuery {
-    const formRow = this.createFormRowWithLabel(id, label, icon);
-    const select = $("<select/>", { id }).appendTo(formRow);
+  public createSelectInput(params: NodeEditorFormBuilderSelectParams): JQuery {
+    const uniqueId = this.uniqueId(params.id);
+    const formRow = this.createFormRowWithLabel(
+      uniqueId,
+      params.label,
+      params.icon
+    );
+    const select = $("<select/>", { id: uniqueId, class: params.id }).appendTo(
+      formRow
+    );
 
-    options.forEach((value) => {
+    params.options.forEach((option) => {
+      const optionText =
+        typeof option === "string"
+          ? this.params.translate(
+              `${this.params.translatePrefix}.select.${params.label}.${option}`
+            )
+          : option.label;
+
+      const optionValue = typeof option === "string" ? option : option.value;
+
       $("<option/>", {
-        value: value,
-        text: this.translate(
-          `${this.translatePrefix}.select.${label}.${value}`
-        ),
+        value: optionValue,
+        text: optionText,
       }).appendTo(select);
     });
 
-    if (value) {
-      select.val(value);
+    if (params.value) {
+      select.val(params.value as string);
     }
 
     return select;
@@ -265,7 +279,9 @@ export class NodeEditorFormBuilder {
 
     const labelTag = $("<label/>", {
       for: id,
-      text: this.translate(`${this.translatePrefix}.label.${label}`),
+      text: this.params.translate(
+        `${this.params.translatePrefix}.label.${label}`
+      ),
     }).appendTo(formRow);
 
     if (icon) {
@@ -277,5 +293,19 @@ export class NodeEditorFormBuilder {
 
   private createFormRow(): JQuery {
     return $("<div/>", { class: "form-row" }).appendTo(this.container);
+  }
+
+  private uniqueId(prefix: string): string {
+    if (!this.params.createUniqueIds) {
+      return prefix;
+    }
+
+    if (this.uniqueIdCounters.hasOwnProperty(prefix)) {
+      this.uniqueIdCounters[prefix] += 1;
+    } else {
+      this.uniqueIdCounters[prefix] = 0;
+    }
+
+    return `${prefix}-${this.uniqueIdCounters[prefix]}`;
   }
 }

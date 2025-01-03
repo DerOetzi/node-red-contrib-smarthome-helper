@@ -25,6 +25,7 @@ export const AutomationGateNodeOptionsDefaults: Partial<AutomationGateNodeDef> =
     ...BaseNodeOptionsDefaults,
     startupState: true,
     initializeDelay: 100,
+    initializeDelayUnit: "ms",
     autoReplay: true,
     stateOpenLabel: "",
     stateClosedLabel: "",
@@ -46,6 +47,10 @@ export const AutomationGateEditorNodePropertiesDefaults: EditorNodePropertiesDef
     },
     initializeDelay: {
       value: AutomationGateNodeOptionsDefaults.initializeDelay!,
+      required: true,
+    },
+    initializeDelayUnit: {
+      value: AutomationGateNodeOptionsDefaults.initializeDelayUnit!,
       required: true,
     },
     autoReplay: {

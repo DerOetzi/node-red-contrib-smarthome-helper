@@ -1,39 +1,25 @@
-import { Node, NodeStatusFill } from "node-red";
-import { RED } from "../../../globals";
-import { NodeRedDone, NodeRedSend } from "../../../types";
+import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { comparators } from "../../logical/compare/operations";
-import { NodeType } from "../../types";
+import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
 import BaseNode from "../base";
-import { BaseNodeOptions } from "../base/types";
+import { NodeStatus } from "../base/types";
 import {
-  defaultMatchJoinNodeConfig,
-  MatchJoinNodeConfig,
   MatchJoinNodeData,
+  MatchJoinNodeDef,
   MatchJoinNodeMessage,
-  MatchJoinNodeType,
+  MatchJoinNodeOptionsDefaults,
 } from "./types";
 
 export default class MatchJoinNode<
-  T extends MatchJoinNodeConfig = MatchJoinNodeConfig,
+  T extends MatchJoinNodeDef = MatchJoinNodeDef,
 > extends BaseNode<T> {
+  public static readonly NodeType: string = "match-join";
+  public static readonly NodeColor: NodeColor = NodeColor.Base;
+
   private messages: Record<string, any> = {};
 
-  static get type(): NodeType {
-    return MatchJoinNodeType;
-  }
-
-  constructor(
-    node: Node,
-    config: MatchJoinNodeConfig,
-    options: BaseNodeOptions = {}
-  ) {
-    config = { ...defaultMatchJoinNodeConfig, ...config };
-    if (config.join) {
-      options = {
-        filterkey: "filterMessages",
-      };
-    }
-    super(node, config as T, options);
+  constructor(RED: NodeAPI, node: Node, config: T) {
+    super(RED, node, config, MatchJoinNodeOptionsDefaults as T);
   }
 
   protected onClose() {
@@ -43,12 +29,15 @@ export default class MatchJoinNode<
 
   public onInput(
     msg: MatchJoinNodeMessage,
-    send: NodeRedSend,
-    done: NodeRedDone
+    send: NodeSendFunction,
+    done: NodeDoneFunction
   ) {
     const matcher = this.config.matchers.find((matcher) => {
-      const propertyValue = RED.util.getMessageProperty(msg, matcher.property);
-      const compareValue = RED.util.evaluateNodeProperty(
+      const propertyValue = this.RED.util.getMessageProperty(
+        msg,
+        matcher.property
+      );
+      const compareValue = this.RED.util.evaluateNodeProperty(
         matcher.compare,
         matcher.compareType,
         this.node,
@@ -67,7 +56,7 @@ export default class MatchJoinNode<
     });
 
     if (matcher) {
-      const targetValue = RED.util.evaluateNodeProperty(
+      const targetValue = this.RED.util.evaluateNodeProperty(
         matcher.target,
         matcher.targetType,
         this.node,
@@ -118,7 +107,7 @@ export default class MatchJoinNode<
     this.debounce(data);
   }
 
-  protected statusColor(status: any): NodeStatusFill {
+  protected statusColor(status: NodeStatus): NodeStatusFill {
     let color: NodeStatusFill = "red";
     if (status === null || status === undefined || status === "") {
       color = "grey";

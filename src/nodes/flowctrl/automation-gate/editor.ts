@@ -24,30 +24,34 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateEditorNodeProperties
 
       const automationGateOptionsBuilder = new NodeEditorFormBuilder(
         $("#automation-gate-options"),
-        "flowctrl.automation-gate",
-        this._.bind(this)
+        {
+          translatePrefix: "flowctrl.automation-gate",
+          translate: this._.bind(this),
+        }
       );
 
-      automationGateOptionsBuilder.createCheckboxInput(
-        "node-input-startupState",
-        "startupState",
-        this.startupState,
-        "play"
-      );
+      automationGateOptionsBuilder.createCheckboxInput({
+        id: "node-input-startupState",
+        label: "startupState",
+        value: this.startupState,
+        icon: "play",
+      });
 
-      automationGateOptionsBuilder.createNumberInput(
-        "node-input-initializeDelay",
-        "initializeDelay",
-        this.initializeDelay!,
-        "pause"
-      );
+      automationGateOptionsBuilder.createTimeInput({
+        id: "node-input-initializeDelay",
+        idType: "node-input-initializeDelayUnit",
+        label: "initializeDelay",
+        value: this.initializeDelay!,
+        valueType: this.initializeDelayUnit!,
+        icon: "pause",
+      });
 
-      automationGateOptionsBuilder.createCheckboxInput(
-        "node-input-autoReplay",
-        "autoReplay",
-        this.autoReplay,
-        "refresh"
-      );
+      automationGateOptionsBuilder.createCheckboxInput({
+        id: "node-input-autoReplay",
+        label: "autoReplay",
+        value: this.autoReplay,
+        icon: "refresh",
+      });
 
       automationGateOptionsBuilder.line();
 
@@ -57,12 +61,12 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateEditorNodeProperties
         );
       }
 
-      automationGateOptionsBuilder.createTextInput(
-        "node-input-stateOpenLabel",
-        "stateOpenLabel",
-        this.stateOpenLabel!,
-        "tag"
-      );
+      automationGateOptionsBuilder.createTextInput({
+        id: "node-input-stateOpenLabel",
+        label: "stateOpenLabel",
+        value: this.stateOpenLabel!,
+        icon: "tag",
+      });
 
       if (!this.stateClosedLabel) {
         this.stateClosedLabel = this._(
@@ -70,30 +74,30 @@ const AutomationGateNodeEditor: EditorNodeDef<AutomationGateEditorNodeProperties
         );
       }
 
-      automationGateOptionsBuilder.createTextInput(
-        "node-input-stateClosedLabel",
-        "stateClosedLabel",
-        this.stateClosedLabel!,
-        "tag"
-      );
+      automationGateOptionsBuilder.createTextInput({
+        id: "node-input-stateClosedLabel",
+        label: "stateClosedLabel",
+        value: this.stateClosedLabel!,
+        icon: "tag",
+      });
 
       automationGateOptionsBuilder.line();
 
       const setAutomationInProgressCheckbox =
-        automationGateOptionsBuilder.createCheckboxInput(
-          "node-input-setAutomationInProgress",
-          "setAutomationInProgress",
-          this.setAutomationInProgress,
-          "play-circle"
-        );
+        automationGateOptionsBuilder.createCheckboxInput({
+          id: "node-input-setAutomationInProgress",
+          label: "setAutomationInProgress",
+          value: this.setAutomationInProgress,
+          icon: "play-circle",
+        });
 
       const automationProgressIdInputRow = automationGateOptionsBuilder
-        .createTextInput(
-          "node-input-automationProgressId",
-          "automationProgressId",
-          this.automationProgressId!,
-          "tag"
-        )
+        .createTextInput({
+          id: "node-input-automationProgressId",
+          label: "automationProgressId",
+          value: this.automationProgressId!,
+          icon: "tag",
+        })
         .parent()
         .toggle(this.setAutomationInProgress);
 

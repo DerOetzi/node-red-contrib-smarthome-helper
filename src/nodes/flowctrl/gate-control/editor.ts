@@ -29,34 +29,33 @@ const GateControlNodeEditor: EditorNodeDef<GateControlEditorNodeProperties> = {
 
     const gateControlOptionsBuilder = new NodeEditorFormBuilder(
       $("#gate-control-options"),
-      "flowctrl.gate-control",
-      this._.bind(this)
+      { translatePrefix: "flowctrl.gate-control", translate: this._.bind(this) }
     );
 
-    gateControlOptionsBuilder.createNumberInput(
-      "node-input-delay",
-      "delay",
-      this.delay,
-      "clock-o"
-    );
+    gateControlOptionsBuilder.createNumberInput({
+      id: "node-input-delay",
+      label: "delay",
+      value: this.delay,
+      icon: "clock-o",
+    });
 
-    const gateCommandSelect = gateControlOptionsBuilder.createSelectInput(
-      "node-input-gateCommand",
-      "gateCommand",
-      this.gateCommand,
-      ["start", "stop", "pause", "replay", "reset_filter"],
-      "comment"
-    );
+    const gateCommandSelect = gateControlOptionsBuilder.createSelectInput({
+      id: "node-input-gateCommand",
+      label: "gateCommand",
+      value: this.gateCommand,
+      options: ["start", "stop", "pause", "replay", "reset_filter"],
+      icon: "comment",
+    });
 
     const gatePauseTimeRow = gateControlOptionsBuilder
-      .createTimeInput(
-        "node-input-pauseTime",
-        "node-input-pauseUnit",
-        "pauseTime",
-        this.pauseTime!,
-        this.pauseUnit!,
-        "hourglass-half"
-      )
+      .createTimeInput({
+        id: "node-input-pauseTime",
+        idType: "node-input-pauseUnit",
+        label: "pauseTime",
+        value: this.pauseTime!,
+        valueType: this.pauseUnit!,
+        icon: "hourglass-half",
+      })
       .parent()
       .toggle(this.gateCommand === "pause");
 

@@ -63,7 +63,13 @@ export default class BaseNode<T extends BaseNodeDef = BaseNodeDef> {
     this.node.on("input", this.onInput.bind(this));
     this.node.on("close", this.onClose.bind(this));
 
-    setTimeout(() => this.initialize(), this.config.initializeDelay);
+    setTimeout(
+      () => this.initialize(),
+      convertToMilliseconds(
+        this.config.initializeDelay!,
+        this.config.initializeDelayUnit
+      )
+    );
   }
 
   protected registerStatusOutput(options: NodeStatusOutputConfig) {

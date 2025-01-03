@@ -1,16 +1,16 @@
-import { NodeMessage } from "node-red";
-import { NodeColor, NodeType } from "../../types";
+import { EditorNodePropertiesDef, NodeMessage } from "node-red";
 import {
-  BaseNodeConfig,
+  BaseEditorNodeProperties,
+  BaseEditorNodePropertiesDefaults,
   BaseNodeDebounceData,
-  BaseNodeEditorProperties,
+  BaseNodeDef,
+  BaseNodeOptions,
+  BaseNodeOptionsDefaults,
 } from "../base/types";
-import { flowctrlCategory } from "../types";
 
 export interface MatchFixedTargets {
   targets: string[];
   translatePrefix: string;
-  t: (key: string) => string;
 }
 
 export interface MatcherRow {
@@ -23,7 +23,7 @@ export interface MatcherRow {
   targetType: string;
 }
 
-export const defaultMatcherRow: MatcherRow = {
+export const MatcherRowDefaults: MatcherRow = {
   property: "topic",
   propertyType: "msg",
   operator: "eq",
@@ -33,27 +33,48 @@ export const defaultMatcherRow: MatcherRow = {
   targetType: "msg",
 };
 
-export interface MatchJoinNodeConfig extends BaseNodeConfig {
+export interface MatchJoinNodeOptions extends BaseNodeOptions {
   join: boolean;
   discardNotMatched: boolean;
   matchers: MatcherRow[];
   minMsgCount: number;
 }
 
-export const defaultMatchJoinNodeConfig: Partial<MatchJoinNodeConfig> = {
+export interface MatchJoinNodeDef extends BaseNodeDef, MatchJoinNodeOptions {}
+
+export const MatchJoinNodeOptionsDefaults: Partial<MatchJoinNodeDef> = {
+  ...BaseNodeOptionsDefaults,
+  filterkey: "filterMessages",
   join: false,
   discardNotMatched: true,
-  matchers: [defaultMatcherRow],
+  matchers: [MatcherRowDefaults],
   minMsgCount: 1,
 };
 
-export interface MatchJoinNodeEditorProperties
-  extends BaseNodeEditorProperties {
-  join: boolean;
-  discardNotMatched: boolean;
-  matchers: MatcherRow[];
-  minMsgCount: number;
-}
+export interface MatchJoinEditorNodeProperties
+  extends BaseEditorNodeProperties,
+    MatchJoinNodeOptions {}
+
+export const MatchJoinEditorNodePropertiesDefaults: EditorNodePropertiesDef<MatchJoinEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    join: {
+      value: MatchJoinNodeOptionsDefaults.join!,
+      required: true,
+    },
+    discardNotMatched: {
+      value: MatchJoinNodeOptionsDefaults.discardNotMatched!,
+      required: true,
+    },
+    matchers: {
+      value: MatchJoinNodeOptionsDefaults.matchers!,
+      required: true,
+    },
+    minMsgCount: {
+      value: MatchJoinNodeOptionsDefaults.minMsgCount!,
+      required: true,
+    },
+  };
 
 export interface MatchJoinNodeData extends BaseNodeDebounceData {
   msg: MatchJoinNodeMessage;
@@ -63,9 +84,3 @@ export interface MatchJoinNodeData extends BaseNodeDebounceData {
 export interface MatchJoinNodeMessage extends NodeMessage {
   originalTopic?: string;
 }
-
-export const MatchJoinNodeType = new NodeType(
-  flowctrlCategory,
-  "match-join",
-  NodeColor.Base
-);

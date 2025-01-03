@@ -1,7 +1,7 @@
 {
     "label": {
         "startupState": "Open on startup",
-        "initializeDelay": "Initialize status delay (ms)",
+        "initializeDelay": "Initialize status delay",
         "autoReplay": "Auto replay on unpause",
         "stateOpenLabel": "Open label",
         "stateClosedLabel": "Closed label",
