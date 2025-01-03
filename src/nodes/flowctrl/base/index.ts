@@ -19,13 +19,17 @@ import {
   BaseNodeDebounceData,
   BaseNodeDebounceRunning,
   BaseNodeDef,
+  BaseNodeOptions,
   BaseNodeOptionsDefaults,
   NodeSendOptions,
   NodeStatus,
   NodeStatusOutputConfig,
 } from "./types";
 
-export default class BaseNode<T extends BaseNodeDef = BaseNodeDef> {
+export default class BaseNode<
+  T extends BaseNodeDef = BaseNodeDef,
+  U extends BaseNodeOptions = BaseNodeOptions,
+> {
   public static readonly NodeCategory: NodeCategory = flowctrlCategory;
   public static readonly NodeType: string = "base";
   public static readonly NodeColor: NodeColor = NodeColor.Base;
@@ -48,10 +52,9 @@ export default class BaseNode<T extends BaseNodeDef = BaseNodeDef> {
     protected readonly RED: NodeAPI,
     protected readonly node: Node,
     config: T,
-    defaultConfig: Partial<T> = {}
+    defaultConfig: Partial<U> = BaseNodeOptionsDefaults as U
   ) {
     this.config = {
-      ...BaseNodeOptionsDefaults,
       ...defaultConfig,
       ...config,
     };

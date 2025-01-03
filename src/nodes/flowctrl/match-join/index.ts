@@ -7,19 +7,21 @@ import {
   MatchJoinNodeData,
   MatchJoinNodeDef,
   MatchJoinNodeMessage,
+  MatchJoinNodeOptions,
   MatchJoinNodeOptionsDefaults,
 } from "./types";
 
 export default class MatchJoinNode<
   T extends MatchJoinNodeDef = MatchJoinNodeDef,
-> extends BaseNode<T> {
+  U extends MatchJoinNodeOptions = MatchJoinNodeOptions
+> extends BaseNode<T, U> {
   public static readonly NodeType: string = "match-join";
   public static readonly NodeColor: NodeColor = NodeColor.Base;
 
   private messages: Record<string, any> = {};
 
-  constructor(RED: NodeAPI, node: Node, config: T) {
-    super(RED, node, config, MatchJoinNodeOptionsDefaults as T);
+  constructor(RED: NodeAPI, node: Node, config: T, defaultConfig: Partial<U> = MatchJoinNodeOptionsDefaults as U) {
+    super(RED, node, config, defaultConfig);
   }
 
   protected onClose() {

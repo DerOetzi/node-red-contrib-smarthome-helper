@@ -34,20 +34,20 @@ export const MatcherRowDefaults: MatcherRow = {
 };
 
 export interface MatchJoinNodeOptions extends BaseNodeOptions {
-  join: boolean;
-  discardNotMatched: boolean;
   matchers: MatcherRow[];
+  discardNotMatched: boolean;
+  join: boolean;
   minMsgCount: number;
 }
 
 export interface MatchJoinNodeDef extends BaseNodeDef, MatchJoinNodeOptions {}
 
-export const MatchJoinNodeOptionsDefaults: Partial<MatchJoinNodeDef> = {
+export const MatchJoinNodeOptionsDefaults: Partial<MatchJoinNodeOptions> = {
   ...BaseNodeOptionsDefaults,
   filterkey: "filterMessages",
-  join: false,
-  discardNotMatched: true,
   matchers: [MatcherRowDefaults],
+  discardNotMatched: true,
+  join: false,
   minMsgCount: 1,
 };
 
@@ -58,16 +58,16 @@ export interface MatchJoinEditorNodeProperties
 export const MatchJoinEditorNodePropertiesDefaults: EditorNodePropertiesDef<MatchJoinEditorNodeProperties> =
   {
     ...BaseEditorNodePropertiesDefaults,
-    join: {
-      value: MatchJoinNodeOptionsDefaults.join!,
+    matchers: {
+      value: MatchJoinNodeOptionsDefaults.matchers!,
       required: true,
     },
     discardNotMatched: {
       value: MatchJoinNodeOptionsDefaults.discardNotMatched!,
       required: true,
     },
-    matchers: {
-      value: MatchJoinNodeOptionsDefaults.matchers!,
+    join: {
+      value: MatchJoinNodeOptionsDefaults.join!,
       required: true,
     },
     minMsgCount: {

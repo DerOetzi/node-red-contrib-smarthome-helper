@@ -20,7 +20,7 @@ export interface AutomationGateNodeDef
   extends BaseNodeDef,
     AutomationGateNodeOptions {}
 
-export const AutomationGateNodeOptionsDefaults: Partial<AutomationGateNodeDef> =
+export const AutomationGateNodeOptionsDefaults: Partial<AutomationGateNodeOptions> =
   {
     ...BaseNodeOptionsDefaults,
     startupState: true,

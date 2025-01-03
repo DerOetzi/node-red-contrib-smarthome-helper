@@ -10,10 +10,14 @@ import {
   AutomationGateCommand,
   AutomationGateNodeDef,
   AutomationGateNodeMessage,
+  AutomationGateNodeOptions,
   AutomationGateNodeOptionsDefaults,
 } from "./types";
 
-export default class AutomationGateNode extends BaseNode<AutomationGateNodeDef> {
+export default class AutomationGateNode extends BaseNode<
+  AutomationGateNodeDef,
+  AutomationGateNodeOptions
+> {
   public static readonly NodeType: string = "automation-gate";
   public static readonly NodeColor: NodeColor = NodeColor.AutomationGate;
 

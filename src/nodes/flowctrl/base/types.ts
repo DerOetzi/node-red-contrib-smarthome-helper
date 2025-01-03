@@ -57,8 +57,7 @@ export interface BaseNodeOptions
 
 export interface BaseNodeDef extends NodeDef, BaseNodeOptions {}
 
-export const BaseNodeOptionsDefaults: Partial<BaseNodeDef> = {
-  name: "",
+export const BaseNodeOptionsDefaults: Partial<BaseNodeOptions> = {
   ...BaseNodeCommonOptionsDefaults,
   ...BaseNodeDebounceOptionsDefaults,
 };

@@ -19,7 +19,7 @@ export interface GateControlNodeDef
   extends BaseNodeDef,
     GateControlNodeOptions {}
 
-export const GateControlNodeOptionsDefaults: Partial<GateControlNodeDef> = {
+export const GateControlNodeOptionsDefaults: Partial<GateControlNodeOptions> = {
   ...BaseNodeOptionsDefaults,
   delay: 100,
   gateCommand: AutomationGateCommand.Start,
