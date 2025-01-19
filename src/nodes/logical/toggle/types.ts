@@ -1,24 +1,32 @@
-import { NodeColor, NodeType } from "../../types";
-import { SwitchNodeConfig, SwitchNodeEditorProperties } from "../switch/types";
-import { logicalCategory } from "../types";
+import { EditorNodePropertiesDef } from "node-red";
+import {
+  SwitchEditorNodeProperties,
+  SwitchEditorNodePropertiesDefaults,
+  SwitchNodeDef,
+  SwitchNodeOptions,
+  SwitchNodeOptionsDefaults,
+} from "../switch/types";
 
-export interface ToggleNodeConfig extends SwitchNodeConfig {}
+export interface ToggleNodeOptions extends SwitchNodeOptions {}
 
-export const defaultToggleNodeConfig: Partial<ToggleNodeConfig> = {
-    target: "payload",
-    trueValue: "true",
-    trueType: "bool",
-    falseValue: "false",
-    falseType: "bool",
-    seperatedOutputs: false,
-    outputs: 1,
+export const ToggleNodeOptionsDefaults: ToggleNodeOptions = {
+  ...SwitchNodeOptionsDefaults,
+  seperatedOutputs: false,
+  outputs: 1,
 };
 
-export interface ToggleNodeEditorProperties
-  extends SwitchNodeEditorProperties {}
+export interface ToggleNodeDef extends SwitchNodeDef, ToggleNodeOptions {}
 
-export const ToggleNodeType = new NodeType(
-  logicalCategory,
-  "toggle",
-  NodeColor.Logical
-);
+export interface ToggleEditorNodeProperties
+  extends SwitchEditorNodeProperties,
+    ToggleNodeOptions {}
+
+export const ToggleEditorNodePropertiesDefaults: EditorNodePropertiesDef<ToggleEditorNodeProperties> =
+  {
+    ...SwitchEditorNodePropertiesDefaults,
+    seperatedOutputs: {
+      value: ToggleNodeOptionsDefaults.seperatedOutputs,
+      required: true,
+    },
+    outputs: { value: ToggleNodeOptionsDefaults.outputs, required: true },
+  };

@@ -1,12 +1,10 @@
-import { NodeAPI } from "node-red";
-import { setRED } from "./globals";
+import { Node, NodeAPI } from "node-red";
 import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import BaseNode from "./nodes/flowctrl/base";
 import GateControlNode from "./nodes/flowctrl/gate-control";
 import MatchJoinNode from "./nodes/flowctrl/match-join";
 import EventMapperNode from "./nodes/helper/event-mapper";
 import HeatingControllerNode from "./nodes/helper/heating-controller";
-import HeatModeSelectNode from "./nodes/helper/heatmode-select";
 import LightControllerNode from "./nodes/helper/light-controller";
 import MotionControllerNode from "./nodes/helper/motion-controller";
 import NotifyDispatcherNode from "./nodes/helper/notify-dispatcher";
@@ -15,8 +13,8 @@ import CompareNode from "./nodes/logical/compare";
 import LogicalOpNode from "./nodes/logical/op";
 import SwitchNode from "./nodes/logical/switch";
 import ToggleNode from "./nodes/logical/toggle";
-import version from "./version";
 import ArithmeticNode from "./nodes/operator/arithmetic";
+import version from "./version";
 
 const nodes = [
   ArithmeticNode,
@@ -24,11 +22,10 @@ const nodes = [
   BaseNode,
   CompareNode,
   EventMapperNode,
+  GateControlNode,
   HeatingControllerNode,
-  HeatModeSelectNode,
   LightControllerNode,
   LogicalOpNode,
-  GateControlNode,
   MatchJoinNode,
   MotionControllerNode,
   NotifyDispatcherNode,
@@ -38,12 +35,20 @@ const nodes = [
 ];
 
 export default async (RED: NodeAPI): Promise<void> => {
-  setRED(RED);
   for (const NodeClass of nodes) {
     RED.log.info(
-      `Registering node type ${NodeClass.type.fullName} for @deroetzi/node-red-contrib-smarthome-helper`
+      `Registering node type ${NodeClass.nodeTypeName} for @deroetzi/node-red-contrib-smarthome-helper`
     );
-    RED.nodes.registerType(NodeClass.type.fullName, NodeClass.createFunction());
+
+    RED.nodes.registerType(
+      NodeClass.nodeTypeName,
+      function (this: Node, config: any) {
+        RED.nodes.createNode(this, config);
+        const node = this;
+        const nodeController = new (NodeClass as any)(RED, node, config);
+        nodeController.registerListenerAndInitialize();
+      }
+    );
   }
 
   RED.log.info(

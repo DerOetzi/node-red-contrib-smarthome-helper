@@ -1,6 +1,27 @@
 {
-    "target": {
-        "value": "Value",
-        "minuend": "Minuend"
+    "label": {
+        "minValueCount": "Min. operand count",
+        "operation": "Operation",
+        "precision": "Precision",
+        "additionalValue": "Operand"
+    },
+    "select": {
+        "operation": {
+            "add": "sum",
+            "sub": "difference",
+            "mul": "product",
+            "round": "round",
+            "mean": "mean",
+            "min": "minimum",
+            "max": "maximum"
+        },
+        "target": {
+            "value": "Operand",
+            "minuend": "Minuend"
+        }
+    },
+    "additional-values-rows": "Additional operands",
+    "output": {
+        "result": "Result"
     }
 }

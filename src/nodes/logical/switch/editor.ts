@@ -1,75 +1,102 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
+import BaseNodeEditor, {
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
+import SwitchNode from "./";
 import {
-  defaultSwitchNodeConfig,
-  SwitchNodeEditorProperties,
-  SwitchNodeType,
+  SwitchEditorNodeProperties,
+  SwitchEditorNodePropertiesDefaults,
+  SwitchNodeOptionsDefaults,
 } from "./types";
 
-const SwitchNodeEditor: EditorNodeDef<SwitchNodeEditorProperties> = {
-  ...BaseNodeEditor,
-  category: SwitchNodeType.categoryLabel,
-  color: SwitchNodeType.color,
-  defaults: {
-    ...BaseNodeEditor.defaults,
-    target: { value: defaultSwitchNodeConfig.target!, required: true },
-    trueValue: { value: defaultSwitchNodeConfig.trueValue!, required: false },
-    trueType: { value: defaultSwitchNodeConfig.trueType!, required: true },
-    falseValue: { value: defaultSwitchNodeConfig.falseValue!, required: false },
-    falseType: { value: defaultSwitchNodeConfig.falseType!, required: true },
-    seperatedOutputs: {
-      value: defaultSwitchNodeConfig.seperatedOutputs!,
-      required: false,
-    },
-    outputs: { value: defaultSwitchNodeConfig.outputs!, required: true },
+const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
+  category: SwitchNode.NodeCategory.label,
+  color: SwitchNode.NodeColor,
+  icon: "switch.svg",
+  defaults: SwitchEditorNodePropertiesDefaults,
+  label: function () {
+    return this.name || i18n("logical.switch.name");
   },
+  inputs: SwitchNodeOptionsDefaults.inputs,
+  outputs: SwitchNodeOptionsDefaults.outputs,
   outputLabels: function (index) {
     if (this.seperatedOutputs) {
-      return index === 0 ? "true" : "false";
+      return index === 0
+        ? i18n("logical.switch.output.true")
+        : i18n("logical.switch.output.false");
     } else if (index === 0) {
-      return "switch result";
+      return i18n("logical.switch.output.result");
     }
-  },
-  icon: "switch.svg",
-  label: function () {
-    return this.name || "switch";
   },
   oneditprepare: function () {
     BaseNodeEditor.oneditprepare!.call(this);
 
-    $("#node-input-target").typedInput({
+    const switchOptionsBuilder = new NodeEditorFormBuilder(
+      $("#logical-switch-options"),
+      {
+        translatePrefix: "logical.switch",
+      }
+    );
+
+    switchOptionsBuilder.createTypedInput({
+      id: "node-input-target",
+      idType: "node-input-targetType",
+      label: "target",
+      value: this.target,
+      valueType: this.targetType,
       types: ["msg"],
+      icon: "envelope-o",
     });
 
-    $("#node-input-trueValue").typedInput({
+    switchOptionsBuilder.createTypedInput({
+      id: "node-input-trueValue",
+      idType: "node-input-trueType",
+      label: "trueValue",
+      value: this.trueValue,
+      valueType: this.trueType,
       types: [
+        "bool",
         "msg",
         "str",
         "num",
-        "bool",
         { value: "__stop__", label: "stop", hasValue: false },
       ],
-      typeField: "#node-input-trueType",
+      icon: "check",
     });
 
-    $("#node-input-falseValue").typedInput({
+    switchOptionsBuilder.createTypedInput({
+      id: "node-input-falseValue",
+      idType: "node-input-falseType",
+      label: "falseValue",
+      value: this.falseValue,
+      valueType: this.falseType,
       types: [
+        "bool",
         "msg",
         "str",
         "num",
-        "bool",
         { value: "__stop__", label: "stop", hasValue: false },
       ],
-      typeField: "#node-input-falseType",
+      icon: "times",
     });
 
-    $("#node-input-seperatedOutputs").on("change", function () {
-      const outputs = $(this).is(":checked") ? 2 : 1;
-      $("#node-input-outputs").val(outputs);
+    const outputsHidden = switchOptionsBuilder.createHiddenInput({
+      id: "node-input-outputs",
+      value: this.outputs,
     });
+
+    switchOptionsBuilder
+      .createCheckboxInput({
+        id: "node-input-seperatedOutputs",
+        label: "seperatedOutputs",
+        value: this.seperatedOutputs,
+        icon: "exit",
+      })
+      .on("change", function () {
+        outputsHidden.val($(this).is(":checked") ? 2 : 1);
+      });
   },
 };
 
-export default SwitchNodeEditor;
-
-export { SwitchNodeType };
+export default SwitchEditorNode;

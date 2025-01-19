@@ -1,162 +1,117 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
-import {
-  getMatchers,
-  initializeMatcherRows,
-} from "../../flowctrl/match-join/editor";
+import BaseNodeEditor, {
+  i18n,
+  NodeEditorFormBuilder,
+  NodeEditorFormEditableList,
+} from "../../flowctrl/base/editor";
+import { NodeEditorFormBuilderAutocompleteMatch } from "../../flowctrl/base/types";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
 import {
   autocompleteEvents,
-  defaultEventMapperNodeConfig,
-  EventMapperNodeEditorProperties,
-  EventMapperNodeType,
+  EventMapperEditorNodeProperties,
+  EventMapperEditorNodePropertiesDefaults,
+  EventMapperNodeOptionsDefaults,
   EventMapperRule,
+  EventMapperTarget,
 } from "./types";
 
-const EventMapperNodeEditor: EditorNodeDef<EventMapperNodeEditorProperties> = {
-  ...BaseNodeEditor,
-  category: EventMapperNodeType.categoryLabel,
-  color: EventMapperNodeType.color,
-  defaults: {
-    ...BaseNodeEditor.defaults,
-    matchers: {
-      value: defaultEventMapperNodeConfig.matchers!,
-      required: true,
-    },
-    join: {
-      value: defaultEventMapperNodeConfig.join!,
-      required: true,
-    },
-    discardNotMatched: {
-      value: defaultEventMapperNodeConfig.discardNotMatched!,
-      required: true,
-    },
-    minMsgCount: {
-      value: defaultEventMapperNodeConfig.minMsgCount!,
-      required: true,
-    },
-    rules: {
-      value: defaultEventMapperNodeConfig.rules!,
-      required: true,
-    },
-    ignoreUnknownEvents: {
-      value: defaultEventMapperNodeConfig.ignoreUnknownEvents!,
-      required: false,
-    },
+import EventMapperNode from "./";
+import { eventMapperMigration } from "./migration";
+
+const eventMatcherList = new MatchJoinEditableList({
+  targets: Object.values(EventMapperTarget),
+  translatePrefix: "helper.event-mapper",
+});
+
+class EventMapperRuleEditableList extends NodeEditorFormEditableList<EventMapperRule> {
+  protected addItem(data: EventMapperRule) {
+    this.rowBuilder!.createAutocompleteInput({
+      id: "event",
+      label: "event",
+      value: data.event ?? "",
+      icon: "comment-o",
+      search: this.eventAutocomplete.bind(this),
+    });
+
+    this.rowBuilder!.createTypedInput({
+      id: "mapped",
+      idType: "mappedType",
+      label: "mapped",
+      value: data.mapped ?? "",
+      valueType: data.mappedType ?? "str",
+      types: ["str", "num", "bool", "msg"],
+      icon: "map-signs",
+    });
+  }
+
+  private eventAutocomplete(
+    val: string
+  ): NodeEditorFormBuilderAutocompleteMatch[] {
+    const matches: NodeEditorFormBuilderAutocompleteMatch[] = [];
+    autocompleteEvents.forEach((v) => {
+      let i = v.toLowerCase().indexOf(val.toLowerCase());
+      if (i > -1) {
+        matches.push({
+          value: v,
+          label: v,
+          i: i,
+        });
+      }
+    });
+    matches.sort(function (A, B) {
+      return A.i - B.i;
+    });
+    return matches;
+  }
+}
+
+const ruleRows = new EventMapperRuleEditableList();
+
+const EventMapperEditorNode: EditorNodeDef<EventMapperEditorNodeProperties> = {
+  category: EventMapperNode.NodeCategory.label,
+  color: EventMapperNode.NodeColor,
+  icon: "font-awesome/fa-map-signs",
+  defaults: EventMapperEditorNodePropertiesDefaults,
+  label: function () {
+    return this.name || i18n("helper.event-mapper.name");
   },
-  icon: "switch",
+  inputs: EventMapperNodeOptionsDefaults.inputs,
+  outputs: EventMapperNodeOptionsDefaults.outputs,
   outputLabels: function (index: number) {
     return this.rules[index]?.event || "event " + index;
   },
-  label: function () {
-    return this.name || EventMapperNodeType.name;
-  },
   oneditprepare: function () {
+    eventMapperMigration.checkAndMigrate(this);
+
     BaseNodeEditor.oneditprepare!.call(this);
 
-    initializeMatcherRows(this.matchers, {
-      targets: ["event"],
-      translatePrefix: "helper.event-mapper.target",
-      t: this._.bind(this),
+    eventMatcherList.initialize("matcher-rows", this.matchers, {
+      translatePrefix: "flowctrl.match-join",
     });
 
-    initializeRuleRows("#rule-rows", this.rules);
+    ruleRows.initialize("rule-rows", this.rules, {
+      translatePrefix: "helper.event-mapper",
+    });
+
+    const eventMapperOptionsBuilder = new NodeEditorFormBuilder(
+      $("#event-mapper-options"),
+      {
+        translatePrefix: "helper.event-mapper",
+      }
+    );
+
+    eventMapperOptionsBuilder.createCheckboxInput({
+      id: "node-input-ignoreUnknownEvents",
+      label: "ignoreUnknownEvents",
+      value: this.ignoreUnknownEvents,
+      icon: "question",
+    });
   },
   oneditsave: function () {
-    this.matchers = getMatchers();
-    this.rules = getRules("#rule-rows");
+    this.matchers = eventMatcherList.values();
+    this.rules = ruleRows.values();
     this.outputs = this.rules.length;
   },
 };
 
-export function initializeRuleRows(
-  containerId: string,
-  rules: EventMapperRule[]
-) {
-  $(containerId)
-    .editableList({
-      addButton: true,
-      removable: true,
-      sortable: true,
-      height: "auto",
-      header: $("<div>").append($("<label>").text("Event => Mapped")),
-      addItem: function (container, index, data: EventMapperRule) {
-        container.css({
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-        });
-
-        container.attr("data-row", index);
-
-        const $row = $("<div />").appendTo(container);
-        const $row1 = $("<div />").appendTo($row).css("margin-bottom", "6px");
-
-        const eventName: any = $("<input/>", {
-          class: "event-name",
-          type: "text",
-        })
-          .css("width", "100%")
-          .appendTo($row1);
-
-        let eventValue = data.event ?? "";
-        eventName.val(eventValue);
-
-        eventName.autoComplete({
-          search: function (val: any) {
-            const matches: any[] = [];
-            autocompleteEvents.forEach((v) => {
-              let i = v.toLowerCase().indexOf(val.toLowerCase());
-              if (i > -1) {
-                matches.push({
-                  value: v,
-                  label: v,
-                  i: i,
-                });
-              }
-            });
-            matches.sort(function (A, B) {
-              return A.i - B.i;
-            });
-            return matches;
-          },
-        });
-
-        const $row2 = $("<div />").appendTo($row).css("margin-bottom", "6px");
-
-        const mappedName = $("<input/>", {
-          class: "mapped-name",
-          type: "text",
-        })
-          .css("width", "100%")
-          .appendTo($row2)
-          .typedInput({
-            types: ["str", "num", "bool", "msg"],
-          });
-
-        mappedName.typedInput("value", data.mapped ?? "");
-        mappedName.typedInput("type", data.mappedType ?? "str");
-      },
-    })
-    .editableList("addItems", rules || []);
-}
-
-export function getRules(containerId: string): EventMapperRule[] {
-  let rulesList = $(containerId).editableList("items");
-  let rules: EventMapperRule[] = [];
-
-  rulesList.each((index, row) => {
-    let identifier = $(row);
-
-    rules.push({
-      event: identifier.find(".event-name").val() as string,
-      mapped: identifier.find(".mapped-name").typedInput("value"),
-      mappedType: identifier.find(".mapped-name").typedInput("type"),
-      output: index,
-    });
-  });
-
-  return rules;
-}
-
-export default EventMapperNodeEditor;
-
-export { EventMapperNodeType };
+export default EventMapperEditorNode;

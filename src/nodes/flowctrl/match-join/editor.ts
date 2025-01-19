@@ -1,229 +1,200 @@
 import { EditorNodeDef } from "node-red";
-import { comparators } from "../../logical/compare/operations";
-import BaseNodeEditor from "../base/editor";
+import BaseEditorNode, {
+  NodeEditorFormBuilder,
+  NodeEditorFormEditableList,
+} from "../base/editor";
+import MatchJoinNode from "./";
 import {
-  defaultMatchJoinNodeConfig,
   MatcherRow,
+  MatcherRowDefaults,
   MatchFixedTargets,
-  MatchJoinNodeEditorProperties,
-  MatchJoinNodeType,
+  MatchJoinEditorNodeProperties,
+  MatchJoinEditorNodePropertiesDefaults,
+  MatchJoinNodeOptionsDefaults,
 } from "./types";
 
-const MatchJoinNodeEditor: EditorNodeDef<MatchJoinNodeEditorProperties> = {
-  ...BaseNodeEditor,
-  color: MatchJoinNodeType.color,
-  defaults: {
-    ...BaseNodeEditor.defaults,
-    join: { value: defaultMatchJoinNodeConfig.join!, required: false },
-    matchers: { value: defaultMatchJoinNodeConfig.matchers!, required: true },
-    discardNotMatched: {
-      value: defaultMatchJoinNodeConfig.discardNotMatched!,
-      required: false,
-    },
-    minMsgCount: {
-      value: defaultMatchJoinNodeConfig.minMsgCount!,
-      required: true,
-    },
-  },
+import { MatchJoinMigration } from "./migration";
+import {
+  ApplicableCompareFunction,
+  NotApplicableCompareFunction,
+} from "../../logical/compare/types";
+
+export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow> {
+  constructor(private readonly fixedTargets?: MatchFixedTargets) {
+    super();
+    if (this.fixedTargets) {
+      this.headerPrefix = "flowctrl.match-join.fixedTargets";
+    }
+  }
+
+  protected addItem(data: MatcherRow): void {
+    this.rowBuilder!.createTypedInput({
+      id: "property",
+      idType: "propertyType",
+      label: "property",
+      value: data.property ?? MatcherRowDefaults.property,
+      valueType: data.propertyType ?? MatcherRowDefaults.propertyType,
+      types: ["msg"],
+      icon: "envelope-o",
+      translatePrefix: "logical.compare",
+    });
+
+    const operationSelect = this.rowBuilder!.createSelectInput({
+      id: "operation",
+      label: "operation",
+      value: data.operation ?? MatcherRowDefaults.operation,
+      options: [
+        ...Object.keys(ApplicableCompareFunction),
+        ...Object.keys(NotApplicableCompareFunction),
+      ],
+      icon: "search",
+      translatePrefix: "logical.compare",
+    });
+
+    const compareInputRow = this.rowBuilder!.createTypedInput({
+      id: "compare",
+      idType: "compareType",
+      label: "compare",
+      value: data.compare ?? MatcherRowDefaults.compare,
+      valueType: data.compareType ?? MatcherRowDefaults.compareType,
+      icon: "file-text-o",
+      translatePrefix: "logical.compare",
+    })
+      .parent()
+      .toggle(
+        ((data.operation ?? MatcherRowDefaults.operation) as string) in
+          ApplicableCompareFunction
+      );
+
+    operationSelect.on("change", function () {
+      compareInputRow.toggle(
+        ($(this).val() as string) in ApplicableCompareFunction
+      );
+    });
+
+    if (this.fixedTargets) {
+      const targetSelect = this.rowBuilder!.createSelectInput({
+        id: "target",
+        label: "target",
+        value: data.target,
+        options: this.fixedTargets.targets,
+        icon: "tag",
+        translateLabelPrefix: this.headerPrefix,
+        translatePrefix: this.fixedTargets.translatePrefix,
+      });
+
+      this.fixedTargets.targets.forEach((target) => {
+        targetSelect
+          .find('option[value="' + target + '"]')
+          .toggle(this.listContainer!.data("showHide_" + target) ?? true);
+      });
+    } else {
+      this.rowBuilder!.createTypedInput({
+        id: "target",
+        idType: "targetType",
+        label: "target",
+        value: data.target ?? MatcherRowDefaults.target,
+        valueType: data.targetType ?? MatcherRowDefaults.targetType,
+        types: ["msg", "str"],
+        icon: "tag",
+      });
+    }
+  }
+
+  public values(): MatcherRow[] {
+    return super.values({ targetType: "str" });
+  }
+
+  public showHideTarget(
+    showHideTarget: boolean,
+    option: string
+  ): MatchJoinEditableList {
+    this.listContainer
+      ?.data("showHide_" + option, showHideTarget)
+      .find('.target option[value="' + option + '"]')
+      .toggle(showHideTarget);
+
+    return this;
+  }
+
+  public removeTarget(keep: boolean, option: string): MatchJoinEditableList {
+    this.showHideTarget(keep, option);
+
+    if (!keep) {
+      const matchers = this.values().filter((matcher) => {
+        return matcher.target !== option;
+      });
+
+      this.listContainer?.editableList("empty");
+      this.listContainer?.editableList("addItems", matchers);
+    }
+
+    return this;
+  }
+}
+
+const migration = new MatchJoinMigration();
+
+const matchers = new MatchJoinEditableList();
+
+const MatchJoinEditorNode: EditorNodeDef<MatchJoinEditorNodeProperties> = {
+  category: MatchJoinNode.NodeCategory.label,
+  color: MatchJoinNode.NodeColor,
   icon: "join.svg",
+  defaults: MatchJoinEditorNodePropertiesDefaults,
   label: function () {
     const label = this.join ? "join" : "match";
     return this.name ? `${this.name} (${label})` : label;
   },
+  inputs: MatchJoinNodeOptionsDefaults.inputs,
+  outputs: MatchJoinNodeOptionsDefaults.outputs,
   oneditprepare: function () {
-    if (BaseNodeEditor.oneditprepare) {
-      BaseNodeEditor.oneditprepare.call(this);
-    }
+    migration.checkAndMigrate(this);
 
-    initializeMatcherRows(this.matchers);
+    BaseEditorNode.oneditprepare!.call(this);
 
-    $("#row-minMsgCount").toggle(this.join);
+    matchers.initialize("matcher-rows", this.matchers, {
+      translatePrefix: "flowctrl.match-join",
+    });
 
-    $("#node-input-join").on("change", function () {
-      $("#row-minMsgCount").toggle($(this).is(":checked"));
+    const matchJoinOptionsBuilder = new NodeEditorFormBuilder(
+      $("#matcher-join-options"),
+      {
+        translatePrefix: "flowctrl.match-join",
+      }
+    );
+
+    matchJoinOptionsBuilder.createCheckboxInput({
+      id: "node-input-discardNotMatched",
+      label: "discardNotMatched",
+      value: this.discardNotMatched,
+      icon: "stop-circle-o",
+    });
+
+    const joinCheckbox = matchJoinOptionsBuilder.createCheckboxInput({
+      id: "node-input-join",
+      label: "join",
+      value: this.join,
+      icon: "compress",
+    });
+
+    const minMsgCountInputRow = matchJoinOptionsBuilder
+      .createNumberInput({
+        id: "node-input-minMsgCount",
+        label: "minMsgCount",
+        value: this.minMsgCount,
+        icon: "hashtag",
+      })
+      .parent()
+      .toggle(this.join);
+
+    joinCheckbox.on("change", function () {
+      minMsgCountInputRow.toggle($(this).is(":checked"));
     });
   },
   oneditsave: function () {
-    this.matchers = getMatchers();
+    this.matchers = matchers.values();
   },
 };
 
-const matcherRowsId = "#matcher-rows";
-
-export function initializeMatcherRows(
-  matchers: MatcherRow[],
-  fixedTargets?: MatchFixedTargets
-) {
-  $(matcherRowsId)
-    .editableList({
-      addButton: true,
-      removable: true,
-      sortable: true,
-      height: "auto",
-      header: $("<div>").append($("<label>").text("Input mappings")),
-      addItem: function (container, _, data: MatcherRow) {
-        container.css({
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-        });
-
-        const $row = $("<div />").appendTo(container);
-        const $row1 = $("<div />").appendTo($row).css("margin-bottom", "6px");
-
-        const propertyName = $("<input/>", {
-          class: "property-name",
-          type: "text",
-        })
-          .css("width", "100%")
-          .appendTo($row1)
-          .typedInput({
-            types: ["msg"],
-          });
-
-        propertyName.typedInput("value", data.property ?? "topic");
-        propertyName.typedInput("type", data.propertyType ?? "msg");
-
-        const $row2 = $("<div />").appendTo($row).css("margin-bottom", "6px");
-
-        const operator = $("<select/>", {}).css("width", "30%").appendTo($row2);
-
-        Object.entries(comparators).forEach(([key, comparator]) => {
-          $("<option/>", {
-            value: key,
-            text: comparator.label,
-          }).appendTo(operator);
-        });
-
-        operator.val(data.operator ?? "eq");
-
-        const compareWrap = $("<span/>", {
-          class: "propery-compare-wrap",
-        })
-          .css("display", "inline-block")
-          .css("width", "70%")
-          .appendTo($row2);
-
-        const propertyCompare = $("<input/>", {
-          class: "property-compare",
-          type: "text",
-        })
-          .appendTo(compareWrap)
-          .css("width", "100%")
-          .typedInput({
-            types: ["msg", "str", "num", "bool"],
-          });
-
-        propertyCompare.typedInput("value", data.compare ?? "");
-        propertyCompare.typedInput("type", data.compareType ?? "str");
-
-        const $row3 = $("<div />").appendTo($row);
-        $("<div/>", { style: "display:inline-block; padding:0px 6px;" })
-          .text("=>")
-          .appendTo($row3);
-
-        const propertyTarget = $("<input/>", {
-          class: "property-target",
-          type: "text",
-        })
-          .css("width", "calc(100% - 40px)")
-          .appendTo($row3)
-          .typedInput({
-            types: ["msg", "str"],
-          });
-
-        propertyTarget.typedInput("value", data.target ?? "");
-        propertyTarget.typedInput("type", data.targetType ?? "str");
-
-        if (fixedTargets) {
-          const propertyTargetSelect = $("<select/>", {
-            class: "property-target-select",
-          })
-            .css("width", "calc(100% - 40px)")
-            .appendTo($row3);
-
-          const matchers = $(matcherRowsId);
-
-          fixedTargets.targets.forEach((target) => {
-            const option = $("<option/>", {
-              value: target,
-              text: fixedTargets.t(fixedTargets.translatePrefix + "." + target),
-            }).appendTo(propertyTargetSelect);
-
-            option.toggle(matchers.data("showHide_" + target) ?? true);
-          });
-
-          propertyTargetSelect.val(data.target ?? "");
-          propertyTargetSelect.on("change", function () {
-            const value = $(this).val() as string;
-            propertyTarget.typedInput("value", value);
-          });
-          (propertyTarget as any).typedInput("hide");
-        }
-
-        compareWrap.toggle(
-          !["true", "false", "empty", "not_empty"].includes(
-            operator.val() as string
-          )
-        );
-
-        operator.on("change", function () {
-          compareWrap.toggle(
-            !["true", "false", "empty", "not_empty"].includes(
-              $(this).val() as string
-            )
-          );
-        });
-      },
-    })
-    .editableList("addItems", matchers || []);
-}
-
-export function getMatchers(): MatcherRow[] {
-  let matchersList = $(matcherRowsId).editableList("items");
-  let matchers: MatcherRow[] = [];
-
-  matchersList.each((_, row) => {
-    let matcher = $(row);
-    let target: string | null = null;
-    let targetType: string | null = null;
-
-    matchers.push({
-      property: matcher.find(".property-name").typedInput("value"),
-      propertyType: matcher.find(".property-name").typedInput("type"),
-      operator: matcher.find("select").val() as string,
-      compare: matcher.find(".property-compare").typedInput("value"),
-      compareType: matcher.find(".property-compare").typedInput("type"),
-      target: target ?? matcher.find(".property-target").typedInput("value"),
-      targetType:
-        targetType ?? matcher.find(".property-target").typedInput("type"),
-    });
-  });
-
-  return matchers;
-}
-
-export function showHideTarget(showHideTarget: boolean, option: string) {
-  $(matcherRowsId)
-    .data("showHide_" + option, showHideTarget)
-    .find('.property-target-select option[value="' + option + '"]')
-    .toggle(showHideTarget);
-}
-
-export function removeTarget(keep: boolean, option: string) {
-  const inputs = $(matcherRowsId);
-
-  showHideTarget(keep, option);
-
-  if (!keep) {
-    const matchers = getMatchers().filter((matcher) => {
-      return matcher.target !== option;
-    });
-
-    inputs.editableList("empty");
-    inputs.editableList("addItems", matchers);
-  }
-}
-
-export default MatchJoinNodeEditor;
-
-export { MatchJoinNodeType };
+export default MatchJoinEditorNode;

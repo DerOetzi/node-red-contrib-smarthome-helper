@@ -1,0 +1,15 @@
+{
+    "migrated": "The node has been migrated to version {version}.",
+    "label": {
+        "name": "Name",
+        "topic": "Topic",
+        "filterUniquePayload": "Not send same payload",
+        "newMsg": "New message",
+        "debounce": "Debounce",
+        "debounceTopic": "Per topic",
+        "debounceShowStatus": "Show status",
+        "debounceTime": "Delay",
+        "debounceLeading": "Leading (immediate)",
+        "debounceTrailing": "Trailing (delayed)"
+    }
+}

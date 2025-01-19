@@ -1,0 +1,14 @@
+{
+    "name": "Bool. Weiche",
+    "label": {
+        "target": "Eigenschaft setzen",
+        "trueValue": "Wahr",
+        "falseValue": "Falsch",
+        "seperatedOutputs": "Getrennte Ausgänge"
+    },
+    "output": {
+        "true": "Wahr",
+        "false": "Falsch",
+        "result": "Boolsches Ergebnis"
+    }
+}

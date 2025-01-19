@@ -1,12 +1,21 @@
 {
-    "target": {
-        "person1": "1. Person",
-        "person2": "2. Person",
-        "person3": "3. Person",
-        "person4": "4. Person",
-        "person5": "5. Person",
-        "person6": "6. Person",
-        "person7": "7. Person",
-        "person8": "8. Person"
+    "name": "Benachrichtigungsdispatcher",
+    "label": {
+        "persons": "Personen"
+    },
+    "select": {
+        "target": {
+            "message": "Nachricht",
+            "person1": "Anwesenheit 1. Person",
+            "person2": "Anwesenheit 2. Person",
+            "person3": "Anwesenheit 3. Person",
+            "person4": "Anwesenheit 4. Person",
+            "person5": "Anwesenheit 5. Person",
+            "person6": "Anwesenheit 6. Person",
+            "person7": "Anwesenheit 7. Person",
+            "person8": "Anwesenheit 8. Person",
+            "person9": "Anwesenheit 9. Person",
+            "person10": "Anwesenheit 10. Person"
+        }
     }
 }

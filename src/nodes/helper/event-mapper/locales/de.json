@@ -1,5 +1,14 @@
 {
-    "target": {
-        "event": "Event"
+    "name": "Ereignis Mapper",
+    "rule-rows": "Zuordnungsregeln",
+    "label": {
+        "event": "Eingabe",
+        "mapped": "Zuordnen",
+        "ignoreUnknownEvents": "Unbekannte Ereignisse ignorieren"
+    },
+    "select": {
+        "target": {
+            "event": "Ereignis"
+        }
     }
 }

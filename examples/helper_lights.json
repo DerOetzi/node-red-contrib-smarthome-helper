@@ -1,0 +1,2151 @@
+[
+    {
+        "id": "50a63383c0611497",
+        "type": "tab",
+        "label": "Helper Lights",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dec832c39e6839a0",
+        "type": "group",
+        "z": "50a63383c0611497",
+        "name": "Event Mapper example",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "ee095de9f351623e",
+            "220475cb0bbd0590",
+            "9534a34b432a7c08",
+            "53abb51c0ad417d0",
+            "3970388567fbd655",
+            "be61045286ef5481",
+            "77a031e2faa28d4a",
+            "6e89fd2a850d5736",
+            "a379897d6ffc10c2",
+            "0f09226d52a5508a"
+        ],
+        "x": 54,
+        "y": 19,
+        "w": 1192,
+        "h": 262
+    },
+    {
+        "id": "695352833de771dc",
+        "type": "group",
+        "z": "50a63383c0611497",
+        "name": "Light Controller examples",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "a0e3c7e9851e4099",
+            "d79a57321cc72ece",
+            "1abe994df572a3b0",
+            "a6aa34b9ca82dfc6",
+            "c90e5cd06ce239cc",
+            "28597c1ffc38c321",
+            "84f54ae8719c1a1e",
+            "b241870a4ce90645",
+            "ffe5b542a78a9d30",
+            "699ae8e0ccb278dd",
+            "87415214be1087ab",
+            "6460c9d8131d5669",
+            "595bbe4c5d3e4504",
+            "62a9883afc188434",
+            "898bc7b0f2df862e",
+            "25f8e66057cfb021",
+            "0c64f8a9f4db7a56",
+            "c3518bb0354dbb04",
+            "9585fa2f5b73b81d",
+            "460dcdeeb195895d",
+            "d28789ce64fe1f54",
+            "3c445e2f5b788c28",
+            "cceb4dd01f5fb120",
+            "43a21089414237f9",
+            "8c5cbd51525d6e41",
+            "dacf8e523297bb6d",
+            "afda7e537f8175cd",
+            "5db6ec063fbef2b1",
+            "e4d6855ce1485e08",
+            "4f3be2240f52c322",
+            "8fcf71e22e435218"
+        ],
+        "x": 54,
+        "y": 939,
+        "w": 832,
+        "h": 1102
+    },
+    {
+        "id": "2366616d8806730a",
+        "type": "group",
+        "z": "50a63383c0611497",
+        "name": "Motion controller example",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "bdb192f971a27c36",
+            "a7956e3a17239240",
+            "72db9ae27bcc5af6",
+            "1a7e38b67e78e65d",
+            "c62ea11ee4f56f48",
+            "337067313c81346f",
+            "3371b70cc9f3147b",
+            "3266771fd3a16d68",
+            "00cacd1d4fec258a",
+            "ce75057da9098f82",
+            "f6d3cc7f60addc70",
+            "75693e17768727d9",
+            "a3243c8a8203286b",
+            "3d8150433e7d2685",
+            "b19ee5bc1795fd02",
+            "8bcd9d80a8ada497",
+            "ef9919e3cd200f45"
+        ],
+        "x": 54,
+        "y": 319,
+        "w": 1312,
+        "h": 582
+    },
+    {
+        "id": "220475cb0bbd0590",
+        "type": "helper-event-mapper",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "version": "0.21.2",
+        "migrated": false,
+        "topic": "originalTopic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 3,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "startsWith",
+                "compare": "z2m_button",
+                "compareType": "str",
+                "target": "event"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "rules": [
+            {
+                "event": "brightness_up_click",
+                "mapped": "true",
+                "mappedType": "bool"
+            },
+            {
+                "event": "brightness_down_click",
+                "mapped": "false",
+                "mappedType": "bool"
+            },
+            {
+                "event": "toggle",
+                "mapped": "toggle",
+                "mappedType": "str"
+            }
+        ],
+        "ignoreUnknownEvents": false,
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "ee095de9f351623e",
+                "a379897d6ffc10c2"
+            ],
+            [
+                "be61045286ef5481",
+                "a379897d6ffc10c2"
+            ],
+            [
+                "77a031e2faa28d4a",
+                "a379897d6ffc10c2"
+            ]
+        ]
+    },
+    {
+        "id": "9534a34b432a7c08",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "brightness_up_click",
+        "payloadType": "str",
+        "x": 230,
+        "y": 140,
+        "wires": [
+            [
+                "220475cb0bbd0590"
+            ]
+        ]
+    },
+    {
+        "id": "53abb51c0ad417d0",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "brightness_down_click",
+        "payloadType": "str",
+        "x": 240,
+        "y": 220,
+        "wires": [
+            [
+                "220475cb0bbd0590"
+            ]
+        ]
+    },
+    {
+        "id": "3970388567fbd655",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "toggle",
+        "payloadType": "str",
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "220475cb0bbd0590"
+            ]
+        ]
+    },
+    {
+        "id": "ee095de9f351623e",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "event_mapper_on_test",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 740,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "be61045286ef5481",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "event_mapper_off_test",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 760,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "77a031e2faa28d4a",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "event_mapper_toggle_test",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 760,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "a0e3c7e9851e4099",
+        "type": "helper-light-controller",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_light_select",
+                "compareType": "str",
+                "target": "command"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "bool_command",
+                "compareType": "str",
+                "target": "command"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "identifiers": [
+            {
+                "identifier": "light.test_light",
+                "identifierType": "str"
+            }
+        ],
+        "lightbulbType": "dimmable",
+        "homeAssistantOutput": true,
+        "onBrightness": 100,
+        "transitionTime": 0.3,
+        "colorTemperature": 327,
+        "nightmodeBrightness": 10,
+        "colorCycle": true,
+        "fixColorHue": 360,
+        "fixColorSaturation": 100,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 400,
+        "y": 1100,
+        "wires": [
+            [
+                "84f54ae8719c1a1e"
+            ]
+        ]
+    },
+    {
+        "id": "d79a57321cc72ece",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "An",
+        "payloadType": "str",
+        "x": 190,
+        "y": 980,
+        "wires": [
+            [
+                "a0e3c7e9851e4099"
+            ]
+        ]
+    },
+    {
+        "id": "1abe994df572a3b0",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Aus",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1020,
+        "wires": [
+            [
+                "a0e3c7e9851e4099"
+            ]
+        ]
+    },
+    {
+        "id": "a6aa34b9ca82dfc6",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Nacht",
+        "payloadType": "str",
+        "x": 200,
+        "y": 1060,
+        "wires": [
+            [
+                "a0e3c7e9851e4099"
+            ]
+        ]
+    },
+    {
+        "id": "c90e5cd06ce239cc",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "bool_command",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 190,
+        "y": 1120,
+        "wires": [
+            [
+                "a0e3c7e9851e4099"
+            ]
+        ]
+    },
+    {
+        "id": "28597c1ffc38c321",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "bool_command",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 190,
+        "y": 1160,
+        "wires": [
+            [
+                "a0e3c7e9851e4099"
+            ]
+        ]
+    },
+    {
+        "id": "84f54ae8719c1a1e",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "dimmable_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "{ \"a\": command, \"b\":brightness}",
+        "statusType": "jsonata",
+        "x": 580,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "b241870a4ce90645",
+        "type": "helper-light-controller",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_light_select",
+                "compareType": "str",
+                "target": "command"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "bool_command",
+                "compareType": "str",
+                "target": "command"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_colorTemperature_number",
+                "compareType": "str",
+                "target": "colorTemperature"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "identifiers": [
+            {
+                "identifier": "light.test_light",
+                "identifierType": "str"
+            }
+        ],
+        "lightbulbType": "colortemperature",
+        "homeAssistantOutput": true,
+        "onBrightness": 100,
+        "transitionTime": 0.3,
+        "colorTemperature": 327,
+        "nightmodeBrightness": 10,
+        "colorCycle": true,
+        "fixColorHue": 360,
+        "fixColorSaturation": 100,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 520,
+        "y": 1340,
+        "wires": [
+            [
+                "6460c9d8131d5669"
+            ]
+        ]
+    },
+    {
+        "id": "ffe5b542a78a9d30",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "An",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1220,
+        "wires": [
+            [
+                "b241870a4ce90645"
+            ]
+        ]
+    },
+    {
+        "id": "699ae8e0ccb278dd",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Aus",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1260,
+        "wires": [
+            [
+                "b241870a4ce90645"
+            ]
+        ]
+    },
+    {
+        "id": "87415214be1087ab",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Nacht",
+        "payloadType": "str",
+        "x": 200,
+        "y": 1300,
+        "wires": [
+            [
+                "b241870a4ce90645"
+            ]
+        ]
+    },
+    {
+        "id": "6460c9d8131d5669",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "colortemperature_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "{ \"a\": command, \"c\": colorTemperature, \"b\":brightness}",
+        "statusType": "jsonata",
+        "x": 740,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "595bbe4c5d3e4504",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_colorTemperature_number",
+        "payload": "153",
+        "payloadType": "num",
+        "x": 240,
+        "y": 1360,
+        "wires": [
+            [
+                "b241870a4ce90645"
+            ]
+        ]
+    },
+    {
+        "id": "62a9883afc188434",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_colorTemperature_number",
+        "payload": "327",
+        "payloadType": "num",
+        "x": 240,
+        "y": 1400,
+        "wires": [
+            [
+                "b241870a4ce90645"
+            ]
+        ]
+    },
+    {
+        "id": "898bc7b0f2df862e",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_colorTemperature_number",
+        "payload": "500",
+        "payloadType": "num",
+        "x": 240,
+        "y": 1440,
+        "wires": [
+            [
+                "b241870a4ce90645"
+            ]
+        ]
+    },
+    {
+        "id": "25f8e66057cfb021",
+        "type": "helper-light-controller",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_light_select",
+                "compareType": "str",
+                "target": "command"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "identifiers": [
+            {
+                "identifier": "switch.test_light",
+                "identifierType": "str"
+            }
+        ],
+        "lightbulbType": "switch",
+        "homeAssistantOutput": true,
+        "onBrightness": 100,
+        "transitionTime": 0.3,
+        "colorTemperature": 327,
+        "nightmodeBrightness": 10,
+        "colorCycle": true,
+        "fixColorHue": 360,
+        "fixColorSaturation": 100,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 380,
+        "y": 1540,
+        "wires": [
+            [
+                "9585fa2f5b73b81d"
+            ]
+        ]
+    },
+    {
+        "id": "0c64f8a9f4db7a56",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "An",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1520,
+        "wires": [
+            [
+                "25f8e66057cfb021"
+            ]
+        ]
+    },
+    {
+        "id": "c3518bb0354dbb04",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Aus",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1560,
+        "wires": [
+            [
+                "25f8e66057cfb021"
+            ]
+        ]
+    },
+    {
+        "id": "9585fa2f5b73b81d",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "switch_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "{ \"a\": command}",
+        "statusType": "jsonata",
+        "x": 550,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "6e89fd2a850d5736",
+        "type": "helper-light-controller",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "z2m_button",
+                "compareType": "str",
+                "target": "command"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "identifiers": [
+            {
+                "identifier": "light.test_light",
+                "identifierType": "str"
+            }
+        ],
+        "lightbulbType": "dimmable",
+        "homeAssistantOutput": true,
+        "onBrightness": 100,
+        "transitionTime": 0.3,
+        "colorTemperature": 327,
+        "nightmodeBrightness": 10,
+        "colorCycle": true,
+        "fixColorHue": 360,
+        "fixColorSaturation": 100,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 840,
+        "y": 240,
+        "wires": [
+            [
+                "0f09226d52a5508a"
+            ]
+        ]
+    },
+    {
+        "id": "a379897d6ffc10c2",
+        "type": "logical-toggle",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "version": "0.21.2",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "target": "payload",
+        "targetType": "msg",
+        "trueValue": "An",
+        "trueType": "str",
+        "falseValue": "Aus",
+        "falseType": "str",
+        "seperatedOutputs": false,
+        "x": 690,
+        "y": 240,
+        "wires": [
+            [
+                "6e89fd2a850d5736"
+            ]
+        ]
+    },
+    {
+        "id": "0f09226d52a5508a",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "event_mapper_dimmable_test",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "{ \"a\": command, \"b\":brightness}",
+        "statusType": "jsonata",
+        "x": 1070,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "460dcdeeb195895d",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "An",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1640,
+        "wires": [
+            [
+                "cceb4dd01f5fb120"
+            ]
+        ]
+    },
+    {
+        "id": "d28789ce64fe1f54",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Aus",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1680,
+        "wires": [
+            [
+                "cceb4dd01f5fb120"
+            ]
+        ]
+    },
+    {
+        "id": "3c445e2f5b788c28",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Nacht",
+        "payloadType": "str",
+        "x": 200,
+        "y": 1720,
+        "wires": [
+            [
+                "cceb4dd01f5fb120"
+            ]
+        ]
+    },
+    {
+        "id": "cceb4dd01f5fb120",
+        "type": "helper-light-controller",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "Farbwechsel",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_light_select",
+                "compareType": "str",
+                "target": "command"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "identifiers": [
+            {
+                "identifier": "light.test_light",
+                "identifierType": "str"
+            }
+        ],
+        "lightbulbType": "rgb",
+        "homeAssistantOutput": true,
+        "onBrightness": 100,
+        "transitionTime": 0.3,
+        "colorTemperature": 327,
+        "nightmodeBrightness": 10,
+        "colorCycle": true,
+        "fixColorHue": 360,
+        "fixColorSaturation": 100,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 430,
+        "y": 1680,
+        "wires": [
+            [
+                "43a21089414237f9"
+            ]
+        ]
+    },
+    {
+        "id": "43a21089414237f9",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "rgb_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "{ \"a\": command, \"b\":brightness, \"hue\": hue, \"s\": saturation}",
+        "statusType": "jsonata",
+        "x": 620,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "8c5cbd51525d6e41",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "An",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1800,
+        "wires": [
+            [
+                "5db6ec063fbef2b1"
+            ]
+        ]
+    },
+    {
+        "id": "dacf8e523297bb6d",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Aus",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1840,
+        "wires": [
+            [
+                "5db6ec063fbef2b1"
+            ]
+        ]
+    },
+    {
+        "id": "afda7e537f8175cd",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_light_select",
+        "payload": "Nacht",
+        "payloadType": "str",
+        "x": 200,
+        "y": 1880,
+        "wires": [
+            [
+                "5db6ec063fbef2b1"
+            ]
+        ]
+    },
+    {
+        "id": "5db6ec063fbef2b1",
+        "type": "helper-light-controller",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "Festfarbe",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_light_select",
+                "compareType": "str",
+                "target": "command"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_hue_number",
+                "compareType": "str",
+                "target": "hue"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_saturation_number",
+                "compareType": "str",
+                "target": "saturation"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "identifiers": [
+            {
+                "identifier": "light.test_light",
+                "identifierType": "str"
+            }
+        ],
+        "lightbulbType": "rgb",
+        "homeAssistantOutput": true,
+        "onBrightness": 100,
+        "transitionTime": 0.3,
+        "colorTemperature": 327,
+        "nightmodeBrightness": 10,
+        "colorCycle": false,
+        "fixColorHue": "20",
+        "fixColorSaturation": 100,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 440,
+        "y": 1920,
+        "wires": [
+            [
+                "e4d6855ce1485e08"
+            ]
+        ]
+    },
+    {
+        "id": "e4d6855ce1485e08",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "rgb_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "{ \"a\": command, \"b\":brightness, \"hue\": hue, \"s\": saturation}",
+        "statusType": "jsonata",
+        "x": 620,
+        "y": 1920,
+        "wires": []
+    },
+    {
+        "id": "4f3be2240f52c322",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_hue_number",
+        "payload": "50",
+        "payloadType": "num",
+        "x": 190,
+        "y": 1960,
+        "wires": [
+            [
+                "5db6ec063fbef2b1"
+            ]
+        ]
+    },
+    {
+        "id": "8fcf71e22e435218",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "695352833de771dc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_saturation_number",
+        "payload": "75",
+        "payloadType": "num",
+        "x": 210,
+        "y": 2000,
+        "wires": [
+            [
+                "5db6ec063fbef2b1"
+            ]
+        ]
+    },
+    {
+        "id": "bdb192f971a27c36",
+        "type": "helper-event-mapper",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "version": "0.21.2",
+        "migrated": false,
+        "topic": "originalTopic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "startsWith",
+                "compare": "z2m_button",
+                "compareType": "str",
+                "target": "event"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "rules": [
+            {
+                "event": "brightness_up_click",
+                "mapped": "An",
+                "mappedType": "str"
+            },
+            {
+                "event": "brightness_down_click",
+                "mapped": "Aus",
+                "mappedType": "str"
+            }
+        ],
+        "ignoreUnknownEvents": true,
+        "x": 500,
+        "y": 380,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ],
+            [
+                "1a7e38b67e78e65d",
+                "f6d3cc7f60addc70"
+            ]
+        ]
+    },
+    {
+        "id": "a7956e3a17239240",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "brightness_up_click",
+        "payloadType": "str",
+        "x": 230,
+        "y": 360,
+        "wires": [
+            [
+                "bdb192f971a27c36"
+            ]
+        ]
+    },
+    {
+        "id": "72db9ae27bcc5af6",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "brightness_down_click",
+        "payloadType": "str",
+        "x": 240,
+        "y": 400,
+        "wires": [
+            [
+                "bdb192f971a27c36"
+            ]
+        ]
+    },
+    {
+        "id": "1a7e38b67e78e65d",
+        "type": "helper-motion-controller",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "motioncontrol",
+        "topicType": "str",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "startsWith",
+                "compare": "motion",
+                "compareType": "str",
+                "target": "motion"
+            },
+            {
+                "targetType": "str",
+                "property": "command",
+                "propertyType": "msg",
+                "operation": "notEmpty",
+                "compare": "",
+                "compareType": "str",
+                "target": "command"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "z2m_button",
+                "compareType": "str",
+                "target": "manualControl"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "darkness",
+                "compareType": "str",
+                "target": "darkness"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "night",
+                "compareType": "str",
+                "target": "night"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "timer": "10",
+        "timerUnit": "s",
+        "nightmodeEnabled": true,
+        "onlyDarkness": true,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 760,
+        "y": 700,
+        "wires": [
+            [
+                "c62ea11ee4f56f48"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "c62ea11ee4f56f48",
+        "type": "helper-light-controller",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "z2m_button",
+                "compareType": "str",
+                "target": "command"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "motioncontrol",
+                "compareType": "str",
+                "target": "command"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "identifiers": [
+            {
+                "identifier": "light.test_light",
+                "identifierType": "str"
+            }
+        ],
+        "lightbulbType": "dimmable",
+        "homeAssistantOutput": true,
+        "onBrightness": 100,
+        "transitionTime": 0.3,
+        "colorTemperature": 327,
+        "nightmodeBrightness": 10,
+        "colorCycle": true,
+        "fixColorHue": 360,
+        "fixColorSaturation": 100,
+        "onCommand": "An",
+        "offCommand": "Aus",
+        "nightmodeCommand": "Nacht",
+        "x": 960,
+        "y": 660,
+        "wires": [
+            [
+                "337067313c81346f"
+            ]
+        ]
+    },
+    {
+        "id": "337067313c81346f",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "motioncontroller_dimmable_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "{ \"a\": command, \"b\":brightness}",
+        "statusType": "jsonata",
+        "x": 1190,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "3371b70cc9f3147b",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "motion1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 450,
+        "y": 460,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "3266771fd3a16d68",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "motion1",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 450,
+        "y": 500,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "00cacd1d4fec258a",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "motion2",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 450,
+        "y": 540,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "ce75057da9098f82",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "motion2",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 450,
+        "y": 580,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "f6d3cc7f60addc70",
+        "type": "debug",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 690,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "75693e17768727d9",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "darkness",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 450,
+        "y": 640,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "a3243c8a8203286b",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "darkness",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 450,
+        "y": 680,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "3d8150433e7d2685",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "night",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 460,
+        "y": 720,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "b19ee5bc1795fd02",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "night",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 460,
+        "y": 760,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "8bcd9d80a8ada497",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "unblock",
+        "props": [
+            {
+                "p": "command",
+                "v": "unblock",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "command",
+        "x": 470,
+        "y": 820,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "ef9919e3cd200f45",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "unblock off",
+        "props": [
+            {
+                "p": "command",
+                "v": "unblock",
+                "vt": "str"
+            },
+            {
+                "p": "action",
+                "v": "Off",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "command",
+        "x": 460,
+        "y": 860,
+        "wires": [
+            [
+                "1a7e38b67e78e65d"
+            ]
+        ]
+    }
+]

@@ -1,72 +1,86 @@
-import { Node, NodeStatusFill } from "node-red";
-import { RED } from "../../../globals";
+import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { NodeType } from "../../types";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
+import { NodeCategory, NodeColor } from "../../types";
+import { helperCategory } from "../types";
 import {
-  defaultLightControllerNodeConfig,
   HomeAssistantLightAction,
   LightCommand,
-  LightControllerNodeConfig,
-  LightControllerNodeData,
+  LightControllerNodeDef,
   LightControllerNodeMessage,
-  LightControllerNodeType,
+  LightControllerNodeOptions,
+  LightControllerNodeOptionsDefaults,
+  LightControllerTarget,
 } from "./types";
 
-export default class LightControllerNode extends MatchJoinNode<LightControllerNodeConfig> {
+export default class LightControllerNode extends MatchJoinNode<
+  LightControllerNodeDef,
+  LightControllerNodeOptions
+> {
+  public static readonly NodeCategory: NodeCategory = helperCategory;
+  public static readonly NodeType: string = "light-controller";
+  public static readonly NodeColor: NodeColor = NodeColor.Light;
+
   private colorTemperature: number;
   private fixColorHue: number;
   private fixColorSaturation: number;
 
   private colorCycle: NodeJS.Timeout | null = null;
 
-  static get type(): NodeType {
-    return LightControllerNodeType;
-  }
+  constructor(RED: NodeAPI, node: Node, config: LightControllerNodeDef) {
+    super(RED, node, config, LightControllerNodeOptionsDefaults);
 
-  constructor(node: Node, config: LightControllerNodeConfig) {
-    config = { ...defaultLightControllerNodeConfig, ...config };
-
-    config.onBrightness = parseInt(config.onBrightness.toString());
-    config.nightmodeBrightness = parseInt(
-      config.nightmodeBrightness.toString()
-    );
-    config.transitionTime = parseFloat(config.transitionTime.toString());
-
-    config.onCommand = config.onCommand.toLowerCase();
-    config.offCommand = config.offCommand.toLowerCase();
-    config.nightmodeCommand = config.nightmodeCommand.toLowerCase();
-
-    super(node, config);
-
-    this.colorTemperature = config.colorTemperature;
-    this.fixColorHue = config.fixColorHue;
-    this.fixColorSaturation = config.fixColorSaturation;
+    this.colorTemperature = this.config.colorTemperature;
+    this.fixColorHue = this.config.fixColorHue;
+    this.fixColorSaturation = this.config.fixColorSaturation;
   }
 
   protected onClose(): void {
     this.clearColorCycle();
   }
 
-  protected matched(data: LightControllerNodeData): void {
-    const input = data.payload;
+  protected matched(data: MatchJoinNodeData): void {
+    const msg = data.msg;
+    const topic = msg.topic;
 
-    if (!input.command) {
+    switch (topic) {
+      case LightControllerTarget.command:
+        this.handleCommand(msg.payload as any, data);
+        break;
+      case LightControllerTarget.colorTemperature:
+        this.colorTemperature = msg.payload as number;
+        this.handleCommand(this.nodeStatus as any, data);
+        break;
+      case LightControllerTarget.hue:
+        this.fixColorHue = msg.payload as number;
+        this.handleCommand(this.nodeStatus as any, data);
+        break;
+      case LightControllerTarget.saturation:
+        this.fixColorSaturation = msg.payload as number;
+        this.handleCommand(this.nodeStatus as any, data);
+        break;
+    }
+  }
+
+  private handleCommand(
+    command: string | boolean | LightCommand | null,
+    data: MatchJoinNodeData
+  ): void {
+    if (command === null) {
       return;
     }
 
-    this.parseParameters(input);
-
-    const command = this.parseCommand(input.command);
+    command = this.parseCommand(command);
     if (!command) {
-      this.node.error("Invalid command", input.command);
+      this.node.error("Invalid command");
       return;
     }
 
-    let msg = data.msg;
+    let msg = data.msg as LightControllerNodeMessage;
 
     msg.lightbulbs = this.config.identifiers.map((identifier) => {
-      return RED.util.evaluateNodeProperty(
+      return this.RED.util.evaluateNodeProperty(
         identifier.identifier,
         identifier.identifierType,
         this.node,
@@ -101,35 +115,26 @@ export default class LightControllerNode extends MatchJoinNode<LightControllerNo
     this.nodeStatus = data.additionalAttributes!.command;
   }
 
-  private parseParameters(input: any) {
-    this.colorTemperature = input.colorTemperature ?? this.colorTemperature;
-    this.colorTemperature = parseInt(this.colorTemperature.toString());
-
-    this.fixColorHue = input.hue ?? this.fixColorHue;
-    this.fixColorHue = parseInt(this.fixColorHue.toString());
-
-    this.fixColorSaturation = input.saturation ?? this.fixColorSaturation;
-    this.fixColorSaturation = parseInt(this.fixColorSaturation.toString());
-  }
-
-  private parseCommand(command: boolean | string): LightCommand | null {
+  private parseCommand(
+    command: boolean | string | LightCommand
+  ): LightCommand | null {
     let parsed = null;
 
     if (typeof command === "boolean") {
       parsed = command ? LightCommand.On : LightCommand.Off;
+    } else if (Object.keys(LightCommand).includes(command)) {
+      parsed = command as LightCommand;
+      console.log("parsed", parsed);
     } else {
       command = command.toLowerCase();
       switch (command) {
-        case LightCommand.On:
-        case this.config.onCommand:
+        case this.config.onCommand?.toLowerCase():
           parsed = LightCommand.On;
           break;
-        case LightCommand.Off:
-        case this.config.offCommand:
+        case this.config.offCommand?.toLowerCase():
           parsed = LightCommand.Off;
           break;
-        case LightCommand.Nightmode:
-        case this.config.nightmodeCommand:
+        case this.config.nightmodeCommand?.toLowerCase():
           parsed = LightCommand.Nightmode;
           break;
       }

@@ -1,14 +1,113 @@
+import { EditorNodePropertiesDef } from "node-red";
 import {
-  defaultMatcherRow,
-  MatchJoinNodeConfig,
-  MatchJoinNodeData,
-  MatchJoinNodeEditorProperties,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeOptionsDefaults,
+} from "../../flowctrl/base/types";
+import {
+  MatcherRowDefaults,
+  MatchJoinEditorNodeProperties,
+  MatchJoinNodeDef,
   MatchJoinNodeMessage,
+  MatchJoinNodeOptions,
 } from "../../flowctrl/match-join/types";
-import { NodeColor, NodeType } from "../../types";
-import { helperCategory } from "../types";
+import { NotApplicableCompareFunction } from "../../logical/compare/types";
 
-export interface NotifyDispatcherNodeConfig extends MatchJoinNodeConfig {}
+export enum NotifyDispatcherTarget {
+  message = "message",
+  person1 = "person1",
+  person2 = "person2",
+  person3 = "person3",
+  person4 = "person4",
+  person5 = "person5",
+  person6 = "person6",
+  person7 = "person7",
+  person8 = "person8",
+  person9 = "person9",
+  person10 = "person10",
+}
+
+export const NotifyDispatcherPersonMetadata: Record<
+  NotifyDispatcherTarget,
+  { output: number }
+> = {
+  [NotifyDispatcherTarget.message]: { output: 0 },
+  [NotifyDispatcherTarget.person1]: { output: 1 },
+  [NotifyDispatcherTarget.person2]: { output: 2 },
+  [NotifyDispatcherTarget.person3]: { output: 3 },
+  [NotifyDispatcherTarget.person4]: { output: 4 },
+  [NotifyDispatcherTarget.person5]: { output: 5 },
+  [NotifyDispatcherTarget.person6]: { output: 6 },
+  [NotifyDispatcherTarget.person7]: { output: 7 },
+  [NotifyDispatcherTarget.person8]: { output: 8 },
+  [NotifyDispatcherTarget.person9]: { output: 9 },
+  [NotifyDispatcherTarget.person10]: { output: 10 },
+};
+
+export interface NotifyDispatcherNodeOptions extends MatchJoinNodeOptions {
+  persons: number;
+}
+
+export const NotifyDispatcherNodeOptionsDefaults: NotifyDispatcherNodeOptions =
+  {
+    ...BaseNodeOptionsDefaults,
+    matchers: [
+      {
+        ...MatcherRowDefaults,
+        property: "notify",
+        propertyType: "msg",
+        operation: NotApplicableCompareFunction.notEmpty,
+        target: NotifyDispatcherTarget.message,
+        targetType: "str",
+      },
+      {
+        ...MatcherRowDefaults,
+        target: NotifyDispatcherTarget.person1,
+        targetType: "str",
+      },
+    ],
+    join: false,
+    discardNotMatched: true,
+    minMsgCount: 2,
+    outputs: 2,
+    persons: 1,
+  };
+
+export interface NotifyDispatcherNodeDef
+  extends MatchJoinNodeDef,
+    NotifyDispatcherNodeOptions {}
+
+export interface NotifyDispatcherEditorNodeProperties
+  extends MatchJoinEditorNodeProperties,
+    NotifyDispatcherNodeOptions {}
+
+export const NotifyDispatcherEditorNodeDefaults: EditorNodePropertiesDef<NotifyDispatcherEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    matchers: {
+      value: NotifyDispatcherNodeOptionsDefaults.matchers,
+      required: true,
+    },
+    join: {
+      value: NotifyDispatcherNodeOptionsDefaults.join,
+      required: true,
+    },
+    discardNotMatched: {
+      value: NotifyDispatcherNodeOptionsDefaults.discardNotMatched,
+      required: true,
+    },
+    minMsgCount: {
+      value: NotifyDispatcherNodeOptionsDefaults.minMsgCount,
+      required: true,
+    },
+    persons: {
+      value: NotifyDispatcherNodeOptionsDefaults.persons,
+      required: true,
+    },
+    outputs: {
+      value: NotifyDispatcherNodeOptionsDefaults.outputs,
+      required: true,
+    },
+  };
 
 export interface NotifyMessage {
   title: string;
@@ -16,29 +115,6 @@ export interface NotifyMessage {
   onlyAtHome?: boolean;
 }
 
-export const defaultNotifyDispatcherNodeConfig: Partial<NotifyDispatcherNodeConfig> =
-  {
-    matchers: [{ ...defaultMatcherRow, target: "person1", targetType: "str" }],
-    join: true,
-    minMsgCount: 2,
-    discardNotMatched: true,
-    outputs: 2,
-  };
-
-export interface NotifyDispatcherNodeEditorProperties
-  extends MatchJoinNodeEditorProperties {}
-
 export interface NotifyDispatcherNodeMessage extends MatchJoinNodeMessage {
-  originalTopic: string;
   notify: NotifyMessage;
 }
-
-export interface NotifyDispatcherNodeData extends MatchJoinNodeData {
-  msg: NotifyDispatcherNodeMessage;
-}
-
-export const NotifyDispatcherNodeType = new NodeType(
-  helperCategory,
-  "notify-dispatcher",
-  NodeColor.Base
-);

@@ -1,0 +1,16 @@
+{
+    "name": "Automation Gate",
+    "label": {
+        "startupState": "Open on startup",
+        "initializeDelay": "Initialize status delay",
+        "autoReplay": "Auto replay on unpause",
+        "stateOpenLabel": "Open label",
+        "stateClosedLabel": "Closed label",
+        "setAutomationInProgress": "Set automation in progress",
+        "automationProgressId": "Automation progress identifier"
+    },
+    "default": {
+        "stateOpenLabel": "Automatic",
+        "stateClosedLabel": "Manual"
+    }
+}

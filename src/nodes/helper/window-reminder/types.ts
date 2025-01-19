@@ -1,38 +1,80 @@
+import { EditorNodePropertiesDef } from "node-red";
+import { TimeIntervalUnit } from "../../../helpers/time.helper";
 import {
-  defaultMatcherRow,
-  MatchJoinNodeConfig,
-  MatchJoinNodeEditorProperties,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeOptionsDefaults,
+} from "../../flowctrl/base/types";
+import {
+  MatcherRowDefaults,
+  MatchJoinEditorNodeProperties,
+  MatchJoinNodeDef,
+  MatchJoinNodeOptions,
 } from "../../flowctrl/match-join/types";
-import { NodeColor, NodeType } from "../../types";
-import { helperCategory } from "../types";
 
-export interface WindowReminderNodeConfig extends MatchJoinNodeConfig {
-  interval: number;
+export enum WindowReminderTarget {
+  window = "window",
+  presence = "presence",
 }
 
-export const defaultWindowReminderNodeConfig: Partial<WindowReminderNodeConfig> =
+export interface WindowReminderNodeOptions extends MatchJoinNodeOptions {
+  interval: number;
+  intervalUnit: TimeIntervalUnit;
+}
+
+export const WindowReminderNodeOptionsDefaults: WindowReminderNodeOptions = {
+  ...BaseNodeOptionsDefaults,
+  matchers: [
+    {
+      ...MatcherRowDefaults,
+      target: WindowReminderTarget.window,
+      targetType: "str",
+    },
+    {
+      ...MatcherRowDefaults,
+      target: WindowReminderTarget.presence,
+      targetType: "str",
+    },
+  ],
+  join: false,
+  minMsgCount: 1,
+  discardNotMatched: true,
+  interval: 0,
+  intervalUnit: TimeIntervalUnit.m,
+};
+
+export interface WindowReminderNodeDef
+  extends MatchJoinNodeDef,
+    WindowReminderNodeOptions {}
+
+export interface WindowReminderEditorNodeProperties
+  extends MatchJoinEditorNodeProperties,
+    WindowReminderNodeOptions {}
+
+export const WindowReminderEditorNodePropertiesDefaults: EditorNodePropertiesDef<WindowReminderEditorNodeProperties> =
   {
-    matchers: [
-      { ...defaultMatcherRow, target: "window", targetType: "str" },
-      {
-        ...defaultMatcherRow,
-        target: "presence",
-        targetType: "str",
-      },
-    ],
-    join: true,
-    minMsgCount: 2,
-    discardNotMatched: true,
-    interval: 0,
+    ...BaseEditorNodePropertiesDefaults,
+    matchers: {
+      value: WindowReminderNodeOptionsDefaults.matchers,
+      required: true,
+    },
+    join: {
+      value: WindowReminderNodeOptionsDefaults.join,
+      required: true,
+    },
+    discardNotMatched: {
+      value: WindowReminderNodeOptionsDefaults.discardNotMatched,
+      required: true,
+    },
+    minMsgCount: {
+      value: WindowReminderNodeOptionsDefaults.minMsgCount,
+      required: true,
+    },
+    interval: {
+      value: WindowReminderNodeOptionsDefaults.interval,
+      required: true,
+    },
+    intervalUnit: {
+      value: WindowReminderNodeOptionsDefaults.intervalUnit,
+      required: true,
+    },
   };
-
-export interface WindowReminderNodeEditorProperties
-  extends MatchJoinNodeEditorProperties {
-  interval: number;
-}
-
-export const WindowReminderNodeType = new NodeType(
-  helperCategory,
-  "window-reminder",
-  NodeColor.Climate
-);

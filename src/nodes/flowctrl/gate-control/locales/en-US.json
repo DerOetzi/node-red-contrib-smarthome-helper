@@ -1,0 +1,16 @@
+{
+    "label": {
+        "delay": "Delay message (ms)",
+        "gateCommand": "Gate Command",
+        "pauseTime": "Pause time"
+    },
+    "select": {
+        "gateCommand": {
+            "start": "Start",
+            "stop": "Stop",
+            "pause": "Pause",
+            "replay": "Replay",
+            "reset_filter": "Reset Filter"
+        }
+    }
+}

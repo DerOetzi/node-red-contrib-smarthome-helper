@@ -1,12 +1,18 @@
+import { EditorNodePropertiesDef } from "node-red";
+import { TimeIntervalUnit } from "../../../helpers/time.helper";
 import {
-  defaultMatcherRow,
-  MatchJoinNodeConfig,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeOptionsDefaults,
+} from "../../flowctrl/base/types";
+import {
+  MatcherRowDefaults,
+  MatchJoinEditorNodeProperties,
   MatchJoinNodeData,
-  MatchJoinNodeEditorProperties,
+  MatchJoinNodeDef,
   MatchJoinNodeMessage,
+  MatchJoinNodeOptions,
 } from "../../flowctrl/match-join/types";
-import { NodeColor, NodeType } from "../../types";
-import { helperCategory } from "../types";
+import { NotApplicableCompareFunction } from "../../logical/compare/types";
 
 export enum HeatMode {
   comfort = "comfort",
@@ -20,93 +26,149 @@ export enum HeatingControllerCommand {
   unblock = "unblock",
 }
 
-export interface HeatingControllerNodeConfig extends MatchJoinNodeConfig {
-  statusDelay: number;
-  pause: number;
-  pauseUnit: string;
-  boostTemperatureOffset: number;
-  frostProtectionTemperature: number;
-  comfortCommand: string;
-  ecoCommand: string;
-  boostCommand: string;
-  frostProtectionCommand: string;
+export enum HeatingControllerTarget {
+  activeCondition = "activeCondition",
+  comfortTemperature = "comfortTemperature",
+  ecoTemperatureOffset = "ecoTemperatureOffset",
+  windowOpen = "windowOpen",
+  manualControl = "manualControl",
+  command = "command",
 }
 
-export const defaultHeatingControllerNodeConfig: Partial<HeatingControllerNodeConfig> =
+export interface HeatingControllerNodeOptions extends MatchJoinNodeOptions {
+  pause: number;
+  pauseUnit: TimeIntervalUnit;
+  boostTemperatureOffset: number;
+  frostProtectionTemperature: number;
+  comfortCommand?: string;
+  ecoCommand?: string;
+  boostCommand?: string;
+  frostProtectionCommand?: string;
+
+  // deprecated 0.21.4
+  statusDelay?: number;
+}
+
+export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions =
   {
+    ...BaseNodeOptionsDefaults,
     matchers: [
       {
-        ...defaultMatcherRow,
-        target: "activeCondition",
+        ...MatcherRowDefaults,
+        target: HeatingControllerTarget.activeCondition,
         targetType: "str",
       },
       {
-        ...defaultMatcherRow,
-        target: "comfortTemperature",
+        ...MatcherRowDefaults,
+        target: HeatingControllerTarget.comfortTemperature,
         targetType: "str",
       },
       {
-        ...defaultMatcherRow,
-        target: "ecoTemperatureOffset",
+        ...MatcherRowDefaults,
+        target: HeatingControllerTarget.ecoTemperatureOffset,
         targetType: "str",
       },
       {
-        ...defaultMatcherRow,
-        target: "windowOpen",
+        ...MatcherRowDefaults,
+        target: HeatingControllerTarget.windowOpen,
         targetType: "str",
       },
       {
-        ...defaultMatcherRow,
-        target: "manual_control",
+        ...MatcherRowDefaults,
+        target: HeatingControllerTarget.manualControl,
         targetType: "str",
       },
       {
-        ...defaultMatcherRow,
+        ...MatcherRowDefaults,
         property: "command",
-        operator: "not_empty",
-        target: "command",
+        operation: NotApplicableCompareFunction.notEmpty,
+        target: HeatingControllerTarget.command,
         targetType: "str",
       },
     ],
-    statusDelay: 100,
-    pause: 1,
-    pauseUnit: "h",
     join: false,
-    minMsgCount: 1,
     discardNotMatched: true,
+    minMsgCount: 1,
     outputs: 4,
+    pause: 1,
+    pauseUnit: TimeIntervalUnit.h,
     boostTemperatureOffset: 5,
     frostProtectionTemperature: 8,
-    comfortCommand: HeatMode.comfort,
-    ecoCommand: HeatMode.eco,
-    boostCommand: HeatMode.boost,
-    frostProtectionCommand: HeatMode.frostProtection,
+    comfortCommand: "",
+    ecoCommand: "",
+    boostCommand: "",
+    frostProtectionCommand: "",
   };
 
-export interface HeatingControllerNodeEditorProperties
-  extends MatchJoinNodeEditorProperties {
-  statusDelay: number;
-  pause: number;
-  pauseUnit: string;
-  boostTemperatureOffset: number;
-  frostProtectionTemperature: number;
-  comfortCommand: string;
-  ecoCommand: string;
-  boostCommand: string;
-  frostProtectionCommand: string;
-}
+export interface HeatingControllerNodeDef
+  extends MatchJoinNodeDef,
+    HeatingControllerNodeOptions {}
+
+export interface HeatingControllerEditorNodeProperties
+  extends MatchJoinEditorNodeProperties,
+    HeatingControllerNodeOptions {}
+
+export const HeatingControllerEditorNodePropertiesDefaults: EditorNodePropertiesDef<HeatingControllerEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    matchers: {
+      value: HeatingControllerNodeOptionsDefaults.matchers,
+      required: true,
+    },
+    discardNotMatched: {
+      value: HeatingControllerNodeOptionsDefaults.discardNotMatched,
+      required: true,
+    },
+    join: {
+      value: HeatingControllerNodeOptionsDefaults.join,
+      required: true,
+    },
+    minMsgCount: {
+      value: HeatingControllerNodeOptionsDefaults.minMsgCount,
+      required: true,
+    },
+    outputs: {
+      value: HeatingControllerNodeOptionsDefaults.outputs,
+      required: true,
+    },
+    pause: {
+      value: HeatingControllerNodeOptionsDefaults.pause,
+      required: true,
+    },
+    pauseUnit: {
+      value: HeatingControllerNodeOptionsDefaults.pauseUnit,
+      required: true,
+    },
+    boostTemperatureOffset: {
+      value: HeatingControllerNodeOptionsDefaults.boostTemperatureOffset,
+      required: true,
+    },
+    frostProtectionTemperature: {
+      value: HeatingControllerNodeOptionsDefaults.frostProtectionTemperature,
+      required: true,
+    },
+    comfortCommand: {
+      value: HeatingControllerNodeOptionsDefaults.comfortCommand,
+      required: true,
+    },
+    ecoCommand: {
+      value: HeatingControllerNodeOptionsDefaults.ecoCommand,
+      required: true,
+    },
+    boostCommand: {
+      value: HeatingControllerNodeOptionsDefaults.boostCommand,
+      required: true,
+    },
+    frostProtectionCommand: {
+      value: HeatingControllerNodeOptionsDefaults.frostProtectionCommand,
+      required: true,
+    },
+  };
 
 export interface HeatingControllerNodeMessage extends MatchJoinNodeMessage {
-  originalTopic: string;
   command?: HeatingControllerCommand;
 }
 
 export interface HeatingControllerNodeData extends MatchJoinNodeData {
   msg: HeatingControllerNodeMessage;
 }
-
-export const HeatingControllerNodeType = new NodeType(
-  helperCategory,
-  "heating-controller",
-  NodeColor.Climate
-);

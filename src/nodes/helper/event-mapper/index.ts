@@ -1,38 +1,39 @@
-import { Node } from "node-red";
-import { RED } from "../../../globals";
+import { Node, NodeAPI } from "node-red";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
-import { NodeType } from "../../types";
+import { NodeCategory, NodeColor } from "../../types";
+import { helperCategory } from "../types";
 import {
-  defaultEventMapperNodeConfig,
-  EventMapperNodeConfig,
-  EventMapperNodeType,
+  EventMapperNodeDef,
+  EventMapperNodeOptions,
+  EventMapperNodeOptionsDefaults,
   EventMapperRule,
 } from "./types";
 
-export default class EventMapperNode extends MatchJoinNode<EventMapperNodeConfig> {
-  static get type(): NodeType {
-    return EventMapperNodeType;
-  }
+export default class EventMapperNode extends MatchJoinNode<
+  EventMapperNodeDef,
+  EventMapperNodeOptions
+> {
+  public static readonly NodeCategory: NodeCategory = helperCategory;
+  public static readonly NodeType: string = "event-mapper";
+  public static readonly NodeColor: NodeColor = NodeColor.Switch;
 
-  constructor(node: Node, config: EventMapperNodeConfig) {
-    config = { ...defaultEventMapperNodeConfig, ...config, join: false };
-
-    super(node, config);
+  constructor(RED: NodeAPI, node: Node, config: EventMapperNodeDef) {
+    super(RED, node, config, EventMapperNodeOptionsDefaults);
   }
 
   protected matched(data: MatchJoinNodeData): void {
-    const event: string = data.input;
+    const event: string = data.payload as string;
 
     const rule = this.getRule(event);
     if (!rule) {
-      if (!this.config.ignoreUnknownEvents) {
+      if (!(this.config.ignoreUnknownEvents && event)) {
         this.node.error("No rule found for event: " + event);
       }
       return;
     }
 
-    data.payload = RED.util.evaluateNodeProperty(
+    data.payload = this.RED.util.evaluateNodeProperty(
       rule.mapped,
       rule.mappedType,
       this.node,
@@ -45,6 +46,10 @@ export default class EventMapperNode extends MatchJoinNode<EventMapperNodeConfig
   }
 
   private getRule(event: string): EventMapperRule | undefined {
-    return this.config.rules.find((rule) => rule.event === event);
+    const rule = this.config.rules.find((rule) => rule.event === event);
+    if (rule) {
+      rule.output = this.config.rules.indexOf(rule);
+    }
+    return rule;
   }
 }

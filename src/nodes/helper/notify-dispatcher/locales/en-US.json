@@ -1,12 +1,21 @@
 {
-    "target": {
-        "person1": "1st person",
-        "person2": "2nd person",
-        "person3": "3rd person",
-        "person4": "4th person",
-        "person5": "5th person",
-        "person6": "6th person",
-        "person7": "7th person",
-        "person8": "8th person"
+    "name": "Notify Dispatcher",
+    "label": {
+        "persons": "Persons"
+    },
+    "select": {
+        "target": {
+            "message": "Message",
+            "person1": "Presence 1st person",
+            "person2": "Presence 2nd person",
+            "person3": "Presence 3rd person",
+            "person4": "Presence 4th person",
+            "person5": "Presence 5th person",
+            "person6": "Presence 6th person",
+            "person7": "Presence 7th person",
+            "person8": "Presence 8th person",
+            "person9": "Presence 9th person",
+            "person10": "Presence 10th person"
+        }
     }
 }

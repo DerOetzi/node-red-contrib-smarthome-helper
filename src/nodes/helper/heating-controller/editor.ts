@@ -1,103 +1,136 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor from "../../flowctrl/base/editor";
+import BaseNodeEditor, {
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
+import HeatingControllerNode from "./";
+import { heatingControllerMigration } from "./migration";
 import {
-  getMatchers,
-  initializeMatcherRows,
-} from "../../flowctrl/match-join/editor";
-import {
-  defaultHeatingControllerNodeConfig,
-  HeatingControllerNodeEditorProperties,
-  HeatingControllerNodeType,
+  HeatingControllerEditorNodeProperties,
+  HeatingControllerEditorNodePropertiesDefaults,
+  HeatingControllerNodeOptionsDefaults,
+  HeatingControllerTarget,
 } from "./types";
 
-const HeatingControllerNodeEditor: EditorNodeDef<HeatingControllerNodeEditorProperties> =
+const inputMatcherList = new MatchJoinEditableList({
+  targets: Object.values(HeatingControllerTarget),
+  translatePrefix: "helper.heating-controller",
+});
+
+const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProperties> =
   {
-    ...BaseNodeEditor,
-    category: HeatingControllerNodeType.categoryLabel,
-    color: HeatingControllerNodeType.color,
-    defaults: {
-      ...BaseNodeEditor.defaults,
-      matchers: {
-        value: defaultHeatingControllerNodeConfig.matchers!,
-        required: true,
-      },
-      join: {
-        value: defaultHeatingControllerNodeConfig.join!,
-        required: true,
-      },
-      discardNotMatched: {
-        value: defaultHeatingControllerNodeConfig.discardNotMatched!,
-        required: true,
-      },
-      minMsgCount: {
-        value: defaultHeatingControllerNodeConfig.minMsgCount!,
-        required: true,
-      },
-      pause: {
-        value: defaultHeatingControllerNodeConfig.pause!,
-        required: true,
-      },
-      pauseUnit: {
-        value: defaultHeatingControllerNodeConfig.pauseUnit!,
-        required: true,
-      },
-      boostTemperatureOffset: {
-        value: defaultHeatingControllerNodeConfig.boostTemperatureOffset!,
-        required: true,
-      },
-      frostProtectionTemperature: {
-        value: defaultHeatingControllerNodeConfig.frostProtectionTemperature!,
-        required: true,
-      },
-      comfortCommand: {
-        value: defaultHeatingControllerNodeConfig.comfortCommand!,
-        required: true,
-      },
-      ecoCommand: {
-        value: defaultHeatingControllerNodeConfig.ecoCommand!,
-        required: true,
-      },
-      frostProtectionCommand: {
-        value: defaultHeatingControllerNodeConfig.frostProtectionCommand!,
-        required: true,
-      },
-      boostCommand: {
-        value: defaultHeatingControllerNodeConfig.boostCommand!,
-        required: true,
-      },
-      statusDelay: {
-        value: defaultHeatingControllerNodeConfig.statusDelay!,
-        required: true,
-      },
-      outputs: {
-        value: defaultHeatingControllerNodeConfig.outputs!,
-        required: true,
-      },
-    },
-    icon: "heating.svg",
+    category: HeatingControllerNode.NodeCategory.label,
+    color: HeatingControllerNode.NodeColor,
+    icon: "font-awesome/fa-thermometer-half",
+    defaults: HeatingControllerEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || HeatingControllerNodeType.name;
+      return this.name || i18n("helper.heating-controller.name");
     },
-    outputLabels: ["heatmode", "temperature", "window", "status"],
+    inputs: HeatingControllerNodeOptionsDefaults.inputs,
+    outputs: HeatingControllerNodeOptionsDefaults.outputs,
+    outputLabels: function (index: number) {
+      const outputs = ["heatmode", "temperature", "window", "status"];
+
+      return i18n(`helper.heating-controller.output.${outputs[index]}`);
+    },
+    onadd: function () {
+      this.comfortCommand = i18n(
+        "helper.heating-controller.default.comfortCommand"
+      );
+      this.ecoCommand = i18n("helper.heating-controller.default.ecoCommand");
+      this.boostCommand = i18n(
+        "helper.heating-controller.default.boostCommand"
+      );
+      this.frostProtectionCommand = i18n(
+        "helper.heating-controller.default.frostProtectionCommand"
+      );
+    },
     oneditprepare: function () {
+      heatingControllerMigration.checkAndMigrate(this);
+
       BaseNodeEditor.oneditprepare!.call(this);
 
-      initializeMatcherRows(this.matchers, {
-        targets: [
-          "activeCondition",
-          "comfortTemperature",
-          "ecoTemperatureOffset",
-          "windowOpen",
-          "manual_control",
-          "command",
-        ],
-        translatePrefix: "helper.heating-controller.target",
-        t: this._,
+      inputMatcherList.initialize("matcher-rows", this.matchers, {
+        translatePrefix: "flowctrl.match-join",
+      });
+
+      const heatingControllerOptionsBuilder = new NodeEditorFormBuilder(
+        $("#heating-controller-options"),
+        {
+          translatePrefix: "helper.heating-controller",
+        }
+      );
+
+      heatingControllerOptionsBuilder.createTimeInput({
+        id: "node-input-pause",
+        idType: "node-input-pauseUnit",
+        label: "pause",
+        value: this.pause,
+        valueType: this.pauseUnit,
+        icon: "clock-o",
+      });
+
+      heatingControllerOptionsBuilder.createNumberInput({
+        id: "node-input-boostTemperatureOffset",
+        label: "boostTemperatureOffset",
+        value: this.boostTemperatureOffset,
+        icon: "fire",
+        min: 5,
+        max: 10,
+      });
+
+      heatingControllerOptionsBuilder.createNumberInput({
+        id: "frostProtectionTemperature",
+        label: "frostProtectionTemperature",
+        value: this.frostProtectionTemperature,
+        icon: "snowflake-o",
+        min: 5,
+        max: 9,
+      });
+
+      heatingControllerOptionsBuilder.createTimeInput({
+        id: "node-input-initializeDelay",
+        idType: "node-input-initializeDelayUnit",
+        label: "initializeDelay",
+        value: this.initializeDelay,
+        valueType: this.initializeDelayUnit,
+        icon: "pause",
+      });
+
+      heatingControllerOptionsBuilder.line();
+
+      heatingControllerOptionsBuilder.createTextInput({
+        id: "node-input-comfortCommand",
+        label: "comfortCommand",
+        value: this.comfortCommand,
+        icon: "home",
+      });
+
+      heatingControllerOptionsBuilder.createTextInput({
+        id: "node-input-ecoCommand",
+        label: "ecoCommand",
+        value: this.ecoCommand,
+        icon: "leaf",
+      });
+
+      heatingControllerOptionsBuilder.createTextInput({
+        id: "node-input-boostCommand",
+        label: "boostCommand",
+        value: this.boostCommand,
+        icon: "fire",
+      });
+
+      heatingControllerOptionsBuilder.createTextInput({
+        id: "node-input-frostProtectionCommand",
+        label: "frostProtectionCommand",
+        value: this.frostProtectionCommand,
+        icon: "snowflake-o",
       });
     },
     oneditsave: function () {
-      this.matchers = getMatchers();
+      this.matchers = inputMatcherList.values();
     },
   };
 
-export default HeatingControllerNodeEditor;
+export default HeatingControllerEditorNode;

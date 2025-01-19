@@ -1,40 +1,32 @@
 import { EditorNodeDef } from "node-red";
+import { i18n } from "../../flowctrl/base/editor";
 import SwitchNodeEditor from "../switch/editor";
+import { SwitchNodeOptionsDefaults } from "../switch/types";
+import ToggleNode from "./";
 import {
-  defaultToggleNodeConfig,
-  ToggleNodeEditorProperties,
-  ToggleNodeType,
+  ToggleEditorNodeProperties,
+  ToggleEditorNodePropertiesDefaults,
 } from "./types";
 
-const ToggleNodeEditor: EditorNodeDef<ToggleNodeEditorProperties> = {
-  ...SwitchNodeEditor,
-  defaults: {
-    ...SwitchNodeEditor.defaults,
-    target: { value: defaultToggleNodeConfig.target!, required: true },
-    trueValue: { value: defaultToggleNodeConfig.trueValue!, required: true },
-    trueType: { value: defaultToggleNodeConfig.trueType!, required: true },
-    falseValue: { value: defaultToggleNodeConfig.falseValue!, required: true },
-    falseType: { value: defaultToggleNodeConfig.falseType!, required: true },
-    seperatedOutputs: {
-      value: defaultToggleNodeConfig.seperatedOutputs!,
-      required: false,
-    },
-    outputs: { value: defaultToggleNodeConfig.outputs!, required: true },
-  },
+const ToggleEditorNode: EditorNodeDef<ToggleEditorNodeProperties> = {
+  category: ToggleNode.NodeCategory.label,
+  color: ToggleNode.NodeColor,
+  icon: "font-awesome/fa-exchange",
+  defaults: ToggleEditorNodePropertiesDefaults,
   label: function () {
-    return this.name || ToggleNodeType.name;
+    return this.name || i18n("logical.toggle.name");
   },
+  inputs: SwitchNodeOptionsDefaults.inputs,
+  outputs: SwitchNodeOptionsDefaults.outputs,
   outputLabels: function (index) {
-    if (this.seperatedOutputs) {
-      return index === 0 ? "true" : "false";
-    } else if (index === 0) {
-      return "toggle";
+    if (typeof SwitchNodeEditor.outputLabels === "function") {
+      return SwitchNodeEditor.outputLabels.call(this, index);
     }
+    return undefined;
   },
-  icon: "switch.svg",
   oneditprepare: function () {
     SwitchNodeEditor.oneditprepare!.call(this);
   },
 };
 
-export default ToggleNodeEditor;
+export default ToggleEditorNode;

@@ -1,8 +1,40 @@
 {
-    "target": {
-        "command": "command",
-        "colorTemperature": "color temperature",
-        "hue": "hue",
-        "saturation": "saturation"
+    "label": {
+        "identifier": "Lightbulb",
+        "lightbulbType": "Lightbulb Type",
+        "homeAssistantOutput": "Home Assistant Output",
+        "onBrightness": "Brightness",
+        "transitionTime": "Transition Time",
+        "colorTemperature": "Color Temperature",
+        "nightmodeBrightness": "Nightmode Brightness",
+        "colorCycle": "Color Cycle",
+        "fixColorHue": "Hue",
+        "fixColorSaturation": "Saturation",
+        "onCommand": "Command On",
+        "offCommand": "Command Off",
+        "nightmodeCommand": "Command Nightmode"
+    },
+    "identifier-rows": "Lightbulbs",
+    "default": {
+        "onCommand": "On",
+        "offCommand": "Off",
+        "nightmodeCommand": "Night"
+    },
+    "select": {
+        "target": {
+            "command": "Command",
+            "colorTemperature": "Color Temperature",
+            "hue": "Hue",
+            "saturation": "Saturation"
+        },
+        "lightbulbType": {
+            "dimmable": "Dimmable",
+            "colortemperature": "Color Temperature",
+            "switch": "Switch",
+            "rgb": "RGB"
+        }
+    },
+    "output": {
+        "command": "Command"
     }
 }

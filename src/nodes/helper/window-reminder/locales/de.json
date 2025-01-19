@@ -1,13 +1,18 @@
 {
+    "name": "Window reminder",
+    "description": "This node can remind you if a window is opened for a long time. It can also notify you if nobody is at home.",
+    "label": {
+        "interval": "Interval"
+    },
+    "select": {
+        "window": "Fenster offen",
+        "presence": "Anwesenheit"
+    },
     "notification": {
         "title": "Fenstererinnerung",
         "normal": "Fenster {windowName} ist offen",
         "leaving": "Fenster {windowName} ist noch offen",
         "alarm": "Fenster {windowName} wurde geöffnet, aber niemand ist zu Hause"
-    },
-    "target": {
-        "window": "Fenster offen",
-        "presence": "Anwesenheit"
     },
     "status": {
         "open": "Fenster offen",

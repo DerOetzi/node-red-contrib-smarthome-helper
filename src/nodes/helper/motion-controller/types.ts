@@ -1,89 +1,143 @@
+import { EditorNodePropertiesDef } from "node-red";
+
+import { TimeIntervalUnit } from "../../../helpers/time.helper";
 import {
-  defaultMatcherRow,
-  MatchJoinNodeConfig,
-  MatchJoinNodeData,
-  MatchJoinNodeEditorProperties,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeOptionsDefaults,
+} from "../../flowctrl/base/types";
+import {
+  MatcherRowDefaults,
+  MatchJoinEditorNodeProperties,
+  MatchJoinNodeDef,
   MatchJoinNodeMessage,
+  MatchJoinNodeOptions,
 } from "../../flowctrl/match-join/types";
-import { NodeColor, NodeType } from "../../types";
+import { NotApplicableCompareFunction } from "../../logical/compare/types";
 import { LightCommand } from "../light-controller/types";
-import { helperCategory } from "../types";
 
 export enum MotionControllerCommand {
   block = "block",
   unblock = "unblock",
 }
 
-export interface MotionControllerNodeConfig extends MatchJoinNodeConfig {
-  statusDelay: number;
-  timer: number;
-  timerUnit: string;
-  onlyDarkness: boolean;
-  nightmodeEnabled: boolean;
-  onCommand: string;
-  offCommand: string;
-  nightmodeCommand: string;
+export enum MotionControllerTarget {
+  motion = "motion",
+  darkness = "darkness",
+  night = "night",
+  manualControl = "manualControl",
+  command = "command",
 }
 
-export const defaultMotionControllerNodeConfig: Partial<MotionControllerNodeConfig> =
+export interface MotionControllerNodeOptions extends MatchJoinNodeOptions {
+  timer: number;
+  timerUnit: TimeIntervalUnit;
+  onlyDarkness: boolean;
+  nightmodeEnabled: boolean;
+  onCommand?: string;
+  offCommand?: string;
+  nightmodeCommand?: string;
+
+  //deprecated since 0.21.3
+  statusDelay?: number;
+}
+
+export const MotionControllerNodeOptionsDefaults: MotionControllerNodeOptions =
   {
+    ...BaseNodeOptionsDefaults,
     matchers: [
       {
-        ...defaultMatcherRow,
+        ...MatcherRowDefaults,
         target: "motion",
         targetType: "str",
       },
       {
-        ...defaultMatcherRow,
+        ...MatcherRowDefaults,
         property: "command",
-        operator: "not_empty",
+        operation: NotApplicableCompareFunction.notEmpty,
         target: "command",
         targetType: "str",
       },
       {
-        ...defaultMatcherRow,
-        target: "manual_control",
+        ...MatcherRowDefaults,
+        target: "manualControl",
         targetType: "str",
       },
     ],
-    statusDelay: 100,
-    timer: 30,
-    timerUnit: "s",
     join: false,
-    minMsgCount: 1,
     discardNotMatched: true,
+    minMsgCount: 1,
     outputs: 2,
+    timer: 30,
+    timerUnit: TimeIntervalUnit.s,
     nightmodeEnabled: false,
     onlyDarkness: false,
-    onCommand: LightCommand.On,
-    offCommand: LightCommand.Off,
-    nightmodeCommand: LightCommand.Nightmode,
+    onCommand: "",
+    offCommand: "",
+    nightmodeCommand: "",
   };
 
-export interface MotionControllerNodeEditorProperties
-  extends MatchJoinNodeEditorProperties {
-  statusDelay: number;
-  timer: number;
-  timerUnit: string;
-  nightmodeEnabled: boolean;
-  onlyDarkness: boolean;
-  onCommand: string;
-  offCommand: string;
-  nightmodeCommand: string;
-}
+export interface MotionControllerNodeDef
+  extends MatchJoinNodeDef,
+    MotionControllerNodeOptions {}
+
+export interface MotionControllerEditorNodeProperties
+  extends MatchJoinEditorNodeProperties,
+    MotionControllerNodeOptions {}
+
+export const MotionControllerEditorNodePropertiesDefaults: EditorNodePropertiesDef<MotionControllerEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    matchers: {
+      value: MotionControllerNodeOptionsDefaults.matchers,
+      required: true,
+    },
+    discardNotMatched: {
+      value: MotionControllerNodeOptionsDefaults.discardNotMatched,
+      required: true,
+    },
+    join: {
+      value: MotionControllerNodeOptionsDefaults.join,
+      required: true,
+    },
+    minMsgCount: {
+      value: MotionControllerNodeOptionsDefaults.minMsgCount,
+      required: true,
+    },
+    outputs: {
+      value: MotionControllerNodeOptionsDefaults.outputs,
+      required: true,
+    },
+    timer: {
+      value: MotionControllerNodeOptionsDefaults.timer,
+      required: true,
+    },
+    timerUnit: {
+      value: MotionControllerNodeOptionsDefaults.timerUnit,
+      required: true,
+    },
+    nightmodeEnabled: {
+      value: MotionControllerNodeOptionsDefaults.nightmodeEnabled,
+      required: true,
+    },
+    onlyDarkness: {
+      value: MotionControllerNodeOptionsDefaults.onlyDarkness,
+      required: true,
+    },
+    onCommand: {
+      value: MotionControllerNodeOptionsDefaults.onCommand,
+      required: true,
+    },
+    offCommand: {
+      value: MotionControllerNodeOptionsDefaults.offCommand,
+      required: true,
+    },
+    nightmodeCommand: {
+      value: MotionControllerNodeOptionsDefaults.nightmodeCommand,
+      required: true,
+    },
+  };
 
 export interface MotionControllerNodeMessage extends MatchJoinNodeMessage {
-  originalTopic: string;
   command?: MotionControllerCommand;
   action?: LightCommand;
 }
-
-export interface MotionControllerNodeData extends MatchJoinNodeData {
-  msg: MotionControllerNodeMessage;
-}
-
-export const MotionControllerNodeType = new NodeType(
-  helperCategory,
-  "motion-controller",
-  NodeColor.Switch
-);

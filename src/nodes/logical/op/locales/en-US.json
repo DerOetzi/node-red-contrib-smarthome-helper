@@ -1,0 +1,17 @@
+{
+    "label": {
+        "operation": "Operation",
+        "minMsgCount": "Minimum message count"
+    },
+    "select": {
+        "operation": {
+            "and": "AND",
+            "or": "OR",
+            "not": "NOT",
+            "xor": "XOR",
+            "nand": "NAND",
+            "nor": "NOR",
+            "nxor": "XNOR"
+        }
+    }
+}

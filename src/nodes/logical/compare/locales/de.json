@@ -1,0 +1,25 @@
+{
+    "label": {
+        "property": "Eigenschaft",
+        "operation": "Vergleichen",
+        "compare": "Mit"
+    },
+    "select": {
+        "operation": {
+            "eq": "gleich",
+            "neq": "ungleich",
+            "lt": "weniger als",
+            "lte": "weniger als oder gleich",
+            "gt": "größer als",
+            "gte": "größer als oder gleich",
+            "isTrue": "ist wahr",
+            "isFalse": "ist falsch",
+            "empty": "ist leer",
+            "notEmpty": "ist nicht leer",
+            "startsWith": "beginnt mit",
+            "endsWith": "endet mit",
+            "contains": "enthält",
+            "regex": "entspricht Regex"
+        }
+    }
+}

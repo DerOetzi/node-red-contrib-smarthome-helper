@@ -1,11 +1,36 @@
 {
-    "target": {
-        "activeCondition": "active condition",
-        "comfortTemperature": "comfort temperature",
-        "ecoTemperatureOffset": "eco temperature offset",
-        "windowOpen": "window open",
-        "manual_control": "manual control",
-        "command": "command"
+    "name": "Heating Controller",
+    "label": {
+        "pause": "Pause",
+        "boostTemperatureOffset": "Boost temperature offset",
+        "frostProtectionTemperature": "Frost protection temperature",
+        "initializeDelay": "Initialize status delay",
+        "comfortCommand": "Comfort command",
+        "ecoCommand": "ECO command",
+        "boostCommand": "Boost command",
+        "frostProtectionCommand": "Frost protection command"
+    },
+    "default": {
+        "comfortCommand": "Comfort",
+        "ecoCommand": "ECO",
+        "boostCommand": "Boost",
+        "frostProtectionCommand": "Frost Protection"
+    },
+    "select": {
+        "target": {
+            "activeCondition": "Active condition",
+            "comfortTemperature": "Comfort temperature",
+            "ecoTemperatureOffset": "ECO temperature offset",
+            "windowOpen": "Window open",
+            "manualControl": "Manual control",
+            "command": "Command"
+        }
+    },
+    "output": {
+        "heatmode": "Heat mode",
+        "temperature": "Temperature",
+        "window": "Window open",
+        "status": "Status"
     },
     "status": {
         "automationOn": "Automated",

@@ -1,31 +1,28 @@
-import { Node, NodeMessageInFlow } from "node-red";
-import { NodeRedDone, NodeRedSend } from "../../../types";
-import { NodeType } from "../../types";
+import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
+import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
 import SwitchNode from "../switch";
 import {
-  defaultToggleNodeConfig,
-  ToggleNodeConfig,
-  ToggleNodeType,
+  ToggleNodeDef,
+  ToggleNodeOptions,
+  ToggleNodeOptionsDefaults,
 } from "./types";
 
-export default class ToggleNode extends SwitchNode<ToggleNodeConfig> {
-  static get type(): NodeType {
-    return ToggleNodeType;
-  }
+export default class ToggleNode extends SwitchNode<
+  ToggleNodeDef,
+  ToggleNodeOptions
+> {
+  public static readonly NodeType = "toggle";
 
-  constructor(
-    node: Node,
-    config: ToggleNodeConfig,
-    private lastValue: boolean
-  ) {
-    config = { ...defaultToggleNodeConfig, ...config };
-    super(node, config);
+  private lastValue?: boolean;
+
+  constructor(RED: NodeAPI, node: Node, config: ToggleNodeDef) {
+    super(RED, node, config, ToggleNodeOptionsDefaults);
   }
 
   protected onInput(
     msg: NodeMessageInFlow,
-    send: NodeRedSend,
-    done: NodeRedDone
+    send: NodeSendFunction,
+    done: NodeDoneFunction
   ): void {
     const command = msg.payload;
 

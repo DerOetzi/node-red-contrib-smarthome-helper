@@ -1,14 +1,22 @@
-const timeUnits: Record<string, any> = {
-  ms: 1,
-  s: 1000,
-  m: 1000 * 60,
-  h: 1000 * 60 * 60,
-  d: 1000 * 60 * 60 * 24,
+export enum TimeIntervalUnit {
+  ms = "ms",
+  s = "s",
+  m = "m",
+  h = "h",
+  d = "d",
+}
+
+const TimeIntervalUnitFactors: Record<TimeIntervalUnit, { factor: number }> = {
+  [TimeIntervalUnit.ms]: { factor: 1 },
+  [TimeIntervalUnit.s]: { factor: 1000 },
+  [TimeIntervalUnit.m]: { factor: 1000 * 60 },
+  [TimeIntervalUnit.h]: { factor: 1000 * 60 * 60 },
+  [TimeIntervalUnit.d]: { factor: 1000 * 60 * 60 * 24 },
 };
 
 export function convertToMilliseconds(
   time: number,
-  unit: string = "s"
+  unit: TimeIntervalUnit = TimeIntervalUnit.ms
 ): number {
-  return time * timeUnits[unit];
+  return time * TimeIntervalUnitFactors[unit].factor;
 }

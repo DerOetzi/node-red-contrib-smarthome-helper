@@ -1,28 +1,60 @@
-import { Node, NodeMessageInFlow, NodeStatusFill } from "node-red";
-import { NodeRedDone, NodeRedSend } from "../../../types";
+import { Node, NodeAPI, NodeMessageInFlow, NodeStatusFill } from "node-red";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
-import { NodeType } from "../../types";
+import { NodeDoneFunction, NodeSendFunction } from "../../types";
 import SwitchNode from "../switch";
-import { LogicalOperation, logicalOperations, notOp } from "./operations";
+
+import { cloneDeep } from "../../../helpers/object.helper";
 import {
-  defaultLogicalOpNodeConfig,
-  LogicalOpNodeConfig,
-  LogicalOpNodeType,
+  LogicalFunction,
+  LogicalOpNodeDef,
+  LogicalOpNodeOptions,
+  LogicalOpNodeOptionsDefaults,
 } from "./types";
 
-export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
-  private readonly operator: LogicalOperation;
-  private messages: Record<string, boolean> = {};
-
-  static get type(): NodeType {
-    return LogicalOpNodeType;
+export class LogicalOperation {
+  public static func(operation: LogicalFunction, values: boolean[]): boolean {
+    return LogicalOperation[operation](values);
   }
 
-  constructor(node: Node, config: LogicalOpNodeConfig) {
-    config = { ...defaultLogicalOpNodeConfig, ...config };
-    super(node, config, { filterkey: "filterResult" });
+  public static and(payloads: boolean[]): boolean {
+    return payloads.every((value: boolean) => value === true);
+  }
 
-    this.operator = logicalOperations[config.logical];
+  public static or(payloads: boolean[]): boolean {
+    return payloads.some((value: boolean) => value === true);
+  }
+
+  public static not(payloads: boolean[]): boolean {
+    return !payloads[0];
+  }
+
+  public static nand(payloads: boolean[]): boolean {
+    return LogicalOperation.not([LogicalOperation.and(payloads)]);
+  }
+
+  public static nor(payloads: boolean[]): boolean {
+    return LogicalOperation.not([LogicalOperation.or(payloads)]);
+  }
+
+  public static xor(payloads: boolean[]): boolean {
+    return payloads.filter((value) => value === true).length === 1;
+  }
+
+  public static nxor(payloads: boolean[]): boolean {
+    return LogicalOperation.not([LogicalOperation.xor(payloads)]);
+  }
+}
+
+export default class LogicalOpNode extends SwitchNode<
+  LogicalOpNodeDef,
+  LogicalOpNodeOptions
+> {
+  public static readonly NodeType = "op";
+
+  private messages: Record<string, boolean> = {};
+
+  constructor(RED: NodeAPI, node: Node, config: LogicalOpNodeDef) {
+    super(RED, node, config, LogicalOpNodeOptionsDefaults);
   }
 
   protected onClose(): void {
@@ -32,20 +64,20 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
 
   protected onInput(
     msg: NodeMessageInFlow,
-    send: NodeRedSend,
-    done: NodeRedDone
+    send: NodeSendFunction,
+    done: NodeDoneFunction
   ): void {
     if (typeof msg.payload !== "boolean") {
       this.node.error("Payload must be a boolean value");
       return;
     }
 
-    if (this.config.logical === "not") {
+    if (this.config.operation === LogicalFunction.not) {
       this.debounce({
         msg: msg,
         send,
-        payload: notOp(msg.payload),
-        additionalAttributes: { input: msg },
+        payload: LogicalOperation.not([msg.payload]),
+        additionalAttributes: { input: msg.payload },
       });
     } else {
       if (typeof msg.topic !== "string") {
@@ -57,11 +89,12 @@ export default class LogicalOpNode extends SwitchNode<LogicalOpNodeConfig> {
 
       if (Object.keys(this.messages).length >= this.config.minMsgCount) {
         const payloads = Object.values(this.messages);
+
         this.debounce({
           msg: msg,
           send,
-          payload: this.operator.func(payloads),
-          additionalAttributes: { input: this.messages },
+          payload: LogicalOperation.func(this.config.operation, payloads),
+          additionalAttributes: { input: cloneDeep(this.messages) },
         });
       } else {
         this.nodeStatus = "waiting";

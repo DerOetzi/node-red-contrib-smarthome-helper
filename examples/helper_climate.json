@@ -1,0 +1,745 @@
+[
+    {
+        "id": "c16b0ae576a8ea46",
+        "type": "tab",
+        "label": "Helper Climate",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1c3026bf4d3e4ae4",
+        "type": "group",
+        "z": "c16b0ae576a8ea46",
+        "name": "Heating controller example",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "2ee35a20030c34b2",
+            "08467aa9270b32cc",
+            "5de713372864d334",
+            "9058491fd0d4694a",
+            "d16060fa54ec1a98",
+            "f129a2cd81f4ef49",
+            "fe4e0c646d288e4f",
+            "389d45ec3acc891e",
+            "5fefc09e55dd0c17",
+            "3ba12dfc100b7697",
+            "c172755f33dbd131",
+            "23cc7dbf8407c5d7",
+            "c70e62c2dab0948d",
+            "a2646ca7f70cf3a1",
+            "ca1bb0916040c1c2",
+            "e3e87388c7d0f93b",
+            "49b1d175efc49625",
+            "912bc76f8770c3f6",
+            "7aa42656b2c01125",
+            "f8c09063e0e83426",
+            "da11ff1382147ae8",
+            "f9379e759c76585d"
+        ],
+        "x": 34,
+        "y": 19,
+        "w": 1052,
+        "h": 802
+    },
+    {
+        "id": "2ee35a20030c34b2",
+        "type": "helper-heating-controller",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "version": "0.21.4",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 4,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "schedule_room",
+                "compareType": "str",
+                "target": "activeCondition"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "presence",
+                "compareType": "str",
+                "target": "activeCondition"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_comfort_number",
+                "compareType": "str",
+                "target": "comfortTemperature"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_eco_offset_number",
+                "compareType": "str",
+                "target": "ecoTemperatureOffset"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "startsWith",
+                "compare": "window",
+                "compareType": "str",
+                "target": "windowOpen"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_heatmode_select",
+                "compareType": "str",
+                "target": "manualControl"
+            },
+            {
+                "targetType": "str",
+                "property": "command",
+                "propertyType": "msg",
+                "operation": "notEmpty",
+                "compare": "",
+                "compareType": "str",
+                "target": "command"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "pause": 1,
+        "pauseUnit": "h",
+        "boostTemperatureOffset": 5,
+        "frostProtectionTemperature": 8,
+        "comfortCommand": "Komfort",
+        "ecoCommand": "Absenk",
+        "boostCommand": "Boost",
+        "frostProtectionCommand": "Frostschutz",
+        "x": 590,
+        "y": 420,
+        "wires": [
+            [
+                "3ba12dfc100b7697"
+            ],
+            [
+                "c172755f33dbd131"
+            ],
+            [
+                "23cc7dbf8407c5d7"
+            ],
+            [
+                "c70e62c2dab0948d"
+            ]
+        ]
+    },
+    {
+        "id": "08467aa9270b32cc",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "schedule_room",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 250,
+        "y": 60,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "5de713372864d334",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "schedule_room",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 250,
+        "y": 100,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "9058491fd0d4694a",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "presence",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 230,
+        "y": 140,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "d16060fa54ec1a98",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "presence",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 240,
+        "y": 180,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "f129a2cd81f4ef49",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_comfort_number",
+        "payload": "21",
+        "payloadType": "num",
+        "x": 200,
+        "y": 240,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "fe4e0c646d288e4f",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_comfort_number",
+        "payload": "22",
+        "payloadType": "num",
+        "x": 200,
+        "y": 280,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "389d45ec3acc891e",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_eco_offset_number",
+        "payload": "-1",
+        "payloadType": "num",
+        "x": 210,
+        "y": 320,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "5fefc09e55dd0c17",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_eco_offset_number",
+        "payload": "-2",
+        "payloadType": "num",
+        "x": 210,
+        "y": 360,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "3ba12dfc100b7697",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "ha_heatmode_select",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 880,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "c172755f33dbd131",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "ha_setpoint_temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 890,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "23cc7dbf8407c5d7",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "window_open",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 860,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "c70e62c2dab0948d",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "ha_automation_status_binary",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 910,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "a2646ca7f70cf3a1",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Komfort",
+        "payloadType": "str",
+        "x": 200,
+        "y": 420,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "ca1bb0916040c1c2",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Absenk",
+        "payloadType": "str",
+        "x": 200,
+        "y": 460,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "e3e87388c7d0f93b",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Boost",
+        "payloadType": "str",
+        "x": 190,
+        "y": 500,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "49b1d175efc49625",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Frostschutz",
+        "payloadType": "str",
+        "x": 210,
+        "y": 540,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "912bc76f8770c3f6",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "command",
+                "v": "unblock",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_unblock_button",
+        "x": 250,
+        "y": 600,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "7aa42656b2c01125",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window1_binary",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 250,
+        "y": 660,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "f8c09063e0e83426",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window1_binary",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 260,
+        "y": 700,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "da11ff1382147ae8",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window2_binary",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 250,
+        "y": 740,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "f9379e759c76585d",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window2_binary",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 260,
+        "y": 780,
+        "wires": [
+            [
+                "2ee35a20030c34b2"
+            ]
+        ]
+    }
+]

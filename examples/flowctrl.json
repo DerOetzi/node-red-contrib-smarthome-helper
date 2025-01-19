@@ -1,0 +1,1245 @@
+[
+    {
+        "id": "296701fb4cce3477",
+        "type": "tab",
+        "label": "FlowCtrl",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2f4e839516da0322",
+        "type": "group",
+        "z": "296701fb4cce3477",
+        "name": "Base node tests",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "8bec7e68c72547f8",
+            "3e8be2ed5e701547",
+            "1895f4429c3de14c",
+            "afad51bbd8f59ff6",
+            "ddcf8b776315436d",
+            "432e7eedac826364",
+            "95d90c90d857d405",
+            "eaa1ff1f999f6c47",
+            "0c29830043bbb2b0",
+            "ec30f25f46323197",
+            "1dd37f7358c0a785",
+            "f0db79e9fd389d81",
+            "f4bce5fe64c0e56a",
+            "250905b2a6166bdd",
+            "1a4955b7f97bf251"
+        ],
+        "x": 34,
+        "y": 19,
+        "w": 652,
+        "h": 562
+    },
+    {
+        "id": "db56b10dafca6933",
+        "type": "group",
+        "z": "296701fb4cce3477",
+        "name": "Automation gate tests",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "4f71bcb3a0fcda5c",
+            "014f34dbeb752321",
+            "bc557dee64fe9c99",
+            "531295d2bbd707f9",
+            "0a2bac5f1e82f50a",
+            "91b22a1c4c12c841",
+            "9cf20be7427ecf46",
+            "d698e700244394bc",
+            "e6b122de578cc3aa",
+            "f30d0a366cf12572",
+            "9e2f504563f24d58",
+            "526a71423c3a5571",
+            "d08b1e1075791d95",
+            "d7a297fd48e732a5",
+            "f0a0cf96dbcf4fe5",
+            "37854ead31dc3cd7"
+        ],
+        "x": 34,
+        "y": 619,
+        "w": 852,
+        "h": 462
+    },
+    {
+        "id": "b64ced7e05033f1c",
+        "type": "group",
+        "z": "296701fb4cce3477",
+        "name": "Match join tests",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "d7eac186f86a0248",
+            "53aee12dfc5fea72",
+            "741d2a5219eb26a3",
+            "af31f6a1625c4828",
+            "d5be7862cc0c9b2d",
+            "3295808364976542",
+            "47719585b8cd6243",
+            "01b86d3abfa6af2b"
+        ],
+        "x": 34,
+        "y": 1119,
+        "w": 572,
+        "h": 222
+    },
+    {
+        "id": "8bec7e68c72547f8",
+        "type": "flowctrl-base",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "filter_test",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": true,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "x": 300,
+        "y": 140,
+        "wires": [
+            [
+                "afad51bbd8f59ff6"
+            ]
+        ]
+    },
+    {
+        "id": "3e8be2ed5e701547",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 60,
+        "wires": [
+            [
+                "8bec7e68c72547f8"
+            ]
+        ]
+    },
+    {
+        "id": "1895f4429c3de14c",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "8bec7e68c72547f8"
+            ]
+        ]
+    },
+    {
+        "id": "afad51bbd8f59ff6",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "filter_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 460,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "ddcf8b776315436d",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 160,
+        "wires": [
+            [
+                "8bec7e68c72547f8"
+            ]
+        ]
+    },
+    {
+        "id": "432e7eedac826364",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "8bec7e68c72547f8"
+            ]
+        ]
+    },
+    {
+        "id": "95d90c90d857d405",
+        "type": "flowctrl-base",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "new_message_test",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "new topic",
+        "topicType": "str",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": true,
+        "outputs": 1,
+        "inputs": 1,
+        "x": 330,
+        "y": 320,
+        "wires": [
+            [
+                "0c29830043bbb2b0"
+            ]
+        ]
+    },
+    {
+        "id": "eaa1ff1f999f6c47",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "additional",
+                "v": "should be removed",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "95d90c90d857d405",
+                "0c29830043bbb2b0"
+            ]
+        ]
+    },
+    {
+        "id": "0c29830043bbb2b0",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "new_message_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "msg",
+        "x": 550,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ec30f25f46323197",
+        "type": "flowctrl-base",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "debounce_test",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": true,
+        "debounceTopic": true,
+        "debounceTime": "10",
+        "debounceShowStatus": true,
+        "debounceUnit": "s",
+        "debounceLeading": true,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "x": 320,
+        "y": 480,
+        "wires": [
+            [
+                "f4bce5fe64c0e56a"
+            ]
+        ]
+    },
+    {
+        "id": "1dd37f7358c0a785",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 400,
+        "wires": [
+            [
+                "ec30f25f46323197"
+            ]
+        ]
+    },
+    {
+        "id": "f0db79e9fd389d81",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 440,
+        "wires": [
+            [
+                "ec30f25f46323197"
+            ]
+        ]
+    },
+    {
+        "id": "f4bce5fe64c0e56a",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "debounce_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "msg",
+        "x": 520,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "250905b2a6166bdd",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 500,
+        "wires": [
+            [
+                "ec30f25f46323197"
+            ]
+        ]
+    },
+    {
+        "id": "1a4955b7f97bf251",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "2f4e839516da0322",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 540,
+        "wires": [
+            [
+                "ec30f25f46323197"
+            ]
+        ]
+    },
+    {
+        "id": "4f71bcb3a0fcda5c",
+        "type": "flowctrl-automation-gate",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "startupState": true,
+        "autoReplay": true,
+        "setAutomationInProgress": false,
+        "automationProgressId": "",
+        "x": 520,
+        "y": 840,
+        "wires": [
+            [
+                "f0a0cf96dbcf4fe5"
+            ],
+            [
+                "37854ead31dc3cd7"
+            ]
+        ]
+    },
+    {
+        "id": "014f34dbeb752321",
+        "type": "flowctrl-gate-control",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "delay": 100,
+        "gateCommand": "pause",
+        "pauseTime": "10",
+        "pauseUnit": "s",
+        "x": 290,
+        "y": 780,
+        "wires": [
+            [],
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "bc557dee64fe9c99",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "start",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 660,
+        "wires": [
+            [
+                "e6b122de578cc3aa"
+            ]
+        ]
+    },
+    {
+        "id": "531295d2bbd707f9",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "stop",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 720,
+        "wires": [
+            [
+                "d698e700244394bc"
+            ]
+        ]
+    },
+    {
+        "id": "0a2bac5f1e82f50a",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "pause",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 780,
+        "wires": [
+            [
+                "014f34dbeb752321"
+            ]
+        ]
+    },
+    {
+        "id": "91b22a1c4c12c841",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "replay",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "replay",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 840,
+        "wires": [
+            [
+                "9cf20be7427ecf46"
+            ]
+        ]
+    },
+    {
+        "id": "9cf20be7427ecf46",
+        "type": "flowctrl-gate-control",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "delay": 100,
+        "gateCommand": "replay",
+        "pauseTime": 1,
+        "pauseUnit": "s",
+        "x": 270,
+        "y": 840,
+        "wires": [
+            [],
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "d698e700244394bc",
+        "type": "flowctrl-gate-control",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "delay": 100,
+        "gateCommand": "stop",
+        "pauseTime": 1,
+        "pauseUnit": "s",
+        "x": 270,
+        "y": 720,
+        "wires": [
+            [],
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "e6b122de578cc3aa",
+        "type": "flowctrl-gate-control",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "delay": 100,
+        "gateCommand": "start",
+        "pauseTime": 1,
+        "pauseUnit": "s",
+        "x": 270,
+        "y": 660,
+        "wires": [
+            [
+                "d7a297fd48e732a5"
+            ],
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "f30d0a366cf12572",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 260,
+        "y": 900,
+        "wires": [
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "9e2f504563f24d58",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 260,
+        "y": 940,
+        "wires": [
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "526a71423c3a5571",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 260,
+        "y": 1000,
+        "wires": [
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "d08b1e1075791d95",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 260,
+        "y": 1040,
+        "wires": [
+            [
+                "4f71bcb3a0fcda5c"
+            ]
+        ]
+    },
+    {
+        "id": "d7a297fd48e732a5",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "Delayed Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 450,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "f0a0cf96dbcf4fe5",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "Messages",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 710,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "37854ead31dc3cd7",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "db56b10dafca6933",
+        "name": "automation gate status",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 740,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "d7eac186f86a0248",
+        "type": "flowctrl-match-join",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "msg",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "test2",
+                "compareType": "str",
+                "target": "topic"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "neq",
+                "compare": "test",
+                "compareType": "str",
+                "target": "test"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "x": 330,
+        "y": 1180,
+        "wires": [
+            [
+                "3295808364976542"
+            ]
+        ]
+    },
+    {
+        "id": "53aee12dfc5fea72",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 1160,
+        "wires": [
+            [
+                "d7eac186f86a0248",
+                "47719585b8cd6243"
+            ]
+        ]
+    },
+    {
+        "id": "741d2a5219eb26a3",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 1200,
+        "wires": [
+            [
+                "d7eac186f86a0248",
+                "47719585b8cd6243"
+            ]
+        ]
+    },
+    {
+        "id": "af31f6a1625c4828",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 1260,
+        "wires": [
+            [
+                "d7eac186f86a0248",
+                "47719585b8cd6243"
+            ]
+        ]
+    },
+    {
+        "id": "d5be7862cc0c9b2d",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test2",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 1300,
+        "wires": [
+            [
+                "d7eac186f86a0248",
+                "47719585b8cd6243"
+            ]
+        ]
+    },
+    {
+        "id": "3295808364976542",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "match_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "topic",
+        "statusType": "auto",
+        "x": 490,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "47719585b8cd6243",
+        "type": "flowctrl-match-join",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "",
+        "version": "0.21.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "msg",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "test1",
+                "compareType": "str",
+                "target": "topic"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "neq",
+                "compare": "test",
+                "compareType": "str",
+                "target": "test"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": true,
+        "minMsgCount": "2",
+        "x": 330,
+        "y": 1280,
+        "wires": [
+            [
+                "01b86d3abfa6af2b"
+            ]
+        ]
+    },
+    {
+        "id": "01b86d3abfa6af2b",
+        "type": "debug",
+        "z": "296701fb4cce3477",
+        "g": "b64ced7e05033f1c",
+        "name": "join_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "topic",
+        "statusType": "msg",
+        "x": 480,
+        "y": 1280,
+        "wires": []
+    }
+]

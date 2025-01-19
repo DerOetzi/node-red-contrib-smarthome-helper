@@ -1,10 +1,18 @@
+import { EditorNodePropertiesDef } from "node-red";
 import {
-  defaultMatcherRow,
-  MatchJoinNodeConfig,
-  MatchJoinNodeEditorProperties,
+  BaseEditorNodePropertiesDefaults,
+  BaseNodeOptionsDefaults,
+} from "../../flowctrl/base/types";
+import {
+  MatcherRowDefaults,
+  MatchJoinEditorNodeProperties,
+  MatchJoinNodeDef,
+  MatchJoinNodeOptions,
 } from "../../flowctrl/match-join/types";
-import { NodeColor, NodeType } from "../../types";
-import { helperCategory } from "../types";
+
+export enum EventMapperTarget {
+  event = "event",
+}
 
 export interface EventMapperRule {
   event: string;
@@ -13,38 +21,68 @@ export interface EventMapperRule {
   output?: number;
 }
 
-export const defaultEventMapperRule: EventMapperRule = {
+export const EventMapperRuleDefaults: EventMapperRule = {
   event: "",
   mapped: "",
   mappedType: "str",
 };
 
-export interface EventMapperNodeConfig extends MatchJoinNodeConfig {
+export interface EventMapperNodeOptions extends MatchJoinNodeOptions {
   rules: EventMapperRule[];
   ignoreUnknownEvents: boolean;
 }
 
-export const defaultEventMapperNodeConfig: Partial<EventMapperNodeConfig> = {
-  matchers: [{ ...defaultMatcherRow, target: "event", targetType: "str" }],
+export const EventMapperNodeOptionsDefaults: EventMapperNodeOptions = {
+  ...BaseNodeOptionsDefaults,
+  matchers: [{ ...MatcherRowDefaults, target: "event", targetType: "str" }],
   join: false,
   minMsgCount: 1,
   discardNotMatched: true,
   outputs: 1,
-  rules: [defaultEventMapperRule],
+  rules: [EventMapperRuleDefaults],
   ignoreUnknownEvents: false,
 };
 
-export interface EventMapperNodeEditorProperties
-  extends MatchJoinNodeEditorProperties {
-  rules: EventMapperRule[];
-  ignoreUnknownEvents: boolean;
-}
+export interface EventMapperNodeDef
+  extends MatchJoinNodeDef,
+    EventMapperNodeOptions {}
 
-export const EventMapperNodeType = new NodeType(
-  helperCategory,
-  "event-mapper",
-  NodeColor.Switch
-);
+export interface EventMapperEditorNodeProperties
+  extends MatchJoinEditorNodeProperties,
+    EventMapperNodeOptions {}
+
+export const EventMapperEditorNodePropertiesDefaults: EditorNodePropertiesDef<EventMapperEditorNodeProperties> =
+  {
+    ...BaseEditorNodePropertiesDefaults,
+    matchers: {
+      value: EventMapperNodeOptionsDefaults.matchers,
+      required: true,
+    },
+    discardNotMatched: {
+      value: EventMapperNodeOptionsDefaults.discardNotMatched,
+      required: true,
+    },
+    join: {
+      value: EventMapperNodeOptionsDefaults.join,
+      required: true,
+    },
+    minMsgCount: {
+      value: EventMapperNodeOptionsDefaults.minMsgCount,
+      required: true,
+    },
+    outputs: {
+      value: EventMapperNodeOptionsDefaults.outputs,
+      required: true,
+    },
+    rules: {
+      value: EventMapperNodeOptionsDefaults.rules,
+      required: true,
+    },
+    ignoreUnknownEvents: {
+      value: EventMapperNodeOptionsDefaults.ignoreUnknownEvents,
+      required: true,
+    },
+  };
 
 export const autocompleteEvents = [
   "toggle",

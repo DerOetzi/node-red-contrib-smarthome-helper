@@ -1,73 +1,9 @@
-<ol id="identifier-rows"></ol>
-<div class="form-row">
-  <label for="node-input-lightbulbType">Type</label>
-  <select id="node-input-lightbulbType">
-    <option value="dimmable">Dimmable</option>
-    <option value="colortemperature">Color temperature</option>
-    <option value="switch">Switch</option>
-    <option value="rgb">RGB</option>
-  </select>
-</div>
-<div class="form-row">
-  <label for="node-input-homeAssistantOutput">Home Assistant output</label>
-  <input type="checkbox" id="node-input-homeAssistantOutput" />
-</div>
-<hr />
 <ol id="matcher-rows"></ol>
 <hr />
-<div class="form-row">
-  <label for="node-input-onBrightness">Brightness</label>
-  <input type="number" id="node-input-onBrightness" min="40" max="100" />
-</div>
-<div class="form-row">
-  <label for="node-input-transitionTime">Transition Time (s)</label>
-  <input
-    type="number"
-    id="node-input-transitionTime"
-    min="0"
-    max="20"
-    step="0.1"
-  />
-</div>
-<div class="form-row">
-  <label for="node-input-colorTemperature">Color temperature (MIRED)</label>
-  <input type="number" id="node-input-colorTemperature" min="153" max="500" />
-</div>
-<div class="form-row">
-  <label for="node-input-nightmodeBrightness">Nightmode brightness</label>
-  <input type="number" id="node-input-nightmodeBrightness" min="10" max="40" />
-</div>
-<div class="form-row">
-  <label for="node-input-colorCycle">Color cycle</label>
-  <input type="checkbox" id="node-input-colorCycle" />
-</div>
-<div class="form-row">
-  <label for="node-input-fixColor">Color Hue,Sat</label>
-  <input
-    type="number"
-    id="node-input-fixColorHue"
-    min="0"
-    max="360"
-    style="width: 30%"
-  />
-  <input
-    type="number"
-    id="node-input-fixColorSaturation"
-    min="0"
-    max="100"
-    style="width: 30%"
-  />
-</div>
+<ol id="identifier-rows"></ol>
 <hr />
-<div class="form-row">
-  <label for="node-input-onCommand">On Command</label>
-  <input type="text" id="node-input-onCommand" />
-</div>
-<div class="form-row">
-  <label for="node-input-offCommand">Off Command</label>
-  <input type="text" id="node-input-offCommand" />
-</div>
-<div class="form-row">
-  <label for="node-input-nightmodeCommand">Nightmode Command</label>
-  <input type="text" id="node-input-nightmodeCommand" />
-</div>
+<div id="light-controller-options"></div>
+<hr />
+<div id="base-common-options"></div>
+<hr />
+<div id="base-debounce-options"></div>
