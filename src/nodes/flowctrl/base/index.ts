@@ -8,14 +8,9 @@ import {
 import { formatDate } from "../../../helpers/date.helper";
 import { cloneDeep, isEqual } from "../../../helpers/object.helper";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
 import {
-  NodeCategory,
-  NodeColor,
-  NodeDoneFunction,
-  NodeSendFunction,
-} from "../../types";
-import { flowctrlCategory } from "../types";
-import {
+  BaseCategory,
   BaseNodeDebounceData,
   BaseNodeDebounceRunning,
   BaseNodeDef,
@@ -30,12 +25,23 @@ export default class BaseNode<
   T extends BaseNodeDef = BaseNodeDef,
   U extends BaseNodeOptions = BaseNodeOptions,
 > {
-  public static readonly NodeCategory: NodeCategory = flowctrlCategory;
-  public static readonly NodeType: string = "base";
-  public static readonly NodeColor: NodeColor = NodeColor.Base;
+  protected static readonly _nodeCategory: NodeCategory = BaseCategory;
+  protected static readonly _nodeType: string = "base";
 
-  public static get nodeTypeName(): string {
-    return `${this.NodeCategory.name}-${this.NodeType}`;
+  public static get NodeTypeName(): string {
+    return `${this._nodeCategory.name}-${this._nodeType}`;
+  }
+
+  public static get NodeCategory(): NodeCategory {
+    return this._nodeCategory;
+  }
+
+  public static get NodeCategoryLabel(): string {
+    return this._nodeCategory.label;
+  }
+
+  public static get NodeColor(): string {
+    return this._nodeCategory.color;
   }
 
   protected readonly config: T;

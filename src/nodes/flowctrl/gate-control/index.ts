@@ -1,7 +1,8 @@
 import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
-import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
 import {
+  AutomationGateCategory,
   AutomationGateCommand,
   AutomationGateNodeMessage,
 } from "../automation-gate/types";
@@ -16,8 +17,9 @@ export default class GateControlNode extends BaseNode<
   GateControlNodeDef,
   GateControlNodeOptions
 > {
-  public static readonly NodeType: string = "gate-control";
-  public static readonly NodeColor: NodeColor = NodeColor.AutomationGate;
+  protected static readonly _nodeCategory: NodeCategory =
+    AutomationGateCategory;
+  protected static readonly _nodeType: string = "gate-control";
 
   private readonly gateControlMsg: AutomationGateNodeMessage;
 

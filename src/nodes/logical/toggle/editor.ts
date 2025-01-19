@@ -9,7 +9,7 @@ import {
 } from "./types";
 
 const ToggleEditorNode: EditorNodeDef<ToggleEditorNodeProperties> = {
-  category: ToggleNode.NodeCategory.label,
+  category: ToggleNode.NodeCategoryLabel,
   color: ToggleNode.NodeColor,
   icon: "font-awesome/fa-exchange",
   defaults: ToggleEditorNodePropertiesDefaults,

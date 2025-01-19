@@ -56,4 +56,8 @@ export const LogicalOpEditorNodePropertiesDefaults: EditorNodePropertiesDef<Logi
       value: LogicalOpNodeOptionsDefaults.minMsgCount,
       required: true,
     },
+    logical: {
+      value: "",
+      required: false,
+    },
   };

@@ -1,8 +1,8 @@
 import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
 import { CompareOperation } from "../../logical/compare";
-import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
 import BaseNode from "../base";
-import { NodeStatus } from "../base/types";
+import { BaseCategory, NodeStatus } from "../base/types";
 import {
   MatchJoinNodeData,
   MatchJoinNodeDef,
@@ -15,8 +15,8 @@ export default class MatchJoinNode<
   T extends MatchJoinNodeDef = MatchJoinNodeDef,
   U extends MatchJoinNodeOptions = MatchJoinNodeOptions,
 > extends BaseNode<T, U> {
-  public static readonly NodeType: string = "match-join";
-  public static readonly NodeColor: NodeColor = NodeColor.Base;
+  protected static readonly _nodeCategory: NodeCategory = BaseCategory;
+  protected static readonly _nodeType: string = "match-join";
 
   private messages: Record<string, any> = {};
 

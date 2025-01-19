@@ -3,8 +3,8 @@ import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { LogicalOperation } from "../../logical/op";
-import { NodeCategory, NodeColor } from "../../types";
-import { helperCategory } from "../types";
+import { NodeCategory } from "../../types";
+import { HelperClimateCategory } from "../types";
 import {
   HeatingControllerCommand,
   HeatingControllerNodeData,
@@ -19,9 +19,8 @@ export default class HeatingControllerNode extends MatchJoinNode<
   HeatingControllerNodeDef,
   HeatingControllerNodeOptions
 > {
-  public static readonly NodeCategory: NodeCategory = helperCategory;
-  public static readonly NodeType: string = "heating-controller";
-  public static readonly NodeColor: NodeColor = NodeColor.Climate;
+  protected static readonly _nodeCategory: NodeCategory = HelperClimateCategory;
+  protected static readonly _nodeType: string = "heating-controller";
 
   private timer: NodeJS.Timeout | null = null;
 

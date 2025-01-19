@@ -1,4 +1,5 @@
 import { EditorNodePropertiesDef, NodeMessage } from "node-red";
+import { NodeCategory } from "../../types";
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
@@ -14,6 +15,9 @@ export interface AutomationGateNodeOptions extends BaseNodeOptions {
   stateClosedLabel?: string;
   setAutomationInProgress: boolean;
   automationProgressId: string;
+
+  // deprecated 0.22.3
+  statusDelay?: number;
 }
 
 export const AutomationGateNodeOptionsDefaults: AutomationGateNodeOptions = {
@@ -74,6 +78,10 @@ export const AutomationGateEditorNodePropertiesDefaults: EditorNodePropertiesDef
       value: AutomationGateNodeOptionsDefaults.outputs,
       required: true,
     },
+    statusDelay: {
+      value: "",
+      required: false,
+    },
   };
 
 export enum AutomationGateCommand {
@@ -89,3 +97,9 @@ export interface AutomationGateNodeMessage extends NodeMessage {
   pause?: number;
   originalMsg?: NodeMessage;
 }
+
+export const AutomationGateCategory: NodeCategory = {
+  name: "flowctrl",
+  label: "Smarthome Flow Control",
+  color: "#ff7f50",
+};

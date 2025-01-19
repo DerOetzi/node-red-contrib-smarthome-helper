@@ -102,7 +102,7 @@ export default class CompareNode extends SwitchNode<
   CompareNodeDef,
   CompareNodeOptions
 > {
-  public static readonly NodeType = "compare";
+  protected static readonly _nodeType = "compare";
 
   constructor(RED: NodeAPI, node: Node, config: CompareNodeDef) {
     super(RED, node, config, CompareNodeOptionsDefaults);

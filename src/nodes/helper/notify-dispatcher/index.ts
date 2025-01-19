@@ -1,8 +1,8 @@
 import { Node, NodeAPI } from "node-red";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
-import { NodeCategory, NodeColor } from "../../types";
-import { helperCategory } from "../types";
+import { NodeCategory } from "../../types";
+import { HelperNotificationCategory } from "../types";
 import {
   NotifyDispatcherNodeDef,
   NotifyDispatcherNodeMessage,
@@ -16,9 +16,9 @@ export default class NotifyDispatcherNode extends MatchJoinNode<
   NotifyDispatcherNodeDef,
   NotifyDispatcherNodeOptions
 > {
-  public static readonly NodeCategory: NodeCategory = helperCategory;
-  public static readonly NodeType = "notify-dispatcher";
-  public static readonly NodeColor: NodeColor = NodeColor.Notification;
+  protected static readonly _nodeCategory: NodeCategory =
+    HelperNotificationCategory;
+  protected static readonly _nodeType = "notify-dispatcher";
 
   private personStates: Partial<Record<NotifyDispatcherTarget, boolean>> = {};
 

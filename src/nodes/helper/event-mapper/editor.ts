@@ -68,7 +68,7 @@ class EventMapperRuleEditableList extends NodeEditorFormEditableList<EventMapper
 const ruleRows = new EventMapperRuleEditableList();
 
 const EventMapperEditorNode: EditorNodeDef<EventMapperEditorNodeProperties> = {
-  category: EventMapperNode.NodeCategory.label,
+  category: EventMapperNode.NodeCategoryLabel,
   color: EventMapperNode.NodeColor,
   icon: "font-awesome/fa-map-signs",
   defaults: EventMapperEditorNodePropertiesDefaults,

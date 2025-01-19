@@ -320,12 +320,12 @@ export class NodeEditorFormEditableList<T> {
 }
 
 const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
-  category: BaseNode.NodeCategory.label,
+  category: BaseNode.NodeCategoryLabel,
   color: BaseNode.NodeColor,
   icon: "font-awesome/fa-cogs",
   defaults: BaseEditorNodePropertiesDefaults,
   label: function () {
-    return this.name || BaseNode.NodeType;
+    return this.name || i18n("flowctrl.base.name");
   },
   inputs: BaseNodeOptionsDefaults.inputs,
   outputs: BaseNodeOptionsDefaults.outputs,

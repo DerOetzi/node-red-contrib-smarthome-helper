@@ -33,21 +33,21 @@ import ArithmeticEditorNode from "./nodes/operator/arithmetic/editor";
 declare const RED: EditorRED;
 
 const nodes: Record<string, any> = {
-  [ArithmeticNode.nodeTypeName]: ArithmeticEditorNode,
-  [AutomationGateNode.nodeTypeName]: AutomationGateEditorNode,
-  [BaseNode.nodeTypeName]: BaseEditorNode,
-  [CompareNode.nodeTypeName]: CompareEditorNode,
-  [EventMapperNode.nodeTypeName]: EventMapperEditorNode,
-  [GateControlNode.nodeTypeName]: GateControlEditorNode,
-  [HeatingControllerNode.nodeTypeName]: HeatingControllerEditorNode,
-  [LightControllerNode.nodeTypeName]: LightControllerEditorNode,
-  [LogicalOpNode.nodeTypeName]: LogicalOpEditorNode,
-  [MatchJoinNode.nodeTypeName]: MatchJoinEditorNode,
-  [MotionControllerNode.nodeTypeName]: MotionControllerEditorNode,
-  [NotifyDispatcherNode.nodeTypeName]: NotifyDispatcherEditorNode,
-  [SwitchNode.nodeTypeName]: SwitchEditorNode,
-  [ToggleNode.nodeTypeName]: ToggleEditorNode,
-  [WindowReminderNode.nodeTypeName]: WindowReminderEditorNode,
+  [ArithmeticNode.NodeTypeName]: ArithmeticEditorNode,
+  [AutomationGateNode.NodeTypeName]: AutomationGateEditorNode,
+  [BaseNode.NodeTypeName]: BaseEditorNode,
+  [CompareNode.NodeTypeName]: CompareEditorNode,
+  [EventMapperNode.NodeTypeName]: EventMapperEditorNode,
+  [GateControlNode.NodeTypeName]: GateControlEditorNode,
+  [HeatingControllerNode.NodeTypeName]: HeatingControllerEditorNode,
+  [LightControllerNode.NodeTypeName]: LightControllerEditorNode,
+  [LogicalOpNode.NodeTypeName]: LogicalOpEditorNode,
+  [MatchJoinNode.NodeTypeName]: MatchJoinEditorNode,
+  [MotionControllerNode.NodeTypeName]: MotionControllerEditorNode,
+  [NotifyDispatcherNode.NodeTypeName]: NotifyDispatcherEditorNode,
+  [SwitchNode.NodeTypeName]: SwitchEditorNode,
+  [ToggleNode.NodeTypeName]: ToggleEditorNode,
+  [WindowReminderNode.NodeTypeName]: WindowReminderEditorNode,
 };
 
 let type: string;

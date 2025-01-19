@@ -1,5 +1,5 @@
 import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
-import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
 import BaseNode from "../base";
 import {
   BaseNodeDebounceData,
@@ -7,6 +7,7 @@ import {
   NodeStatus,
 } from "../base/types";
 import {
+  AutomationGateCategory,
   AutomationGateCommand,
   AutomationGateNodeDef,
   AutomationGateNodeMessage,
@@ -18,8 +19,9 @@ export default class AutomationGateNode extends BaseNode<
   AutomationGateNodeDef,
   AutomationGateNodeOptions
 > {
-  public static readonly NodeType: string = "automation-gate";
-  public static readonly NodeColor: NodeColor = NodeColor.AutomationGate;
+  protected static readonly _nodeCategory: NodeCategory =
+    AutomationGateCategory;
+  protected static readonly _nodeType: string = "automation-gate";
 
   private pauseTimer: NodeJS.Timeout | null = null;
   private lastMessages: Record<string, NodeMessage> = {};

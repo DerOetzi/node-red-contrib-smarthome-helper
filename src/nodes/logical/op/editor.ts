@@ -11,7 +11,7 @@ import {
 } from "./types";
 
 const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
-  category: LogicalOpNode.NodeCategory.label,
+  category: LogicalOpNode.NodeCategoryLabel,
   color: LogicalOpNode.NodeColor,
   icon: "font-awesome/fa-some-lightbulb-o",
   defaults: LogicalOpEditorNodePropertiesDefaults,

@@ -1,12 +1,12 @@
 import { EditorNodeInstance } from "node-red";
-import { Migration } from "../../flowctrl/base/migration";
+import { SwitchMigration } from "../switch/migration";
 import {
   ApplicableCompareFunction,
   CompareEditorNodeProperties,
   NotApplicableCompareFunction,
 } from "./types";
 
-export class CompareMigration extends Migration<CompareEditorNodeProperties> {
+export class CompareMigration extends SwitchMigration<CompareEditorNodeProperties> {
   public static migrateOperationValues(
     operation: string
   ): ApplicableCompareFunction | NotApplicableCompareFunction {
@@ -48,6 +48,8 @@ export class CompareMigration extends Migration<CompareEditorNodeProperties> {
   public checkAndMigrate(
     node: EditorNodeInstance<CompareEditorNodeProperties>
   ): boolean {
+    node = this.migrateSwitchNode(node);
+
     if (this.check(node, "0.21.2")) {
       node = this.migrateOperatorToOperation(node);
       node = this.migrateValueToCompare(node);

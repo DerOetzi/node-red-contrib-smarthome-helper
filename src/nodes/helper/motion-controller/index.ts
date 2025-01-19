@@ -5,9 +5,9 @@ import MatchJoinNode from "../../flowctrl/match-join";
 
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { LogicalOperation } from "../../logical/op";
-import { NodeCategory, NodeColor } from "../../types";
+import { NodeCategory } from "../../types";
 import { LightCommand } from "../light-controller/types";
-import { helperCategory } from "../types";
+import { HelperCategory } from "../types";
 import {
   MotionControllerCommand,
   MotionControllerNodeDef,
@@ -21,9 +21,8 @@ export default class MotionControllerNode extends MatchJoinNode<
   MotionControllerNodeDef,
   MotionControllerNodeOptions
 > {
-  public static readonly NodeCategory: NodeCategory = helperCategory;
-  public static readonly NodeType: string = "motion-controller";
-  public static readonly NodeColor: NodeColor = NodeColor.Switch;
+  protected static readonly _nodeCategory: NodeCategory = HelperCategory;
+  protected static readonly _nodeType: string = "motion-controller";
 
   private timer: NodeJS.Timeout | null = null;
 

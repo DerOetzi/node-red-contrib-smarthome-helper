@@ -20,7 +20,7 @@ const inputMatcherList = new MatchJoinEditableList({
 
 const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProperties> =
   {
-    category: NotifyDispatcherNode.NodeCategory.label,
+    category: NotifyDispatcherNode.NodeCategoryLabel,
     color: NotifyDispatcherNode.NodeColor,
     icon: "font-awesome/fa-bell",
     defaults: NotifyDispatcherEditorNodeDefaults,

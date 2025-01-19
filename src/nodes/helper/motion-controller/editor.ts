@@ -20,7 +20,7 @@ const inputMatcherList = new MatchJoinEditableList({
 
 const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProperties> =
   {
-    category: MotionControllerNode.NodeCategory.label,
+    category: MotionControllerNode.NodeCategoryLabel,
     color: MotionControllerNode.NodeColor,
     icon: "font-awesome/fa-male",
     defaults: MotionControllerEditorNodePropertiesDefaults,

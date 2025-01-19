@@ -6,6 +6,7 @@ import {
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
 } from "../../flowctrl/base/types";
+import { NodeCategory } from "../../types";
 
 type ValueType = "msg" | "str" | "num" | "bool";
 
@@ -74,3 +75,9 @@ export const SwitchEditorNodePropertiesDefaults: EditorNodePropertiesDef<SwitchE
       required: true,
     },
   };
+
+export const LogicalOpCategory: NodeCategory = {
+  label: "Smarthome Operators",
+  name: "logical",
+  color: "#7fff00",
+};

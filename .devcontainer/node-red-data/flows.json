@@ -149,12 +149,14 @@
             "77a031e2faa28d4a",
             "6e89fd2a850d5736",
             "a379897d6ffc10c2",
-            "0f09226d52a5508a"
+            "0f09226d52a5508a",
+            "617f79a32574de1b",
+            "3af65774807a481e"
         ],
         "x": 54,
         "y": 19,
         "w": 1192,
-        "h": 262
+        "h": 322
     },
     {
         "id": "695352833de771dc",
@@ -368,12 +370,13 @@
             "3d8150433e7d2685",
             "b19ee5bc1795fd02",
             "8bcd9d80a8ada497",
-            "ef9919e3cd200f45"
+            "ef9919e3cd200f45",
+            "fb4944b41bb1f7f1"
         ],
         "x": 54,
         "y": 319,
         "w": 1312,
-        "h": 582
+        "h": 622
     },
     {
         "id": "1c3026bf4d3e4ae4",
@@ -3851,7 +3854,7 @@
                 "mappedType": "str"
             }
         ],
-        "ignoreUnknownEvents": false,
+        "ignoreUnknownEvents": true,
         "x": 500,
         "y": 180,
         "wires": [
@@ -5535,7 +5538,7 @@
         "payload": "true",
         "payloadType": "bool",
         "x": 450,
-        "y": 460,
+        "y": 500,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5565,7 +5568,7 @@
         "payload": "false",
         "payloadType": "bool",
         "x": 450,
-        "y": 500,
+        "y": 540,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5595,7 +5598,7 @@
         "payload": "true",
         "payloadType": "bool",
         "x": 450,
-        "y": 540,
+        "y": 580,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5625,7 +5628,7 @@
         "payload": "false",
         "payloadType": "bool",
         "x": 450,
-        "y": 580,
+        "y": 620,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5655,7 +5658,7 @@
         "payload": "true",
         "payloadType": "bool",
         "x": 450,
-        "y": 640,
+        "y": 680,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5685,7 +5688,7 @@
         "payload": "false",
         "payloadType": "bool",
         "x": 450,
-        "y": 680,
+        "y": 720,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5715,7 +5718,7 @@
         "payload": "true",
         "payloadType": "bool",
         "x": 460,
-        "y": 720,
+        "y": 760,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5745,7 +5748,7 @@
         "payload": "false",
         "payloadType": "bool",
         "x": 460,
-        "y": 760,
+        "y": 800,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5775,7 +5778,7 @@
         "onceDelay": 0.1,
         "topic": "command",
         "x": 470,
-        "y": 820,
+        "y": 860,
         "wires": [
             [
                 "1a7e38b67e78e65d"
@@ -5810,10 +5813,100 @@
         "onceDelay": 0.1,
         "topic": "command",
         "x": 460,
-        "y": 860,
+        "y": 900,
         "wires": [
             [
                 "1a7e38b67e78e65d"
+            ]
+        ]
+    },
+    {
+        "id": "617f79a32574de1b",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "",
+        "payloadType": "str",
+        "x": 310,
+        "y": 300,
+        "wires": [
+            [
+                "220475cb0bbd0590"
+            ]
+        ]
+    },
+    {
+        "id": "3af65774807a481e",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "dec832c39e6839a0",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "unknown",
+        "payloadType": "str",
+        "x": 280,
+        "y": 260,
+        "wires": [
+            [
+                "220475cb0bbd0590"
+            ]
+        ]
+    },
+    {
+        "id": "fb4944b41bb1f7f1",
+        "type": "inject",
+        "z": "50a63383c0611497",
+        "g": "2366616d8806730a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "z2m_button",
+        "payload": "",
+        "payloadType": "str",
+        "x": 310,
+        "y": 440,
+        "wires": [
+            [
+                "bdb192f971a27c36"
             ]
         ]
     },

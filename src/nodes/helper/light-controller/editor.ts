@@ -38,7 +38,7 @@ const identifierList = new LightbulbIdentifiersEditableList();
 
 const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperties> =
   {
-    category: LightControllerNode.NodeCategory.label,
+    category: LightControllerNode.NodeCategoryLabel,
     color: LightControllerNode.NodeColor,
     icon: "font-awesome/fa-lightbulb-o",
     defaults: LightControllerEditorNodePropertiesDefaults,

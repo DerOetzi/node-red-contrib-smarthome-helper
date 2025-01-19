@@ -76,6 +76,9 @@ export const CompareEditorNodePropertiesDefaults: EditorNodePropertiesDef<Compar
       value: CompareNodeOptionsDefaults.compareType,
       required: true,
     },
+    operator: { value: "", required: false },
+    value: { value: "", required: false },
+    valueType: { value: "", required: false },
   };
 
 export interface Comparator {

@@ -49,7 +49,7 @@ export default class LogicalOpNode extends SwitchNode<
   LogicalOpNodeDef,
   LogicalOpNodeOptions
 > {
-  public static readonly NodeType = "op";
+  protected static readonly _nodeType = "op";
 
   private messages: Record<string, boolean> = {};
 

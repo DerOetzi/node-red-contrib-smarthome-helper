@@ -8,7 +8,7 @@ import {
 } from "./types";
 
 const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
-  category: GateControlNode.NodeCategory.label,
+  category: GateControlNode.NodeCategoryLabel,
   color: GateControlNode.NodeColor,
   icon: "font-awesome/fa-key",
   defaults: GateControlEditorNodePropertiesDefaults,

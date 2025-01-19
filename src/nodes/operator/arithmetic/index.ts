@@ -2,8 +2,8 @@ import { Node, NodeAPI } from "node-red";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
-import { NodeCategory, NodeColor } from "../../types";
-import { operatorCategory } from "../types";
+import { NodeCategory } from "../../types";
+import { OperatorCategory } from "../types";
 import {
   ArithmeticFunction,
   ArithmeticNodeDef,
@@ -49,9 +49,8 @@ export default class ArithmeticNode extends MatchJoinNode<
   ArithmeticNodeDef,
   ArithmeticNodeOptions
 > {
-  public static readonly NodeCategory: NodeCategory = operatorCategory;
-  public static readonly NodeType: string = "arithmetic";
-  public static readonly NodeColor: NodeColor = NodeColor.Base;
+  protected static readonly _nodeCategory: NodeCategory = OperatorCategory;
+  protected static readonly _nodeType: string = "arithmetic";
 
   constructor(
     RED: NodeAPI,

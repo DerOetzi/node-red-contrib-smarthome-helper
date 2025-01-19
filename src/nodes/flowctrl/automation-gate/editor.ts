@@ -1,6 +1,7 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "../base/editor";
 import AutomationGateNode from "./";
+import { automationGateMigration } from "./migration";
 import {
   AutomationGateEditorNodeProperties,
   AutomationGateEditorNodePropertiesDefaults,
@@ -9,7 +10,7 @@ import {
 
 const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties> =
   {
-    category: AutomationGateNode.NodeCategory.label,
+    category: AutomationGateNode.NodeCategoryLabel,
     color: AutomationGateNode.NodeColor,
     icon: "font-awesome/fa-chain-broken",
     defaults: AutomationGateEditorNodePropertiesDefaults,
@@ -24,6 +25,7 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
       this.stateClosedLabel = i18n("flowctrl.automation-gate.stateClosedLabel");
     },
     oneditprepare: function () {
+      automationGateMigration.checkAndMigrate(this);
       BaseEditorNode.oneditprepare!.call(this);
 
       const automationGateOptionsBuilder = new NodeEditorFormBuilder(

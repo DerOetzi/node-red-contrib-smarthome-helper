@@ -38,7 +38,7 @@ class AdditionalValuesEditableList extends NodeEditorFormEditableList<Additional
 const additionalValuesList = new AdditionalValuesEditableList();
 
 const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
-  category: ArithmeticNode.NodeCategory.label,
+  category: ArithmeticNode.NodeCategoryLabel,
   color: ArithmeticNode.NodeColor,
   icon: "arithmetic.svg",
   defaults: ArithmeticEditorNodePropertiesDefaults,

@@ -7,7 +7,7 @@ import {
   HeatingControllerTarget,
 } from "./types";
 
-export class HeatingControllerMigration extends MatchJoinMigration<HeatingControllerEditorNodeProperties> {
+class HeatingControllerMigration extends MatchJoinMigration<HeatingControllerEditorNodeProperties> {
   public checkAndMigrate(
     node: EditorNodeInstance<HeatingControllerEditorNodeProperties>
   ): boolean {

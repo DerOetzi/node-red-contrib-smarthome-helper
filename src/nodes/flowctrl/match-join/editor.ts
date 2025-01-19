@@ -138,7 +138,7 @@ const migration = new MatchJoinMigration();
 const matchers = new MatchJoinEditableList();
 
 const MatchJoinEditorNode: EditorNodeDef<MatchJoinEditorNodeProperties> = {
-  category: MatchJoinNode.NodeCategory.label,
+  category: MatchJoinNode.NodeCategoryLabel,
   color: MatchJoinNode.NodeColor,
   icon: "join.svg",
   defaults: MatchJoinEditorNodePropertiesDefaults,

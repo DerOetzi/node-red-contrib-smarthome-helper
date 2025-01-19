@@ -37,11 +37,11 @@ const nodes = [
 export default async (RED: NodeAPI): Promise<void> => {
   for (const NodeClass of nodes) {
     RED.log.info(
-      `Registering node type ${NodeClass.nodeTypeName} for @deroetzi/node-red-contrib-smarthome-helper`
+      `Registering node type ${NodeClass.NodeTypeName} for @deroetzi/node-red-contrib-smarthome-helper`
     );
 
     RED.nodes.registerType(
-      NodeClass.nodeTypeName,
+      NodeClass.NodeTypeName,
       function (this: Node, config: any) {
         RED.nodes.createNode(this, config);
         const node = this;

@@ -1,9 +1,9 @@
 import { Node, NodeAPI } from "node-red";
 import BaseNode from "../../flowctrl/base";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
-import { NodeCategory, NodeColor } from "../../types";
-import { logicalCategory } from "../types";
+import { NodeCategory } from "../../types";
 import {
+  LogicalOpCategory,
   SwitchNodeDef,
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
@@ -13,9 +13,8 @@ export default class SwitchNode<
   T extends SwitchNodeDef = SwitchNodeDef,
   U extends SwitchNodeOptions = SwitchNodeOptions,
 > extends BaseNode<T, U> {
-  public static readonly NodeCategory: NodeCategory = logicalCategory;
-  public static readonly NodeType: string = "switch";
-  public static readonly NodeColor: NodeColor = NodeColor.Logical;
+  protected static readonly _nodeCategory: NodeCategory = LogicalOpCategory;
+  protected static readonly _nodeType: string = "switch";
 
   constructor(
     RED: NodeAPI,

@@ -4,12 +4,12 @@ import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { LogicalOperation } from "../../logical/op";
-import { NodeCategory, NodeColor } from "../../types";
+import { NodeCategory } from "../../types";
 import {
   NotifyDispatcherNodeMessage,
   NotifyMessage,
 } from "../notify-dispatcher/types";
-import { helperCategory } from "../types";
+import { HelperNotificationCategory } from "../types";
 import {
   WindowReminderNodeDef,
   WindowReminderNodeOptions,
@@ -21,9 +21,9 @@ export default class WindowReminderNode extends MatchJoinNode<
   WindowReminderNodeDef,
   WindowReminderNodeOptions
 > {
-  public static readonly NodeCategory: NodeCategory = helperCategory;
-  public static readonly NodeType: string = "window-reminder";
-  public static readonly NodeColor: NodeColor = NodeColor.Notification;
+  protected static readonly _nodeCategory: NodeCategory =
+    HelperNotificationCategory;
+  protected static readonly _nodeType: string = "window-reminder";
 
   private windows: Record<string, boolean> = {};
   private presence: boolean = true;

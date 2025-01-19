@@ -20,7 +20,7 @@ const inputMatcherList = new MatchJoinEditableList({
 
 const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProperties> =
   {
-    category: HeatingControllerNode.NodeCategory.label,
+    category: HeatingControllerNode.NodeCategoryLabel,
     color: HeatingControllerNode.NodeColor,
     icon: "font-awesome/fa-thermometer-half",
     defaults: HeatingControllerEditorNodePropertiesDefaults,

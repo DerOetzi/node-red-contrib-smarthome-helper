@@ -163,6 +163,10 @@ export const HeatingControllerEditorNodePropertiesDefaults: EditorNodeProperties
       value: HeatingControllerNodeOptionsDefaults.frostProtectionCommand,
       required: true,
     },
+    statusDelay: {
+      value: "",
+      required: false,
+    },
   };
 
 export interface HeatingControllerNodeMessage extends MatchJoinNodeMessage {

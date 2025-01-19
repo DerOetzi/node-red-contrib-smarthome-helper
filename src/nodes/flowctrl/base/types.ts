@@ -8,7 +8,7 @@ import {
 } from "node-red";
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
 import version from "../../../version";
-import { NodeSendFunction } from "../../types";
+import { NodeCategory, NodeSendFunction } from "../../types";
 
 interface BaseNodeCommonOptions {
   version: string;
@@ -212,3 +212,9 @@ export interface NodeEditorFormBuilderHiddenInputParams {
   id: string;
   value: string | number | boolean;
 }
+
+export const BaseCategory: NodeCategory = {
+  label: "Smarthome Flow Control",
+  name: "flowctrl",
+  color: "#7fffd4",
+};

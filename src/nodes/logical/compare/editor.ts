@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
-  category: CompareNode.NodeCategory.label,
+  category: CompareNode.NodeCategoryLabel,
   color: CompareNode.NodeColor,
   icon: "font-awesome/fa-search",
   defaults: CompareEditorNodePropertiesDefaults,

@@ -1,8 +1,8 @@
 import { Node, NodeAPI } from "node-red";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
-import { NodeCategory, NodeColor } from "../../types";
-import { helperCategory } from "../types";
+import { NodeCategory } from "../../types";
+import { HelperCategory } from "../types";
 import {
   EventMapperNodeDef,
   EventMapperNodeOptions,
@@ -14,9 +14,8 @@ export default class EventMapperNode extends MatchJoinNode<
   EventMapperNodeDef,
   EventMapperNodeOptions
 > {
-  public static readonly NodeCategory: NodeCategory = helperCategory;
-  public static readonly NodeType: string = "event-mapper";
-  public static readonly NodeColor: NodeColor = NodeColor.Switch;
+  protected static readonly _nodeCategory: NodeCategory = HelperCategory;
+  protected static readonly _nodeType: string = "event-mapper";
 
   constructor(RED: NodeAPI, node: Node, config: EventMapperNodeDef) {
     super(RED, node, config, EventMapperNodeOptionsDefaults);
@@ -27,7 +26,7 @@ export default class EventMapperNode extends MatchJoinNode<
 
     const rule = this.getRule(event);
     if (!rule) {
-      if (!(this.config.ignoreUnknownEvents && event)) {
+      if (event && !this.config.ignoreUnknownEvents) {
         this.node.error("No rule found for event: " + event);
       }
       return;

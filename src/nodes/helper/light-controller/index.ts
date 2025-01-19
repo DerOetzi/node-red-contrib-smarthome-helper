@@ -2,8 +2,8 @@ import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { BaseNodeDebounceData } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
 import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
-import { NodeCategory, NodeColor } from "../../types";
-import { helperCategory } from "../types";
+import { NodeCategory } from "../../types";
+import { HelperLightCategory } from "../types";
 import {
   HomeAssistantLightAction,
   LightCommand,
@@ -18,9 +18,8 @@ export default class LightControllerNode extends MatchJoinNode<
   LightControllerNodeDef,
   LightControllerNodeOptions
 > {
-  public static readonly NodeCategory: NodeCategory = helperCategory;
-  public static readonly NodeType: string = "light-controller";
-  public static readonly NodeColor: NodeColor = NodeColor.Light;
+  protected static readonly _nodeCategory: NodeCategory = HelperLightCategory;
+  protected static readonly _nodeType: string = "light-controller";
 
   private colorTemperature: number;
   private fixColorHue: number;
@@ -124,7 +123,6 @@ export default class LightControllerNode extends MatchJoinNode<
       parsed = command ? LightCommand.On : LightCommand.Off;
     } else if (Object.keys(LightCommand).includes(command)) {
       parsed = command as LightCommand;
-      console.log("parsed", parsed);
     } else {
       command = command.toLowerCase();
       switch (command) {

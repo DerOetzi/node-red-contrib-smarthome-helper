@@ -135,6 +135,10 @@ export const MotionControllerEditorNodePropertiesDefaults: EditorNodePropertiesD
       value: MotionControllerNodeOptionsDefaults.nightmodeCommand,
       required: true,
     },
+    statusDelay: {
+      value: "",
+      required: false,
+    },
   };
 
 export interface MotionControllerNodeMessage extends MatchJoinNodeMessage {

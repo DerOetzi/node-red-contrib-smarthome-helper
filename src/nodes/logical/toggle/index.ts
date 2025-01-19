@@ -1,5 +1,5 @@
 import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
-import { NodeColor, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeDoneFunction, NodeSendFunction } from "../../types";
 import SwitchNode from "../switch";
 import {
   ToggleNodeDef,
@@ -11,7 +11,7 @@ export default class ToggleNode extends SwitchNode<
   ToggleNodeDef,
   ToggleNodeOptions
 > {
-  public static readonly NodeType = "toggle";
+  protected static readonly _nodeType = "toggle";
 
   private lastValue?: boolean;
 
