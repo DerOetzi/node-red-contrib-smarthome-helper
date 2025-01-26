@@ -56,7 +56,7 @@ const buildSass = lazypipe()
       } else {
         cb(null, file);
       }
-    }),
+    })
   )
   .pipe(postcss, [
     prefix({
@@ -108,12 +108,12 @@ task("buildEditorFiles", () => {
 
   const html = src(["src/nodes/**/*.html"]).pipe(
     flatmap((stream, file) => {
-      const [, category, node] = file.path.match(
-        /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]editor\.html/,
+      const [, category, , node] = file.path.match(
+        /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+[\\/])?([^\\/]+)[\\/]editor\.html/
       );
       currentNode = category + "-" + node;
       return stream.pipe(buildForm());
-    }),
+    })
   );
 
   return merge([css, js, html])
@@ -127,7 +127,7 @@ task("buildEditorFiles", () => {
           this.concatContent += file.contents.toString() + "\n";
         }
         cb(null, file);
-      }),
+      })
     )
     .on("finish", function () {
       const finalFilePath = path.join(editorFilePath, "index.html");
@@ -147,7 +147,7 @@ task("generateVersionFile", (cb) => {
 
   fs.writeFileSync(versionFilePath, versionFileContent);
   console.log(
-    `Generated ${versionFilePath} with version ${packageJson.version}`,
+    `Generated ${versionFilePath} with version ${packageJson.version}`
   );
   cb();
 });
@@ -183,7 +183,7 @@ task("buildLocales", () => {
         fs.writeFileSync(outputPath, JSON.stringify(existingData, null, 2));
       }
       cb();
-    }),
+    })
   );
 });
 
@@ -196,8 +196,8 @@ task(
       "buildSourceFiles",
       "copyIcons",
       "buildLocales",
-    ]),
-  ),
+    ])
+  )
 );
 
 task("watch", () => {
