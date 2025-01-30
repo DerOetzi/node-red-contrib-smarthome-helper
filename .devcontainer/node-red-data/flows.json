@@ -466,6 +466,33 @@
         "h": 282
     },
     {
+        "id": "b8cf2a023c61d0db",
+        "type": "group",
+        "z": "27dba50801e5b614",
+        "name": "Whitegood reminder example",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "eef470d220a15446",
+            "4a0d1b1aac9958e8",
+            "64f5abcc60b0919d",
+            "d5b657312b2391bc",
+            "8b9de60f22b2ee9e",
+            "b39956d01e6cda05",
+            "4318d1065c9abe18",
+            "14b8c157ed9f8927",
+            "595ed5eb0826dce0",
+            "d46e7c3f9e31a6c4",
+            "9ae889eef2bcfd2f",
+            "10f7c72fc9568ad5"
+        ],
+        "x": 34,
+        "y": 759,
+        "w": 732,
+        "h": 442
+    },
+    {
         "id": "8bec7e68c72547f8",
         "type": "flowctrl-base",
         "z": "296701fb4cce3477",
@@ -6963,7 +6990,8 @@
         "g": "5334d63dd6958ae4",
         "name": "message",
         "links": [
-            "d6ed4a7c1dbb805b"
+            "d6ed4a7c1dbb805b",
+            "8b9de60f22b2ee9e"
         ],
         "x": 160,
         "y": 160,
@@ -7197,5 +7225,388 @@
         "y": 600,
         "wires": [],
         "l": true
+    },
+    {
+        "id": "eef470d220a15446",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "power",
+        "payload": "0.05",
+        "payloadType": "num",
+        "x": 140,
+        "y": 960,
+        "wires": [
+            [
+                "14b8c157ed9f8927"
+            ]
+        ]
+    },
+    {
+        "id": "4a0d1b1aac9958e8",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "power",
+        "payload": "0.2",
+        "payloadType": "num",
+        "x": 140,
+        "y": 1000,
+        "wires": [
+            [
+                "14b8c157ed9f8927"
+            ]
+        ]
+    },
+    {
+        "id": "64f5abcc60b0919d",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "power",
+        "payload": "400",
+        "payloadType": "num",
+        "x": 140,
+        "y": 1040,
+        "wires": [
+            [
+                "14b8c157ed9f8927"
+            ]
+        ]
+    },
+    {
+        "id": "d5b657312b2391bc",
+        "type": "debug",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "whitegood_runs",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 520,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "8b9de60f22b2ee9e",
+        "type": "link out",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "whitegood_reminder_notification",
+        "mode": "link",
+        "links": [
+            "873452eea74ec486"
+        ],
+        "x": 610,
+        "y": 880,
+        "wires": [],
+        "l": true
+    },
+    {
+        "id": "b39956d01e6cda05",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "runs",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 150,
+        "y": 1120,
+        "wires": [
+            [
+                "14b8c157ed9f8927"
+            ]
+        ]
+    },
+    {
+        "id": "4318d1065c9abe18",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "runs",
+        "payload": "28",
+        "payloadType": "num",
+        "x": 150,
+        "y": 1160,
+        "wires": [
+            [
+                "14b8c157ed9f8927"
+            ]
+        ]
+    },
+    {
+        "id": "14b8c157ed9f8927",
+        "type": "helper-whitegood-reminder",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "Dishwasher",
+        "version": "0.23.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "power",
+                "compareType": "str",
+                "target": "power"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "runs",
+                "compareType": "str",
+                "target": "runs"
+            }
+        ],
+        "join": false,
+        "discardNotMatched": true,
+        "minMsgCount": 1,
+        "offPowerLimit": 0.1,
+        "standbyPowerLimit": 0.5,
+        "cleanupEnabled": true,
+        "cleanupInterval": 30,
+        "x": 330,
+        "y": 1000,
+        "wires": [
+            [
+                "8b9de60f22b2ee9e"
+            ],
+            [
+                "d5b657312b2391bc"
+            ]
+        ]
+    },
+    {
+        "id": "595ed5eb0826dce0",
+        "type": "helper-whitegood-reminder",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "Washing machine",
+        "version": "0.23.3",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "power",
+                "compareType": "str",
+                "target": "power"
+            }
+        ],
+        "join": false,
+        "discardNotMatched": true,
+        "minMsgCount": 1,
+        "offPowerLimit": 0.1,
+        "standbyPowerLimit": 0.5,
+        "cleanupEnabled": false,
+        "cleanupInterval": 30,
+        "x": 330,
+        "y": 840,
+        "wires": [
+            [
+                "8b9de60f22b2ee9e"
+            ]
+        ]
+    },
+    {
+        "id": "d46e7c3f9e31a6c4",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "power",
+        "payload": "0.05",
+        "payloadType": "num",
+        "x": 140,
+        "y": 800,
+        "wires": [
+            [
+                "595ed5eb0826dce0"
+            ]
+        ]
+    },
+    {
+        "id": "9ae889eef2bcfd2f",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "power",
+        "payload": "0.2",
+        "payloadType": "num",
+        "x": 140,
+        "y": 840,
+        "wires": [
+            [
+                "595ed5eb0826dce0"
+            ]
+        ]
+    },
+    {
+        "id": "10f7c72fc9568ad5",
+        "type": "inject",
+        "z": "27dba50801e5b614",
+        "g": "b8cf2a023c61d0db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "power",
+        "payload": "400",
+        "payloadType": "num",
+        "x": 140,
+        "y": 880,
+        "wires": [
+            [
+                "595ed5eb0826dce0"
+            ]
+        ]
     }
 ]

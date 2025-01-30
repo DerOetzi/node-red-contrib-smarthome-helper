@@ -1,5 +1,5 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor, {
+import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
@@ -83,7 +83,7 @@ const EventMapperEditorNode: EditorNodeDef<EventMapperEditorNodeProperties> = {
   oneditprepare: function () {
     eventMapperMigration.checkAndMigrate(this);
 
-    BaseNodeEditor.oneditprepare!.call(this);
+    BaseEditorNode.oneditprepare!.call(this);
 
     eventMatcherList.initialize("matcher-rows", this.matchers, {
       translatePrefix: "flowctrl.match-join",

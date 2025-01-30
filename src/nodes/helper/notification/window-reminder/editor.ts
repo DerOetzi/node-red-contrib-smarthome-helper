@@ -1,5 +1,5 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor, {
+import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
@@ -20,7 +20,7 @@ const inputMatcherList = new MatchJoinEditableList({
 
 const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties> =
   {
-    category: WindowReminderNode.NodeCategory.label,
+    category: WindowReminderNode.NodeCategoryLabel,
     color: WindowReminderNode.NodeColor,
     icon: "font-awesome/fa-window-restore",
     defaults: WindowReminderEditorNodePropertiesDefaults,
@@ -34,7 +34,7 @@ const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties
     },
     oneditprepare: function () {
       windowReminderMigration.checkAndMigrate(this);
-      BaseNodeEditor.oneditprepare!.call(this);
+      BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {
         translatePrefix: "flowctrl.match-join",

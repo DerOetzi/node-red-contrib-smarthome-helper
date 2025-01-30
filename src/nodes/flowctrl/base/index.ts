@@ -271,7 +271,7 @@ export default class BaseNode<
     }
   }
 
-  private setNodeStatus(
+  protected setNodeStatus(
     status: NodeStatus,
     color?: NodeStatusFill,
     text?: string

@@ -106,7 +106,7 @@ export class NodeEditorFormBuilder {
       .data("id", params.id)
       .appendTo(formRow);
 
-    if (params.value) {
+    if (params.hasOwnProperty("value")) {
       let value = params.value as string;
       if (typeof value === "string" && value.startsWith("i18n:")) {
         value = i18n(value.substring(5));

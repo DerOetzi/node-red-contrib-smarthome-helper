@@ -1,0 +1,30 @@
+{
+    "name": "Whitegood Reminder",
+    "label": {
+        "offPowerLimit": "Limit off (W)",
+        "standbyPowerLimit": "Limit standby (W)",
+        "cleanupEnabled": "Remind clean",
+        "cleanupInterval": "Clean interval (runs)"
+    },
+    "select": {
+        "target": {
+            "power": "Power",
+            "runs": "Current runs"
+        }
+    },
+    "output": {
+        "notification": "Notification",
+        "runs": "Runs count"
+    },
+    "notify": {
+        "title": "Notification {name}.",
+        "message": "Finished",
+        "cleanupMessage": "Finished - time to clean"
+    },
+    "status": {
+        "running": "Running",
+        "standby": "Standby",
+        "off": "Off",
+        "cleanup": "Cleanup"
+    }
+}

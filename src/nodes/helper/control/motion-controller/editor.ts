@@ -1,5 +1,5 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor, {
+import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
@@ -43,7 +43,7 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
     oneditprepare: function () {
       motionControllerMigration.checkAndMigrate(this);
 
-      BaseNodeEditor.oneditprepare!.call(this);
+      BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {
         translatePrefix: "flowctrl.match-join",

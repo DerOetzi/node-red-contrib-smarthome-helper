@@ -1,5 +1,5 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor, {
+import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
@@ -33,7 +33,7 @@ const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
   oneditprepare: function () {
     switchMigration.checkAndMigrate(this);
 
-    BaseNodeEditor.oneditprepare!.call(this);
+    BaseEditorNode.oneditprepare!.call(this);
 
     const switchOptionsBuilder = new NodeEditorFormBuilder(
       $("#logical-switch-options"),

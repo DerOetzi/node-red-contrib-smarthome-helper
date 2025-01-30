@@ -17,6 +17,8 @@ import LightControllerNode from "./nodes/helper/light/light-controller";
 import LightControllerEditorNode from "./nodes/helper/light/light-controller/editor";
 import NotifyDispatcherNode from "./nodes/helper/notification/notify-dispatcher";
 import NotifyDispatcherEditorNode from "./nodes/helper/notification/notify-dispatcher/editor";
+import WhitegoodReminderNode from "./nodes/helper/notification/whitegood-reminder";
+import WhitegoodReminderEditorNode from "./nodes/helper/notification/whitegood-reminder/editor";
 import WindowReminderNode from "./nodes/helper/notification/window-reminder";
 import WindowReminderEditorNode from "./nodes/helper/notification/window-reminder/editor";
 import CompareNode from "./nodes/logical/compare";
@@ -47,6 +49,7 @@ const nodes: Record<string, any> = {
   [NotifyDispatcherNode.NodeTypeName]: NotifyDispatcherEditorNode,
   [SwitchNode.NodeTypeName]: SwitchEditorNode,
   [ToggleNode.NodeTypeName]: ToggleEditorNode,
+  [WhitegoodReminderNode.NodeTypeName]: WhitegoodReminderEditorNode,
   [WindowReminderNode.NodeTypeName]: WindowReminderEditorNode,
 };
 

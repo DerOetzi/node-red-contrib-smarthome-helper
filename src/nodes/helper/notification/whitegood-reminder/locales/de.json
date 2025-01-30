@@ -1,0 +1,30 @@
+{
+    "name": "Maschinenerinnerung",
+    "label": {
+        "offPowerLimit": "Limit aus (W)",
+        "standbyPowerLimit": "Limit Standby (W)",
+        "cleanupEnabled": "Reinigung erinnern",
+        "cleanupInterval": "Reinigungsintervall (Läufe)"
+    },
+    "select": {
+        "target": {
+            "power": "Leistung",
+            "runs": "Aktuelle Läufe"
+        }
+    },
+    "output": {
+        "notification": "Benachrichtigung",
+        "runs": "Laufanzahl"
+    },
+    "notify": {
+        "title": "Benachrichtigung {name}.",
+        "message": "Beendet",
+        "cleanupMessage": "Beendet - Zeit zu reinigen"
+    },
+    "status": {
+        "running": "Läuft",
+        "standby": "Standby",
+        "off": "Aus",
+        "cleanup": "Reinigung"
+    }
+}

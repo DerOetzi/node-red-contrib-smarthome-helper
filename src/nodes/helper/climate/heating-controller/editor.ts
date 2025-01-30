@@ -1,5 +1,5 @@
 import { EditorNodeDef } from "node-red";
-import BaseNodeEditor, {
+import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
@@ -49,7 +49,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     oneditprepare: function () {
       heatingControllerMigration.checkAndMigrate(this);
 
-      BaseNodeEditor.oneditprepare!.call(this);
+      BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {
         translatePrefix: "flowctrl.match-join",

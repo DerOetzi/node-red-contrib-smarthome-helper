@@ -161,11 +161,24 @@ task("buildLocales", () => {
     through.obj(function (file, _, cb) {
       if (file.isBuffer()) {
         const relativePath = path.relative("src/nodes", file.path);
-        const [category, node, , languageFile] = relativePath.split(path.sep);
+        const pathParts = relativePath.split(path.sep);
+
+        const category = pathParts[0];
+
+        let languageFile;
+        let node;
+
+        if (pathParts.length > 4) {
+          languageFile = pathParts[4];
+          node = pathParts[2];
+        } else {
+          languageFile = pathParts[3];
+          node = pathParts[1];
+        }
+
         const language = path.basename(languageFile, ".json");
         const content = JSON.parse(file.contents.toString());
 
-        // Load existing structure or initialize it
         const outputPath = path.join("dist", "locales", language, "index.json");
         let existingData = {};
         if (fs.existsSync(outputPath)) {
