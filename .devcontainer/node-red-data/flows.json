@@ -269,12 +269,16 @@
             "95150095a4c792d0",
             "782d4818ef6c33e4",
             "5460d188213cf837",
-            "de3e882b98cec8b8"
+            "de3e882b98cec8b8",
+            "410ab39afc07b9c8",
+            "8d94bfb8a0b1c2cc",
+            "ddaf395a42f369ae",
+            "6788b7cf439cbe9b"
         ],
         "x": 34,
         "y": 39,
         "w": 612,
-        "h": 382
+        "h": 502
     },
     {
         "id": "611d6a28b428b174",
@@ -342,7 +346,7 @@
             "4d5c1df40bbadcd3"
         ],
         "x": 34,
-        "y": 459,
+        "y": 579,
         "w": 492,
         "h": 442
     },
@@ -3442,7 +3446,7 @@
         "payload": "true",
         "payloadType": "bool",
         "x": 140,
-        "y": 600,
+        "y": 720,
         "wires": [
             [
                 "32eb17022336c00d",
@@ -3478,7 +3482,7 @@
         "payload": "false",
         "payloadType": "bool",
         "x": 140,
-        "y": 640,
+        "y": 760,
         "wires": [
             [
                 "32eb17022336c00d",
@@ -3514,7 +3518,7 @@
         "payload": "true",
         "payloadType": "bool",
         "x": 140,
-        "y": 700,
+        "y": 820,
         "wires": [
             [
                 "32eb17022336c00d",
@@ -3549,7 +3553,7 @@
         "payload": "false",
         "payloadType": "bool",
         "x": 140,
-        "y": 740,
+        "y": 860,
         "wires": [
             [
                 "32eb17022336c00d",
@@ -3594,7 +3598,7 @@
         "operation": "and",
         "minMsgCount": "2",
         "x": 330,
-        "y": 560,
+        "y": 680,
         "wires": [
             []
         ]
@@ -3632,7 +3636,7 @@
         "operation": "or",
         "minMsgCount": "2",
         "x": 330,
-        "y": 620,
+        "y": 740,
         "wires": [
             []
         ]
@@ -3670,7 +3674,7 @@
         "operation": "xor",
         "minMsgCount": "2",
         "x": 370,
-        "y": 680,
+        "y": 800,
         "wires": [
             []
         ]
@@ -3708,7 +3712,7 @@
         "operation": "not",
         "minMsgCount": "1",
         "x": 330,
-        "y": 500,
+        "y": 620,
         "wires": [
             []
         ]
@@ -3746,7 +3750,7 @@
         "operation": "nand",
         "minMsgCount": "2",
         "x": 350,
-        "y": 740,
+        "y": 860,
         "wires": [
             []
         ]
@@ -3784,7 +3788,7 @@
         "operation": "nor",
         "minMsgCount": "2",
         "x": 350,
-        "y": 800,
+        "y": 920,
         "wires": [
             []
         ]
@@ -3822,10 +3826,127 @@
         "operation": "nxor",
         "minMsgCount": "2",
         "x": 390,
-        "y": 860,
+        "y": 980,
         "wires": [
             []
         ]
+    },
+    {
+        "id": "410ab39afc07b9c8",
+        "type": "logical-switch",
+        "z": "53b3ec2ae623090e",
+        "g": "5bf9a68d2ed35a0a",
+        "name": "Debounce flank",
+        "version": "0.23.6",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": true,
+        "debounceTopic": false,
+        "debounceTime": "10",
+        "debounceShowStatus": true,
+        "debounceUnit": "s",
+        "debounceLeading": true,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "target": "payload",
+        "targetType": "msg",
+        "trueValue": "true",
+        "trueType": "bool",
+        "falseValue": "false",
+        "falseType": "bool",
+        "seperatedOutputs": false,
+        "debounceFlank": "falling",
+        "x": 320,
+        "y": 480,
+        "wires": [
+            [
+                "6788b7cf439cbe9b"
+            ]
+        ]
+    },
+    {
+        "id": "8d94bfb8a0b1c2cc",
+        "type": "inject",
+        "z": "53b3ec2ae623090e",
+        "g": "5bf9a68d2ed35a0a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 460,
+        "wires": [
+            [
+                "410ab39afc07b9c8"
+            ]
+        ]
+    },
+    {
+        "id": "ddaf395a42f369ae",
+        "type": "inject",
+        "z": "53b3ec2ae623090e",
+        "g": "5bf9a68d2ed35a0a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 140,
+        "y": 500,
+        "wires": [
+            [
+                "410ab39afc07b9c8"
+            ]
+        ]
+    },
+    {
+        "id": "6788b7cf439cbe9b",
+        "type": "debug",
+        "z": "53b3ec2ae623090e",
+        "g": "5bf9a68d2ed35a0a",
+        "name": "switch_test",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 510,
+        "y": 480,
+        "wires": []
     },
     {
         "id": "220475cb0bbd0590",

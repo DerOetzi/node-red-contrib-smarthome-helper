@@ -4,7 +4,15 @@
         "target": "Set property",
         "trueValue": "True",
         "falseValue": "False",
-        "seperatedOutputs": "Seperated Outputs"
+        "seperatedOutputs": "Seperated Outputs",
+        "debounceFlank": "Debounce flank"
+    },
+    "select": {
+        "debounceFlank": {
+            "both": "Both",
+            "rising": "Rising",
+            "falling": "Falling"
+        }
     },
     "output": {
         "true": "True",

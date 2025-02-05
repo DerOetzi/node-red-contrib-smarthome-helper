@@ -132,7 +132,7 @@ export default class CompareNode extends SwitchNode<
       compareValue
     );
 
-    this.debounce({ msg, payload: result, send });
+    this.switchHandling({ msg, payload: result, send });
 
     if (done) {
       done();

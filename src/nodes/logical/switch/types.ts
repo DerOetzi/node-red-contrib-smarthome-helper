@@ -10,6 +10,12 @@ import { NodeCategory } from "../../types";
 
 type ValueType = "msg" | "str" | "num" | "bool";
 
+export enum DebounceFlank {
+  both = "both",
+  rising = "rising",
+  falling = "falling",
+}
+
 export interface SwitchNodeOptions extends BaseNodeOptions {
   target: string;
   targetType: string;
@@ -18,6 +24,7 @@ export interface SwitchNodeOptions extends BaseNodeOptions {
   falseValue?: string;
   falseType: ValueType;
   seperatedOutputs: boolean;
+  debounceFlank: DebounceFlank;
   outputs: number;
 }
 
@@ -30,6 +37,7 @@ export const SwitchNodeOptionsDefaults: SwitchNodeOptions = {
   falseValue: "false",
   falseType: "bool",
   seperatedOutputs: true,
+  debounceFlank: DebounceFlank.both,
   outputs: 2,
 };
 
@@ -68,6 +76,10 @@ export const SwitchEditorNodePropertiesDefaults: EditorNodePropertiesDef<SwitchE
     },
     seperatedOutputs: {
       value: SwitchNodeOptionsDefaults.seperatedOutputs,
+      required: true,
+    },
+    debounceFlank: {
+      value: SwitchNodeOptionsDefaults.debounceFlank,
       required: true,
     },
     outputs: {

@@ -127,9 +127,7 @@ export default class BaseNode<
 
   protected debounce(data: BaseNodeDebounceData): void {
     if (this.config.debounce) {
-      const key = this.config.debounceTopic
-        ? (data.msg.topic ?? "default")
-        : "default";
+      const key = this.debounceKey(data.msg);
 
       const lastData: BaseNodeDebounceData = {
         ...data,
@@ -188,18 +186,30 @@ export default class BaseNode<
         );
       }
     } else {
-      data.additionalAttributes = {
-        ...data.additionalAttributes,
-        debounced: "passed",
-      };
-      this.debounceListener(data);
+      this.debouncePass(data);
     }
+  }
+
+  protected debounceKey(msg: NodeMessage): string {
+    return this.config.debounceTopic ? (msg.topic ?? "default") : "default";
+  }
+
+  protected isDebounceRunning(key: string): boolean {
+    return Boolean(this.debouncing[key]?.timer);
   }
 
   protected cloneMessage(msg: NodeMessage): NodeMessage {
     const clonedMsg = cloneDeep<NodeMessage>(msg);
     delete clonedMsg._msgid;
     return clonedMsg;
+  }
+
+  protected debouncePass(data: BaseNodeDebounceData) {
+    data.additionalAttributes = {
+      ...data.additionalAttributes,
+      debounced: "passed",
+    };
+    this.debounceListener(data);
   }
 
   protected debounceListener(data: BaseNodeDebounceData) {

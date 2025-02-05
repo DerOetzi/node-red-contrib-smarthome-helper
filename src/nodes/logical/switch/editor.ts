@@ -6,6 +6,7 @@ import BaseEditorNode, {
 import SwitchNode from "./";
 import { switchMigration } from "./migration";
 import {
+  DebounceFlank,
   SwitchEditorNodeProperties,
   SwitchEditorNodePropertiesDefaults,
   SwitchNodeOptionsDefaults,
@@ -99,6 +100,21 @@ const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
       .on("change", function () {
         outputsHidden.val($(this).is(":checked") ? 2 : 1);
       });
+
+    const debounceFlankRow = switchOptionsBuilder
+      .createSelectInput({
+        id: "node-input-debounceFlank",
+        label: "debounceFlank",
+        value: this.debounceFlank,
+        options: Object.values(DebounceFlank),
+        icon: "exchange",
+      })
+      .parent()
+      .toggle(this.debounce);
+
+    $("#node-input-debounce").on("change", function () {
+      debounceFlankRow.toggle($(this).is(":checked"));
+    });
   },
 };
 

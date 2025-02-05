@@ -73,7 +73,7 @@ export default class LogicalOpNode extends SwitchNode<
     }
 
     if (this.config.operation === LogicalFunction.not) {
-      this.debounce({
+      this.switchHandling({
         msg: msg,
         send,
         payload: LogicalOperation.not([msg.payload]),
@@ -90,7 +90,7 @@ export default class LogicalOpNode extends SwitchNode<
       if (Object.keys(this.messages).length >= this.config.minMsgCount) {
         const payloads = Object.values(this.messages);
 
-        this.debounce({
+        this.switchHandling({
           msg: msg,
           send,
           payload: LogicalOperation.func(this.config.operation, payloads),

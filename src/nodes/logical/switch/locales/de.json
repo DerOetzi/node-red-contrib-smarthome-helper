@@ -4,7 +4,15 @@
         "target": "Eigenschaft setzen",
         "trueValue": "Wahr",
         "falseValue": "Falsch",
-        "seperatedOutputs": "Getrennte Ausgänge"
+        "seperatedOutputs": "Getrennte Ausgänge",
+        "debounceFlank": "Flankenentprellen"
+    },
+    "select": {
+        "debounceFlank": {
+            "both": "Beide",
+            "rising": "Steigend",
+            "falling": "Fallend"
+        }
     },
     "output": {
         "true": "Wahr",
