@@ -17,9 +17,9 @@
         "runs": "Runs count"
     },
     "notify": {
-        "title": "Notification {name}.",
-        "message": "Finished",
-        "cleanupMessage": "Finished - time to clean"
+        "title": "Device notification",
+        "message": "{name} is ready.",
+        "cleanupMessage": "{name} is ready - time to clean it."
     },
     "status": {
         "running": "Running",

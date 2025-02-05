@@ -17,9 +17,9 @@
         "runs": "Laufanzahl"
     },
     "notify": {
-        "title": "Benachrichtigung {name}.",
-        "message": "Beendet",
-        "cleanupMessage": "Beendet - Zeit zu reinigen"
+        "title": "Gerätebenachrichtigung",
+        "message": "{name} ist fertig.",
+        "cleanupMessage": "{name} ist fertig - Zeit zum Reinigen"
     },
     "status": {
         "running": "Läuft",

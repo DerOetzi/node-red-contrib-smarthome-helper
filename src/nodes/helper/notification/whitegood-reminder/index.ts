@@ -63,14 +63,15 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
     if (this.nodeStatus === WhitegoodStatus.running) {
       this.runs += 1;
 
+      let message = this.cleanupNeeded
+        ? this.RED._("helper.whitegood-reminder.notify.cleanupMessage")
+        : this.RED._("helper.whitegood-reminder.notify.message");
+
+      message = message.replace("{name}", this.config.name);
+
       (data.msg as NotifyNodeMessage).notify = {
-        title: this.RED._("helper.whitegood-reminder.notify.title").replace(
-          "{name}",
-          this.config.name
-        ),
-        message: this.cleanupNeeded
-          ? this.RED._("helper.whitegood-reminder.notify.cleanupMessage")
-          : this.RED._("helper.whitegood-reminder.notify.message"),
+        title: this.RED._("helper.whitegood-reminder.notify.title"),
+        message,
         onlyAtHome: true,
       };
 
