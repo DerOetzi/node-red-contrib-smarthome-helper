@@ -13,6 +13,12 @@ export class LightControllerMigration extends MatchJoinMigration<LightController
       node.migrated = true;
     }
 
+    if (this.check(node, "0.25.3")) {
+      node.colorTemperature =
+        Math.round(1000000 / node.colorTemperature / 50) * 50;
+      node.migrated = true;
+    }
+
     return this.migrate(node);
   }
 }

@@ -412,12 +412,30 @@
             "7aa42656b2c01125",
             "f8c09063e0e83426",
             "da11ff1382147ae8",
-            "f9379e759c76585d"
+            "f9379e759c76585d",
+            "17b52eb0b0876c80",
+            "fc6f7d7f5fb81370",
+            "7b3e095ee4844ecd",
+            "548b1ddd805175a4",
+            "9a9428086baeccec",
+            "ac3801281720b6e5",
+            "c01bcd13b0c4a02e",
+            "525b35426b632c6f",
+            "968d37dc9a514021",
+            "8f0845b95e54d7b0",
+            "6be429142e2c899d",
+            "103e0dd3829cd5c3",
+            "a67682af526446c2",
+            "3e157b3668ce322f",
+            "265cef0c27eaef9d",
+            "111971fe4224f271",
+            "66fd0c59f182b4ba",
+            "5e21bd5e7cef5778"
         ],
-        "x": 34,
+        "x": 14,
         "y": 19,
-        "w": 1052,
-        "h": 802
+        "w": 1112,
+        "h": 1422
     },
     {
         "id": "5334d63dd6958ae4",
@@ -3848,7 +3866,7 @@
         "debounceTime": "10",
         "debounceShowStatus": true,
         "debounceUnit": "s",
-        "debounceLeading": true,
+        "debounceLeading": false,
         "debounceTrailing": true,
         "filterUniquePayload": false,
         "newMsg": false,
@@ -3936,14 +3954,14 @@
         "z": "53b3ec2ae623090e",
         "g": "5bf9a68d2ed35a0a",
         "name": "switch_test",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": true,
         "complete": "payload",
         "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
+        "statusVal": "{\"v\": payload, \"d\": debounced}",
+        "statusType": "jsonata",
         "x": 510,
         "y": 480,
         "wires": []
@@ -4410,7 +4428,7 @@
         "z": "50a63383c0611497",
         "g": "695352833de771dc",
         "name": "",
-        "version": "0.21.3",
+        "version": "0.25.3",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
@@ -4469,7 +4487,7 @@
         "homeAssistantOutput": true,
         "onBrightness": 100,
         "transitionTime": 0.3,
-        "colorTemperature": 327,
+        "colorTemperature": 3050,
         "nightmodeBrightness": 10,
         "colorCycle": true,
         "fixColorHue": 360,
@@ -4613,7 +4631,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "ha_colorTemperature_number",
-        "payload": "153",
+        "payload": "6500",
         "payloadType": "num",
         "x": 240,
         "y": 1360,
@@ -4643,7 +4661,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "ha_colorTemperature_number",
-        "payload": "327",
+        "payload": "2700",
         "payloadType": "num",
         "x": 240,
         "y": 1400,
@@ -4673,7 +4691,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "ha_colorTemperature_number",
-        "payload": "500",
+        "payload": "2000",
         "payloadType": "num",
         "x": 240,
         "y": 1440,
@@ -6064,7 +6082,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "1c3026bf4d3e4ae4",
         "name": "",
-        "version": "0.21.4",
+        "version": "0.25.0",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
@@ -6149,8 +6167,10 @@
         "discardNotMatched": true,
         "join": false,
         "minMsgCount": 1,
-        "pause": 1,
-        "pauseUnit": "h",
+        "reactivateEnabled": true,
+        "pause": "10",
+        "pauseUnit": "s",
+        "defaultActive": false,
         "boostTemperatureOffset": 5,
         "frostProtectionTemperature": 8,
         "comfortCommand": "Komfort",
@@ -6158,7 +6178,7 @@
         "boostCommand": "Boost",
         "frostProtectionCommand": "Frostschutz",
         "x": 590,
-        "y": 420,
+        "y": 400,
         "wires": [
             [
                 "3ba12dfc100b7697"
@@ -6420,7 +6440,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "1c3026bf4d3e4ae4",
         "name": "ha_heatmode_select",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": true,
@@ -6438,7 +6458,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "1c3026bf4d3e4ae4",
         "name": "ha_setpoint_temperature",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": true,
@@ -6456,7 +6476,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "1c3026bf4d3e4ae4",
         "name": "window_open",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": true,
@@ -6753,6 +6773,567 @@
         "wires": [
             [
                 "2ee35a20030c34b2"
+            ]
+        ]
+    },
+    {
+        "id": "17b52eb0b0876c80",
+        "type": "helper-heating-controller",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "version": "0.25.0",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": 100,
+        "initializeDelayUnit": "ms",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 4,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_comfort_number",
+                "compareType": "str",
+                "target": "comfortTemperature"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_eco_offset_number",
+                "compareType": "str",
+                "target": "ecoTemperatureOffset"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "startsWith",
+                "compare": "window",
+                "compareType": "str",
+                "target": "windowOpen"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_heatmode_select",
+                "compareType": "str",
+                "target": "manualControl"
+            },
+            {
+                "targetType": "str",
+                "property": "command",
+                "propertyType": "msg",
+                "operation": "notEmpty",
+                "compare": "",
+                "compareType": "str",
+                "target": "command"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "pause": 1,
+        "pauseUnit": "h",
+        "defaultActive": true,
+        "boostTemperatureOffset": 5,
+        "frostProtectionTemperature": 8,
+        "comfortCommand": "Komfort",
+        "ecoCommand": "Absenk",
+        "boostCommand": "Boost",
+        "frostProtectionCommand": "Frostschutz",
+        "x": 610,
+        "y": 1140,
+        "wires": [
+            [
+                "ac3801281720b6e5"
+            ],
+            [
+                "c01bcd13b0c4a02e"
+            ],
+            [
+                "525b35426b632c6f"
+            ],
+            [
+                "968d37dc9a514021"
+            ]
+        ]
+    },
+    {
+        "id": "fc6f7d7f5fb81370",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_comfort_number",
+        "payload": "21",
+        "payloadType": "num",
+        "x": 180,
+        "y": 860,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "7b3e095ee4844ecd",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_comfort_number",
+        "payload": "22",
+        "payloadType": "num",
+        "x": 180,
+        "y": 900,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "548b1ddd805175a4",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_eco_offset_number",
+        "payload": "-1",
+        "payloadType": "num",
+        "x": 190,
+        "y": 940,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "9a9428086baeccec",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_eco_offset_number",
+        "payload": "-2",
+        "payloadType": "num",
+        "x": 190,
+        "y": 980,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "ac3801281720b6e5",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "ha_heatmode_select",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 920,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "c01bcd13b0c4a02e",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "ha_setpoint_temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 930,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "525b35426b632c6f",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "window_open",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "968d37dc9a514021",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "ha_automation_status_binary",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 950,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "8f0845b95e54d7b0",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Komfort",
+        "payloadType": "str",
+        "x": 180,
+        "y": 1040,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "6be429142e2c899d",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Absenk",
+        "payloadType": "str",
+        "x": 180,
+        "y": 1080,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "103e0dd3829cd5c3",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Boost",
+        "payloadType": "str",
+        "x": 170,
+        "y": 1120,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "a67682af526446c2",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_heatmode_select",
+        "payload": "Frostschutz",
+        "payloadType": "str",
+        "x": 190,
+        "y": 1160,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "3e157b3668ce322f",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "command",
+                "v": "unblock",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ha_unblock_button",
+        "x": 230,
+        "y": 1220,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "265cef0c27eaef9d",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window1_binary",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 230,
+        "y": 1280,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "111971fe4224f271",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window1_binary",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 240,
+        "y": 1320,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "66fd0c59f182b4ba",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window2_binary",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 230,
+        "y": 1360,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "5e21bd5e7cef5778",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "1c3026bf4d3e4ae4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "window2_binary",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 240,
+        "y": 1400,
+        "wires": [
+            [
+                "17b52eb0b0876c80"
             ]
         ]
     },
@@ -7536,7 +8117,7 @@
         "z": "27dba50801e5b614",
         "g": "b8cf2a023c61d0db",
         "name": "Dishwasher",
-        "version": "0.23.3",
+        "version": "0.25.3",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
@@ -7580,6 +8161,7 @@
         "standbyPowerLimit": 0.5,
         "cleanupEnabled": true,
         "cleanupInterval": 30,
+        "statusShowRuns": false,
         "x": 330,
         "y": 1000,
         "wires": [
@@ -7597,7 +8179,7 @@
         "z": "27dba50801e5b614",
         "g": "b8cf2a023c61d0db",
         "name": "Washing machine",
-        "version": "0.23.3",
+        "version": "0.25.3",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
@@ -7632,6 +8214,7 @@
         "standbyPowerLimit": 0.5,
         "cleanupEnabled": false,
         "cleanupInterval": 30,
+        "statusShowRuns": true,
         "x": 330,
         "y": 840,
         "wires": [

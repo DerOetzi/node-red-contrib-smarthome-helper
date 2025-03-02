@@ -5,7 +5,7 @@
         "homeAssistantOutput": "Home Assistant Ausgabe",
         "onBrightness": "Helligkeit",
         "transitionTime": "Übergangszeit",
-        "colorTemperature": "Farbtemperatur",
+        "colorTemperature": "Farbtemperatur (K)",
         "nightmodeBrightness": "Nachtmodus Helligkeit",
         "colorCycle": "Farbzyklus",
         "fixColorHue": "Farbton",

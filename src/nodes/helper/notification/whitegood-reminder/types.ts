@@ -26,6 +26,7 @@ export interface WhitegoodReminderNodeOptions extends MatchJoinNodeOptions {
   standbyPowerLimit: number;
   cleanupEnabled: boolean;
   cleanupInterval: number;
+  statusShowRuns: boolean;
 }
 
 export const WhitegoodReminderNodeOptionsDefaults: WhitegoodReminderNodeOptions =
@@ -45,6 +46,7 @@ export const WhitegoodReminderNodeOptionsDefaults: WhitegoodReminderNodeOptions 
     standbyPowerLimit: 0.5,
     cleanupEnabled: false,
     cleanupInterval: 30,
+    statusShowRuns: false,
     outputs: 2,
   };
 
@@ -89,6 +91,10 @@ export const WhitegoodReminderEditorNodePropertiesDefaults: EditorNodeProperties
     },
     cleanupInterval: {
       value: WhitegoodReminderNodeOptionsDefaults.cleanupInterval,
+      required: true,
+    },
+    statusShowRuns: {
+      value: WhitegoodReminderNodeOptionsDefaults.statusShowRuns,
       required: true,
     },
     outputs: {

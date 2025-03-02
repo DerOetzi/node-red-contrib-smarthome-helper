@@ -5,7 +5,7 @@
         "homeAssistantOutput": "Home Assistant Output",
         "onBrightness": "Brightness",
         "transitionTime": "Transition Time",
-        "colorTemperature": "Color Temperature",
+        "colorTemperature": "Color Temperature (K)",
         "nightmodeBrightness": "Nightmode Brightness",
         "colorCycle": "Color Cycle",
         "fixColorHue": "Hue",

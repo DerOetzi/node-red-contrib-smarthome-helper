@@ -2,7 +2,9 @@
     "name": "Heizungssteuerung",
     "label": {
         "target": "Parameter",
+        "reactivateEnabled": "Reaktivieren",
         "pause": "Pause",
+        "defaultActive": "Standard aktiv",
         "boostTemperatureOffset": "Boost Temperatur-Offset",
         "frostProtectionTemperature": "Frostschutz Temperature",
         "initializeDelay": "Verzögerung init. Status",

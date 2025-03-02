@@ -4,7 +4,8 @@
         "offPowerLimit": "Limit off (W)",
         "standbyPowerLimit": "Limit standby (W)",
         "cleanupEnabled": "Remind clean",
-        "cleanupInterval": "Clean interval (runs)"
+        "cleanupInterval": "Clean interval (runs)",
+        "statusShowRuns": "Show runs in status"
     },
     "select": {
         "target": {

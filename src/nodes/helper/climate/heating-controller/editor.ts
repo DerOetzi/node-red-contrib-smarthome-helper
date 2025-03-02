@@ -62,13 +62,35 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
         }
       );
 
-      heatingControllerOptionsBuilder.createTimeInput({
-        id: "node-input-pause",
-        idType: "node-input-pauseUnit",
-        label: "pause",
-        value: this.pause,
-        valueType: this.pauseUnit,
-        icon: "clock-o",
+      const reactivateEnabled =
+        heatingControllerOptionsBuilder.createCheckboxInput({
+          id: "node-input-reactivateEnabled",
+          label: "reactivateEnabled",
+          value: this.reactivateEnabled,
+          icon: "toggle-on",
+        });
+
+      const pauseInputRow = heatingControllerOptionsBuilder
+        .createTimeInput({
+          id: "node-input-pause",
+          idType: "node-input-pauseUnit",
+          label: "pause",
+          value: this.pause,
+          valueType: this.pauseUnit,
+          icon: "clock-o",
+        })
+        .parent()
+        .toggle(this.reactivateEnabled);
+
+      reactivateEnabled.on("change", function () {
+        pauseInputRow.toggle($(this).is(":checked"));
+      });
+
+      heatingControllerOptionsBuilder.createCheckboxInput({
+        id: "node-input-defaultActive",
+        label: "defaultActive",
+        value: this.defaultActive,
+        icon: "toggle-on",
       });
 
       heatingControllerOptionsBuilder.createNumberInput({

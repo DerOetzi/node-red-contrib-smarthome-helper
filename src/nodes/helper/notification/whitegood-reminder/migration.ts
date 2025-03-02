@@ -1,6 +1,9 @@
 import { EditorNodeInstance } from "node-red";
 import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
-import { WhitegoodReminderEditorNodeProperties } from "./types";
+import {
+  WhitegoodReminderEditorNodeProperties,
+  WhitegoodReminderNodeOptionsDefaults,
+} from "./types";
 
 class WhitegoodReminderMigration extends MatchJoinMigration<WhitegoodReminderEditorNodeProperties> {
   public checkAndMigrate(
@@ -10,6 +13,11 @@ class WhitegoodReminderMigration extends MatchJoinMigration<WhitegoodReminderEdi
 
     if (this.check(node, "0.23.3")) {
       node = this.migrateRunOutputs(node);
+      node.migrated = true;
+    }
+
+    if (this.check(node, "0.25.3")) {
+      node.statusShowRuns = WhitegoodReminderNodeOptionsDefaults.statusShowRuns;
       node.migrated = true;
     }
 

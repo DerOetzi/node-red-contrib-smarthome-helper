@@ -234,7 +234,7 @@ export default class LightControllerNode extends MatchJoinNode<
         };
 
         if (this.config.lightbulbType === "colortemperature") {
-          output.data.color_temp = msg.colorTemperature;
+          output.data.color_temp_kelvin = msg.colorTemperature;
         } else if (this.config.lightbulbType === "rgb") {
           output.data.hs_color = [msg.hue!, msg.saturation!];
         }

@@ -1,7 +1,9 @@
 {
     "name": "Heating Controller",
     "label": {
+        "reactivateEnabled": "Re-enable",
         "pause": "Pause",
+        "defaultActive": "Default active",
         "boostTemperatureOffset": "Boost temperature offset",
         "frostProtectionTemperature": "Frost protection temperature",
         "initializeDelay": "Initialize status delay",

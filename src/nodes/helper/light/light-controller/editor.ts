@@ -133,9 +133,9 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
           label: "colorTemperature",
           value: this.colorTemperature,
           icon: "lightbulb-o",
-          min: 153,
-          max: 500,
-          step: 1,
+          min: 2000,
+          max: 6500,
+          step: 50,
         })
         .parent()
         .toggle(isColorTemperature);

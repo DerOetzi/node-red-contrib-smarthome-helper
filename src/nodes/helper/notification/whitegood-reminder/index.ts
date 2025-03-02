@@ -120,7 +120,9 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
           " - " + this.RED._("helper.whitegood-reminder.status.cleanup");
       }
 
-      status += " (" + this.runs + ")";
+      if (this.config.statusShowRuns) {
+        status += " (" + this.runs + ")";
+      }
     }
 
     return status;

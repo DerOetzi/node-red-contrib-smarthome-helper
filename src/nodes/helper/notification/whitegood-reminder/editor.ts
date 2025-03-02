@@ -65,6 +65,13 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
         icon: "level-up",
       });
 
+      whitegoodReminderOptionsBuilder.createCheckboxInput({
+        id: "node-input-statusShowRuns",
+        label: "statusShowRuns",
+        value: this.statusShowRuns,
+        icon: "tint",
+      });
+
       const cleanupEnabled =
         whitegoodReminderOptionsBuilder.createCheckboxInput({
           id: "node-input-cleanupEnabled",

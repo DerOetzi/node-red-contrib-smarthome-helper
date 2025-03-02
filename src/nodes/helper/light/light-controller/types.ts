@@ -39,7 +39,7 @@ export interface HomeAssistantLightAction {
   data?: {
     transition?: number;
     brightness_pct?: number;
-    color_temp?: number;
+    color_temp_kelvin?: number;
     hs_color?: [number, number];
   };
 }

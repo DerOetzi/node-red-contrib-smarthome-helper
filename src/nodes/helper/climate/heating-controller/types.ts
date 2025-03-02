@@ -36,8 +36,10 @@ export enum HeatingControllerTarget {
 }
 
 export interface HeatingControllerNodeOptions extends MatchJoinNodeOptions {
+  reactivateEnabled: boolean;
   pause: number;
   pauseUnit: TimeIntervalUnit;
+  defaultActive: boolean;
   boostTemperatureOffset: number;
   frostProtectionTemperature: number;
   comfortCommand?: string;
@@ -90,8 +92,10 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     discardNotMatched: true,
     minMsgCount: 1,
     outputs: 4,
+    reactivateEnabled: true,
     pause: 1,
     pauseUnit: TimeIntervalUnit.h,
+    defaultActive: false,
     boostTemperatureOffset: 5,
     frostProtectionTemperature: 8,
     comfortCommand: "",
@@ -131,12 +135,20 @@ export const HeatingControllerEditorNodePropertiesDefaults: EditorNodeProperties
       value: HeatingControllerNodeOptionsDefaults.outputs,
       required: true,
     },
+    reactivateEnabled: {
+      value: HeatingControllerNodeOptionsDefaults.reactivateEnabled,
+      required: true,
+    },
     pause: {
       value: HeatingControllerNodeOptionsDefaults.pause,
       required: true,
     },
     pauseUnit: {
       value: HeatingControllerNodeOptionsDefaults.pauseUnit,
+      required: true,
+    },
+    defaultActive: {
+      value: HeatingControllerNodeOptionsDefaults.defaultActive,
       required: true,
     },
     boostTemperatureOffset: {

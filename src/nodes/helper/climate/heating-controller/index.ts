@@ -41,11 +41,13 @@ export default class HeatingControllerNode extends MatchJoinNode<
       topic: "controller_status",
       automatic: false,
     });
+
+    this.activeConditions["__default__"] = this.config.defaultActive;
   }
 
   protected initialize() {
     this.blocked = false;
-    this.nodeStatus = this.lastHeatmode;
+    this.handleActiveCondition();
   }
 
   protected onClose(): void {
@@ -60,6 +62,9 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
     switch (topic) {
       case HeatingControllerTarget.activeCondition:
+        if (this.activeConditions.hasOwnProperty("__default__")) {
+          delete this.activeConditions["__default__"];
+        }
         this.activeConditions[msg.originalTopic] = msg.payload as boolean;
         this.handleActiveCondition();
         break;
@@ -142,7 +147,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
   }
 
   private startTimer() {
-    if (!this.timer) {
+    if (this.config.reactivateEnabled && !this.timer) {
       this.timer = setTimeout(
         () => {
           this.clearTimer();
