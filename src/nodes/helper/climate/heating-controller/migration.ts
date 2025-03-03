@@ -26,6 +26,13 @@ class HeatingControllerMigration extends MatchJoinMigration<HeatingControllerEdi
       node.migrated = true;
     }
 
+    if (this.check(node, "0.26.0")) {
+      node.boostEnabled = true;
+      node.pvBoostEnabled = false;
+      node.pvBoostTemperatureOffset = 1;
+      node.migrated = true;
+    }
+
     return this.migrate(node);
   }
 

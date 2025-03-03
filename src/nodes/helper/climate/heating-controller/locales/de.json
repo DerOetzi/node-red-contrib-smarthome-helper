@@ -5,13 +5,16 @@
         "reactivateEnabled": "Reaktivieren",
         "pause": "Pause",
         "defaultActive": "Standard aktiv",
+        "boostEnabled": "Boost aktiviert",
         "boostTemperatureOffset": "Boost Temperatur-Offset",
         "frostProtectionTemperature": "Frostschutz Temperature",
         "initializeDelay": "Verzögerung init. Status",
         "comfortCommand": "Komfortbefehl",
         "ecoCommand": "Absenk Befehl",
         "boostCommand": "Boost Befehl",
-        "frostProtectionCommand": "Frostschutz Befehl"
+        "frostProtectionCommand": "Frostschutz Befehl",
+        "pvBoostEnabled": "PV Boost aktiviert",
+        "pvBoostTemperatureOffset": "PV Boost Temperatur-Offset"
     },
     "matcher-rows": "Eingabeparameter",
     "default": {
@@ -27,7 +30,9 @@
             "ecoTemperatureOffset": "Offset Absenktemperatur",
             "windowOpen": "Fenster offen",
             "manualControl": "Manuelle Bedienung",
-            "command": "Befehl"
+            "command": "Befehl",
+            "pvBoost": "PV Boost",
+            "pvBoostTemperatureOffset": "PV Boost Temperatur-Offset"
         }
     },
     "output": {

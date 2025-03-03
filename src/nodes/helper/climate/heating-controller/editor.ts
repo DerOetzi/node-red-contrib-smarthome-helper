@@ -93,13 +93,59 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
         icon: "toggle-on",
       });
 
-      heatingControllerOptionsBuilder.createNumberInput({
-        id: "node-input-boostTemperatureOffset",
-        label: "boostTemperatureOffset",
-        value: this.boostTemperatureOffset,
-        icon: "fire",
-        min: 5,
-        max: 10,
+      const boostEnabledCheckbox =
+        heatingControllerOptionsBuilder.createCheckboxInput({
+          id: "node-input-boostEnabled",
+          label: "boostEnabled",
+          value: this.boostEnabled,
+          icon: "fire",
+        });
+
+      const boostTemperatureOffsetRow = heatingControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-boostTemperatureOffset",
+          label: "boostTemperatureOffset",
+          value: this.boostTemperatureOffset,
+          icon: "fire",
+          min: 5,
+          max: 10,
+        })
+        .parent()
+        .toggle(this.boostEnabled);
+
+      const pvBoostEnabledCheckbox =
+        heatingControllerOptionsBuilder.createCheckboxInput({
+          id: "node-input-pvBoostEnabled",
+          label: "pvBoostEnabled",
+          value: this.pvBoostEnabled,
+          icon: "sun-o",
+        });
+
+      inputMatcherList.showHideTarget(
+        this.pvBoostEnabled,
+        HeatingControllerTarget.pvBoost
+      );
+
+      const pvBoostTemperatureOffsetRow = heatingControllerOptionsBuilder
+        .createNumberInput({
+          id: "node-input-pvBoostTemperatureOffset",
+          label: "pvBoostTemperatureOffset",
+          value: this.pvBoostTemperatureOffset,
+          icon: "sun-o",
+          min: 0,
+          max: 3,
+          step: 1,
+        })
+        .parent()
+        .toggle(this.pvBoostEnabled);
+
+      pvBoostEnabledCheckbox.on("change", function () {
+        const isChecked = $(this).is(":checked");
+        pvBoostTemperatureOffsetRow.toggle(isChecked);
+        inputMatcherList.removeTarget(
+          isChecked,
+          HeatingControllerTarget.pvBoost
+        );
       });
 
       heatingControllerOptionsBuilder.createNumberInput({
@@ -136,11 +182,20 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
         icon: "leaf",
       });
 
-      heatingControllerOptionsBuilder.createTextInput({
-        id: "node-input-boostCommand",
-        label: "boostCommand",
-        value: this.boostCommand,
-        icon: "fire",
+      const boostCommandRow = heatingControllerOptionsBuilder
+        .createTextInput({
+          id: "node-input-boostCommand",
+          label: "boostCommand",
+          value: this.boostCommand,
+          icon: "fire",
+        })
+        .parent()
+        .toggle(this.boostEnabled);
+
+      boostEnabledCheckbox.on("change", function () {
+        const isChecked = $(this).is(":checked");
+        boostTemperatureOffsetRow.toggle(isChecked);
+        boostCommandRow.toggle(isChecked);
       });
 
       heatingControllerOptionsBuilder.createTextInput({

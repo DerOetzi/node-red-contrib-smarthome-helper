@@ -30,6 +30,7 @@ export enum HeatingControllerTarget {
   activeCondition = "activeCondition",
   comfortTemperature = "comfortTemperature",
   ecoTemperatureOffset = "ecoTemperatureOffset",
+  pvBoost = "pvBoost",
   windowOpen = "windowOpen",
   manualControl = "manualControl",
   command = "command",
@@ -40,12 +41,15 @@ export interface HeatingControllerNodeOptions extends MatchJoinNodeOptions {
   pause: number;
   pauseUnit: TimeIntervalUnit;
   defaultActive: boolean;
+  boostEnabled: boolean;
   boostTemperatureOffset: number;
   frostProtectionTemperature: number;
   comfortCommand?: string;
   ecoCommand?: string;
   boostCommand?: string;
   frostProtectionCommand?: string;
+  pvBoostEnabled: boolean;
+  pvBoostTemperatureOffset: number;
 
   // deprecated 0.21.4
   statusDelay?: number;
@@ -96,12 +100,15 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     pause: 1,
     pauseUnit: TimeIntervalUnit.h,
     defaultActive: false,
+    boostEnabled: false,
     boostTemperatureOffset: 5,
     frostProtectionTemperature: 8,
     comfortCommand: "",
     ecoCommand: "",
     boostCommand: "",
     frostProtectionCommand: "",
+    pvBoostEnabled: false,
+    pvBoostTemperatureOffset: 1,
   };
 
 export interface HeatingControllerNodeDef
@@ -151,12 +158,24 @@ export const HeatingControllerEditorNodePropertiesDefaults: EditorNodeProperties
       value: HeatingControllerNodeOptionsDefaults.defaultActive,
       required: true,
     },
+    boostEnabled: {
+      value: HeatingControllerNodeOptionsDefaults.boostEnabled,
+      required: true,
+    },
     boostTemperatureOffset: {
       value: HeatingControllerNodeOptionsDefaults.boostTemperatureOffset,
       required: true,
     },
     frostProtectionTemperature: {
       value: HeatingControllerNodeOptionsDefaults.frostProtectionTemperature,
+      required: true,
+    },
+    pvBoostEnabled: {
+      value: HeatingControllerNodeOptionsDefaults.pvBoostEnabled,
+      required: true,
+    },
+    pvBoostTemperatureOffset: {
+      value: HeatingControllerNodeOptionsDefaults.pvBoostTemperatureOffset,
       required: true,
     },
     comfortCommand: {

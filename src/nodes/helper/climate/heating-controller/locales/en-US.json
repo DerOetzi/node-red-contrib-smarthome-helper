@@ -4,13 +4,16 @@
         "reactivateEnabled": "Re-enable",
         "pause": "Pause",
         "defaultActive": "Default active",
+        "boostEnabled": "Boost enabled",
         "boostTemperatureOffset": "Boost temperature offset",
         "frostProtectionTemperature": "Frost protection temperature",
         "initializeDelay": "Initialize status delay",
         "comfortCommand": "Comfort command",
         "ecoCommand": "ECO command",
         "boostCommand": "Boost command",
-        "frostProtectionCommand": "Frost protection command"
+        "frostProtectionCommand": "Frost protection command",
+        "pvBoostEnabled": "PV Boost enabled",
+        "pvBoostTemperatureOffset": "PV Boost temperature offset"
     },
     "default": {
         "comfortCommand": "Comfort",
@@ -25,7 +28,9 @@
             "ecoTemperatureOffset": "ECO temperature offset",
             "windowOpen": "Window open",
             "manualControl": "Manual control",
-            "command": "Command"
+            "command": "Command",
+            "pvBoost": "PV Boost",
+            "pvBoostTemperatureOffset": "PV Boost temperature offset"
         }
     },
     "output": {

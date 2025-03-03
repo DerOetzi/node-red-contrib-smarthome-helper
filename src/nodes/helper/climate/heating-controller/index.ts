@@ -33,6 +33,8 @@ export default class HeatingControllerNode extends MatchJoinNode<
   private comfortTemperature: number = 22;
   private ecoTemperatureOffset: number = -2;
 
+  private pvBoost = false;
+
   constructor(RED: NodeAPI, node: Node, config: HeatingControllerNodeDef) {
     super(RED, node, config, HeatingControllerNodeOptionsDefaults);
 
@@ -74,6 +76,10 @@ export default class HeatingControllerNode extends MatchJoinNode<
         break;
       case HeatingControllerTarget.ecoTemperatureOffset:
         this.ecoTemperatureOffset = msg.payload as number;
+        this.sendAction((this.nodeStatus as string) ?? "");
+        break;
+      case HeatingControllerTarget.pvBoost:
+        this.pvBoost = msg.payload as boolean;
         this.sendAction((this.nodeStatus as string) ?? "");
         break;
       case HeatingControllerTarget.command:
@@ -205,6 +211,10 @@ export default class HeatingControllerNode extends MatchJoinNode<
     let targetTemperature = this.determineHeatingSetpoint(heatmode);
 
     if (targetTemperature >= 0) {
+      if (this.config.pvBoostEnabled && this.pvBoost) {
+        targetTemperature += Number(this.config.pvBoostTemperatureOffset);
+      }
+
       this.debounce({
         msg: { topic: "target_temperature" },
         payload: targetTemperature,
@@ -248,7 +258,13 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
     if (targetTemperature >= 0) {
       text += " - " + status;
-      text += " (" + targetTemperature + " °C)";
+      text += " (" + targetTemperature + " °C";
+
+      if (this.config.pvBoostEnabled && this.pvBoost) {
+        text += " +☀️";
+      }
+
+      text += ")";
     } else {
       text += " - Unknown";
     }
