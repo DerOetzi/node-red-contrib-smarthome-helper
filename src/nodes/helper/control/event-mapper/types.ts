@@ -1,14 +1,14 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+} from "@base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
   MatchJoinNodeOptions,
-} from "../../../flowctrl/match-join/types";
+} from "@match-join/types";
+import { EditorNodePropertiesDef } from "node-red";
 
 export enum EventMapperTarget {
   event = "event",

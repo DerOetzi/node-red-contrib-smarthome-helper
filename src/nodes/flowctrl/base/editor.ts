@@ -1,6 +1,6 @@
 import { EditorNodeDef, EditorRED } from "node-red";
-import { TimeIntervalUnit } from "../../../helpers/time.helper";
-import version from "../../../version";
+import { TimeIntervalUnit } from "@helpers/time.helper";
+import version from "@version";
 import BaseNode from "./";
 import { baseMigration } from "./migration";
 import {
@@ -66,7 +66,7 @@ export class NodeEditorFormBuilder {
       class: params.idType,
     })
       .data("id", params.idType)
-      .appendTo(input.parent() as JQuery);
+      .appendTo(input.parent());
 
     inputType.val(params.valueType ?? "str");
 
@@ -133,7 +133,7 @@ export class NodeEditorFormBuilder {
 
     ["min", "max", "step", "value"].forEach((attr) => {
       if (params.hasOwnProperty(attr)) {
-        input.attr(attr, params[attr] as number);
+        input.attr(attr, (params as any)[attr] as number);
       }
     });
 
@@ -304,7 +304,7 @@ export class NodeEditorFormEditableList<T> {
             const $input = $(input);
             const key = $input.data("id");
             if (key) {
-              record[key] = $input.val() as string;
+              (record as any)[key] = $input.val() as string;
             }
             return record;
           },
@@ -325,7 +325,7 @@ const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
   icon: "font-awesome/fa-cogs",
   defaults: BaseEditorNodePropertiesDefaults,
   label: function () {
-    return this.name || i18n("flowctrl.base.name");
+    return this.name?.trim() ? this.name.trim() : i18n("flowctrl.base.name");
   },
   inputs: BaseNodeOptionsDefaults.inputs,
   outputs: BaseNodeOptionsDefaults.outputs,

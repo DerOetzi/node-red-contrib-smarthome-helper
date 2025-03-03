@@ -1,5 +1,5 @@
+import BaseEditorNode, { NodeEditorFormBuilder } from "@base/editor";
 import { EditorNodeDef } from "node-red";
-import BaseEditorNode, { NodeEditorFormBuilder } from "../base/editor";
 import GateControlNode from "./";
 import {
   GateControlEditorNodeProperties,
@@ -13,7 +13,7 @@ const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
   icon: "font-awesome/fa-key",
   defaults: GateControlEditorNodePropertiesDefaults,
   label: function () {
-    let label = this.name || this.gateCommand;
+    let label = this.name?.trim() ? this.name.trim() : this.gateCommand;
 
     if (this.gateCommand === "pause") {
       label += " (" + this.pauseTime + " " + this.pauseUnit + ")";

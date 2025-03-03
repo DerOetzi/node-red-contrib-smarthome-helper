@@ -1,9 +1,9 @@
+import { BaseNodeDebounceData } from "@base/types";
+import { HelperLightCategory } from "@light/types";
+import MatchJoinNode from "@match-join";
+import { MatchJoinNodeData } from "@match-join/types";
+import { NodeCategory } from "@nodes/types";
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
-import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
-import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
-import { NodeCategory } from "../../../types";
-import { HelperLightCategory } from "../types";
 import {
   HomeAssistantLightAction,
   LightCommand,

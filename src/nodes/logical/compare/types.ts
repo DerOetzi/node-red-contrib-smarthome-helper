@@ -1,11 +1,11 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   SwitchEditorNodeProperties,
   SwitchEditorNodePropertiesDefaults,
   SwitchNodeDef,
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
-} from "../switch/types";
+} from "@logical/switch/types";
+import { EditorNodePropertiesDef } from "node-red";
 
 export enum ApplicableCompareFunction {
   eq = "eq",

@@ -1,12 +1,12 @@
-import { EditorNodePropertiesDef, NodeMessage } from "node-red";
-import { NodeCategory } from "../../types";
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
-} from "../base/types";
+} from "@base/types";
+import { NodeCategory } from "@nodes/types";
+import { EditorNodePropertiesDef, NodeMessage } from "node-red";
 
 export interface AutomationGateNodeOptions extends BaseNodeOptions {
   startupState: boolean;

@@ -1,12 +1,12 @@
-import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
-import { convertToMilliseconds } from "../../../helpers/time.helper";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import BaseNode from "@base";
 import {
   AutomationGateCategory,
   AutomationGateCommand,
   AutomationGateNodeMessage,
-} from "../automation-gate/types";
-import BaseNode from "../base";
+} from "@flowctrl/automation-gate/types";
+import { convertToMilliseconds } from "@helpers/time.helper";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "@nodes/types";
+import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
 import {
   GateControlNodeDef,
   GateControlNodeOptions,

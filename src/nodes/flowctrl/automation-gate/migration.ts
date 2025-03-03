@@ -1,6 +1,6 @@
+import { Migration } from "@base/migration";
+import { TimeIntervalUnit } from "@helpers/time.helper";
 import { EditorNodeInstance } from "node-red";
-import { TimeIntervalUnit } from "../../../helpers/time.helper";
-import { Migration } from "../base/migration";
 import { AutomationGateEditorNodeProperties } from "./types";
 
 class AutomationGateMigration extends Migration<AutomationGateEditorNodeProperties> {

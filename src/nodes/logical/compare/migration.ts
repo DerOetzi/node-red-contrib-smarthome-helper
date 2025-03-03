@@ -1,5 +1,5 @@
+import { SwitchMigration } from "@logical/switch/migration";
 import { EditorNodeInstance } from "node-red";
-import { SwitchMigration } from "../switch/migration";
 import {
   ApplicableCompareFunction,
   CompareEditorNodeProperties,

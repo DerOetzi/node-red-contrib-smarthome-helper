@@ -1,3 +1,4 @@
+import "module-alias/register";
 import { Node, NodeAPI } from "node-red";
 import AutomationGateNode from "./nodes/flowctrl/automation-gate";
 import BaseNode from "./nodes/flowctrl/base";

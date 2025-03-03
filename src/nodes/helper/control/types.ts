@@ -1,4 +1,4 @@
-import { NodeCategory } from "../../types";
+import { NodeCategory } from "@nodes/types";
 
 export const HelperControlCategory: NodeCategory = {
   label: "Smarthome Helper Control",

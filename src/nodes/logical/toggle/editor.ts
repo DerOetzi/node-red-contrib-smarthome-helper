@@ -1,7 +1,7 @@
+import { i18n } from "@base/editor";
+import SwitchNodeEditor from "@logical/switch/editor";
+import { SwitchNodeOptionsDefaults } from "@logical/switch/types";
 import { EditorNodeDef } from "node-red";
-import { i18n } from "../../flowctrl/base/editor";
-import SwitchNodeEditor from "../switch/editor";
-import { SwitchNodeOptionsDefaults } from "../switch/types";
 import ToggleNode from "./";
 import {
   ToggleEditorNodeProperties,
@@ -14,7 +14,7 @@ const ToggleEditorNode: EditorNodeDef<ToggleEditorNodeProperties> = {
   icon: "font-awesome/fa-exchange",
   defaults: ToggleEditorNodePropertiesDefaults,
   label: function () {
-    return this.name || i18n("logical.toggle.name");
+    return this.name?.trim() ? this.name.trim() : i18n("logical.toggle.name");
   },
   inputs: SwitchNodeOptionsDefaults.inputs,
   outputs: SwitchNodeOptionsDefaults.outputs,

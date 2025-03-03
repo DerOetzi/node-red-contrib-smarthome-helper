@@ -1,5 +1,5 @@
-import { MatchJoinNodeMessage } from "../../flowctrl/match-join/types";
-import { NodeCategory } from "../../types";
+import { MatchJoinNodeMessage } from "@match-join/types";
+import { NodeCategory } from "@nodes/types";
 
 export const HelperNotificationCategory: NodeCategory = {
   label: "Smarthome Helper Notification",

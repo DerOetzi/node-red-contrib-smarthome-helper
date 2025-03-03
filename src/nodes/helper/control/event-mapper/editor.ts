@@ -1,11 +1,11 @@
-import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
-} from "../../../flowctrl/base/editor";
-import { NodeEditorFormBuilderAutocompleteMatch } from "../../../flowctrl/base/types";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+} from "@base/editor";
+import { NodeEditorFormBuilderAutocompleteMatch } from "@base/types";
+import { MatchJoinEditableList } from "@match-join/editor";
+import { EditorNodeDef } from "node-red";
 import {
   autocompleteEvents,
   EventMapperEditorNodeProperties,
@@ -46,7 +46,7 @@ class EventMapperRuleEditableList extends NodeEditorFormEditableList<EventMapper
 
   private eventAutocomplete(
     val: string
-  ): NodeEditorFormBuilderAutocompleteMatch[] {
+  ): Promise<NodeEditorFormBuilderAutocompleteMatch[]> {
     const matches: NodeEditorFormBuilderAutocompleteMatch[] = [];
     autocompleteEvents.forEach((v) => {
       let i = v.toLowerCase().indexOf(val.toLowerCase());
@@ -61,7 +61,7 @@ class EventMapperRuleEditableList extends NodeEditorFormEditableList<EventMapper
     matches.sort(function (A, B) {
       return A.i - B.i;
     });
-    return matches;
+    return Promise.resolve(matches);
   }
 }
 

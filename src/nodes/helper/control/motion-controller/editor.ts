@@ -1,9 +1,6 @@
+import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "@base/editor";
+import { MatchJoinEditableList } from "@match-join/editor";
 import { EditorNodeDef } from "node-red";
-import BaseEditorNode, {
-  i18n,
-  NodeEditorFormBuilder,
-} from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import MotionControllerNode from "./";
 import { motionControllerMigration } from "./migration";
 import {
@@ -25,7 +22,9 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
     icon: "font-awesome/fa-male",
     defaults: MotionControllerEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || i18n("helper.motion-controller.name");
+      return this.name?.trim()
+        ? this.name.trim()
+        : i18n("helper.motion-controller.name");
     },
     inputs: MotionControllerNodeOptionsDefaults.inputs,
     outputs: MotionControllerNodeOptionsDefaults.outputs,
@@ -101,8 +100,8 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
         id: "node-input-initializeDelay",
         idType: "node-input-initializeDelayUnit",
         label: "initializeDelay",
-        value: this.initializeDelay!,
-        valueType: this.initializeDelayUnit!,
+        value: this.initializeDelay,
+        valueType: this.initializeDelayUnit,
         icon: "pause",
       });
 

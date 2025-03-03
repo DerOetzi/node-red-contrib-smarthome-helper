@@ -17,7 +17,9 @@
         "lint_fix": "eslint --fix ."
     },
     "dependencies": {
+        "@rollup/plugin-alias": "^5.1.1",
         "clone-stats": "^1.0.0",
+        "module-alias": "^2.2.3",
         "node-red": ">=4.0.5",
         "semver": "^7.6.3",
         "vinyl": "^3.0.0"
@@ -25,6 +27,21 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/DerOetzi/node-red-contrib-smarthome-helper.git"
+    },
+    "_moduleAliases": {
+        "@base": "./dist/nodes/flowctrl/base",
+        "@climate": "./dist/nodes/helper/climate",
+        "@control": "./dist/nodes/helper/control",
+        "@flowctrl": "./dist/nodes/flowctrl",
+        "@helper": "./dist/nodes/helper",
+        "@helpers": "./dist/helpers",
+        "@light": "./dist/nodes/helper/light",
+        "@logical": "./dist/nodes/logical",
+        "@match-join": "./dist/nodes/flowctrl/match-join",
+        "@nodes": "./dist/nodes",
+        "@notification": "./dist/nodes/helper/notification",
+        "@operator": "./dist/nodes/operator",
+        "@version": "./dist/version"
     },
     "devDependencies": {
         "@rollup/plugin-typescript": "^12.1.2",

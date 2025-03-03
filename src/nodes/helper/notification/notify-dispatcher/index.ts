@@ -1,8 +1,11 @@
+import MatchJoinNode from "@match-join";
+import { MatchJoinNodeData } from "@match-join/types";
+import { NodeCategory } from "@nodes/types";
+import {
+  HelperNotificationCategory,
+  NotifyNodeMessage,
+} from "@notification/types";
 import { Node, NodeAPI } from "node-red";
-import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
-import { NodeCategory } from "../../../types";
-import { HelperNotificationCategory, NotifyNodeMessage } from "../types";
 import {
   NotifyDispatcherNodeDef,
   NotifyDispatcherNodeOptions,

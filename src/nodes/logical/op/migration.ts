@@ -1,5 +1,5 @@
+import { SwitchMigration } from "@logical/switch/migration";
 import { EditorNodeInstance } from "node-red";
-import { SwitchMigration } from "../switch/migration";
 import { LogicalFunction, LogicalOpEditorNodeProperties } from "./types";
 
 export class LogicalOpMigration extends SwitchMigration<LogicalOpEditorNodeProperties> {

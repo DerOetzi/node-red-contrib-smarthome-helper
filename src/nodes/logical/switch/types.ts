@@ -1,12 +1,12 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
-} from "../../flowctrl/base/types";
-import { NodeCategory } from "../../types";
+} from "@base/types";
+import { NodeCategory } from "@nodes/types";
+import { EditorNodePropertiesDef } from "node-red";
 
 type ValueType = "msg" | "str" | "num" | "bool";
 

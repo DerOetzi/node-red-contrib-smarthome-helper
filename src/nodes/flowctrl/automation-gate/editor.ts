@@ -1,5 +1,5 @@
+import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "@base/editor";
 import { EditorNodeDef } from "node-red";
-import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "../base/editor";
 import AutomationGateNode from "./";
 import { automationGateMigration } from "./migration";
 import {
@@ -15,7 +15,9 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
     icon: "font-awesome/fa-chain-broken",
     defaults: AutomationGateEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || i18n("flowctrl.automation-gate.name");
+      return this.name?.trim()
+        ? this.name.trim()
+        : i18n("flowctrl.automation-gate.name");
     },
     inputs: AutomationGateNodeOptionsDefaults.inputs,
     outputs: AutomationGateNodeOptionsDefaults.outputs,
@@ -88,7 +90,7 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
         .createTextInput({
           id: "node-input-automationProgressId",
           label: "automationProgressId",
-          value: this.automationProgressId!,
+          value: this.automationProgressId,
           icon: "tag",
         })
         .parent()

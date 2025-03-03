@@ -1,7 +1,7 @@
+import { NotApplicableCompareFunction } from "@logical/compare/types";
+import { MatchJoinMigration } from "@match-join/migration";
+import { MatcherRowDefaults } from "@match-join/types";
 import { EditorNodeInstance } from "node-red";
-import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
-import { MatcherRowDefaults } from "../../../flowctrl/match-join/types";
-import { NotApplicableCompareFunction } from "../../../logical/compare/types";
 import {
   NotifyDispatcherEditorNodeProperties,
   NotifyDispatcherTarget,

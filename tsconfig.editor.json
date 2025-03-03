@@ -6,8 +6,25 @@
     "moduleResolution": "node",
     "lib": ["es2016", "dom", "es6"],
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@base": ["nodes/flowctrl/base"],
+      "@base/*": ["nodes/flowctrl/base/*"],
+      "@climate/*": ["nodes/helper/climate/*"],
+      "@control/*": ["nodes/helper/control/*"],
+      "@flowctrl/*": ["nodes/flowctrl/*"],
+      "@helper/*": ["nodes/helper/*"],
+      "@helpers/*": ["helpers/*"],
+      "@light/*": ["nodes/helper/light/*"],
+      "@logical/*": ["nodes/logical/*"],
+      "@match-join": ["nodes/flowctrl/match-join"],
+      "@match-join/*": ["nodes/flowctrl/match-join/*"],
+      "@nodes/*": ["nodes/*"],
+      "@notification/*": ["nodes/helper/notification/*"],
+      "@operator/*": ["nodes/operator/*"],
+      "@version": ["version"]
+    }
   }
 }

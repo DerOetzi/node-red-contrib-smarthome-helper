@@ -1,5 +1,4 @@
-import { NodeCategory } from "../types";
-
+import { NodeCategory } from "@nodes/types";
 
 export const OperatorCategory: NodeCategory = {
   label: "Smarthome Operators",

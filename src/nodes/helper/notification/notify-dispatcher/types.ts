@@ -1,15 +1,15 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+} from "@base/types";
+import { NotApplicableCompareFunction } from "@logical/compare/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
   MatchJoinNodeOptions,
-} from "../../../flowctrl/match-join/types";
-import { NotApplicableCompareFunction } from "../../../logical/compare/types";
+} from "@match-join/types";
+import { EditorNodePropertiesDef } from "node-red";
 
 export enum NotifyDispatcherTarget {
   message = "message",

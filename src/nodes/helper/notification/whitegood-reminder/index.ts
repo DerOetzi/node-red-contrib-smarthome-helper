@@ -1,9 +1,12 @@
+import { NodeStatus } from "@base/types";
+import MatchJoinNode from "@match-join";
+import { MatchJoinNodeData } from "@match-join/types";
+import { NodeCategory } from "@nodes/types";
+import {
+  HelperNotificationCategory,
+  NotifyNodeMessage,
+} from "@notification/types";
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
-import { NodeStatus } from "../../../flowctrl/base/types";
-import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
-import { NodeCategory } from "../../../types";
-import { HelperNotificationCategory, NotifyNodeMessage } from "../types";
 import {
   WhitegoodReminderNodeDef,
   WhitegoodReminderNodeOptions,

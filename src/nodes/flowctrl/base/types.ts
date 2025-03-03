@@ -1,3 +1,6 @@
+import { TimeIntervalUnit } from "@helpers/time.helper";
+import { NodeCategory, NodeSendFunction } from "@nodes/types";
+import version from "@version";
 import {
   EditorNodeProperties,
   EditorNodePropertiesDef,
@@ -6,9 +9,6 @@ import {
   NodeDef,
   NodeMessage,
 } from "node-red";
-import { TimeIntervalUnit } from "../../../helpers/time.helper";
-import version from "../../../version";
-import { NodeCategory, NodeSendFunction } from "../../types";
 
 interface BaseNodeCommonOptions {
   version: string;

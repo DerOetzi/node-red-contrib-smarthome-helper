@@ -1,8 +1,5 @@
+import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "@base/editor";
 import { EditorNodeDef } from "node-red";
-import BaseEditorNode, {
-  i18n,
-  NodeEditorFormBuilder,
-} from "../../flowctrl/base/editor";
 import SwitchNode from "./";
 import { switchMigration } from "./migration";
 import {
@@ -18,7 +15,7 @@ const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
   icon: "switch.svg",
   defaults: SwitchEditorNodePropertiesDefaults,
   label: function () {
-    return this.name || i18n("logical.switch.name");
+    return this.name?.trim() ? this.name.trim() : i18n("logical.switch.name");
   },
   inputs: SwitchNodeOptionsDefaults.inputs,
   outputs: SwitchNodeOptionsDefaults.outputs,

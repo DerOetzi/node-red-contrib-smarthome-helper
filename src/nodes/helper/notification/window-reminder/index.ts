@@ -1,15 +1,15 @@
-import { Node, NodeAPI } from "node-red";
-import { convertToMilliseconds } from "../../../../helpers/time.helper";
-import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
-import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
-import { LogicalOperation } from "../../../logical/op";
-import { NodeCategory } from "../../../types";
+import { BaseNodeDebounceData } from "@base/types";
+import { convertToMilliseconds } from "@helpers/time.helper";
+import { LogicalOperation } from "@logical/op";
+import MatchJoinNode from "@match-join";
+import { MatchJoinNodeData } from "@match-join/types";
+import { NodeCategory } from "@nodes/types";
 import {
   HelperNotificationCategory,
   NotifyMessage,
   NotifyNodeMessage,
-} from "../types";
+} from "@notification/types";
+import { Node, NodeAPI } from "node-red";
 import {
   WindowReminderNodeDef,
   WindowReminderNodeOptions,

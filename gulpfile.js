@@ -12,6 +12,7 @@ const { src, dest, task, parallel, watch, series } = require("gulp");
 const buffer = require("gulp-buffer");
 const rollupStream = require("@rollup/stream");
 const rollupTypescript = require("@rollup/plugin-typescript");
+const alias = require("@rollup/plugin-alias");
 
 const source = require("vinyl-source-stream");
 
@@ -93,6 +94,29 @@ task("buildEditorFiles", () => {
       format: "iife",
     },
     plugins: [
+      alias({
+        entries: {
+          "@base": path.resolve(__dirname, "src/nodes/flowctrl/base"),
+          "@climate": path.resolve(__dirname, "src/nodes/helper/climate"),
+          "@control": path.resolve(__dirname, "src/nodes/helper/control"),
+          "@flowctrl": path.resolve(__dirname, "src/nodes/flowctrl"),
+          "@helper": path.resolve(__dirname, "src/nodes/helper"),
+          "@helpers": path.resolve(__dirname, "src/helpers"),
+          "@light": path.resolve(__dirname, "src/nodes/helper/light"),
+          "@logical": path.resolve(__dirname, "src/nodes/logical"),
+          "@match-join": path.resolve(
+            __dirname,
+            "src/nodes/flowctrl/match-join"
+          ),
+          "@nodes": path.resolve(__dirname, "src/nodes"),
+          "@notification": path.resolve(
+            __dirname,
+            "src/nodes/helper/notification"
+          ),
+          "@operator": path.resolve(__dirname, "src/nodes/operator"),
+          "@version": path.resolve(__dirname, "src/version"),
+        },
+      }),
       rollupTypescript({
         tsconfig: "tsconfig.editor.json",
       }),

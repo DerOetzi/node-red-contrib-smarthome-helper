@@ -1,5 +1,5 @@
+import version from "@version";
 import type { EditorNodeInstance, EditorRED } from "node-red";
-import version from "../../../version";
 import { BaseEditorNodeProperties } from "./types";
 
 declare const RED: EditorRED;

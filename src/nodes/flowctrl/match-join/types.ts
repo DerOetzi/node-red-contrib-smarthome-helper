@@ -1,8 +1,3 @@
-import { EditorNodePropertiesDef, NodeMessage } from "node-red";
-import {
-  ApplicableCompareFunction,
-  NotApplicableCompareFunction,
-} from "../../logical/compare/types";
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
@@ -10,7 +5,12 @@ import {
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
-} from "../base/types";
+} from "@base/types";
+import {
+  ApplicableCompareFunction,
+  NotApplicableCompareFunction,
+} from "@logical/compare/types";
+import { EditorNodePropertiesDef, NodeMessage } from "node-red";
 
 export interface MatchFixedTargets {
   targets: string[];

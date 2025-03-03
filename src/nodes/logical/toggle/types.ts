@@ -5,7 +5,7 @@ import {
   SwitchNodeDef,
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
-} from "../switch/types";
+} from "@logical/switch/types";
 
 export interface ToggleNodeOptions extends SwitchNodeOptions {}
 

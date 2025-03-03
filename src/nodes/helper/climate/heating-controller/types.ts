@@ -1,9 +1,9 @@
-import { EditorNodePropertiesDef } from "node-red";
-import { TimeIntervalUnit } from "../../../../helpers/time.helper";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+} from "@base/types";
+import { TimeIntervalUnit } from "@helpers/time.helper";
+import { NotApplicableCompareFunction } from "@logical/compare/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -11,8 +11,8 @@ import {
   MatchJoinNodeDef,
   MatchJoinNodeMessage,
   MatchJoinNodeOptions,
-} from "../../../flowctrl/match-join/types";
-import { NotApplicableCompareFunction } from "../../../logical/compare/types";
+} from "@match-join/types";
+import { EditorNodePropertiesDef } from "node-red";
 
 export enum HeatMode {
   comfort = "comfort",

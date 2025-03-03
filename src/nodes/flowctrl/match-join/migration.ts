@@ -1,6 +1,6 @@
+import { Migration } from "@base/migration";
+import { CompareMigration } from "@logical/compare/migration";
 import { EditorNodeInstance } from "node-red";
-import { CompareMigration } from "../../logical/compare/migration";
-import { Migration } from "../base/migration";
 import { MatcherRow, MatchJoinEditorNodeProperties } from "./types";
 
 export class MatchJoinMigration<
