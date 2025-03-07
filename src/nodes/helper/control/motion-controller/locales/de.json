@@ -3,8 +3,7 @@
     "label": {
         "timer": "Timer",
         "onlyDarkness": "Nur bei Dunkelheit",
-        "nightmodeEnabled": "Nachtmodus aktiviert",
-        "initializeDelay": "Verzögerung init. Status"
+        "nightmodeEnabled": "Nachtmodus aktiviert"
     },
     "select": {
         "target": {

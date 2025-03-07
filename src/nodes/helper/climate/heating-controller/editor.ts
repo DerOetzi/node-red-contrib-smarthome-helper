@@ -154,15 +154,6 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
         max: 9,
       });
 
-      heatingControllerOptionsBuilder.createTimeInput({
-        id: "node-input-initializeDelay",
-        idType: "node-input-initializeDelayUnit",
-        label: "initializeDelay",
-        value: this.initializeDelay,
-        valueType: this.initializeDelayUnit,
-        icon: "pause",
-      });
-
       heatingControllerOptionsBuilder.line();
 
       heatingControllerOptionsBuilder.createTextInput({

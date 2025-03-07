@@ -3,8 +3,7 @@
     "label": {
         "timer": "Timer",
         "onlyDarkness": "Only in darkness",
-        "nightmodeEnabled": "Nightmode enabled",
-        "initializeDelay": "Initialize status delay"
+        "nightmodeEnabled": "Nightmode enabled"
     },
     "select": {
         "target": {

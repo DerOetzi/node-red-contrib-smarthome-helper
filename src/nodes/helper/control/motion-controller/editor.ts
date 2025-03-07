@@ -96,15 +96,6 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
         MotionControllerTarget.night
       );
 
-      motionControllerOptionsBuilder.createTimeInput({
-        id: "node-input-initializeDelay",
-        idType: "node-input-initializeDelayUnit",
-        label: "initializeDelay",
-        value: this.initializeDelay,
-        valueType: this.initializeDelayUnit,
-        icon: "pause",
-      });
-
       motionControllerOptionsBuilder.line();
 
       motionControllerOptionsBuilder.createTextInput({

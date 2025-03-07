@@ -18,9 +18,11 @@ interface BaseNodeCommonOptions {
   newMsg: boolean;
   outputs: number;
   inputs?: 0 | 1;
-  initializeDelay: number;
-  initializeDelayUnit: TimeIntervalUnit;
   filterkey?: string;
+
+  //Deprecated since 0.27.0
+  initializeDelay?: number;
+  initializeDelayUnit?: TimeIntervalUnit;
 }
 
 const BaseNodeCommonOptionsDefaults: BaseNodeCommonOptions = {
@@ -31,8 +33,6 @@ const BaseNodeCommonOptionsDefaults: BaseNodeCommonOptions = {
   newMsg: false,
   outputs: 1,
   inputs: 1,
-  initializeDelay: 100,
-  initializeDelayUnit: TimeIntervalUnit.ms,
 };
 
 interface BaseNodeDebounceOptions {
@@ -83,12 +83,12 @@ export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEdito
       required: true,
     },
     initializeDelay: {
-      value: BaseNodeOptionsDefaults.initializeDelay,
-      required: true,
+      value: "",
+      required: false,
     },
     initializeDelayUnit: {
-      value: BaseNodeOptionsDefaults.initializeDelayUnit,
-      required: true,
+      value: "",
+      required: false,
     },
     debounce: {
       value: BaseNodeOptionsDefaults.debounce,

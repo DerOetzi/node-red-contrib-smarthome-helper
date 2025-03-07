@@ -13,6 +13,12 @@ export class Migration<
       node.migrated = true;
     }
 
+    if (this.check(node, "0.27.0")) {
+      delete node.initializeDelay;
+      delete node.initializeDelayUnit;
+      node.migrated = true;
+    }
+
     return this.migrate(node);
   }
 

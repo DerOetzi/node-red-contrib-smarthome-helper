@@ -1,5 +1,4 @@
 import { Migration } from "@base/migration";
-import { TimeIntervalUnit } from "@helpers/time.helper";
 import { EditorNodeInstance } from "node-red";
 import { AutomationGateEditorNodeProperties } from "./types";
 
@@ -19,9 +18,6 @@ class AutomationGateMigration extends Migration<AutomationGateEditorNodeProperti
     node: EditorNodeInstance<AutomationGateEditorNodeProperties>
   ): EditorNodeInstance<AutomationGateEditorNodeProperties> {
     if (node.statusDelay) {
-      node.initializeDelay = node.statusDelay;
-      node.initializeDelayUnit = TimeIntervalUnit.ms;
-
       delete node.statusDelay;
     }
     return node;

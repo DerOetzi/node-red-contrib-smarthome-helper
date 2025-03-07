@@ -1,4 +1,3 @@
-import { TimeIntervalUnit } from "@helpers/time.helper";
 import { MatchJoinMigration } from "@match-join/migration";
 import { MatcherRow } from "@match-join/types";
 import { EditorNodeInstance } from "node-red";
@@ -41,9 +40,6 @@ export class MotionControllerMigration extends MatchJoinMigration<MotionControll
     node: EditorNodeInstance<MotionControllerEditorNodeProperties>
   ): EditorNodeInstance<MotionControllerEditorNodeProperties> {
     if (node.statusDelay) {
-      node.initializeDelay = node.statusDelay;
-      node.initializeDelayUnit = TimeIntervalUnit.ms;
-
       delete node.statusDelay;
     }
     return node;

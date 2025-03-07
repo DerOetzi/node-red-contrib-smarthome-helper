@@ -20,6 +20,8 @@ const path = require("path");
 const through = require("through2");
 const fs = require("fs");
 
+const jsonfile = require("jsonfile");
+
 // HTML
 const gulpHtmlmin = require("gulp-html-minifier-terser");
 
@@ -37,6 +39,9 @@ const uiCssWrap = "<style><%= contents %></style>";
 const uiJsWrap = '<script type="text/javascript"><%= contents %></script>';
 const uiFormWrap =
   '<script type="text/html" data-template-name="<%= data.type %>"><%= data.contents %></script>';
+
+const flowsFilePath = ".devcontainer/node-red-data/flows.json";
+const flowsOutputDir = "examples";
 
 let currentNode;
 
@@ -224,6 +229,37 @@ task("buildLocales", () => {
   );
 });
 
+function escapeFilename(label) {
+  return label
+    .toLowerCase()
+    .replace(/\s+/g, "_")
+    .replace(/[^a-z0-9_]/g, "");
+}
+
+task("examples", (cb) => {
+  const flows = jsonfile.readFileSync(flowsFilePath);
+  const tabs = flows.filter((item) => item.type === "tab");
+  const groups = flows.filter((item) => item.type === "group");
+  const nodes = flows.filter((item) => !["tab", "group"].includes(item.type));
+
+  tabs.forEach((tab) => {
+    const tabId = tab.id;
+    const tabLabel = escapeFilename(tab.label);
+    const tabGroups = groups.filter((group) => group.z === tabId);
+    const tabNodes = nodes.filter(
+      (node) => node.z === tabId || tabGroups.some((g) => g.id === node.g)
+    );
+
+    const output = [tab, ...tabGroups, ...tabNodes];
+
+    const outputPath = `${flowsOutputDir}/${tabLabel}.json`;
+    jsonfile.writeFileSync(outputPath, output, { spaces: 2 });
+    console.log(`Created ${outputPath}`);
+  });
+
+  cb();
+});
+
 task(
   "default",
   series(
@@ -233,6 +269,7 @@ task(
       "buildSourceFiles",
       "copyIcons",
       "buildLocales",
+      "examples",
     ])
   )
 );

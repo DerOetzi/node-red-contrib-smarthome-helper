@@ -1,4 +1,3 @@
-import { TimeIntervalUnit } from "@helpers/time.helper";
 import { MatchJoinMigration } from "@match-join/migration";
 import { MatcherRow } from "@match-join/types";
 import { EditorNodeInstance } from "node-red";
@@ -54,9 +53,6 @@ class HeatingControllerMigration extends MatchJoinMigration<HeatingControllerEdi
     node: EditorNodeInstance<HeatingControllerEditorNodeProperties>
   ): EditorNodeInstance<HeatingControllerEditorNodeProperties> {
     if (node.statusDelay) {
-      node.initializeDelay = node.statusDelay;
-      node.initializeDelayUnit = TimeIntervalUnit.ms;
-
       delete node.statusDelay;
     }
     return node;

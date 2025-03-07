@@ -7,7 +7,6 @@
         "boostEnabled": "Boost enabled",
         "boostTemperatureOffset": "Boost temperature offset",
         "frostProtectionTemperature": "Frost protection temperature",
-        "initializeDelay": "Initialize status delay",
         "comfortCommand": "Comfort command",
         "ecoCommand": "ECO command",
         "boostCommand": "Boost command",

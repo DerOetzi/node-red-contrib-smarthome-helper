@@ -1,6 +1,6 @@
 {
     "name": "@deroetzi/node-red-contrib-smarthome-helper",
-    "version": "0.26.0",
+    "version": "0.27.0",
     "description": "A collection of personal helper nodes for Node-RED",
     "author": "Johannes Ott",
     "license": "MIT",
@@ -71,6 +71,7 @@
         "gulp-terser": "^2.1.0",
         "gulp-typescript": "^6.0.0-alpha.1",
         "gulp-wrap": "^0.15.0",
+        "jsonfile": "^6.1.0",
         "lazypipe": "^1.0.2",
         "merge-stream": "^2.0.0",
         "prettier": "^3.4.2",

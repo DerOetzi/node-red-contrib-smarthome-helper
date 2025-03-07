@@ -26,7 +26,7 @@ export default async (RED: NodeAPI): Promise<void> => {
         RED.nodes.createNode(this, config);
         const node = this;
         const nodeController = new (NodeClass as any)(RED, node, config);
-        nodeController.registerListenerAndInitialize();
+        nodeController.registerListeners();
       }
     );
   }

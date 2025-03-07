@@ -68,25 +68,14 @@ export default class BaseNode<
     this._nodeStatus = null;
     this.debouncing = {};
   }
-  public registerListenerAndInitialize() {
+
+  public registerListeners() {
     this.node.on("input", this.onInput.bind(this));
     this.node.on("close", this.onClose.bind(this));
-
-    setTimeout(
-      () => this.initialize(),
-      convertToMilliseconds(
-        this.config.initializeDelay,
-        this.config.initializeDelayUnit
-      )
-    );
   }
 
   protected registerStatusOutput(options: NodeStatusOutputConfig) {
     this.statusOutput = options;
-  }
-
-  protected initialize() {
-    this.nodeStatus = null;
   }
 
   protected onClose() {

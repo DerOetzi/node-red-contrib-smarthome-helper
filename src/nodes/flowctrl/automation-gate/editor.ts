@@ -44,15 +44,6 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
         icon: "play",
       });
 
-      automationGateOptionsBuilder.createTimeInput({
-        id: "node-input-initializeDelay",
-        idType: "node-input-initializeDelayUnit",
-        label: "initializeDelay",
-        value: this.initializeDelay,
-        valueType: this.initializeDelayUnit,
-        icon: "pause",
-      });
-
       automationGateOptionsBuilder.createCheckboxInput({
         id: "node-input-autoReplay",
         label: "autoReplay",

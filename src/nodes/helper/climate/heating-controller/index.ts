@@ -44,11 +44,12 @@ export default class HeatingControllerNode extends MatchJoinNode<
       automatic: false,
     });
 
-    this.activeConditions["__default__"] = this.config.defaultActive;
+    this.initialize();
   }
 
-  protected initialize() {
+  private initialize() {
     this.blocked = false;
+    this.activeConditions["__default__"] = this.config.defaultActive;
     this.handleActiveCondition();
   }
 

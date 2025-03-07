@@ -39,9 +39,11 @@ export default class MotionControllerNode extends MatchJoinNode<
       output: 1,
       topic: "controller_status",
     });
+
+    this.initialize();
   }
 
-  protected initialize() {
+  private initialize() {
     this.nodeStatus = !this.blocked;
   }
 

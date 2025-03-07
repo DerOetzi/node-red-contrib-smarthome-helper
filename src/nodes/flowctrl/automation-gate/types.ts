@@ -46,14 +46,6 @@ export const AutomationGateEditorNodePropertiesDefaults: EditorNodePropertiesDef
       value: AutomationGateNodeOptionsDefaults.startupState,
       required: true,
     },
-    initializeDelay: {
-      value: AutomationGateNodeOptionsDefaults.initializeDelay,
-      required: true,
-    },
-    initializeDelayUnit: {
-      value: AutomationGateNodeOptionsDefaults.initializeDelayUnit,
-      required: true,
-    },
     autoReplay: {
       value: AutomationGateNodeOptionsDefaults.autoReplay,
       required: true,
