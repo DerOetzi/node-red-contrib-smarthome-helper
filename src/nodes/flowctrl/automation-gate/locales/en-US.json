@@ -8,6 +8,9 @@
         "setAutomationInProgress": "Set automation in progress",
         "automationProgressId": "Automation progress identifier"
     },
+    "output": {
+        "message": "Message when gate is open"
+    },
     "default": {
         "stateOpenLabel": "Automatic",
         "stateClosedLabel": "Manual"

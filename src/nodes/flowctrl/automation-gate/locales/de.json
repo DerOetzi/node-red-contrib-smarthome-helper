@@ -1,5 +1,5 @@
 {
-    "name": "Automatisierungsschleuse",
+    "name": "Automatisierungsgate",
     "label": {
         "startupState": "Beim Start öffnen",
         "autoReplay": "Autom. Wiederholung bei Fortsetzung",
@@ -7,6 +7,9 @@
         "stateClosedLabel": "Beschriftung geschlossen",
         "setAutomationInProgress": "Automatisierung läuft setzen",
         "automationProgressId": "Kennung"
+    },
+    "output": {
+        "message": "Nachricht, wenn das Tor geöffnet ist"
     },
     "default": {
         "stateOpenLabel": "Automatisch",

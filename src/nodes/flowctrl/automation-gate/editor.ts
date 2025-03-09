@@ -21,7 +21,9 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
     },
     inputs: AutomationGateNodeOptionsDefaults.inputs,
     outputs: AutomationGateNodeOptionsDefaults.outputs,
-    outputLabels: ["Messages when gate is open", "Gate state updates"],
+    outputLabels: function (_index) {
+      return i18n("flowctrl.automation-gate.output.message");
+    },
     onadd: function () {
       this.stateOpenLabel = i18n("flowctrl.automation-gate.stateOpenLabel");
       this.stateClosedLabel = i18n("flowctrl.automation-gate.stateClosedLabel");

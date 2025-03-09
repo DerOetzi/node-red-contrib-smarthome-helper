@@ -100,12 +100,11 @@
             "526a71423c3a5571",
             "d08b1e1075791d95",
             "d7a297fd48e732a5",
-            "f0a0cf96dbcf4fe5",
-            "37854ead31dc3cd7"
+            "f0a0cf96dbcf4fe5"
         ],
         "x": 34,
         "y": 619,
-        "w": 852,
+        "w": 812,
         "h": 462
     },
     {
@@ -517,6 +516,26 @@
         "h": 442
     },
     {
+        "id": "d88986ae6ac12564",
+        "type": "group",
+        "z": "296701fb4cce3477",
+        "name": "Status node",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "6f377124f7e4187a",
+            "4e0fe467277f761f",
+            "15cdc3aaef48ef4e",
+            "b4b3b7dbfba9d3c8",
+            "cc75b5bb2f4155f6"
+        ],
+        "x": 734,
+        "y": 19,
+        "w": 572,
+        "h": 142
+    },
+    {
         "id": "8bec7e68c72547f8",
         "type": "flowctrl-base",
         "z": "296701fb4cce3477",
@@ -776,7 +795,7 @@
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
-        "statusReportingEnabled": true,
+        "statusReportingEnabled": false,
         "statusItem": "test",
         "statusTextItem": "",
         "debounce": true,
@@ -946,6 +965,9 @@
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
+        "statusReportingEnabled": true,
+        "statusItem": "automationStatus",
+        "statusTextItem": "automationStatusText",
         "debounce": false,
         "debounceTopic": false,
         "debounceTime": 100,
@@ -955,7 +977,7 @@
         "debounceTrailing": true,
         "filterUniquePayload": false,
         "newMsg": false,
-        "outputs": 2,
+        "outputs": 1,
         "inputs": 1,
         "startupState": true,
         "autoReplay": true,
@@ -963,14 +985,11 @@
         "automationProgressId": "",
         "stateOpenLabel": "Automatisch",
         "stateClosedLabel": "Manuell",
-        "x": 520,
+        "x": 510,
         "y": 840,
         "wires": [
             [
                 "f0a0cf96dbcf4fe5"
-            ],
-            [
-                "37854ead31dc3cd7"
             ]
         ]
     },
@@ -1384,26 +1403,8 @@
         "targetType": "msg",
         "statusVal": "payload",
         "statusType": "auto",
-        "x": 710,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "37854ead31dc3cd7",
-        "type": "debug",
-        "z": "296701fb4cce3477",
-        "g": "db56b10dafca6933",
-        "name": "automation gate status",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 740,
-        "y": 880,
+        "x": 730,
+        "y": 840,
         "wires": []
     },
     {
@@ -1674,40 +1675,43 @@
         "id": "6f377124f7e4187a",
         "type": "debug",
         "z": "296701fb4cce3477",
+        "g": "d88986ae6ac12564",
         "name": "nodeStatus",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
-        "tostatus": false,
+        "tostatus": true,
         "complete": "payload",
         "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1050,
-        "y": 100,
+        "statusVal": "{\"k\": topic, \"v\": payload}",
+        "statusType": "jsonata",
+        "x": 1170,
+        "y": 60,
         "wires": []
     },
     {
         "id": "4e0fe467277f761f",
         "type": "debug",
         "z": "296701fb4cce3477",
+        "g": "d88986ae6ac12564",
         "name": "nodeStatusText",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
-        "tostatus": false,
+        "tostatus": true,
         "complete": "payload",
         "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1060,
-        "y": 140,
+        "statusVal": "{\"k\": topic, \"v\": payload}",
+        "statusType": "jsonata",
+        "x": 1180,
+        "y": 120,
         "wires": []
     },
     {
         "id": "15cdc3aaef48ef4e",
         "type": "flowctrl-status",
         "z": "296701fb4cce3477",
+        "g": "d88986ae6ac12564",
         "name": "",
         "version": "0.27.0",
         "migrated": false,
@@ -1730,14 +1734,74 @@
         "outputs": 2,
         "inputs": 1,
         "initialActive": true,
-        "x": 870,
-        "y": 120,
+        "x": 990,
+        "y": 80,
         "wires": [
             [
                 "6f377124f7e4187a"
             ],
             [
                 "4e0fe467277f761f"
+            ]
+        ]
+    },
+    {
+        "id": "b4b3b7dbfba9d3c8",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "d88986ae6ac12564",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "active",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 840,
+        "y": 60,
+        "wires": [
+            [
+                "15cdc3aaef48ef4e"
+            ]
+        ]
+    },
+    {
+        "id": "cc75b5bb2f4155f6",
+        "type": "inject",
+        "z": "296701fb4cce3477",
+        "g": "d88986ae6ac12564",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "active",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 840,
+        "y": 100,
+        "wires": [
+            [
+                "15cdc3aaef48ef4e"
             ]
         ]
     },

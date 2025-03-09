@@ -1,5 +1,5 @@
 import BaseNode from "@base";
-import { BaseCategory, BaseNodeStatus, NodeStatus } from "@base/types";
+import { BaseCategory, BaseNodeDebounceData, NodeStatus } from "@base/types";
 import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "@nodes/types";
 import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
 import {
@@ -16,7 +16,7 @@ export default class StatusNode extends BaseNode<
   protected static readonly _nodeType: string = "status";
 
   private readonly controllerCache: Map<string, BaseNode | null> = new Map();
-  private readonly inactiveQueue: Map<string, BaseNodeStatus> = new Map();
+  private readonly inactiveQueue: Set<string> = new Set();
 
   constructor(RED: NodeAPI, node: Node, config: StatusNodeDef) {
     super(RED, node, config, StatusNodeOptionsDefaults);
@@ -40,6 +40,16 @@ export default class StatusNode extends BaseNode<
     }
 
     this.nodeStatus = msg.payload;
+
+    if (this.nodeStatus) {
+      this.inactiveQueue.forEach((id) => {
+        const controller = this.getController(id);
+        if (controller) {
+          this.handleStatusReport(id, controller);
+        }
+      });
+      this.inactiveQueue.clear();
+    }
 
     if (done) {
       done();
@@ -89,9 +99,13 @@ export default class StatusNode extends BaseNode<
           });
         }
       } else {
-        this.inactiveQueue.set(id, statusReport);
+        this.inactiveQueue.add(id);
       }
     }
+  }
+
+  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+    //Do nothing
   }
 
   protected statusTextFormatter(status: NodeStatus): string {

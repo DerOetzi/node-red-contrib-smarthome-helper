@@ -24,7 +24,6 @@ export default class AutomationGateNode extends BaseNode<
 
   constructor(RED: NodeAPI, node: Node, config: AutomationGateNodeDef) {
     super(RED, node, config, AutomationGateNodeOptionsDefaults);
-    this.registerStatusOutput({ output: 1, topic: "automation_status" });
     this.nodeStatus = this.config.startupState;
   }
 
