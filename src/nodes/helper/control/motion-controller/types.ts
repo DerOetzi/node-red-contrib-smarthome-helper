@@ -66,7 +66,6 @@ export const MotionControllerNodeOptionsDefaults: MotionControllerNodeOptions =
     join: false,
     discardNotMatched: true,
     minMsgCount: 1,
-    outputs: 2,
     timer: 30,
     timerUnit: TimeIntervalUnit.s,
     nightmodeEnabled: false,
@@ -101,10 +100,6 @@ export const MotionControllerEditorNodePropertiesDefaults: EditorNodePropertiesD
     },
     minMsgCount: {
       value: MotionControllerNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    outputs: {
-      value: MotionControllerNodeOptionsDefaults.outputs,
       required: true,
     },
     timer: {

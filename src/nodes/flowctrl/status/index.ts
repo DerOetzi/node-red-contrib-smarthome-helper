@@ -24,6 +24,7 @@ export default class StatusNode extends BaseNode<
 
   public registerListeners(): void {
     super.registerListeners();
+    this.RED.events.once("flows:started", this.onFlowsStarted.bind(this));
     this.RED.events.on("node-status", this.onNodeStatus.bind(this));
     this.nodeStatus = this.config.initialActive;
   }
@@ -54,6 +55,15 @@ export default class StatusNode extends BaseNode<
     if (done) {
       done();
     }
+  }
+
+  private onFlowsStarted(): void {
+    this.RED.nodes.eachNode((nodeDef) => {
+      const controller = this.getController(nodeDef.id);
+      if (controller) {
+        this.handleStatusReport(nodeDef.id, controller);
+      }
+    });
   }
 
   private onNodeStatus(input: { id: string; status?: any }): void {

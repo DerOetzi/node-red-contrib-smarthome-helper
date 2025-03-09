@@ -29,7 +29,7 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
     inputs: MotionControllerNodeOptionsDefaults.inputs,
     outputs: MotionControllerNodeOptionsDefaults.outputs,
     outputLabels: function (index: number) {
-      const outputs = ["action", "status"];
+      const outputs = ["action"];
       return i18n(`helper.motion-controller.output.${outputs[index]}`);
     },
     onadd: function () {

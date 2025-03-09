@@ -19,6 +19,11 @@ export class MotionControllerMigration extends MatchJoinMigration<MotionControll
       node.migrated = true;
     }
 
+    if (this.check(node, "0.27.1")) {
+      node.outputs = 1;
+      node.migrated = true;
+    }
+
     return this.migrate(node);
   }
 

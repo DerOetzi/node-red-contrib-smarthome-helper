@@ -76,7 +76,7 @@
       "8fcf71e22e435218"
     ],
     "x": 54,
-    "y": 939,
+    "y": 1039,
     "w": 832,
     "h": 1102
   },
@@ -108,7 +108,7 @@
       "fb4944b41bb1f7f1"
     ],
     "x": 54,
-    "y": 319,
+    "y": 379,
     "w": 1312,
     "h": 622
   },
@@ -391,7 +391,7 @@
     "offCommand": "Aus",
     "nightmodeCommand": "Nacht",
     "x": 400,
-    "y": 1100,
+    "y": 1200,
     "wires": [
       [
         "84f54ae8719c1a1e"
@@ -421,7 +421,7 @@
     "payload": "An",
     "payloadType": "str",
     "x": 190,
-    "y": 980,
+    "y": 1080,
     "wires": [
       [
         "a0e3c7e9851e4099"
@@ -451,7 +451,7 @@
     "payload": "Aus",
     "payloadType": "str",
     "x": 190,
-    "y": 1020,
+    "y": 1120,
     "wires": [
       [
         "a0e3c7e9851e4099"
@@ -481,7 +481,7 @@
     "payload": "Nacht",
     "payloadType": "str",
     "x": 200,
-    "y": 1060,
+    "y": 1160,
     "wires": [
       [
         "a0e3c7e9851e4099"
@@ -511,7 +511,7 @@
     "payload": "true",
     "payloadType": "bool",
     "x": 190,
-    "y": 1120,
+    "y": 1220,
     "wires": [
       [
         "a0e3c7e9851e4099"
@@ -541,7 +541,7 @@
     "payload": "false",
     "payloadType": "bool",
     "x": 190,
-    "y": 1160,
+    "y": 1260,
     "wires": [
       [
         "a0e3c7e9851e4099"
@@ -563,7 +563,7 @@
     "statusVal": "{ \"a\": command, \"b\":brightness}",
     "statusType": "jsonata",
     "x": 580,
-    "y": 1100,
+    "y": 1200,
     "wires": []
   },
   {
@@ -638,7 +638,7 @@
     "offCommand": "Aus",
     "nightmodeCommand": "Nacht",
     "x": 520,
-    "y": 1340,
+    "y": 1440,
     "wires": [
       [
         "6460c9d8131d5669"
@@ -668,7 +668,7 @@
     "payload": "An",
     "payloadType": "str",
     "x": 190,
-    "y": 1220,
+    "y": 1320,
     "wires": [
       [
         "b241870a4ce90645"
@@ -698,7 +698,7 @@
     "payload": "Aus",
     "payloadType": "str",
     "x": 190,
-    "y": 1260,
+    "y": 1360,
     "wires": [
       [
         "b241870a4ce90645"
@@ -728,7 +728,7 @@
     "payload": "Nacht",
     "payloadType": "str",
     "x": 200,
-    "y": 1300,
+    "y": 1400,
     "wires": [
       [
         "b241870a4ce90645"
@@ -750,7 +750,7 @@
     "statusVal": "{ \"a\": command, \"c\": colorTemperature, \"b\":brightness}",
     "statusType": "jsonata",
     "x": 740,
-    "y": 1340,
+    "y": 1440,
     "wires": []
   },
   {
@@ -776,7 +776,7 @@
     "payload": "6500",
     "payloadType": "num",
     "x": 240,
-    "y": 1360,
+    "y": 1460,
     "wires": [
       [
         "b241870a4ce90645"
@@ -806,7 +806,7 @@
     "payload": "2700",
     "payloadType": "num",
     "x": 240,
-    "y": 1400,
+    "y": 1500,
     "wires": [
       [
         "b241870a4ce90645"
@@ -836,7 +836,7 @@
     "payload": "2000",
     "payloadType": "num",
     "x": 240,
-    "y": 1440,
+    "y": 1540,
     "wires": [
       [
         "b241870a4ce90645"
@@ -899,7 +899,7 @@
     "offCommand": "Aus",
     "nightmodeCommand": "Nacht",
     "x": 380,
-    "y": 1540,
+    "y": 1640,
     "wires": [
       [
         "9585fa2f5b73b81d"
@@ -929,7 +929,7 @@
     "payload": "An",
     "payloadType": "str",
     "x": 190,
-    "y": 1520,
+    "y": 1620,
     "wires": [
       [
         "25f8e66057cfb021"
@@ -959,7 +959,7 @@
     "payload": "Aus",
     "payloadType": "str",
     "x": 190,
-    "y": 1560,
+    "y": 1660,
     "wires": [
       [
         "25f8e66057cfb021"
@@ -981,7 +981,7 @@
     "statusVal": "{ \"a\": command}",
     "statusType": "jsonata",
     "x": 550,
-    "y": 1540,
+    "y": 1640,
     "wires": []
   },
   {
@@ -1127,7 +1127,7 @@
     "payload": "An",
     "payloadType": "str",
     "x": 190,
-    "y": 1640,
+    "y": 1740,
     "wires": [
       [
         "cceb4dd01f5fb120"
@@ -1157,7 +1157,7 @@
     "payload": "Aus",
     "payloadType": "str",
     "x": 190,
-    "y": 1680,
+    "y": 1780,
     "wires": [
       [
         "cceb4dd01f5fb120"
@@ -1187,7 +1187,7 @@
     "payload": "Nacht",
     "payloadType": "str",
     "x": 200,
-    "y": 1720,
+    "y": 1820,
     "wires": [
       [
         "cceb4dd01f5fb120"
@@ -1250,7 +1250,7 @@
     "offCommand": "Aus",
     "nightmodeCommand": "Nacht",
     "x": 430,
-    "y": 1680,
+    "y": 1780,
     "wires": [
       [
         "43a21089414237f9"
@@ -1272,7 +1272,7 @@
     "statusVal": "{ \"a\": command, \"b\":brightness, \"hue\": hue, \"s\": saturation}",
     "statusType": "jsonata",
     "x": 620,
-    "y": 1680,
+    "y": 1780,
     "wires": []
   },
   {
@@ -1298,7 +1298,7 @@
     "payload": "An",
     "payloadType": "str",
     "x": 190,
-    "y": 1800,
+    "y": 1900,
     "wires": [
       [
         "5db6ec063fbef2b1"
@@ -1328,7 +1328,7 @@
     "payload": "Aus",
     "payloadType": "str",
     "x": 190,
-    "y": 1840,
+    "y": 1940,
     "wires": [
       [
         "5db6ec063fbef2b1"
@@ -1358,7 +1358,7 @@
     "payload": "Nacht",
     "payloadType": "str",
     "x": 200,
-    "y": 1880,
+    "y": 1980,
     "wires": [
       [
         "5db6ec063fbef2b1"
@@ -1439,7 +1439,7 @@
     "offCommand": "Aus",
     "nightmodeCommand": "Nacht",
     "x": 440,
-    "y": 1920,
+    "y": 2020,
     "wires": [
       [
         "e4d6855ce1485e08"
@@ -1461,7 +1461,7 @@
     "statusVal": "{ \"a\": command, \"b\":brightness, \"hue\": hue, \"s\": saturation}",
     "statusType": "jsonata",
     "x": 620,
-    "y": 1920,
+    "y": 2020,
     "wires": []
   },
   {
@@ -1487,7 +1487,7 @@
     "payload": "50",
     "payloadType": "num",
     "x": 190,
-    "y": 1960,
+    "y": 2060,
     "wires": [
       [
         "5db6ec063fbef2b1"
@@ -1517,7 +1517,7 @@
     "payload": "75",
     "payloadType": "num",
     "x": 210,
-    "y": 2000,
+    "y": 2100,
     "wires": [
       [
         "5db6ec063fbef2b1"
@@ -1573,7 +1573,7 @@
     ],
     "ignoreUnknownEvents": true,
     "x": 500,
-    "y": 380,
+    "y": 440,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -1606,7 +1606,7 @@
     "payload": "brightness_up_click",
     "payloadType": "str",
     "x": 230,
-    "y": 360,
+    "y": 420,
     "wires": [
       [
         "bdb192f971a27c36"
@@ -1636,7 +1636,7 @@
     "payload": "brightness_down_click",
     "payloadType": "str",
     "x": 240,
-    "y": 400,
+    "y": 460,
     "wires": [
       [
         "bdb192f971a27c36"
@@ -1649,10 +1649,13 @@
     "z": "50a63383c0611497",
     "g": "2366616d8806730a",
     "name": "",
-    "version": "0.27.0",
+    "version": "0.27.1",
     "migrated": false,
     "topic": "motioncontrol",
     "topicType": "str",
+    "statusReportingEnabled": true,
+    "statusItem": "motionStatus",
+    "statusTextItem": "motionStatusText",
     "debounce": false,
     "debounceTopic": false,
     "debounceTime": 100,
@@ -1662,7 +1665,7 @@
     "debounceTrailing": true,
     "filterUniquePayload": false,
     "newMsg": false,
-    "outputs": 2,
+    "outputs": 1,
     "inputs": 1,
     "matchers": [
       {
@@ -1722,12 +1725,11 @@
     "offCommand": "Aus",
     "nightmodeCommand": "Nacht",
     "x": 760,
-    "y": 700,
+    "y": 760,
     "wires": [
       [
         "c62ea11ee4f56f48"
-      ],
-      []
+      ]
     ]
   },
   {
@@ -1795,7 +1797,7 @@
     "offCommand": "Aus",
     "nightmodeCommand": "Nacht",
     "x": 960,
-    "y": 660,
+    "y": 760,
     "wires": [
       [
         "337067313c81346f"
@@ -1817,7 +1819,7 @@
     "statusVal": "{ \"a\": command, \"b\":brightness}",
     "statusType": "jsonata",
     "x": 1190,
-    "y": 660,
+    "y": 760,
     "wires": []
   },
   {
@@ -1843,7 +1845,7 @@
     "payload": "true",
     "payloadType": "bool",
     "x": 450,
-    "y": 500,
+    "y": 560,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -1873,7 +1875,7 @@
     "payload": "false",
     "payloadType": "bool",
     "x": 450,
-    "y": 540,
+    "y": 600,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -1903,7 +1905,7 @@
     "payload": "true",
     "payloadType": "bool",
     "x": 450,
-    "y": 580,
+    "y": 640,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -1933,7 +1935,7 @@
     "payload": "false",
     "payloadType": "bool",
     "x": 450,
-    "y": 620,
+    "y": 680,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -1963,7 +1965,7 @@
     "payload": "true",
     "payloadType": "bool",
     "x": 450,
-    "y": 680,
+    "y": 740,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -1993,7 +1995,7 @@
     "payload": "false",
     "payloadType": "bool",
     "x": 450,
-    "y": 720,
+    "y": 780,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -2023,7 +2025,7 @@
     "payload": "true",
     "payloadType": "bool",
     "x": 460,
-    "y": 760,
+    "y": 820,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -2053,7 +2055,7 @@
     "payload": "false",
     "payloadType": "bool",
     "x": 460,
-    "y": 800,
+    "y": 860,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -2083,7 +2085,7 @@
     "onceDelay": 0.1,
     "topic": "command",
     "x": 470,
-    "y": 860,
+    "y": 920,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -2118,7 +2120,7 @@
     "onceDelay": 0.1,
     "topic": "command",
     "x": 460,
-    "y": 900,
+    "y": 960,
     "wires": [
       [
         "1a7e38b67e78e65d"
@@ -2208,7 +2210,7 @@
     "payload": "",
     "payloadType": "str",
     "x": 310,
-    "y": 440,
+    "y": 500,
     "wires": [
       [
         "bdb192f971a27c36"

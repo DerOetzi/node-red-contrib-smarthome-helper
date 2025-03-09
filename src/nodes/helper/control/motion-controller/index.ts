@@ -34,12 +34,6 @@ export default class MotionControllerNode extends MatchJoinNode<
 
   constructor(RED: NodeAPI, node: Node, config: MotionControllerNodeDef) {
     super(RED, node, config, MotionControllerNodeOptionsDefaults);
-
-    this.registerStatusOutput({
-      output: 1,
-      topic: "controller_status",
-    });
-
     this.initialize();
   }
 

@@ -259,16 +259,8 @@ export default class BaseNode<
   }
 
   protected set nodeStatus(status: NodeStatus) {
-    const currentStatus = this._nodeStatus;
-
+    this._nodeStatus = status;
     this.setNodeStatus(status);
-
-    if (currentStatus !== status) {
-      this._nodeStatus = status;
-      if (this.statusOutput && (this.statusOutput.automatic ?? true)) {
-        this.sendStatus(status);
-      }
-    }
   }
 
   public get statusReport(): BaseNodeStatus | null {

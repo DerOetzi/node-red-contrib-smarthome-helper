@@ -28,7 +28,6 @@ export const AutomationGateNodeOptionsDefaults: AutomationGateNodeOptions = {
   stateClosedLabel: "",
   setAutomationInProgress: false,
   automationProgressId: "",
-  outputs: 1,
 };
 
 export interface AutomationGateNodeDef
