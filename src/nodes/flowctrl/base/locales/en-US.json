@@ -10,6 +10,9 @@
         "debounceShowStatus": "Show status",
         "debounceTime": "Delay",
         "debounceLeading": "Leading (immediate)",
-        "debounceTrailing": "Trailing (delayed)"
+        "debounceTrailing": "Trailing (delayed)",
+        "statusReportingEnabled": "Status reporting",
+        "statusItem": "Status item",
+        "statusTextItem": "Text status item"
     }
 }

@@ -351,6 +351,9 @@
     "migrated": false,
     "topic": "topic",
     "topicType": "msg",
+    "statusReportingEnabled": true,
+    "statusItem": "test",
+    "statusTextItem": "",
     "debounce": true,
     "debounceTopic": true,
     "debounceTime": "10",
@@ -1241,5 +1244,76 @@
     "x": 480,
     "y": 1280,
     "wires": []
+  },
+  {
+    "id": "6f377124f7e4187a",
+    "type": "debug",
+    "z": "296701fb4cce3477",
+    "name": "nodeStatus",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1050,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "4e0fe467277f761f",
+    "type": "debug",
+    "z": "296701fb4cce3477",
+    "name": "nodeStatusText",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1060,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "15cdc3aaef48ef4e",
+    "type": "flowctrl-status",
+    "z": "296701fb4cce3477",
+    "name": "",
+    "version": "0.27.0",
+    "migrated": false,
+    "topic": "topic",
+    "topicType": "msg",
+    "initializeDelay": "",
+    "initializeDelayUnit": "",
+    "statusReportingEnabled": false,
+    "statusItem": "",
+    "statusTextItem": "",
+    "debounce": false,
+    "debounceTopic": false,
+    "debounceTime": 100,
+    "debounceShowStatus": false,
+    "debounceUnit": "ms",
+    "debounceLeading": false,
+    "debounceTrailing": true,
+    "filterUniquePayload": false,
+    "newMsg": false,
+    "outputs": 2,
+    "inputs": 1,
+    "initialActive": true,
+    "x": 870,
+    "y": 120,
+    "wires": [
+      [
+        "6f377124f7e4187a"
+      ],
+      [
+        "4e0fe467277f761f"
+      ]
+    ]
   }
 ]

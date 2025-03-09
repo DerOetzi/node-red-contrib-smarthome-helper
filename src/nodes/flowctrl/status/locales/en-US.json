@@ -1,0 +1,11 @@
+{
+    "name": "Status",
+    "output": {
+        "status": "Node status",
+        "statusText": "Text status"
+    },
+    "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+    }
+}

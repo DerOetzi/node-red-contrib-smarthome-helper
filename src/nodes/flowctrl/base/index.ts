@@ -16,6 +16,7 @@ import {
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
+  BaseNodeStatus,
   NodeSendOptions,
   NodeStatus,
   NodeStatusOutputConfig,
@@ -268,6 +269,19 @@ export default class BaseNode<
         this.sendStatus(status);
       }
     }
+  }
+
+  public get statusReport(): BaseNodeStatus | null {
+    if (this.config.statusReportingEnabled) {
+      return {
+        status: this.nodeStatus,
+        statusItem: this.config.statusItem,
+        statusText: this.statusTextFormatter(this.nodeStatus),
+        statusTextItem: this.config.statusTextItem,
+      };
+    }
+
+    return null;
   }
 
   protected setNodeStatus(

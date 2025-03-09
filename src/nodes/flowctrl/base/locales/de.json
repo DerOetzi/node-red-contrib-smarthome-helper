@@ -10,6 +10,9 @@
         "debounceShowStatus": "Status anzeigen",
         "debounceTime": "Verzögerung",
         "debounceLeading": "Führend (sofort)",
-        "debounceTrailing": "Nachlaufend (verzögert)"
+        "debounceTrailing": "Nachlaufend (verzögert)",
+        "statusReportingEnabled": "Statusberichterstattung",
+        "statusItem": "Statuselement",
+        "statusTextItem": "Element für Textstatus"
     }
 }

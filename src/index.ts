@@ -25,8 +25,12 @@ export default async (RED: NodeAPI): Promise<void> => {
       function (this: Node, config: any) {
         RED.nodes.createNode(this, config);
         const node = this;
-        const nodeController = new (NodeClass as any)(RED, node, config);
-        nodeController.registerListeners();
+        (node as any).smarthomeHelperController = new (NodeClass as any)(
+          RED,
+          node,
+          config
+        );
+        (node as any).smarthomeHelperController.registerListeners();
       }
     );
   }

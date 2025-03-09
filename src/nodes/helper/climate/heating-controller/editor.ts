@@ -22,7 +22,9 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     icon: "font-awesome/fa-thermometer-half",
     defaults: HeatingControllerEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || i18n("helper.heating-controller.name");
+      return this.name?.trim()
+        ? this.name.trim()
+        : i18n("helper.heating-controller.name");
     },
     inputs: HeatingControllerNodeOptionsDefaults.inputs,
     outputs: HeatingControllerNodeOptionsDefaults.outputs,

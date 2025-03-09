@@ -393,6 +393,47 @@ const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
         debounceOptions.toggle($(this).is(":checked"));
       });
 
+    const statusOptionsBuilder = new NodeEditorFormBuilder(
+      $("#base-status-options"),
+      {
+        translatePrefix: "flowctrl.base",
+      }
+    );
+
+    const statusReportingEnabledCheckbox =
+      statusOptionsBuilder.createCheckboxInput({
+        id: "node-input-statusReportingEnabled",
+        label: "statusReportingEnabled",
+        value: this.statusReportingEnabled,
+        icon: "bullhorn",
+      });
+
+    const statusItemRow = statusOptionsBuilder
+      .createTextInput({
+        id: "node-input-statusItem",
+        label: "statusItem",
+        value: this.statusItem,
+        icon: "list",
+      })
+      .parent()
+      .toggle(this.statusReportingEnabled);
+
+    const statusTextItemRow = statusOptionsBuilder
+      .createTextInput({
+        id: "node-input-statusTextItem",
+        label: "statusTextItem",
+        value: this.statusTextItem,
+        icon: "comment",
+      })
+      .parent()
+      .toggle(this.statusReportingEnabled);
+
+    statusReportingEnabledCheckbox.on("change", function () {
+      const isStatusReportingEnabled = $(this).is(":checked");
+      statusItemRow.toggle(isStatusReportingEnabled);
+      statusTextItemRow.toggle(isStatusReportingEnabled);
+    });
+
     const debounceOptionsBuilder = new NodeEditorFormBuilder(debounceOptions, {
       translatePrefix: "flowctrl.base",
     });

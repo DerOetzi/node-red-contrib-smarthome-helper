@@ -35,6 +35,18 @@ const BaseNodeCommonOptionsDefaults: BaseNodeCommonOptions = {
   inputs: 1,
 };
 
+export interface BaseNodeStatusOptions {
+  statusReportingEnabled: boolean;
+  statusItem: string;
+  statusTextItem: string;
+}
+
+const BaseNodeStatusOptionsDefaults: BaseNodeStatusOptions = {
+  statusReportingEnabled: false,
+  statusItem: "",
+  statusTextItem: "",
+};
+
 interface BaseNodeDebounceOptions {
   debounce: boolean;
   debounceTopic: boolean;
@@ -57,10 +69,12 @@ const BaseNodeDebounceOptionsDefaults: BaseNodeDebounceOptions = {
 
 export interface BaseNodeOptions
   extends BaseNodeCommonOptions,
+    BaseNodeStatusOptions,
     BaseNodeDebounceOptions {}
 
 export const BaseNodeOptionsDefaults: BaseNodeOptions = {
   ...BaseNodeCommonOptionsDefaults,
+  ...BaseNodeStatusOptionsDefaults,
   ...BaseNodeDebounceOptionsDefaults,
 };
 
@@ -88,6 +102,18 @@ export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEdito
     },
     initializeDelayUnit: {
       value: "",
+      required: false,
+    },
+    statusReportingEnabled: {
+      value: BaseNodeStatusOptionsDefaults.statusReportingEnabled,
+      required: false,
+    },
+    statusItem: {
+      value: BaseNodeStatusOptionsDefaults.statusItem,
+      required: false,
+    },
+    statusTextItem: {
+      value: BaseNodeStatusOptionsDefaults.statusTextItem,
       required: false,
     },
     debounce: {
@@ -218,3 +244,10 @@ export const BaseCategory: NodeCategory = {
   name: "flowctrl",
   color: "#7fffd4",
 };
+
+export interface BaseNodeStatus {
+  status: NodeStatus;
+  statusItem: string;
+  statusText: string;
+  statusTextItem: string;
+}
