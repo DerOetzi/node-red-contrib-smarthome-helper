@@ -1,4 +1,4 @@
-import { BaseNodeDebounceData } from "@base/types";
+import { BaseNodeDebounceData, BaseNodeStatus } from "@base/types";
 import { HelperClimateCategory } from "@climate/types";
 import { convertToMilliseconds } from "@helpers/time.helper";
 import { LogicalOperation } from "@logical/op";
@@ -37,13 +37,6 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
   constructor(RED: NodeAPI, node: Node, config: HeatingControllerNodeDef) {
     super(RED, node, config, HeatingControllerNodeOptionsDefaults);
-
-    this.registerStatusOutput({
-      output: 3,
-      topic: "controller_status",
-      automatic: false,
-    });
-
     this.initialize();
   }
 
@@ -149,7 +142,6 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
   private set blocked(value: boolean) {
     this._blocked = value;
-    this.sendStatus(!value);
     value ? this.startTimer() : this.clearTimer();
   }
 
@@ -231,6 +223,19 @@ export default class HeatingControllerNode extends MatchJoinNode<
     } else if (this.lastHeatmode) {
       this.nodeStatus = this.lastHeatmode;
     }
+  }
+
+  public get statusReport(): BaseNodeStatus | null {
+    if (this.config.statusReportingEnabled) {
+      return {
+        status: !this.blocked,
+        statusItem: this.config.statusItem,
+        statusText: this.statusTextFormatter(this.nodeStatus),
+        statusTextItem: this.config.statusTextItem,
+      };
+    }
+
+    return null;
   }
 
   protected statusColor(status: any): NodeStatusFill {

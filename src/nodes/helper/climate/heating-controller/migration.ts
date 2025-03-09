@@ -32,6 +32,11 @@ class HeatingControllerMigration extends MatchJoinMigration<HeatingControllerEdi
       node.migrated = true;
     }
 
+    if (this.check(node, "0.27.1")) {
+      node.outputs = 3;
+      node.migrated = true;
+    }
+
     return this.migrate(node);
   }
 

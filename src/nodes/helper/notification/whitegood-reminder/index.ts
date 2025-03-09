@@ -1,4 +1,4 @@
-import { NodeStatus } from "@base/types";
+import { BaseNodeDebounceData, NodeStatus } from "@base/types";
 import MatchJoinNode from "@match-join";
 import { MatchJoinNodeData } from "@match-join/types";
 import { NodeCategory } from "@nodes/types";
@@ -90,6 +90,10 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
       this.debounce(data);
     }
     this.nodeStatus = WhitegoodStatus.off;
+  }
+
+  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+    //Do Nothing
   }
 
   protected statusColor(status: NodeStatus): NodeStatusFill {

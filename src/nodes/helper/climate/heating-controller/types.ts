@@ -95,7 +95,7 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     join: false,
     discardNotMatched: true,
     minMsgCount: 1,
-    outputs: 4,
+    outputs: 3,
     reactivateEnabled: true,
     pause: 1,
     pauseUnit: TimeIntervalUnit.h,

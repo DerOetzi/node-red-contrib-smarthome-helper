@@ -312,15 +312,6 @@ export default class BaseNode<
     return text;
   }
 
-  protected sendStatus(status: NodeStatus) {
-    if (this.statusOutput) {
-      this.sendMsgToOutput(
-        { payload: status, topic: this.statusOutput.topic },
-        { output: this.statusOutput.output }
-      );
-    }
-  }
-
   protected sendMsgToOutput(msg: NodeMessage, options: NodeSendOptions = {}) {
     if (options.additionalAttributes) {
       Object.assign(msg, options.additionalAttributes);

@@ -402,7 +402,6 @@
             "3ba12dfc100b7697",
             "c172755f33dbd131",
             "23cc7dbf8407c5d7",
-            "c70e62c2dab0948d",
             "a2646ca7f70cf3a1",
             "ca1bb0916040c1c2",
             "e3e87388c7d0f93b",
@@ -420,7 +419,6 @@
             "ac3801281720b6e5",
             "c01bcd13b0c4a02e",
             "525b35426b632c6f",
-            "968d37dc9a514021",
             "8f0845b95e54d7b0",
             "6be429142e2c899d",
             "103e0dd3829cd5c3",
@@ -435,7 +433,7 @@
         ],
         "x": 54,
         "y": 39,
-        "w": 1112,
+        "w": 1072,
         "h": 1522
     },
     {
@@ -1677,7 +1675,7 @@
         "z": "296701fb4cce3477",
         "g": "d88986ae6ac12564",
         "name": "nodeStatus",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": true,
@@ -6229,10 +6227,13 @@
         "z": "c16b0ae576a8ea46",
         "g": "1c3026bf4d3e4ae4",
         "name": "",
-        "version": "0.27.0",
+        "version": "0.27.1",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
+        "statusReportingEnabled": true,
+        "statusItem": "heatingStatus",
+        "statusTextItem": "heatingStatusText",
         "debounce": false,
         "debounceTopic": false,
         "debounceTime": 100,
@@ -6242,7 +6243,7 @@
         "debounceTrailing": true,
         "filterUniquePayload": false,
         "newMsg": false,
-        "outputs": 4,
+        "outputs": 3,
         "inputs": 1,
         "matchers": [
             {
@@ -6336,9 +6337,6 @@
             ],
             [
                 "23cc7dbf8407c5d7"
-            ],
-            [
-                "c70e62c2dab0948d"
             ]
         ]
     },
@@ -6637,24 +6635,6 @@
         "wires": []
     },
     {
-        "id": "c70e62c2dab0948d",
-        "type": "debug",
-        "z": "c16b0ae576a8ea46",
-        "g": "1c3026bf4d3e4ae4",
-        "name": "ha_automation_status_binary",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 950,
-        "y": 520,
-        "wires": []
-    },
-    {
         "id": "a2646ca7f70cf3a1",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
@@ -6930,10 +6910,13 @@
         "z": "c16b0ae576a8ea46",
         "g": "1c3026bf4d3e4ae4",
         "name": "",
-        "version": "0.27.0",
+        "version": "0.27.1",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
+        "statusReportingEnabled": false,
+        "statusItem": "",
+        "statusTextItem": "",
         "debounce": false,
         "debounceTopic": false,
         "debounceTime": 100,
@@ -6943,7 +6926,7 @@
         "debounceTrailing": true,
         "filterUniquePayload": false,
         "newMsg": false,
-        "outputs": 4,
+        "outputs": 3,
         "inputs": 1,
         "matchers": [
             {
@@ -7028,9 +7011,6 @@
             ],
             [
                 "525b35426b632c6f"
-            ],
-            [
-                "968d37dc9a514021"
             ]
         ]
     },
@@ -7206,24 +7186,6 @@
         "statusType": "auto",
         "x": 940,
         "y": 1300,
-        "wires": []
-    },
-    {
-        "id": "968d37dc9a514021",
-        "type": "debug",
-        "z": "c16b0ae576a8ea46",
-        "g": "1c3026bf4d3e4ae4",
-        "name": "ha_automation_status_binary",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "payload",
-        "statusType": "auto",
-        "x": 990,
-        "y": 1360,
         "wires": []
     },
     {
@@ -7947,6 +7909,9 @@
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
+        "statusReportingEnabled": false,
+        "statusItem": "",
+        "statusTextItem": "",
         "debounce": false,
         "debounceTopic": false,
         "debounceTime": 100,
@@ -8337,6 +8302,9 @@
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
+        "statusReportingEnabled": false,
+        "statusItem": "",
+        "statusTextItem": "",
         "debounce": false,
         "debounceTopic": false,
         "debounceTime": 100,
@@ -8397,6 +8365,9 @@
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
+        "statusReportingEnabled": true,
+        "statusItem": "waschmaschine",
+        "statusTextItem": "",
         "debounce": false,
         "debounceTopic": false,
         "debounceTime": 100,

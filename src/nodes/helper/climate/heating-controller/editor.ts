@@ -29,7 +29,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     inputs: HeatingControllerNodeOptionsDefaults.inputs,
     outputs: HeatingControllerNodeOptionsDefaults.outputs,
     outputLabels: function (index: number) {
-      const outputs = ["heatmode", "temperature", "window", "status"];
+      const outputs = ["heatmode", "temperature", "window"];
 
       return i18n(`helper.heating-controller.output.${outputs[index]}`);
     },
