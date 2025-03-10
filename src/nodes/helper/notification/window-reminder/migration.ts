@@ -1,5 +1,5 @@
-import { TimeIntervalUnit } from "@helpers/time.helper";
-import { MatchJoinMigration } from "@match-join/migration";
+import { TimeIntervalUnit } from "../../../../helpers/time.helper";
+import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
 import { EditorNodeInstance } from "node-red";
 import { WindowReminderEditorNodeProperties } from "./types";
 

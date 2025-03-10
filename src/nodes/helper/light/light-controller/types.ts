@@ -1,15 +1,15 @@
+import { EditorNodePropertiesDef } from "node-red";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
-} from "@base/types";
+} from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
   MatchJoinNodeMessage,
   MatchJoinNodeOptions,
-} from "@match-join/types";
-import { EditorNodePropertiesDef } from "node-red";
+} from "../../../flowctrl/match-join/types";
 
 export enum LightControllerTarget {
   command = "command",

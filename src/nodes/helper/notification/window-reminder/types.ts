@@ -1,15 +1,15 @@
+import { EditorNodePropertiesDef } from "node-red";
+import { TimeIntervalUnit } from "../../../../helpers/time.helper";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
-} from "@base/types";
-import { TimeIntervalUnit } from "@helpers/time.helper";
+} from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
   MatchJoinNodeOptions,
-} from "@match-join/types";
-import { EditorNodePropertiesDef } from "node-red";
+} from "../../../flowctrl/match-join/types";
 
 export enum WindowReminderTarget {
   window = "window",

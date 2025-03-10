@@ -1,8 +1,22 @@
 {
     "name": "Status",
+    "label": {
+        "scope": "Scope",
+        "initialActive": "Initial active"
+    },
     "output": {
         "status": "Node status",
         "statusText": "Text status"
+    },
+    "select": {
+        "target": {
+            "activeCondition": "Active condition"
+        },
+        "scope": {
+            "global": "Global",
+            "flow": "Flow",
+            "group": "Group"
+        }
     },
     "status": {
         "active": "Active",

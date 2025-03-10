@@ -1,5 +1,5 @@
-import BaseEditorNode, { NodeEditorFormBuilder } from "@base/editor";
 import { EditorNodeDef } from "node-red";
+import BaseEditorNode, { NodeEditorFormBuilder } from "../base/editor";
 import GateControlNode from "./";
 import {
   GateControlEditorNodeProperties,

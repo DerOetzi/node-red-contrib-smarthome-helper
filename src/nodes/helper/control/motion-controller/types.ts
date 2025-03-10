@@ -1,19 +1,19 @@
 import { EditorNodePropertiesDef } from "node-red";
 
+import { TimeIntervalUnit } from "../../../../helpers/time.helper";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
-} from "@base/types";
-import { TimeIntervalUnit } from "@helpers/time.helper";
-import { LightCommand } from "@light/light-controller/types";
-import { NotApplicableCompareFunction } from "@logical/compare/types";
+} from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
   MatchJoinNodeMessage,
   MatchJoinNodeOptions,
-} from "@match-join/types";
+} from "../../../flowctrl/match-join/types";
+import { NotApplicableCompareFunction } from "../../../logical/compare/types";
+import { LightCommand } from "../../light/light-controller/types";
 
 export enum MotionControllerCommand {
   block = "block",

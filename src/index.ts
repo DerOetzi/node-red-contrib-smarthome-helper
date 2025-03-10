@@ -1,10 +1,8 @@
-import "module-alias/register";
-
-import { FlowCtrlNodes } from "@flowctrl/nodes";
-import { HelperNodes } from "@helper/nodes";
-import { LogicalNodes } from "@logical/nodes";
-import { OperatorNodes } from "@nodes/operator/nodes";
 import { Node, NodeAPI } from "node-red";
+import { FlowCtrlNodes } from "./nodes/flowctrl/nodes";
+import { HelperNodes } from "./nodes/helper/nodes";
+import { LogicalNodes } from "./nodes/logical/nodes";
+import { OperatorNodes } from "./nodes/operator/nodes";
 import version from "./version";
 
 const nodes = [

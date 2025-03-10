@@ -13,23 +13,6 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "skipLibCheck": true,
-    "paths": {
-      "@base": ["nodes/flowctrl/base"],
-      "@base/*": ["nodes/flowctrl/base/*"],
-      "@climate/*": ["nodes/helper/climate/*"],
-      "@control/*": ["nodes/helper/control/*"],
-      "@flowctrl/*": ["nodes/flowctrl/*"],
-      "@helper/*": ["nodes/helper/*"],
-      "@helpers/*": ["helpers/*"],
-      "@light/*": ["nodes/helper/light/*"],
-      "@logical/*": ["nodes/logical/*"],
-      "@match-join": ["nodes/flowctrl/match-join"],
-      "@match-join/*": ["nodes/flowctrl/match-join/*"],
-      "@nodes/*": ["nodes/*"],
-      "@notification/*": ["nodes/helper/notification/*"],
-      "@operator/*": ["nodes/operator/*"],
-      "@version": ["version"]
-    }
   },
 
   "include": ["./src/**/*.js", "./src/**/*.ts"]

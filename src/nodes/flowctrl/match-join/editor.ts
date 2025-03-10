@@ -1,8 +1,8 @@
+import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
-} from "@base/editor";
-import { EditorNodeDef } from "node-red";
+} from "../base/editor";
 import MatchJoinNode from "./";
 import {
   MatcherRow,
@@ -16,7 +16,7 @@ import {
 import {
   ApplicableCompareFunction,
   NotApplicableCompareFunction,
-} from "@logical/compare/types";
+} from "../../logical/compare/types";
 import { MatchJoinMigration } from "./migration";
 
 export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow> {

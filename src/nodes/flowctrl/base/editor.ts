@@ -1,6 +1,6 @@
 import { EditorNodeDef, EditorRED } from "node-red";
-import { TimeIntervalUnit } from "@helpers/time.helper";
-import version from "@version";
+import { TimeIntervalUnit } from "../../../helpers/time.helper";
+import version from "../../../version";
 import BaseNode from "./";
 import { baseMigration } from "./migration";
 import {

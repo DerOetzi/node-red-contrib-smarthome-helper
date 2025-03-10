@@ -1,5 +1,5 @@
-import { Migration } from "@base/migration";
 import { EditorNodeInstance } from "node-red";
+import { Migration } from "../base/migration";
 import { AutomationGateEditorNodeProperties } from "./types";
 
 class AutomationGateMigration extends Migration<AutomationGateEditorNodeProperties> {

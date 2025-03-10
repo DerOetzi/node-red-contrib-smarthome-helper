@@ -1,9 +1,9 @@
-import { BaseNodeDebounceData } from "@base/types";
-import MatchJoinNode from "@match-join";
-import { MatchJoinNodeData } from "@match-join/types";
-import { NodeCategory } from "@nodes/types";
-import { OperatorCategory } from "@operator/types";
 import { Node, NodeAPI } from "node-red";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import MatchJoinNode from "../../flowctrl/match-join";
+import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
+import { NodeCategory } from "../../types";
+import { OperatorCategory } from "../types";
 import {
   ArithmeticFunction,
   ArithmeticNodeDef,

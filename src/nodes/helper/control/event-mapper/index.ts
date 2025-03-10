@@ -1,8 +1,8 @@
-import { HelperControlCategory } from "@control/types";
-import MatchJoinNode from "@match-join";
-import { MatchJoinNodeData } from "@match-join/types";
-import { NodeCategory } from "@nodes/types";
 import { Node, NodeAPI } from "node-red";
+import MatchJoinNode from "../../../flowctrl/match-join";
+import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
+import { NodeCategory } from "../../../types";
+import { HelperControlCategory } from "../types";
 import {
   EventMapperNodeDef,
   EventMapperNodeOptions,

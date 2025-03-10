@@ -1,11 +1,11 @@
+import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
-} from "@base/editor";
-import { NodeEditorFormBuilderAutocompleteMatch } from "@base/types";
-import { MatchJoinEditableList } from "@match-join/editor";
-import { EditorNodeDef } from "node-red";
+} from "../../../flowctrl/base/editor";
+import { NodeEditorFormBuilderAutocompleteMatch } from "../../../flowctrl/base/types";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import {
   autocompleteEvents,
   EventMapperEditorNodeProperties,

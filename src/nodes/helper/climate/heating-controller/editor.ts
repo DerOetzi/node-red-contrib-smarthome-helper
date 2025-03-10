@@ -1,6 +1,9 @@
-import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "@base/editor";
-import { MatchJoinEditableList } from "@match-join/editor";
 import { EditorNodeDef } from "node-red";
+import BaseEditorNode, {
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import HeatingControllerNode from "./";
 import { heatingControllerMigration } from "./migration";
 import {

@@ -1711,7 +1711,7 @@
         "z": "296701fb4cce3477",
         "g": "d88986ae6ac12564",
         "name": "",
-        "version": "0.27.0",
+        "version": "0.28.0",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
@@ -1731,6 +1731,19 @@
         "newMsg": false,
         "outputs": 2,
         "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "active",
+                "compareType": "str",
+                "target": "activeCondition"
+            }
+        ],
+        "join": false,
+        "scope": "global",
         "initialActive": true,
         "x": 990,
         "y": 80,

@@ -1,10 +1,13 @@
-import { BaseNodeDebounceData, BaseNodeStatus } from "@base/types";
-import { HelperClimateCategory } from "@climate/types";
-import { convertToMilliseconds } from "@helpers/time.helper";
-import { LogicalOperation } from "@logical/op";
-import MatchJoinNode from "@match-join";
-import { NodeCategory } from "@nodes/types";
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
+import { convertToMilliseconds } from "../../../../helpers/time.helper";
+import {
+  BaseNodeDebounceData,
+  BaseNodeStatus,
+} from "../../../flowctrl/base/types";
+import MatchJoinNode from "../../../flowctrl/match-join";
+import { LogicalOperation } from "../../../logical/op";
+import { NodeCategory } from "../../../types";
+import { HelperClimateCategory } from "../types";
 import {
   HeatingControllerCommand,
   HeatingControllerNodeData,

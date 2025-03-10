@@ -1,7 +1,7 @@
-import { i18n } from "@base/editor";
-import SwitchNodeEditor from "@logical/switch/editor";
-import { SwitchNodeOptionsDefaults } from "@logical/switch/types";
 import { EditorNodeDef } from "node-red";
+import { i18n } from "../../flowctrl/base/editor";
+import SwitchNodeEditor from "../switch/editor";
+import { SwitchNodeOptionsDefaults } from "../switch/types";
 import ToggleNode from "./";
 import {
   ToggleEditorNodeProperties,

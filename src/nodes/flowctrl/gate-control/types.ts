@@ -1,13 +1,13 @@
+import { EditorNodePropertiesDef } from "node-red";
+import { TimeIntervalUnit } from "../../../helpers/time.helper";
+import { AutomationGateCommand } from "../automation-gate/types";
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
-} from "@base/types";
-import { AutomationGateCommand } from "@flowctrl/automation-gate/types";
-import { TimeIntervalUnit } from "@helpers/time.helper";
-import { EditorNodePropertiesDef } from "node-red";
+} from "../base/types";
 
 export interface GateControlNodeOptions extends BaseNodeOptions {
   delay: number;

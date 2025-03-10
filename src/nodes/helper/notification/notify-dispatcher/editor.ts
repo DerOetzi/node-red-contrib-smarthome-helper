@@ -1,6 +1,9 @@
-import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "@base/editor";
-import { MatchJoinEditableList } from "@match-join/editor";
 import { EditorNodeDef } from "node-red";
+import BaseEditorNode, {
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import NotifyDispatcherNode from "./";
 import { notifyDispatcherMigration } from "./migration";
 import {
@@ -22,7 +25,9 @@ const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProper
     icon: "font-awesome/fa-bell",
     defaults: NotifyDispatcherEditorNodeDefaults,
     label: function () {
-      return this.name?.trim() ? this.name.trim() : i18n("helper.notify-dispatcher.name");
+      return this.name?.trim()
+        ? this.name.trim()
+        : i18n("helper.notify-dispatcher.name");
     },
     inputs: NotifyDispatcherNodeOptionsDefaults.inputs,
     outputs: NotifyDispatcherNodeOptionsDefaults.outputs,

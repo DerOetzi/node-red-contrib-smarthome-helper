@@ -1,5 +1,5 @@
-import { MatchJoinMigration } from "@match-join/migration";
 import { EditorNodeInstance } from "node-red";
+import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
 import { LightControllerEditorNodeProperties } from "./types";
 
 export class LightControllerMigration extends MatchJoinMigration<LightControllerEditorNodeProperties> {

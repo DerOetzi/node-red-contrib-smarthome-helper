@@ -1,11 +1,11 @@
+import { EditorNodePropertiesDef } from "node-red";
 import {
   SwitchEditorNodeProperties,
   SwitchEditorNodePropertiesDefaults,
   SwitchNodeDef,
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
-} from "@logical/switch/types";
-import { EditorNodePropertiesDef } from "node-red";
+} from "../switch/types";
 
 export enum LogicalFunction {
   and = "and",

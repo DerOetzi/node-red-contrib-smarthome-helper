@@ -1,7 +1,7 @@
-import BaseNode from "@base";
-import { BaseNodeDebounceData } from "@base/types";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "@nodes/types";
 import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
+import BaseNode from "../../flowctrl/base";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
 import {
   DebounceFlank,
   LogicalOpCategory,

@@ -1,11 +1,11 @@
+import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
-} from "@base/editor";
-import { MatchJoinEditableList } from "@match-join/editor";
-import { matchJoinMigration } from "@match-join/migration";
-import { EditorNodeDef } from "node-red";
+} from "../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
+import { matchJoinMigration } from "../../flowctrl/match-join/migration";
 import ArithmeticNode from "./";
 import {
   AdditionalValueRow,

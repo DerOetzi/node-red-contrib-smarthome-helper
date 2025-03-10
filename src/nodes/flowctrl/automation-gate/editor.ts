@@ -1,5 +1,5 @@
-import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "@base/editor";
 import { EditorNodeDef } from "node-red";
+import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "../base/editor";
 import AutomationGateNode from "./";
 import { automationGateMigration } from "./migration";
 import {

@@ -1,6 +1,6 @@
-import { MatchJoinMigration } from "@match-join/migration";
-import { MatcherRow } from "@match-join/types";
 import { EditorNodeInstance } from "node-red";
+import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
+import { MatcherRow } from "../../../flowctrl/match-join/types";
 import {
   MotionControllerEditorNodeProperties,
   MotionControllerTarget,

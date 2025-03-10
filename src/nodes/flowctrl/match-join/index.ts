@@ -1,8 +1,8 @@
-import BaseNode from "@base";
-import { BaseCategory, NodeStatus } from "@base/types";
-import { CompareOperation } from "@logical/compare";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "@nodes/types";
 import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
+import { CompareOperation } from "../../logical/compare";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import BaseNode from "../base";
+import { BaseCategory, NodeStatus } from "../base/types";
 import {
   MatchJoinNodeData,
   MatchJoinNodeDef,

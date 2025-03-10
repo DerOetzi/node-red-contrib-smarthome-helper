@@ -1,14 +1,17 @@
-import BaseNode from "@base";
-import { BaseCategory, BaseNodeDebounceData, NodeStatus } from "@base/types";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "@nodes/types";
-import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
+import { Node, NodeAPI } from "node-red";
+import { NodeCategory } from "../../types";
+import BaseNode from "../base";
+import { BaseCategory, BaseNodeDebounceData, NodeStatus } from "../base/types";
+import MatchJoinNode from "../match-join";
+import { MatchJoinNodeData } from "../match-join/types";
 import {
   StatusNodeDef,
   StatusNodeOptions,
   StatusNodeOptionsDefaults,
+  StatusNodeTarget,
 } from "./types";
 
-export default class StatusNode extends BaseNode<
+export default class StatusNode extends MatchJoinNode<
   StatusNodeDef,
   StatusNodeOptions
 > {
@@ -29,31 +32,27 @@ export default class StatusNode extends BaseNode<
     this.nodeStatus = this.config.initialActive;
   }
 
-  public onInput(
-    msg: NodeMessageInFlow,
-    _send: NodeSendFunction,
-    done: NodeDoneFunction
-  ): void {
-    if (typeof msg.payload !== "boolean") {
-      return done(
-        new Error("Payload must be a boolean value to set the status")
-      );
-    }
+  protected matched(data: MatchJoinNodeData): void {
+    const msg = data.msg;
+    const topic = msg.topic;
 
-    this.nodeStatus = msg.payload;
+    if (topic === StatusNodeTarget.activeCondition) {
+      if (typeof msg.payload !== "boolean") {
+        this.node.error("Invalid payload for active condition");
+        return;
+      }
 
-    if (this.nodeStatus) {
-      this.inactiveQueue.forEach((id) => {
-        const controller = this.getController(id);
-        if (controller) {
-          this.handleStatusReport(id, controller);
-        }
-      });
-      this.inactiveQueue.clear();
-    }
+      this.nodeStatus = msg.payload;
 
-    if (done) {
-      done();
+      if (this.nodeStatus) {
+        this.inactiveQueue.forEach((id) => {
+          const controller = this.getController(id);
+          if (controller) {
+            this.handleStatusReport(id, controller);
+          }
+        });
+        this.inactiveQueue.clear();
+      }
     }
   }
 

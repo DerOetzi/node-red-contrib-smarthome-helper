@@ -1,6 +1,6 @@
-import SwitchNode from "@logical/switch";
-import { NodeDoneFunction, NodeSendFunction } from "@nodes/types";
 import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
+import { NodeDoneFunction, NodeSendFunction } from "../../types";
+import SwitchNode from "../switch";
 import {
   ToggleNodeDef,
   ToggleNodeOptions,

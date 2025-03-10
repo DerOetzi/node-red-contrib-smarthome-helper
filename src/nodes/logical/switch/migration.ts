@@ -1,5 +1,5 @@
-import { Migration } from "@base/migration";
 import { EditorNodeInstance } from "node-red";
+import { Migration } from "../../flowctrl/base/migration";
 import { SwitchEditorNodeProperties } from "./types";
 
 export class SwitchMigration<

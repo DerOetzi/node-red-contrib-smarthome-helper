@@ -1,6 +1,6 @@
-import { i18n, NodeEditorFormBuilder } from "@base/editor";
-import SwitchEditorNode from "@logical/switch/editor";
 import { EditorNodeDef } from "node-red";
+import { i18n, NodeEditorFormBuilder } from "../../flowctrl/base/editor";
+import SwitchEditorNode from "../switch/editor";
 import LogicalOpNode from "./";
 import { logicalOpMigration } from "./migration";
 import {

@@ -1,10 +1,10 @@
+import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
-} from "@base/editor";
-import { MatchJoinEditableList } from "@match-join/editor";
-import { EditorNodeDef } from "node-red";
+} from "../../../flowctrl/base/editor";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import LightControllerNode from "./";
 import { lightControllerMigration } from "./migration";
 import {

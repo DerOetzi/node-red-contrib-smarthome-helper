@@ -1,13 +1,13 @@
-import { BaseNodeDebounceData } from "@base/types";
-import { convertToMilliseconds } from "@helpers/time.helper";
-import MatchJoinNode from "@match-join";
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
+import { convertToMilliseconds } from "../../../../helpers/time.helper";
+import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
+import MatchJoinNode from "../../../flowctrl/match-join";
 
-import { HelperControlCategory } from "@control/types";
-import { LightCommand } from "@light/light-controller/types";
-import { LogicalOperation } from "@logical/op";
-import { MatchJoinNodeData } from "@match-join/types";
-import { NodeCategory } from "@nodes/types";
+import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
+import { LogicalOperation } from "../../../logical/op";
+import { NodeCategory } from "../../../types";
+import { LightCommand } from "../../light/light-controller/types";
+import { HelperControlCategory } from "../types";
 import {
   MotionControllerCommand,
   MotionControllerNodeDef,

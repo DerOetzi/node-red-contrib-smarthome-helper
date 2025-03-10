@@ -1,4 +1,4 @@
-import { NodeCategory } from "@nodes/types";
+import { NodeCategory } from "../../types";
 
 export const HelperClimateCategory: NodeCategory = {
   label: "Smarthome Helper Climate",

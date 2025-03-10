@@ -1,7 +1,11 @@
-import BaseNode from "@base";
-import { BaseNodeDebounceData, NodeSendOptions, NodeStatus } from "@base/types";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "@nodes/types";
 import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import BaseNode from "../base";
+import {
+  BaseNodeDebounceData,
+  NodeSendOptions,
+  NodeStatus,
+} from "../base/types";
 import {
   AutomationGateCategory,
   AutomationGateCommand,

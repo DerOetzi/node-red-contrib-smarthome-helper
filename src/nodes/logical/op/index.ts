@@ -1,8 +1,8 @@
-import { BaseNodeDebounceData } from "@base/types";
-import { cloneDeep } from "@helpers/object.helper";
-import SwitchNode from "@logical/switch";
-import { NodeDoneFunction, NodeSendFunction } from "@nodes/types";
 import { Node, NodeAPI, NodeMessageInFlow, NodeStatusFill } from "node-red";
+import { cloneDeep } from "../../../helpers/object.helper";
+import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import { NodeDoneFunction, NodeSendFunction } from "../../types";
+import SwitchNode from "../switch";
 import {
   LogicalFunction,
   LogicalOpNodeDef,

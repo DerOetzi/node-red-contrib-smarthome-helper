@@ -1,7 +1,3 @@
-import { formatDate } from "@helpers/date.helper";
-import { cloneDeep, isEqual } from "@helpers/object.helper";
-import { convertToMilliseconds } from "@helpers/time.helper";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "@nodes/types";
 import {
   Node,
   NodeAPI,
@@ -9,6 +5,10 @@ import {
   NodeMessageInFlow,
   NodeStatusFill,
 } from "node-red";
+import { formatDate } from "../../../helpers/date.helper";
+import { cloneDeep, isEqual } from "../../../helpers/object.helper";
+import { convertToMilliseconds } from "../../../helpers/time.helper";
+import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
 import {
   BaseCategory,
   BaseNodeDebounceData,
