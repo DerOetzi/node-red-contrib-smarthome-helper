@@ -1,4 +1,5 @@
 {
+    "name": "Flow-Steuerung",
     "migrated": "Der Knoten wurde auf Version {version} migriert.",
     "label": {
         "name": "Name",

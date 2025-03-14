@@ -3,7 +3,7 @@ import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
   BaseNodeDef,
-  BaseNodeOptionsDefaults
+  BaseNodeOptionsDefaults,
 } from "../base/types";
 import { MatcherRowDefaults, MatchJoinNodeOptions } from "../match-join/types";
 
@@ -34,6 +34,8 @@ export const StatusNodeOptionsDefaults: StatusNodeOptions = {
   join: false,
   discardNotMatched: true,
   minMsgCount: 1,
+  statusReportingEnabled: false,
+  filterUniquePayload: true,
   scope: StatusNodeScope.flow,
   initialActive: false,
   outputs: 2,
@@ -62,6 +64,14 @@ export const StatusEditorNodePropertiesDefaults: EditorNodePropertiesDef<StatusE
     },
     minMsgCount: {
       value: StatusNodeOptionsDefaults.minMsgCount,
+      required: true,
+    },
+    statusReportingEnabled: {
+      value: StatusNodeOptionsDefaults.statusReportingEnabled,
+      required: true,
+    },
+    filterUniquePayload: {
+      value: StatusNodeOptionsDefaults.filterUniquePayload,
       required: true,
     },
     scope: {

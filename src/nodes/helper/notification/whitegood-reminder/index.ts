@@ -33,7 +33,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
         break;
       case "runs":
         this.runs = data.msg.payload as number;
-        this.setNodeStatus(this.nodeStatus);
+        this.triggerNodeStatus();
         break;
     }
   }

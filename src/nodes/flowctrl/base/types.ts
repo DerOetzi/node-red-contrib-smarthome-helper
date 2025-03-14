@@ -78,7 +78,9 @@ export const BaseNodeOptionsDefaults: BaseNodeOptions = {
   ...BaseNodeDebounceOptionsDefaults,
 };
 
-export interface BaseNodeDef extends NodeDef, BaseNodeOptions {}
+export interface BaseNodeDef extends NodeDef, BaseNodeOptions {
+  g?: string;
+}
 
 export interface BaseEditorNodeProperties
   extends EditorNodeProperties,
@@ -158,12 +160,6 @@ export interface NodeSendOptions {
   payload?: any;
   output?: number;
   additionalAttributes?: Record<string, any>;
-}
-
-export interface NodeStatusOutputConfig {
-  automatic?: boolean;
-  output: number;
-  topic: string;
 }
 
 export type NodeStatus = string | number | boolean | Date | null;

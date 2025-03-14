@@ -1,4 +1,5 @@
 {
+    "name": "Flow control",
     "migrated": "The node has been migrated to version {version}.",
     "label": {
         "name": "Name",

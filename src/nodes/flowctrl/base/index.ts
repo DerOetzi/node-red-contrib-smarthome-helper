@@ -19,8 +19,9 @@ import {
   BaseNodeStatus,
   NodeSendOptions,
   NodeStatus,
-  NodeStatusOutputConfig,
 } from "./types";
+import { StatusNodesConnector } from "../status/connector";
+import StatusNode from "../status";
 
 export default class BaseNode<
   T extends BaseNodeDef = BaseNodeDef,
@@ -51,9 +52,9 @@ export default class BaseNode<
 
   private debouncing: Record<string, BaseNodeDebounceRunning>;
 
-  private lastSentPayloads: Record<string, any> = {};
+  private readonly statusListeners: Set<StatusNode> = new Set();
 
-  private statusOutput?: NodeStatusOutputConfig;
+  private lastSentPayloads: Record<string, any> = {};
 
   constructor(
     protected readonly RED: NodeAPI,
@@ -70,13 +71,26 @@ export default class BaseNode<
     this.debouncing = {};
   }
 
-  public registerListeners() {
+  public register(statusNodesConnector: StatusNodesConnector): void {
     this.node.on("input", this.onInput.bind(this));
     this.node.on("close", this.onClose.bind(this));
+
+    if (this.config.statusReportingEnabled) {
+      statusNodesConnector.addReportingNode(this);
+    }
   }
 
-  protected registerStatusOutput(options: NodeStatusOutputConfig) {
-    this.statusOutput = options;
+  public registerStatusListener(statusNode: StatusNode): boolean {
+    const shouldRegister = statusNode.shouldRegister(
+      this.config.z,
+      this.config.g
+    );
+
+    if (shouldRegister) {
+      this.statusListeners.add(statusNode);
+    }
+
+    return shouldRegister;
   }
 
   protected onClose() {
@@ -86,6 +100,7 @@ export default class BaseNode<
   public cleanup() {
     this.resetFilter();
     this.resetDebounce();
+    this.statusListeners.clear();
   }
 
   protected resetFilter(): void {
@@ -143,7 +158,7 @@ export default class BaseNode<
         }
 
         if (this.config.debounceShowStatus) {
-          this.setNodeStatus("Debounce", "blue", "Debounce");
+          this.viewNodeStatus("Debounce", "blue", "Debounce");
         }
 
         this.debouncing[key].timer = setTimeout(
@@ -154,7 +169,7 @@ export default class BaseNode<
             }
 
             if (this.config.debounceShowStatus) {
-              this.setNodeStatus(this.nodeStatus);
+              this.viewNodeStatus(this.nodeStatus);
             }
 
             if (this.config.debounceTrailing) {
@@ -260,23 +275,19 @@ export default class BaseNode<
 
   protected set nodeStatus(status: NodeStatus) {
     this._nodeStatus = status;
-    this.setNodeStatus(status);
+    this.triggerNodeStatus();
   }
 
-  public get statusReport(): BaseNodeStatus | null {
-    if (this.config.statusReportingEnabled) {
-      return {
-        status: this.nodeStatus,
-        statusItem: this.config.statusItem,
-        statusText: this.statusTextFormatter(this.nodeStatus),
-        statusTextItem: this.config.statusTextItem,
-      };
-    }
-
-    return null;
+  protected triggerNodeStatus() {
+    this.viewNodeStatus(this._nodeStatus);
+    this.notifyStatusNodes();
   }
 
-  protected setNodeStatus(
+  public get statusReportingEnabled(): boolean {
+    return this.config.statusReportingEnabled ?? false;
+  }
+
+  protected viewNodeStatus(
     status: NodeStatus,
     color?: NodeStatusFill,
     text?: string
@@ -312,6 +323,19 @@ export default class BaseNode<
     return text;
   }
 
+  public notifyStatusNodes() {
+    const statusReport: BaseNodeStatus = {
+      status: this.nodeStatus,
+      statusItem: this.config.statusItem,
+      statusText: this.statusTextFormatter(this.nodeStatus),
+      statusTextItem: this.config.statusTextItem,
+    };
+
+    this.statusListeners.forEach((statusNode) => {
+      statusNode.handleStatusReport(statusReport);
+    });
+  }
+
   protected sendMsgToOutput(msg: NodeMessage, options: NodeSendOptions = {}) {
     if (options.additionalAttributes) {
       Object.assign(msg, options.additionalAttributes);
@@ -323,5 +347,9 @@ export default class BaseNode<
     const send: NodeSendFunction =
       options.send ?? this.node.send.bind(this.node);
     send(msgs);
+  }
+
+  public toString(): string {
+    return `${this.constructor.name} [${this.node.id}]`;
   }
 }

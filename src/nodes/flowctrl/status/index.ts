@@ -1,13 +1,19 @@
 import { Node, NodeAPI } from "node-red";
 import { NodeCategory } from "../../types";
-import BaseNode from "../base";
-import { BaseCategory, BaseNodeDebounceData, NodeStatus } from "../base/types";
+import {
+  BaseCategory,
+  BaseNodeDebounceData,
+  BaseNodeStatus,
+  NodeStatus,
+} from "../base/types";
 import MatchJoinNode from "../match-join";
 import { MatchJoinNodeData } from "../match-join/types";
+import { StatusNodesConnector } from "./connector";
 import {
   StatusNodeDef,
   StatusNodeOptions,
   StatusNodeOptionsDefaults,
+  StatusNodeScope,
   StatusNodeTarget,
 } from "./types";
 
@@ -18,18 +24,30 @@ export default class StatusNode extends MatchJoinNode<
   protected static readonly _nodeCategory: NodeCategory = BaseCategory;
   protected static readonly _nodeType: string = "status";
 
-  private readonly controllerCache: Map<string, BaseNode | null> = new Map();
-  private readonly inactiveQueue: Set<string> = new Set();
+  private readonly inactiveQueue: Map<string, BaseNodeStatus> = new Map();
 
   constructor(RED: NodeAPI, node: Node, config: StatusNodeDef) {
     super(RED, node, config, StatusNodeOptionsDefaults);
+    this.nodeStatus = this.config.initialActive;
   }
 
-  public registerListeners(): void {
-    super.registerListeners();
-    this.RED.events.once("flows:started", this.onFlowsStarted.bind(this));
-    this.RED.events.on("node-status", this.onNodeStatus.bind(this));
-    this.nodeStatus = this.config.initialActive;
+  public register(statusNodesConnector: StatusNodesConnector): void {
+    super.register(statusNodesConnector);
+    statusNodesConnector.addStatusNode(this);
+  }
+
+  public shouldRegister(flowId: string, groupId?: string): boolean {
+    let shouldRegister = this.config.scope === StatusNodeScope.global;
+
+    shouldRegister =
+      shouldRegister ||
+      (this.config.scope === StatusNodeScope.flow && flowId === this.config.z);
+    shouldRegister =
+      shouldRegister ||
+      (this.config.scope === StatusNodeScope.group &&
+        groupId === this.config.g);
+
+    return shouldRegister;
   }
 
   protected matched(data: MatchJoinNodeData): void {
@@ -45,71 +63,30 @@ export default class StatusNode extends MatchJoinNode<
       this.nodeStatus = msg.payload;
 
       if (this.nodeStatus) {
-        this.inactiveQueue.forEach((id) => {
-          const controller = this.getController(id);
-          if (controller) {
-            this.handleStatusReport(id, controller);
-          }
+        this.inactiveQueue.forEach((statusReport) => {
+          this.handleStatusReport(statusReport);
         });
         this.inactiveQueue.clear();
       }
     }
   }
 
-  private onFlowsStarted(): void {
-    this.RED.nodes.eachNode((nodeDef) => {
-      const controller = this.getController(nodeDef.id);
-      if (controller) {
-        this.handleStatusReport(nodeDef.id, controller);
-      }
-    });
-  }
+  public handleStatusReport(statusReport: BaseNodeStatus): void {
+    if (this.nodeStatus) {
+      this.debounce({
+        msg: { topic: statusReport.statusItem },
+        payload: statusReport.status,
+      });
 
-  private onNodeStatus(input: { id: string; status?: any }): void {
-    const controller = this.getController(input.id);
-    if (controller) {
-      this.handleStatusReport(input.id, controller);
-    }
-  }
-
-  private getController(id: string): BaseNode | null {
-    if (this.controllerCache.has(id)) {
-      return this.controllerCache.get(id) || null;
-    }
-
-    let controller: BaseNode | null = null;
-
-    const node = this.RED.nodes.getNode(id);
-    if (node) {
-      if (Object.keys(node).includes("smarthomeHelperController")) {
-        controller = (node as any).smarthomeHelperController;
-      }
-
-      this.controllerCache.set(id, controller);
-    }
-
-    return controller;
-  }
-
-  private handleStatusReport(id: string, controller: BaseNode): void {
-    const statusReport = controller.statusReport;
-    if (statusReport) {
-      if (this.nodeStatus) {
+      if (statusReport.statusTextItem) {
         this.debounce({
-          msg: { topic: statusReport.statusItem || id },
-          payload: statusReport.status,
+          msg: { topic: statusReport.statusTextItem },
+          payload: statusReport.statusText,
+          output: 1,
         });
-
-        if (statusReport.statusTextItem) {
-          this.debounce({
-            msg: { topic: statusReport.statusTextItem },
-            payload: statusReport.statusText,
-            output: 1,
-          });
-        }
-      } else {
-        this.inactiveQueue.add(id);
       }
+    } else {
+      this.inactiveQueue.set(statusReport.statusItem, statusReport);
     }
   }
 

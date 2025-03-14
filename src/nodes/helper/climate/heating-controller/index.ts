@@ -1,9 +1,6 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
-import {
-  BaseNodeDebounceData,
-  BaseNodeStatus,
-} from "../../../flowctrl/base/types";
+import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { LogicalOperation } from "../../../logical/op";
 import { NodeCategory } from "../../../types";
@@ -30,7 +27,6 @@ export default class HeatingControllerNode extends MatchJoinNode<
   private activeConditions: Record<string, boolean> = {};
   private windowsStates: Record<string, boolean> = {};
 
-  private _blocked: boolean = false;
   private lastHeatmode: string = "";
 
   private comfortTemperature: number = 22;
@@ -69,15 +65,15 @@ export default class HeatingControllerNode extends MatchJoinNode<
         break;
       case HeatingControllerTarget.comfortTemperature:
         this.comfortTemperature = msg.payload as number;
-        this.sendAction((this.nodeStatus as string) ?? "");
+        this.sendAction(this.lastHeatmode);
         break;
       case HeatingControllerTarget.ecoTemperatureOffset:
         this.ecoTemperatureOffset = msg.payload as number;
-        this.sendAction((this.nodeStatus as string) ?? "");
+        this.sendAction(this.lastHeatmode);
         break;
       case HeatingControllerTarget.pvBoost:
         this.pvBoost = msg.payload as boolean;
-        this.sendAction((this.nodeStatus as string) ?? "");
+        this.sendAction(this.lastHeatmode);
         break;
       case HeatingControllerTarget.command:
         this.blocked = msg.command === HeatingControllerCommand.block;
@@ -140,11 +136,11 @@ export default class HeatingControllerNode extends MatchJoinNode<
   }
 
   private get blocked(): boolean {
-    return this._blocked;
+    return !(this.nodeStatus as boolean);
   }
 
   private set blocked(value: boolean) {
-    this._blocked = value;
+    this.nodeStatus = !value;
     value ? this.startTimer() : this.clearTimer();
   }
 
@@ -222,23 +218,9 @@ export default class HeatingControllerNode extends MatchJoinNode<
   protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
     if (data.output === 0) {
       this.lastHeatmode = data.payload;
-      this.nodeStatus = data.payload;
-    } else if (this.lastHeatmode) {
-      this.nodeStatus = this.lastHeatmode;
-    }
-  }
-
-  public get statusReport(): BaseNodeStatus | null {
-    if (this.config.statusReportingEnabled) {
-      return {
-        status: !this.blocked,
-        statusItem: this.config.statusItem,
-        statusText: this.statusTextFormatter(this.nodeStatus),
-        statusTextItem: this.config.statusTextItem,
-      };
     }
 
-    return null;
+    this.triggerNodeStatus();
   }
 
   protected statusColor(status: any): NodeStatusFill {
@@ -263,10 +245,10 @@ export default class HeatingControllerNode extends MatchJoinNode<
       text = this.RED._("helper.heating-controller.status.automationOn");
     }
 
-    const targetTemperature = this.determineHeatingSetpoint(status);
+    const targetTemperature = this.determineHeatingSetpoint(this.lastHeatmode);
 
     if (targetTemperature >= 0) {
-      text += " - " + status;
+      text += " - " + this.lastHeatmode;
       text += " (" + targetTemperature + " °C";
 
       if (this.config.pvBoostEnabled && this.pvBoost) {

@@ -27,7 +27,6 @@ export default class MotionControllerNode extends MatchJoinNode<
   private timer: NodeJS.Timeout | null = null;
 
   private motionStates: Record<string, boolean> = {};
-  private blocked: boolean = false;
   private darkness: boolean = true;
   private night: boolean = false;
   private lastAction: string = "";
@@ -38,7 +37,15 @@ export default class MotionControllerNode extends MatchJoinNode<
   }
 
   private initialize() {
-    this.nodeStatus = !this.blocked;
+    this.blocked = false;
+  }
+
+  private get blocked(): boolean {
+    return !this.nodeStatus;
+  }
+
+  private set blocked(value: boolean) {
+    this.nodeStatus = !value;
   }
 
   protected onClose(): void {
@@ -88,7 +95,7 @@ export default class MotionControllerNode extends MatchJoinNode<
       }
     }
 
-    this.nodeStatus = !this.blocked;
+    this.triggerNodeStatus();
   }
 
   private sendAction(action: string): void {
@@ -97,7 +104,7 @@ export default class MotionControllerNode extends MatchJoinNode<
   }
 
   protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
-    this.nodeStatus = !this.blocked;
+    this.triggerNodeStatus();
   }
 
   private startTimer(): void {
@@ -135,7 +142,7 @@ export default class MotionControllerNode extends MatchJoinNode<
   }
 
   private handleCommand(msg: MotionControllerNodeMessage): void {
-    this.nodeStatus = !this.blocked;
+    this.triggerNodeStatus();
 
     if (this.blocked) {
       this.clearTimer();

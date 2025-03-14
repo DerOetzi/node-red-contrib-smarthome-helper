@@ -55,7 +55,10 @@
       "66fd0c59f182b4ba",
       "5e21bd5e7cef5778",
       "3c6ae3e6a32d8b94",
-      "4ad943d779d23d47"
+      "4ad943d779d23d47",
+      "8409053b1e77fea5",
+      "6a18ea2d2104e087",
+      "819fcaaa4b04964a"
     ],
     "x": 54,
     "y": 39,
@@ -1358,5 +1361,94 @@
         "17b52eb0b0876c80"
       ]
     ]
+  },
+  {
+    "id": "8409053b1e77fea5",
+    "type": "flowctrl-status",
+    "z": "c16b0ae576a8ea46",
+    "g": "1c3026bf4d3e4ae4",
+    "name": "",
+    "version": "0.28.0",
+    "migrated": false,
+    "topic": "topic",
+    "topicType": "msg",
+    "initializeDelay": "",
+    "initializeDelayUnit": "",
+    "statusReportingEnabled": false,
+    "statusItem": "",
+    "statusTextItem": "",
+    "debounce": false,
+    "debounceTopic": false,
+    "debounceTime": 100,
+    "debounceShowStatus": false,
+    "debounceUnit": "ms",
+    "debounceLeading": false,
+    "debounceTrailing": true,
+    "filterUniquePayload": true,
+    "newMsg": false,
+    "outputs": 2,
+    "inputs": 1,
+    "matchers": [
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "",
+        "compareType": "str",
+        "target": "activeCondition"
+      }
+    ],
+    "discardNotMatched": true,
+    "join": false,
+    "minMsgCount": 1,
+    "scope": "group",
+    "initialActive": true,
+    "x": 610,
+    "y": 140,
+    "wires": [
+      [
+        "6a18ea2d2104e087"
+      ],
+      [
+        "819fcaaa4b04964a"
+      ]
+    ]
+  },
+  {
+    "id": "6a18ea2d2104e087",
+    "type": "debug",
+    "z": "c16b0ae576a8ea46",
+    "g": "1c3026bf4d3e4ae4",
+    "name": "Heizungssteuerung",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "{\"k\":topic, \"v\":payload}",
+    "statusType": "jsonata",
+    "x": 790,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "819fcaaa4b04964a",
+    "type": "debug",
+    "z": "c16b0ae576a8ea46",
+    "g": "1c3026bf4d3e4ae4",
+    "name": "Heizungssteuerung",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "payload",
+    "statusType": "msg",
+    "x": 790,
+    "y": 180,
+    "wires": []
   }
 ]
