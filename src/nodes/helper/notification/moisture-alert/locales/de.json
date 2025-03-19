@@ -1,0 +1,25 @@
+{
+    "name": "Bodenfeuchtigkeitswarnung",
+    "label": {
+        "alertThreshold": "Warnschwelle",
+        "alertInterval": "Intervall zwischen Warnungen"
+    },
+    "select": {
+        "target": {
+            "moisture": "Feuchtigkeit",
+            "lastAlert": "Letzter Warnzeitpunkt"
+        }
+    },
+    "notify": {
+        "title": "Gießerinnerung",
+        "message": "Die Pflanze {name} benötigt Wasser."
+    },
+    "output": {
+        "notification": "Benachrichtigung",
+        "lastAlert": "Letzter Warnzeitpunkt"
+    },
+    "status": {
+        "alert": "Braucht Wasser",
+        "ok": "OK"
+    }
+}

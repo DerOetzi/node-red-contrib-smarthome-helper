@@ -8,68 +8,9 @@
     "env": []
   },
   {
-    "id": "1c3026bf4d3e4ae4",
-    "type": "group",
-    "z": "c16b0ae576a8ea46",
-    "name": "Heating controller example",
-    "style": {
-      "label": true
-    },
-    "nodes": [
-      "2ee35a20030c34b2",
-      "08467aa9270b32cc",
-      "5de713372864d334",
-      "9058491fd0d4694a",
-      "d16060fa54ec1a98",
-      "f129a2cd81f4ef49",
-      "fe4e0c646d288e4f",
-      "389d45ec3acc891e",
-      "5fefc09e55dd0c17",
-      "3ba12dfc100b7697",
-      "c172755f33dbd131",
-      "23cc7dbf8407c5d7",
-      "a2646ca7f70cf3a1",
-      "ca1bb0916040c1c2",
-      "e3e87388c7d0f93b",
-      "49b1d175efc49625",
-      "912bc76f8770c3f6",
-      "7aa42656b2c01125",
-      "f8c09063e0e83426",
-      "da11ff1382147ae8",
-      "f9379e759c76585d",
-      "17b52eb0b0876c80",
-      "fc6f7d7f5fb81370",
-      "7b3e095ee4844ecd",
-      "548b1ddd805175a4",
-      "9a9428086baeccec",
-      "ac3801281720b6e5",
-      "c01bcd13b0c4a02e",
-      "525b35426b632c6f",
-      "8f0845b95e54d7b0",
-      "6be429142e2c899d",
-      "103e0dd3829cd5c3",
-      "a67682af526446c2",
-      "3e157b3668ce322f",
-      "265cef0c27eaef9d",
-      "111971fe4224f271",
-      "66fd0c59f182b4ba",
-      "5e21bd5e7cef5778",
-      "3c6ae3e6a32d8b94",
-      "4ad943d779d23d47",
-      "8409053b1e77fea5",
-      "6a18ea2d2104e087",
-      "819fcaaa4b04964a"
-    ],
-    "x": 54,
-    "y": 39,
-    "w": 1072,
-    "h": 1522
-  },
-  {
     "id": "2ee35a20030c34b2",
     "type": "helper-heating-controller",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "version": "0.27.1",
     "migrated": false,
@@ -188,7 +129,6 @@
     "id": "08467aa9270b32cc",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -218,7 +158,6 @@
     "id": "5de713372864d334",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -248,7 +187,6 @@
     "id": "9058491fd0d4694a",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -278,7 +216,6 @@
     "id": "d16060fa54ec1a98",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -308,7 +245,6 @@
     "id": "f129a2cd81f4ef49",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -338,7 +274,6 @@
     "id": "fe4e0c646d288e4f",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -368,7 +303,6 @@
     "id": "389d45ec3acc891e",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -398,7 +332,6 @@
     "id": "5fefc09e55dd0c17",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -428,7 +361,6 @@
     "id": "3ba12dfc100b7697",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "ha_heatmode_select",
     "active": false,
     "tosidebar": true,
@@ -446,7 +378,6 @@
     "id": "c172755f33dbd131",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "ha_setpoint_temperature",
     "active": false,
     "tosidebar": true,
@@ -464,7 +395,6 @@
     "id": "23cc7dbf8407c5d7",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "window_open",
     "active": false,
     "tosidebar": true,
@@ -482,7 +412,6 @@
     "id": "a2646ca7f70cf3a1",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -512,7 +441,6 @@
     "id": "ca1bb0916040c1c2",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -542,7 +470,6 @@
     "id": "e3e87388c7d0f93b",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -572,7 +499,6 @@
     "id": "49b1d175efc49625",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -602,7 +528,6 @@
     "id": "912bc76f8770c3f6",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -632,7 +557,6 @@
     "id": "7aa42656b2c01125",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -662,7 +586,6 @@
     "id": "f8c09063e0e83426",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -692,7 +615,6 @@
     "id": "da11ff1382147ae8",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -722,7 +644,6 @@
     "id": "f9379e759c76585d",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -752,7 +673,6 @@
     "id": "17b52eb0b0876c80",
     "type": "helper-heating-controller",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "version": "0.27.1",
     "migrated": false,
@@ -862,7 +782,6 @@
     "id": "fc6f7d7f5fb81370",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -892,7 +811,6 @@
     "id": "7b3e095ee4844ecd",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -922,7 +840,6 @@
     "id": "548b1ddd805175a4",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -952,7 +869,6 @@
     "id": "9a9428086baeccec",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -982,7 +898,6 @@
     "id": "ac3801281720b6e5",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "ha_heatmode_select",
     "active": false,
     "tosidebar": true,
@@ -1000,7 +915,6 @@
     "id": "c01bcd13b0c4a02e",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "ha_setpoint_temperature",
     "active": false,
     "tosidebar": true,
@@ -1018,7 +932,6 @@
     "id": "525b35426b632c6f",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "window_open",
     "active": false,
     "tosidebar": true,
@@ -1036,7 +949,6 @@
     "id": "8f0845b95e54d7b0",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1066,7 +978,6 @@
     "id": "6be429142e2c899d",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1096,7 +1007,6 @@
     "id": "103e0dd3829cd5c3",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1126,7 +1036,6 @@
     "id": "a67682af526446c2",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1156,7 +1065,6 @@
     "id": "3e157b3668ce322f",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1186,7 +1094,6 @@
     "id": "265cef0c27eaef9d",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1216,7 +1123,6 @@
     "id": "111971fe4224f271",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1246,7 +1152,6 @@
     "id": "66fd0c59f182b4ba",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1276,7 +1181,6 @@
     "id": "5e21bd5e7cef5778",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1306,7 +1210,6 @@
     "id": "3c6ae3e6a32d8b94",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1336,7 +1239,6 @@
     "id": "4ad943d779d23d47",
     "type": "inject",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "props": [
       {
@@ -1366,7 +1268,6 @@
     "id": "8409053b1e77fea5",
     "type": "flowctrl-status",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "",
     "version": "0.28.0",
     "migrated": false,
@@ -1419,7 +1320,6 @@
     "id": "6a18ea2d2104e087",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "Heizungssteuerung",
     "active": false,
     "tosidebar": true,
@@ -1437,7 +1337,6 @@
     "id": "819fcaaa4b04964a",
     "type": "debug",
     "z": "c16b0ae576a8ea46",
-    "g": "1c3026bf4d3e4ae4",
     "name": "Heizungssteuerung",
     "active": false,
     "tosidebar": true,

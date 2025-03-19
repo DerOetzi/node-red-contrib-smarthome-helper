@@ -1,0 +1,25 @@
+{
+    "name": "Moisture Alert",
+    "label": {
+        "alertThreshold": "Alert Threshold",
+        "alertInterval": "Interval between alerts"
+    },
+    "select": {
+        "target": {
+            "moisture": "Moisture",
+            "lastAlert": "Last Alert Timestamp"
+        }
+    },
+    "notify": {
+        "title": "Watering Reminder",
+        "message": "The plant {name} needs water."
+    },
+    "output": {
+        "notification": "Notification",
+        "lastAlert": "Last Alert Timestamp"
+    },
+    "status": {
+        "alert": "Needs water",
+        "ok": "OK"
+    }
+}
