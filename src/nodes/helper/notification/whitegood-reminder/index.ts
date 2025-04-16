@@ -1,9 +1,8 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
-import { BaseNodeDebounceData, NodeStatus } from "../../../flowctrl/base/types";
+import { NodeMessageFlow, NodeStatus } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
 import { NodeCategory } from "../../../types";
-import { HelperNotificationCategory, NotifyNodeMessage } from "../types";
+import { HelperNotificationCategory, NotifyNodeMessageFlow } from "../types";
 import {
   WhitegoodReminderNodeDef,
   WhitegoodReminderNodeOptions,
@@ -26,13 +25,13 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
     super(RED, node, config, WhitegoodReminderNodeOptionsDefaults);
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    switch (data.msg.topic) {
+  protected matched(messageFlow: NodeMessageFlow): void {
+    switch (messageFlow.topic) {
       case "power":
-        this.checkPower(data);
+        this.checkPower(messageFlow);
         break;
       case "runs":
-        this.runs = data.msg.payload as number;
+        this.runs = messageFlow.payload as number;
         this.triggerNodeStatus();
         break;
     }
@@ -48,10 +47,10 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
       this.config.cleanupEnabled && value >= this.config.cleanupInterval;
   }
 
-  private checkPower(data: MatchJoinNodeData): void {
-    const power = data.msg.payload as number;
+  private checkPower(messageFlow: NodeMessageFlow): void {
+    const power = messageFlow.payload as number;
     if (power < this.config.offPowerLimit) {
-      this.finish(data);
+      this.finish(messageFlow);
     } else if (power > this.config.standbyPowerLimit) {
       this.nodeStatus = WhitegoodStatus.running;
     } else if (this.nodeStatus === WhitegoodStatus.off) {
@@ -59,7 +58,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
     }
   }
 
-  private finish(data: MatchJoinNodeData): void {
+  private finish(messageFlow: NodeMessageFlow): void {
     if (this.nodeStatus === WhitegoodStatus.running) {
       this.runs += 1;
 
@@ -69,27 +68,29 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
 
       message = message.replace("{name}", this.config.name);
 
-      (data.msg as NotifyNodeMessage).notify = {
-        title: this.RED._("helper.whitegood-reminder.notify.title"),
-        message,
-        onlyAtHome: true,
-      };
+      const whitegoodReminderMessageFlow = NotifyNodeMessageFlow.clone(
+        messageFlow,
+        "reminder",
+        {
+          title: this.RED._("helper.whitegood-reminder.notify.title"),
+          message,
+          onlyAtHome: true,
+        }
+      );
 
-      this.debounce(data);
+      this.debounce(whitegoodReminderMessageFlow);
 
-      data.msg = {
-        ...data.msg,
-        topic: "whitegoodRuns",
-      };
-      data.payload = this.runs;
-      data.output = 1;
+      const runningMessageFlow = messageFlow.clone();
+      runningMessageFlow.topic = "whitegoodRuns";
+      runningMessageFlow.payload = this.runs;
+      runningMessageFlow.output = 1;
 
-      this.debounce(data);
+      this.debounce(runningMessageFlow);
     }
     this.nodeStatus = WhitegoodStatus.off;
   }
 
-  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+  protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
     //Do Nothing
   }
 

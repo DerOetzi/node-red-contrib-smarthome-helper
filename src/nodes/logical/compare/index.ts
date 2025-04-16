@@ -1,5 +1,5 @@
-import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
-import { NodeDoneFunction, NodeSendFunction } from "../../types";
+import { Node, NodeAPI } from "node-red";
+import { NodeMessageFlow } from "nodes/flowctrl/base/types";
 import SwitchNode from "../switch";
 import {
   ApplicableCompareFunction,
@@ -108,34 +108,26 @@ export default class CompareNode extends SwitchNode<
     super(RED, node, config, CompareNodeOptionsDefaults);
   }
 
-  protected onInput(
-    msg: NodeMessageInFlow,
-    send: NodeSendFunction,
-    done: NodeDoneFunction
-  ): void {
+  protected input(messageFlow: NodeMessageFlow): void {
     const propertyValue = this.RED.util.evaluateNodeProperty(
       this.config.property,
       this.config.propertyType,
       this.node,
-      msg
+      messageFlow.originalMsg
     );
     const compareValue = this.RED.util.evaluateNodeProperty(
       this.config.compare,
       this.config.compareType,
       this.node,
-      msg
+      messageFlow.originalMsg
     );
 
-    let result: boolean = CompareOperation.func(
+    messageFlow.payload = CompareOperation.func(
       this.config.operation,
       propertyValue,
       compareValue
     );
 
-    this.switchHandling({ msg, payload: result, send });
-
-    if (done) {
-      done();
-    }
+    this.switchHandling(messageFlow);
   }
 }

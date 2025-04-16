@@ -1,14 +1,14 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
-import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { LogicalOperation } from "../../../logical/op";
 import { NodeCategory } from "../../../types";
 import { HelperClimateCategory } from "../types";
 import {
   HeatingControllerCommand,
-  HeatingControllerNodeData,
   HeatingControllerNodeDef,
+  HeatingControllerNodeMessage,
   HeatingControllerNodeOptions,
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
@@ -51,40 +51,44 @@ export default class HeatingControllerNode extends MatchJoinNode<
     this.windowsStates = {};
   }
 
-  protected matched(data: HeatingControllerNodeData): void {
-    const msg = data.msg;
-    const topic = msg.topic;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    const topic = messageFlow.topic;
 
     switch (topic) {
       case HeatingControllerTarget.activeCondition:
         if (this.activeConditions.hasOwnProperty("__default__")) {
           delete this.activeConditions["__default__"];
         }
-        this.activeConditions[msg.originalTopic] = msg.payload as boolean;
+        this.activeConditions[messageFlow.originalTopic ?? "active"] =
+          messageFlow.payload as boolean;
         this.handleActiveCondition();
         break;
       case HeatingControllerTarget.comfortTemperature:
-        this.comfortTemperature = msg.payload as number;
+        this.comfortTemperature = messageFlow.payload as number;
         this.sendAction(this.lastHeatmode);
         break;
       case HeatingControllerTarget.ecoTemperatureOffset:
-        this.ecoTemperatureOffset = msg.payload as number;
+        this.ecoTemperatureOffset = messageFlow.payload as number;
         this.sendAction(this.lastHeatmode);
         break;
       case HeatingControllerTarget.pvBoost:
-        this.pvBoost = msg.payload as boolean;
+        this.pvBoost = messageFlow.payload as boolean;
         this.sendAction(this.lastHeatmode);
         break;
-      case HeatingControllerTarget.command:
-        this.blocked = msg.command === HeatingControllerCommand.block;
-        this.handleCommand(msg);
+      case HeatingControllerTarget.command: {
+        const commandMsg =
+          messageFlow.originalMsg as HeatingControllerNodeMessage;
+        this.blocked = commandMsg.command === HeatingControllerCommand.block;
+        this.handleCommand(commandMsg);
         break;
+      }
       case HeatingControllerTarget.manualControl:
-        this.handleManualControl(msg);
+        this.handleManualControl(messageFlow);
         break;
       case HeatingControllerTarget.windowOpen:
-        this.windowsStates[msg.originalTopic] = msg.payload as boolean;
-        this.handleWindowOpen(msg);
+        this.windowsStates[messageFlow.originalTopic ?? "window"] =
+          messageFlow.payload as boolean;
+        this.handleWindowOpen(messageFlow);
         break;
     }
   }
@@ -92,9 +96,9 @@ export default class HeatingControllerNode extends MatchJoinNode<
   private handleActiveCondition() {
     if (!this.blocked) {
       if (this.isComfort()) {
-        this.sendAction(this.config.comfortCommand!);
+        this.sendAction(this.config.comfortCommand);
       } else {
-        this.sendAction(this.config.ecoCommand!);
+        this.sendAction(this.config.ecoCommand);
       }
     }
   }
@@ -112,9 +116,9 @@ export default class HeatingControllerNode extends MatchJoinNode<
     this.sendAction(msg.payload);
   }
 
-  private handleCommand(msg: any): void {
+  private handleCommand(msg: HeatingControllerNodeMessage): void {
     if (msg?.heatmode) {
-      let heatmode = msg.heatmode;
+      let heatmode: string = msg.heatmode;
       switch (heatmode) {
         case HeatMode.comfort:
           heatmode = this.config.comfortCommand;
@@ -164,14 +168,14 @@ export default class HeatingControllerNode extends MatchJoinNode<
     }
   }
 
-  private handleWindowOpen(msg: any) {
+  private handleWindowOpen(messageFlow: NodeMessageFlow) {
     const windowOpen = LogicalOperation.or(Object.values(this.windowsStates));
 
     let ha_action = "";
 
     if (windowOpen) {
       this.blocked = true;
-      this.sendAction(this.config.frostProtectionCommand!, true);
+      this.sendAction(this.config.frostProtectionCommand, true);
       ha_action = "switch.turn_on";
     } else {
       this.blocked = false;
@@ -179,22 +183,22 @@ export default class HeatingControllerNode extends MatchJoinNode<
       ha_action = "switch.turn_off";
     }
 
-    this.debounce({
-      msg: msg,
-      payload: windowOpen,
-      output: 2,
-      additionalAttributes: { ha_action },
-    });
+    const messageFlowWindowOpen = messageFlow.clone();
+    messageFlowWindowOpen.payload = windowOpen;
+    messageFlowWindowOpen.output = 2;
+    messageFlowWindowOpen.updateAdditionalAttribute("ha_action", ha_action);
+
+    this.debounce(messageFlowWindowOpen);
   }
 
   private sendAction(heatmode: string, ignoreBlocked: boolean = false) {
     if (heatmode) {
       if (!this.blocked || ignoreBlocked) {
-        this.debounce({
-          msg: { topic: "heatmode" },
-          payload: heatmode,
-          output: 0,
-        });
+        const messageFlowHeatmode = new NodeMessageFlow(
+          { topic: "heatmode", payload: heatmode },
+          0
+        );
+        this.debounce(messageFlowHeatmode);
       } else {
         this.lastHeatmode = heatmode;
       }
@@ -207,17 +211,17 @@ export default class HeatingControllerNode extends MatchJoinNode<
         targetTemperature += Number(this.config.pvBoostTemperatureOffset);
       }
 
-      this.debounce({
-        msg: { topic: "target_temperature" },
-        payload: targetTemperature,
-        output: 1,
-      });
+      const messageFlowTemperature = new NodeMessageFlow(
+        { topic: "target_temperature", payload: targetTemperature },
+        1
+      );
+      this.debounce(messageFlowTemperature);
     }
   }
 
-  protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
-    if (data.output === 0) {
-      this.lastHeatmode = data.payload;
+  protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {
+    if (messageFlow.output === 0) {
+      this.lastHeatmode = messageFlow.payload;
     }
 
     this.triggerNodeStatus();

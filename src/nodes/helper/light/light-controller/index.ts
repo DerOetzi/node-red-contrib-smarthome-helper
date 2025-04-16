@@ -1,14 +1,13 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
-import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
 import { NodeCategory } from "../../../types";
 import { HelperLightCategory } from "../types";
 import {
   HomeAssistantLightAction,
   LightCommand,
   LightControllerNodeDef,
-  LightControllerNodeMessage,
+  LightControllerNodeMessageFlow,
   LightControllerNodeOptions,
   LightControllerNodeOptionsDefaults,
   LightControllerTarget,
@@ -39,33 +38,32 @@ export default class LightControllerNode extends MatchJoinNode<
     this.clearColorCycle();
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.msg;
-    const topic = msg.topic;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    const topic = messageFlow.topic;
 
     switch (topic) {
       case LightControllerTarget.command:
-        this.handleCommand(msg.payload as any, data);
         break;
       case LightControllerTarget.colorTemperature:
-        this.colorTemperature = msg.payload as number;
-        this.handleCommand(this.nodeStatus as any, data);
+        this.colorTemperature = messageFlow.payload as number;
+        messageFlow.payload = this.nodeStatus;
         break;
       case LightControllerTarget.hue:
-        this.fixColorHue = msg.payload as number;
-        this.handleCommand(this.nodeStatus as any, data);
+        this.fixColorHue = messageFlow.payload as number;
+        messageFlow.payload = this.nodeStatus;
         break;
       case LightControllerTarget.saturation:
-        this.fixColorSaturation = msg.payload as number;
-        this.handleCommand(this.nodeStatus as any, data);
+        this.fixColorSaturation = messageFlow.payload as number;
+        messageFlow.payload = this.nodeStatus;
         break;
     }
+
+    this.handleCommand(messageFlow);
   }
 
-  private handleCommand(
-    command: string | boolean | LightCommand | null,
-    data: MatchJoinNodeData
-  ): void {
+  private handleCommand(messageFlow: NodeMessageFlow): void {
+    let command: string | boolean | LightCommand | null = messageFlow.payload;
+
     if (command === null) {
       return;
     }
@@ -76,42 +74,44 @@ export default class LightControllerNode extends MatchJoinNode<
       return;
     }
 
-    let msg = data.msg as LightControllerNodeMessage;
+    let lightMessageFlow: LightControllerNodeMessageFlow =
+      LightControllerNodeMessageFlow.clone(messageFlow);
 
-    msg.lightbulbs = this.config.identifiers.map((identifier) => {
+    lightMessageFlow.lightbulbs = this.config.identifiers.map((identifier) => {
       return this.RED.util.evaluateNodeProperty(
         identifier.identifier,
         identifier.identifierType,
         this.node,
-        msg
+        lightMessageFlow.originalMsg
       );
     });
 
     switch (command) {
       case LightCommand.On:
         if (this.config.lightbulbType === "rgb") {
-          msg = this.colorOn(msg);
+          lightMessageFlow = this.colorOn(lightMessageFlow);
         } else {
-          msg = this.prepareOnMessage(msg);
+          lightMessageFlow = this.prepareOnMessage(lightMessageFlow);
         }
         break;
       case LightCommand.Off:
-        msg = this.prepareOffMessage(msg);
+        lightMessageFlow = this.prepareOffMessage(lightMessageFlow);
         break;
       case LightCommand.Nightmode:
-        msg = this.prepareNightmodeMessage(msg);
+        lightMessageFlow = this.prepareNightmodeMessage(lightMessageFlow);
         break;
     }
 
-    data.msg = msg;
-    data.payload = msg.payload;
-    data.additionalAttributes = { command };
+    lightMessageFlow.updateAdditionalAttribute(
+      "command",
+      command as LightCommand
+    );
 
-    this.debounce(data);
+    this.debounce(lightMessageFlow);
   }
 
-  protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
-    this.nodeStatus = data.additionalAttributes!.command;
+  protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {
+    this.nodeStatus = messageFlow.getAdditionalAttribute("command");
   }
 
   private parseCommand(
@@ -141,37 +141,52 @@ export default class LightControllerNode extends MatchJoinNode<
   }
 
   private prepareOffMessage(
-    msg: LightControllerNodeMessage
-  ): LightControllerNodeMessage {
+    messageFlow: LightControllerNodeMessageFlow
+  ): LightControllerNodeMessageFlow {
     this.clearColorCycle();
-    msg.on = false;
-    return this.prepareHAOutput(msg);
+    messageFlow.on = false;
+    return this.prepareHAOutput(messageFlow);
   }
 
-  private colorOn(msg: LightControllerNodeMessage): LightControllerNodeMessage {
+  private colorOn(
+    messageFlow: LightControllerNodeMessageFlow
+  ): LightControllerNodeMessageFlow {
     this.clearColorCycle();
 
     if (this.config.colorCycle) {
-      msg = this.prepareOnMessage(msg, this.config.onBrightness, [
-        this.calculateHue(),
-        100,
-      ]);
+      messageFlow = this.prepareOnMessage(
+        messageFlow,
+        this.config.onBrightness,
+        [this.calculateHue(), 100]
+      );
+
+      let colorCycleMessageFlow = messageFlow.clone();
+      delete colorCycleMessageFlow.send;
+      colorCycleMessageFlow.updateAdditionalAttribute(
+        "command",
+        LightCommand.On
+      );
 
       this.colorCycle = setInterval(() => {
         const color = [this.calculateHue(), 100];
-        this.debounce({
-          msg: this.prepareOnMessage(msg, this.config.onBrightness, color),
-          additionalAttributes: { command: LightCommand.On },
-        });
+
+        this.debounce(
+          this.prepareOnMessage(
+            colorCycleMessageFlow,
+            this.config.onBrightness,
+            color
+          )
+        );
       }, 60000);
     } else {
-      msg = this.prepareOnMessage(msg, this.config.onBrightness, [
-        this.fixColorHue,
-        this.fixColorSaturation,
-      ]);
+      messageFlow = this.prepareOnMessage(
+        messageFlow,
+        this.config.onBrightness,
+        [this.fixColorHue, this.fixColorSaturation]
+      );
     }
 
-    return msg;
+    return messageFlow;
   }
 
   private calculateHue(): number {
@@ -180,74 +195,76 @@ export default class LightControllerNode extends MatchJoinNode<
   }
 
   private prepareOnMessage(
-    msg: LightControllerNodeMessage,
+    messageFlow: LightControllerNodeMessageFlow,
     brightness?: number,
     color?: number[]
-  ): LightControllerNodeMessage {
-    msg.on = true;
+  ): LightControllerNodeMessageFlow {
+    messageFlow.on = true;
 
     brightness = brightness ?? this.config.onBrightness;
     color = color ?? [this.config.fixColorHue, this.config.fixColorSaturation];
 
     if (this.config.lightbulbType !== "switch") {
-      msg.brightness = brightness;
+      messageFlow.brightness = brightness;
 
       if (this.config.transitionTime > 0) {
-        msg.transition = this.config.transitionTime;
+        messageFlow.transition = this.config.transitionTime;
       }
 
       if (this.config.lightbulbType === "colortemperature") {
-        msg.colorTemperature = this.colorTemperature;
+        messageFlow.colorTemperature = this.colorTemperature;
       } else if (this.config.lightbulbType === "rgb") {
-        msg.hue = color[0];
-        msg.saturation = color[1];
+        messageFlow.hue = color[0];
+        messageFlow.saturation = color[1];
       }
     }
 
-    return this.prepareHAOutput(msg);
+    return this.prepareHAOutput(messageFlow);
   }
 
   private prepareNightmodeMessage(
-    msg: LightControllerNodeMessage
-  ): LightControllerNodeMessage {
+    messageFlow: LightControllerNodeMessageFlow
+  ): LightControllerNodeMessageFlow {
     return this.prepareOnMessage(
-      msg,
+      messageFlow,
       this.config.nightmodeBrightness,
       [40, 100]
     );
   }
 
   private prepareHAOutput(
-    msg: LightControllerNodeMessage
-  ): LightControllerNodeMessage {
+    messageFlow: LightControllerNodeMessageFlow
+  ): LightControllerNodeMessageFlow {
     if (this.config.homeAssistantOutput) {
       const output: HomeAssistantLightAction = {
-        action: msg.on ? "homeassistant.turn_on" : "homeassistant.turn_off",
+        action: messageFlow.on
+          ? "homeassistant.turn_on"
+          : "homeassistant.turn_off",
         target: {
-          entity_id: msg.lightbulbs!,
+          entity_id: messageFlow.lightbulbs!,
         },
       };
 
-      if (msg.on && this.config.lightbulbType !== "switch") {
+      if (messageFlow.on && this.config.lightbulbType !== "switch") {
         output.data = {
-          brightness_pct: msg.brightness,
+          brightness_pct: messageFlow.brightness,
         };
 
         if (this.config.lightbulbType === "colortemperature") {
-          output.data.color_temp_kelvin = msg.colorTemperature;
+          output.data.color_temp_kelvin = messageFlow.colorTemperature;
         } else if (this.config.lightbulbType === "rgb") {
-          output.data.hs_color = [msg.hue!, msg.saturation!];
+          output.data.hs_color = [messageFlow.hue!, messageFlow.saturation!];
         }
 
-        if (msg.transition) {
-          output.data.transition = msg.transition;
+        if (messageFlow.transition) {
+          output.data.transition = messageFlow.transition;
         }
       }
 
-      msg.payload = output;
+      messageFlow.payload = output;
     }
 
-    return msg;
+    return messageFlow;
   }
 
   private clearColorCycle(): void {

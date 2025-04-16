@@ -1,4 +1,4 @@
-import { EditorNodePropertiesDef } from "node-red";
+import { EditorNodePropertiesDef, NodeMessage } from "node-red";
 
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
 import {
@@ -9,7 +9,6 @@ import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
-  MatchJoinNodeMessage,
   MatchJoinNodeOptions,
 } from "../../../flowctrl/match-join/types";
 import { NotApplicableCompareFunction } from "../../../logical/compare/types";
@@ -136,7 +135,7 @@ export const MotionControllerEditorNodePropertiesDefaults: EditorNodePropertiesD
     },
   };
 
-export interface MotionControllerNodeMessage extends MatchJoinNodeMessage {
+export interface MotionControllerNodeMessage extends NodeMessage {
   command?: MotionControllerCommand;
   action?: LightCommand;
 }

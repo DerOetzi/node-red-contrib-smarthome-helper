@@ -1,4 +1,4 @@
-import { EditorNodePropertiesDef, NodeMessage } from "node-red";
+import { EditorNodePropertiesDef } from "node-red";
 import {
   ApplicableCompareFunction,
   NotApplicableCompareFunction,
@@ -6,7 +6,6 @@ import {
 import {
   BaseEditorNodeProperties,
   BaseEditorNodePropertiesDefaults,
-  BaseNodeDebounceData,
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
@@ -82,12 +81,3 @@ export const MatchJoinEditorNodePropertiesDefaults: EditorNodePropertiesDef<Matc
       required: true,
     },
   };
-
-export interface MatchJoinNodeData extends BaseNodeDebounceData {
-  msg: MatchJoinNodeMessage;
-}
-
-export interface MatchJoinNodeMessage extends NodeMessage {
-  originalTopic: string;
-  input: any;
-}

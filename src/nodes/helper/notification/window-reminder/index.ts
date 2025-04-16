@@ -1,14 +1,13 @@
 import { Node, NodeAPI } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
-import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
 import { LogicalOperation } from "../../../logical/op";
 import { NodeCategory } from "../../../types";
 import {
   HelperNotificationCategory,
   NotifyMessage,
-  NotifyNodeMessage,
+  NotifyNodeMessageFlow,
 } from "../types";
 import {
   WindowReminderNodeDef,
@@ -33,29 +32,31 @@ export default class WindowReminderNode extends MatchJoinNode<
     super(RED, node, config, WindowReminderNodeOptionsDefaults);
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.msg;
-
-    if (msg.topic === WindowReminderTarget.window) {
-      this.windows[msg.originalTopic] = msg.payload as boolean;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    if (messageFlow.topic === WindowReminderTarget.window) {
+      this.windows[messageFlow.originalTopic ?? "window"] =
+        messageFlow.payload as boolean;
       if (this.isWindowOpen()) {
-        this.setTimer();
+        this.setTimer(messageFlow);
         if (!this.presence) {
-          this.sendMsg({
-            topic: "alarm",
-            notify: this.prepareNotification("alarm"),
-          } as NotifyNodeMessage);
+          const alarmMessageFlow = this.prepareNotification(
+            "alarm",
+            messageFlow
+          );
+
+          this.sendMsg(alarmMessageFlow);
         }
       } else {
         this.clearTimer();
       }
-    } else if (msg.topic === WindowReminderTarget.presence) {
-      this.presence = msg.payload as boolean;
+    } else if (messageFlow.topic === WindowReminderTarget.presence) {
+      this.presence = messageFlow.payload as boolean;
       if (this.isWindowOpen() && !this.presence) {
-        this.sendMsg({
-          topic: "leaving",
-          notify: this.prepareNotification("leaving"),
-        } as NotifyNodeMessage);
+        const leavingMessageFlow = this.prepareNotification(
+          "leaving",
+          messageFlow
+        );
+        this.sendMsg(leavingMessageFlow);
       }
     }
 
@@ -66,33 +67,36 @@ export default class WindowReminderNode extends MatchJoinNode<
     return LogicalOperation.or(Object.values(this.windows));
   }
 
-  private setTimer(): void {
+  private setTimer(messageFlow: NodeMessageFlow): void {
     this.clearTimer();
-    const notification = this.prepareNotification("normal", true);
+
     if (this.config.interval > 0) {
+      const notificationMessageFlow = this.prepareNotification(
+        "reminder",
+        messageFlow,
+        true
+      );
+      delete notificationMessageFlow.send;
+
       this.timer = setInterval(
         () => {
-          this.debounce({
-            msg: {
-              topic: "reminder",
-              notify: notification,
-            } as NotifyNodeMessage,
-          });
+          this.debounce(notificationMessageFlow);
         },
         convertToMilliseconds(this.config.interval, this.config.intervalUnit)
       );
     }
   }
 
-  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+  protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
     this.nodeStatus = this.isWindowOpen();
   }
 
   private prepareNotification(
-    messageIdentifier: "normal" | "alarm" | "leaving",
+    messageIdentifier: "reminder" | "alarm" | "leaving",
+    messageFlow: NodeMessageFlow,
     onlyAtHome: boolean = false
-  ): NotifyMessage {
-    return {
+  ): NotifyNodeMessageFlow {
+    return NotifyNodeMessageFlow.clone(messageFlow, messageIdentifier, {
       title: this.RED._("helper.window-reminder.notification.title"),
       message: this.RED._(
         `helper.window-reminder.notification.${messageIdentifier}`
@@ -100,7 +104,7 @@ export default class WindowReminderNode extends MatchJoinNode<
         .replace("{windowName}", this.config.name)
         .replace("  ", " "),
       onlyAtHome: onlyAtHome,
-    };
+    } as NotifyMessage);
   }
 
   private clearTimer(): void {

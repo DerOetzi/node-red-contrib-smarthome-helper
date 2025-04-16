@@ -1,7 +1,6 @@
 import { Node, NodeAPI } from "node-red";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
+import { NodeMessageFlow } from "../../flowctrl/base/types";
 import MatchJoinNode from "../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../flowctrl/match-join/types";
 import { NodeCategory } from "../../types";
 import { OperatorCategory } from "../types";
 import {
@@ -62,21 +61,21 @@ export default class ArithmeticNode extends MatchJoinNode<
     super(RED, node, config, ArithmeticNodeOptionsDefaults);
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.msg;
-    const valueType = msg.topic;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    const valueType = messageFlow.topic;
 
-    if (typeof msg.payload !== "number") {
+    if (typeof messageFlow.payload !== "number") {
       this.node.error("Payload must be a number");
       return;
     }
 
     switch (valueType) {
       case ArithmeticTarget.minuend:
-        this.minuend = msg.payload;
+        this.minuend = messageFlow.payload;
         break;
       case ArithmeticTarget.value:
-        this.values[msg.originalTopic] = msg.payload;
+        this.values[messageFlow.originalTopic ?? "default"] =
+          messageFlow.payload;
         break;
     }
 
@@ -96,44 +95,43 @@ export default class ArithmeticNode extends MatchJoinNode<
           row.value,
           row.valueType,
           this.node,
-          msg
+          messageFlow.originalMsg
         )
       );
     });
 
     switch (this.config.operation) {
       case ArithmeticFunction.add:
-        data.payload = ArithmeticOperation.add(values);
+        messageFlow.payload = ArithmeticOperation.add(values);
         break;
       case ArithmeticFunction.sub:
-        data.payload = ArithmeticOperation.sub(this.minuend, values);
+        messageFlow.payload = ArithmeticOperation.sub(this.minuend, values);
         break;
       case ArithmeticFunction.mul:
-        data.payload = ArithmeticOperation.mul(values);
+        messageFlow.payload = ArithmeticOperation.mul(values);
         break;
       case ArithmeticFunction.round:
-        data.payload = msg.payload;
         break;
       case ArithmeticFunction.mean:
-        data.payload = ArithmeticOperation.mean(values);
+        messageFlow.payload = ArithmeticOperation.mean(values);
         break;
       case ArithmeticFunction.min:
-        data.payload = ArithmeticOperation.min(values);
+        messageFlow.payload = ArithmeticOperation.min(values);
         break;
       case ArithmeticFunction.max:
-        data.payload = ArithmeticOperation.max(values);
+        messageFlow.payload = ArithmeticOperation.max(values);
         break;
     }
 
-    data.payload = ArithmeticOperation.round(
-      data.payload,
+    messageFlow.payload = ArithmeticOperation.round(
+      messageFlow.payload,
       this.config.precision
     );
 
-    this.debounce(data);
+    this.debounce(messageFlow);
   }
 
-  protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
-    this.nodeStatus = data.payload;
+  protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {
+    this.nodeStatus = messageFlow.payload;
   }
 }

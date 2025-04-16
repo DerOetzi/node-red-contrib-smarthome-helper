@@ -1,6 +1,6 @@
 import { Node, NodeAPI } from "node-red";
+import { NodeMessageFlow } from "nodes/flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
 import { NodeCategory } from "../../../types";
 import { HelperNotificationCategory, NotifyNodeMessage } from "../types";
 import {
@@ -25,21 +25,19 @@ export default class NotifyDispatcherNode extends MatchJoinNode<
     super(RED, node, config, NotifyDispatcherNodeOptionsDefaults);
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.msg;
-
-    if (msg.topic === NotifyDispatcherTarget.message) {
-      this.dispatchMessage(data);
-    } else if (this.isPersonTarget(msg.topic as string)) {
-      this.personStates[msg.topic as NotifyDispatcherTarget] =
-        msg.payload as boolean;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    if (messageFlow.topic === NotifyDispatcherTarget.message) {
+      this.dispatchMessage(messageFlow);
+    } else if (this.isPersonTarget(messageFlow.topic as string)) {
+      this.personStates[messageFlow.topic as NotifyDispatcherTarget] =
+        messageFlow.payload as boolean;
     }
   }
 
-  private dispatchMessage(data: MatchJoinNodeData) {
-    const msg = data.msg as NotifyNodeMessage;
+  private dispatchMessage(messageFlow: NodeMessageFlow) {
+    const msg = messageFlow.originalMsg as NotifyNodeMessage;
     const notify = msg.notify;
-    data.payload = notify;
+    messageFlow.payload = notify;
 
     let broadcast = !(notify.onlyAtHome ?? false);
 
@@ -50,16 +48,16 @@ export default class NotifyDispatcherNode extends MatchJoinNode<
         if (value) {
           const metadata =
             NotifyDispatcherPersonMetadata[key as NotifyDispatcherTarget];
-          data.output = metadata.output;
+          messageFlow.output = metadata.output;
           broadcast = false;
-          this.debounce(data);
+          this.debounce(messageFlow);
         }
       }
     }
 
     if (broadcast) {
-      data.output = 0;
-      this.debounce(data);
+      messageFlow.output = 0;
+      this.debounce(messageFlow);
     }
   }
 

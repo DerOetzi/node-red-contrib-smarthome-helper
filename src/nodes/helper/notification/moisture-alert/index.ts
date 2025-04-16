@@ -1,19 +1,18 @@
 import { Node, NodeAPI } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
+import { NodeMessageFlow, NodeStatus } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
 import { NodeCategory } from "../../../types";
 import {
   HelperNotificationCategory,
   NotifyMessage,
-  NotifyNodeMessage,
+  NotifyNodeMessageFlow,
 } from "../types";
 import {
   MoistureAlertNodeDef,
   MoistureAlertNodeOptions,
   MoistureAlertNodeOptionsDefaults,
 } from "./types";
-import { BaseNodeDebounceData, NodeStatus } from "nodes/flowctrl/base/types";
 
 export default class MoistureAlertNode extends MatchJoinNode<
   MoistureAlertNodeDef,
@@ -45,30 +44,29 @@ export default class MoistureAlertNode extends MatchJoinNode<
     };
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.msg;
-    const topic = msg.topic as string;
-    const payload = msg.payload as number;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    const topic = messageFlow.topic as string;
+    const payload = messageFlow.payload as number;
 
     switch (topic) {
       case "moisture":
         if (this.lastMoisture > -1) {
           if (payload < this.config.alertThreshold && this.checkInterval()) {
-            this.debounce({
-              msg: {
-                topic: "moisture",
-                notify: this.notify,
-              } as NotifyNodeMessage,
-            });
+            const moistureMessageFlow = NotifyNodeMessageFlow.clone(
+              messageFlow,
+              "moisture",
+              this.notify
+            );
+
+            this.debounce(moistureMessageFlow);
             this.lastAlert = Date.now();
 
-            this.sendMsg(
-              { topic: "lastAlert" },
-              {
-                payload: Math.round(this.lastAlert / 1000),
-                output: 1,
-              }
-            );
+            const lastAlertMessageFlow = messageFlow.clone();
+            lastAlertMessageFlow.topic = "lastAlert";
+            lastAlertMessageFlow.payload = Math.round(this.lastAlert / 1000);
+            lastAlertMessageFlow.output = 1;
+
+            this.sendMsg(lastAlertMessageFlow);
           }
         }
         this.lastMoisture = payload;
@@ -93,7 +91,7 @@ export default class MoistureAlertNode extends MatchJoinNode<
     return check;
   }
 
-  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+  protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
     this.triggerNodeStatus();
   }
 
