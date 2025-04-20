@@ -2,12 +2,11 @@ import { Node, NodeAPI } from "node-red";
 import { NodeCategory } from "../../types";
 import {
   BaseCategory,
-  BaseNodeDebounceData,
   BaseNodeStatus,
+  NodeMessageFlow,
   NodeStatus,
 } from "../base/types";
 import MatchJoinNode from "../match-join";
-import { MatchJoinNodeData } from "../match-join/types";
 import { StatusNodesConnector } from "./connector";
 import {
   StatusNodeDef,
@@ -50,17 +49,16 @@ export default class StatusNode extends MatchJoinNode<
     return shouldRegister;
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.msg;
-    const topic = msg.topic;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    const topic = messageFlow.topic;
 
     if (topic === StatusNodeTarget.activeCondition) {
-      if (typeof msg.payload !== "boolean") {
+      if (typeof messageFlow.payload !== "boolean") {
         this.node.error("Invalid payload for active condition");
         return;
       }
 
-      this.nodeStatus = msg.payload;
+      this.nodeStatus = messageFlow.payload;
 
       if (this.nodeStatus) {
         this.inactiveQueue.forEach((statusReport) => {
@@ -73,24 +71,33 @@ export default class StatusNode extends MatchJoinNode<
 
   public handleStatusReport(statusReport: BaseNodeStatus): void {
     if (this.nodeStatus) {
-      this.debounce({
-        msg: { topic: statusReport.statusItem },
-        payload: statusReport.status,
-      });
+      this.debounce(
+        new NodeMessageFlow(
+          {
+            topic: statusReport.statusItem,
+            payload: statusReport.status,
+          },
+          0
+        )
+      );
 
       if (statusReport.statusTextItem) {
-        this.debounce({
-          msg: { topic: statusReport.statusTextItem },
-          payload: statusReport.statusText,
-          output: 1,
-        });
+        this.debounce(
+          new NodeMessageFlow(
+            {
+              topic: statusReport.statusTextItem,
+              payload: statusReport.statusText,
+            },
+            1
+          )
+        );
       }
     } else {
       this.inactiveQueue.set(statusReport.statusItem, statusReport);
     }
   }
 
-  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+  protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
     //Do nothing
   }
 

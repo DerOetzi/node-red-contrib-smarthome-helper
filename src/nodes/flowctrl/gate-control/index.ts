@@ -1,12 +1,13 @@
-import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
+import { Node, NodeAPI } from "node-red";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeCategory } from "../../types";
 import {
   AutomationGateCategory,
   AutomationGateCommand,
   AutomationGateNodeMessage,
 } from "../automation-gate/types";
 import BaseNode from "../base";
+import { NodeMessageFlow } from "../base/types";
 import {
   GateControlNodeDef,
   GateControlNodeOptions,
@@ -38,23 +39,19 @@ export default class GateControlNode extends BaseNode<
     }
   }
 
-  public onInput(
-    msg: NodeMessageInFlow,
-    send: NodeSendFunction,
-    done: NodeDoneFunction
-  ) {
+  public input(messageFlow: NodeMessageFlow) {
     const gateControlMsg: AutomationGateNodeMessage = {
       ...this.gateControlMsg,
-      originalMsg: msg,
+      originalMsg: messageFlow.originalMsg,
     };
-    this.sendMsgToOutput(gateControlMsg, { send, output: 1 });
+
+    const gateControlMessageFlow = messageFlow.clone();
+    gateControlMessageFlow.output = 1;
+
+    this.sendMsgToOutput(gateControlMsg, gateControlMessageFlow);
 
     setTimeout(() => {
-      this.debounce({ msg });
+      this.debounce(messageFlow);
     }, this.config.delay);
-
-    if (done) {
-      done();
-    }
   }
 }

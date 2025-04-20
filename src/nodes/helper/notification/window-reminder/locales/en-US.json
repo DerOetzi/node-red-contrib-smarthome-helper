@@ -1,23 +1,23 @@
 {
-    "name": "Window reminder",
-    "description": "This node can remind you if a window is opened for a long time. It can also notify you if nobody is at home.",
-    "label": {
-        "interval": "Interval"
-    },
-    "select": {
-        "target": {
-            "window": "window open",
-            "presence": "presence"
-        }
-    },
-    "notification": {
-        "title": "Window reminder",
-        "normal": "Window {windowName} is opened",
-        "leaving": "Window {windowName} is still opened",
-        "alarm": "Window {windowName} has been opened, but nobody is at home"
-    },
-    "status": {
-        "open": "Window opened",
-        "closed": "Window closed"
+  "name": "Window reminder",
+  "description": "This node can remind you if a window is opened for a long time. It can also notify you if nobody is at home.",
+  "label": {
+    "interval": "Interval"
+  },
+  "select": {
+    "target": {
+      "window": "window open",
+      "presence": "presence"
     }
+  },
+  "notification": {
+    "title": "Window reminder",
+    "reminder": "Window {windowName} is opened",
+    "leaving": "Window {windowName} is still opened",
+    "alarm": "Window {windowName} has been opened, but nobody is at home"
+  },
+  "status": {
+    "open": "Window opened",
+    "closed": "Window closed"
+  }
 }

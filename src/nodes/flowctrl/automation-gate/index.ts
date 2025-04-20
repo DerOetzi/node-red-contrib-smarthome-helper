@@ -1,11 +1,7 @@
 import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeCategory, NodeSendFunction } from "../../types";
 import BaseNode from "../base";
-import {
-  BaseNodeDebounceData,
-  NodeSendOptions,
-  NodeStatus,
-} from "../base/types";
+import { NodeMessageFlow, NodeStatus } from "../base/types";
 import {
   AutomationGateCategory,
   AutomationGateCommand,
@@ -24,7 +20,7 @@ export default class AutomationGateNode extends BaseNode<
   protected static readonly _nodeType: string = "automation-gate";
 
   private pauseTimer: NodeJS.Timeout | null = null;
-  private lastMessages: Record<string, NodeMessage> = {};
+  private lastMessages: Record<string, NodeMessageFlow> = {};
 
   constructor(RED: NodeAPI, node: Node, config: AutomationGateNodeDef) {
     super(RED, node, config, AutomationGateNodeOptionsDefaults);
@@ -47,15 +43,15 @@ export default class AutomationGateNode extends BaseNode<
     }
   }
 
-  protected onInput(
-    msg: AutomationGateNodeMessage,
-    send: NodeSendFunction,
-    done: NodeDoneFunction
-  ) {
-    if (msg.gate) {
-      switch (msg.gate) {
+  protected input(messageFlow: NodeMessageFlow) {
+    const msg = messageFlow.originalMsg;
+
+    if ("gate" in msg) {
+      const gateMsg = msg as AutomationGateNodeMessage;
+
+      switch (gateMsg.gate) {
         case AutomationGateCommand.Pause:
-          this.pauseGate(msg);
+          this.pauseGate(gateMsg);
           break;
         case AutomationGateCommand.Stop:
           this.stopGate();
@@ -64,38 +60,36 @@ export default class AutomationGateNode extends BaseNode<
           this.startGate();
           break;
         case AutomationGateCommand.Replay:
-          this.replayMessages(send);
+          this.replayMessages(messageFlow.send);
           break;
         case AutomationGateCommand.ResetFilter:
           this.resetFilter();
           break;
         default:
-          this.node.error(`Invalid gate command: ${msg.gate}`);
+          this.node.error(`Invalid gate command: ${gateMsg.gate}`);
           break;
       }
     } else {
-      this.saveLastMessage(msg);
-
-      this.debounce({ msg, send });
-    }
-
-    if (done) {
-      done();
+      this.saveLastMessage(messageFlow);
+      this.debounce(messageFlow);
     }
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
+  protected debounced(messageFlow: NodeMessageFlow): void {
     if (this.nodeStatus ?? this.config.startupState) {
-      this.sendMsg(data.msg, data);
+      this.sendMsg(messageFlow);
     }
   }
 
-  protected sendMsgToOutput(msg: NodeMessage, options: NodeSendOptions): void {
-    if (this.config.setAutomationInProgress && (options.output ?? 0) === 0) {
+  protected sendMsgToOutput(
+    msg: NodeMessage,
+    messageFlow: NodeMessageFlow
+  ): void {
+    if (this.config.setAutomationInProgress && messageFlow.output === 0) {
       this.setAutomationInProgress();
     }
 
-    super.sendMsgToOutput(msg, options);
+    super.sendMsgToOutput(msg, messageFlow);
   }
 
   private setAutomationInProgress() {
@@ -139,9 +133,9 @@ export default class AutomationGateNode extends BaseNode<
     this.nodeStatus = true;
   }
 
-  private saveLastMessage(msg: NodeMessage) {
-    if (msg.topic) {
-      this.lastMessages[msg.topic] = this.cloneMessage(msg);
+  private saveLastMessage(messageFlow: NodeMessageFlow) {
+    if (messageFlow.topic) {
+      this.lastMessages[messageFlow.topic] = messageFlow.clone();
     }
   }
 
@@ -151,10 +145,7 @@ export default class AutomationGateNode extends BaseNode<
 
     for (const topic in this.lastMessages) {
       if (this.lastMessages.hasOwnProperty(topic)) {
-        this.debounce({
-          msg: this.cloneMessage(this.lastMessages[topic]),
-          send,
-        });
+        this.debounce(this.lastMessages[topic].clone());
       }
     }
   }

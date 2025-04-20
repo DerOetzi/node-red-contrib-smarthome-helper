@@ -1,9 +1,7 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
-import { BaseNodeDebounceData } from "../../../flowctrl/base/types";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
-
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
 import { LogicalOperation } from "../../../logical/op";
 import { NodeCategory } from "../../../types";
 import { LightCommand } from "../../light/light-controller/types";
@@ -53,28 +51,32 @@ export default class MotionControllerNode extends MatchJoinNode<
     this.motionStates = {};
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const msg = data.msg as MotionControllerNodeMessage;
-    const topic = msg.topic;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    const topic = messageFlow.topic;
+
+    const motionControllerMessage =
+      messageFlow.originalMsg as MotionControllerNodeMessage;
 
     switch (topic) {
       case MotionControllerTarget.motion:
-        this.motionStates[msg.originalTopic] = msg.payload as boolean;
+        this.motionStates[messageFlow.originalTopic ?? "motion"] =
+          messageFlow.payload as boolean;
         this.handleMotion();
         break;
       case MotionControllerTarget.command:
-        this.blocked = msg.command === MotionControllerCommand.block;
-        this.handleCommand(msg);
+        this.blocked =
+          motionControllerMessage.command === MotionControllerCommand.block;
+        this.handleCommand(motionControllerMessage);
         break;
       case MotionControllerTarget.manualControl:
-        this.handleManualControl(msg);
+        this.handleManualControl(motionControllerMessage);
         break;
       case MotionControllerTarget.darkness:
-        this.darkness = msg.payload as boolean;
+        this.darkness = messageFlow.payload as boolean;
         this.handleMotion(true);
         break;
       case MotionControllerTarget.night:
-        this.night = msg.payload as boolean;
+        this.night = messageFlow.payload as boolean;
         break;
     }
   }
@@ -100,24 +102,29 @@ export default class MotionControllerNode extends MatchJoinNode<
 
   private sendAction(action: string): void {
     this.lastAction = action;
-    this.debounce({ msg: { topic: "action", payload: action } });
+    const actionMessageFlow = new NodeMessageFlow(
+      {
+        topic: "action",
+        payload: action,
+      },
+      0
+    );
+    this.debounce(actionMessageFlow);
   }
 
-  protected updateStatusAfterDebounce(_: BaseNodeDebounceData): void {
+  protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
     this.triggerNodeStatus();
   }
 
   private startTimer(): void {
-    if (!this.timer) {
-      this.timer = setInterval(
-        () => {
-          if (!this.isOn()) {
-            this.handleMotion(true);
-          }
-        },
-        convertToMilliseconds(this.config.timer, this.config.timerUnit)
-      );
-    }
+    this.timer ??= setInterval(
+      () => {
+        if (!this.isOn()) {
+          this.handleMotion(true);
+        }
+      },
+      convertToMilliseconds(this.config.timer, this.config.timerUnit)
+    );
   }
 
   private isOn(): boolean {

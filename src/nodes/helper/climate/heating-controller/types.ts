@@ -1,4 +1,4 @@
-import { EditorNodePropertiesDef } from "node-red";
+import { EditorNodePropertiesDef, NodeMessage } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
 import {
   BaseEditorNodePropertiesDefaults,
@@ -7,9 +7,7 @@ import {
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
-  MatchJoinNodeData,
   MatchJoinNodeDef,
-  MatchJoinNodeMessage,
   MatchJoinNodeOptions,
 } from "../../../flowctrl/match-join/types";
 import { NotApplicableCompareFunction } from "../../../logical/compare/types";
@@ -44,10 +42,10 @@ export interface HeatingControllerNodeOptions extends MatchJoinNodeOptions {
   boostEnabled: boolean;
   boostTemperatureOffset: number;
   frostProtectionTemperature: number;
-  comfortCommand?: string;
-  ecoCommand?: string;
-  boostCommand?: string;
-  frostProtectionCommand?: string;
+  comfortCommand: string;
+  ecoCommand: string;
+  boostCommand: string;
+  frostProtectionCommand: string;
   pvBoostEnabled: boolean;
   pvBoostTemperatureOffset: number;
 
@@ -200,10 +198,7 @@ export const HeatingControllerEditorNodePropertiesDefaults: EditorNodeProperties
     },
   };
 
-export interface HeatingControllerNodeMessage extends MatchJoinNodeMessage {
+export interface HeatingControllerNodeMessage extends NodeMessage {
   command?: HeatingControllerCommand;
-}
-
-export interface HeatingControllerNodeData extends MatchJoinNodeData {
-  msg: HeatingControllerNodeMessage;
+  heatmode?: HeatMode;
 }

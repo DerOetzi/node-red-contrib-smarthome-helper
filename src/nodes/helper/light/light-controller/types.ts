@@ -1,13 +1,14 @@
 import { EditorNodePropertiesDef } from "node-red";
+import { cloneDeep } from "../../../../helpers/object.helper";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
+  NodeMessageFlow,
 } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
-  MatchJoinNodeMessage,
   MatchJoinNodeOptions,
 } from "../../../flowctrl/match-join/types";
 
@@ -178,12 +179,89 @@ export const LightControllerEditorNodePropertiesDefaults: EditorNodePropertiesDe
     },
   };
 
-export interface LightControllerNodeMessage extends MatchJoinNodeMessage {
-  lightbulbs?: string[];
-  on?: boolean;
-  brightness?: number;
-  transition?: number;
-  colorTemperature?: number;
-  hue?: number;
-  saturation?: number;
+export class LightControllerNodeMessageFlow extends NodeMessageFlow {
+  public get lightbulbs(): string[] | undefined {
+    return this.getAdditionalAttribute("lightbulbs");
+  }
+
+  public set lightbulbs(value: string[] | undefined) {
+    this.updateAdditionalAttribute("lightbulbs", value);
+  }
+
+  public get on(): boolean | undefined {
+    return this.getAdditionalAttribute("on");
+  }
+
+  public set on(value: boolean | undefined) {
+    this.updateAdditionalAttribute("on", value);
+  }
+
+  public get brightness(): number | undefined {
+    return this.getAdditionalAttribute("brightness");
+  }
+
+  public set brightness(value: number | undefined) {
+    this.updateAdditionalAttribute("brightness", value);
+  }
+
+  public get transition(): number | undefined {
+    return this.getAdditionalAttribute("transition");
+  }
+
+  public set transition(value: number | undefined) {
+    this.updateAdditionalAttribute("transition", value);
+  }
+
+  public get colorTemperature(): number | undefined {
+    return this.getAdditionalAttribute("colorTemperature");
+  }
+
+  public set colorTemperature(value: number | undefined) {
+    this.updateAdditionalAttribute("colorTemperature", value);
+  }
+
+  public get hue(): number | undefined {
+    return this.getAdditionalAttribute("hue");
+  }
+
+  public set hue(value: number | undefined) {
+    this.updateAdditionalAttribute("hue", value);
+  }
+  public get saturation(): number | undefined {
+    return this.getAdditionalAttribute("saturation");
+  }
+  public set saturation(value: number | undefined) {
+    this.updateAdditionalAttribute("saturation", value);
+  }
+
+  public static clone(
+    messageFlow: NodeMessageFlow
+  ): LightControllerNodeMessageFlow {
+    const clonedMessageFlow = new LightControllerNodeMessageFlow(
+      messageFlow.originalMsg,
+      messageFlow.output,
+      messageFlow.send
+    );
+    clonedMessageFlow.topic = messageFlow.topic;
+    clonedMessageFlow.payload = messageFlow.payload;
+
+    clonedMessageFlow.additionalAttributes = cloneDeep(
+      (messageFlow as LightControllerNodeMessageFlow).additionalAttributes
+    );
+
+    return clonedMessageFlow;
+  }
+
+  public clone(): LightControllerNodeMessageFlow {
+    const clone = new LightControllerNodeMessageFlow(
+      this.originalMsg,
+      this.output,
+      this.send
+    );
+    clone.topic = this.topic;
+    clone.payload = this.payload;
+    clone.additionalAttributes = cloneDeep(this.additionalAttributes);
+
+    return clone;
+  }
 }

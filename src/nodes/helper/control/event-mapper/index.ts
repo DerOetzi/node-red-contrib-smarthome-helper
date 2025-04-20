@@ -1,6 +1,6 @@
 import { Node, NodeAPI } from "node-red";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
-import { MatchJoinNodeData } from "../../../flowctrl/match-join/types";
 import { NodeCategory } from "../../../types";
 import { HelperControlCategory } from "../types";
 import {
@@ -21,8 +21,8 @@ export default class EventMapperNode extends MatchJoinNode<
     super(RED, node, config, EventMapperNodeOptionsDefaults);
   }
 
-  protected matched(data: MatchJoinNodeData): void {
-    const event: string = data.payload as string;
+  protected matched(messageFlow: NodeMessageFlow): void {
+    const event: string = messageFlow.payload as string;
 
     const rule = this.getRule(event);
     if (!rule) {
@@ -32,16 +32,16 @@ export default class EventMapperNode extends MatchJoinNode<
       return;
     }
 
-    data.payload = this.RED.util.evaluateNodeProperty(
+    messageFlow.payload = this.RED.util.evaluateNodeProperty(
       rule.mapped,
       rule.mappedType,
       this.node,
-      data.msg
+      messageFlow.originalMsg
     );
 
-    data.output = rule.output;
+    messageFlow.output = rule.output!;
 
-    this.debounce(data);
+    this.debounce(messageFlow);
   }
 
   private getRule(event: string): EventMapperRule | undefined {

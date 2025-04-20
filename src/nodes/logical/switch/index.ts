@@ -1,7 +1,7 @@
-import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
+import { Node, NodeAPI } from "node-red";
 import BaseNode from "../../flowctrl/base";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeMessageFlow } from "../../flowctrl/base/types";
+import { NodeCategory } from "../../types";
 import {
   DebounceFlank,
   LogicalOpCategory,
@@ -26,55 +26,44 @@ export default class SwitchNode<
     super(RED, node, config, defaultConfig);
   }
 
-  protected onInput(
-    msg: NodeMessageInFlow,
-    send: NodeSendFunction,
-    done: NodeDoneFunction
-  ) {
-    this.switchHandling({ msg: msg, send, payload: msg.payload });
-
-    if (done) {
-      done();
-    }
+  protected input(messageFlow: NodeMessageFlow) {
+    this.switchHandling(messageFlow);
   }
 
-  protected switchHandling(data: BaseNodeDebounceData): void {
-    const debounceKey = this.debounceKey(data.msg);
+  protected switchHandling(messageFlow: NodeMessageFlow): void {
+    const debounceKey = this.debounceKey(messageFlow.topic);
 
     const shouldDebounce =
       this.config.debounceFlank === DebounceFlank.both ||
       this.isDebounceRunning(debounceKey) ||
-      this.isRisingFlank(data) ||
-      this.isFallingFlank(data);
+      this.isRisingFlank(messageFlow) ||
+      this.isFallingFlank(messageFlow);
 
     if (this.config.debounce && shouldDebounce) {
-      this.debounce(data);
+      this.debounce(messageFlow);
     } else {
-      this.debouncePass(data);
+      this.debouncePass(messageFlow);
     }
   }
 
-  private isRisingFlank(data: BaseNodeDebounceData): boolean {
+  private isRisingFlank(messageFlow: NodeMessageFlow): boolean {
     return (
       this.config.debounceFlank === DebounceFlank.rising &&
       this.nodeStatus === false &&
-      data.payload === true
+      messageFlow.payload === true
     );
   }
 
-  private isFallingFlank(data: BaseNodeDebounceData): boolean {
+  private isFallingFlank(messageFlow: NodeMessageFlow): boolean {
     return (
       this.config.debounceFlank === DebounceFlank.falling &&
       this.nodeStatus === true &&
-      data.payload === false
+      messageFlow.payload === false
     );
   }
 
-  protected debounceListener(data: BaseNodeDebounceData): void {
-    const msg = data.msg;
-    const result = data.payload ?? msg.payload;
-
-    this.nodeStatus = result;
+  protected debounced(messageFlow: NodeMessageFlow): void {
+    const result = messageFlow.payload;
 
     const configValue: any = result
       ? this.config.trueValue
@@ -92,22 +81,26 @@ export default class SwitchNode<
       configValue,
       configType,
       this.node,
-      msg
+      messageFlow.originalMsg
     );
 
+    messageFlow.updateAdditionalAttribute("result", result);
+
     if (this.config.target === "payload") {
-      data.payload = targetValue;
+      messageFlow.payload = targetValue;
     } else {
-      data.additionalAttributes = {
-        ...data.additionalAttributes,
-        [this.config.target]: targetValue,
-      };
+      messageFlow.payload = messageFlow.originalMsg.payload;
+      messageFlow.updateAdditionalAttribute(this.config.target, targetValue);
     }
 
     if (this.config.seperatedOutputs && result === false) {
-      data.output = 1;
+      messageFlow.output = 1;
     }
 
-    this.sendMsg(msg, data);
+    super.debounced(messageFlow);
+  }
+
+  protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {
+    this.nodeStatus = messageFlow.getAdditionalAttribute("result");
   }
 }

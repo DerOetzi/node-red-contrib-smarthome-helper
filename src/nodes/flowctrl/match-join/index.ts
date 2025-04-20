@@ -1,12 +1,10 @@
-import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
+import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { CompareOperation } from "../../logical/compare";
-import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeCategory } from "../../types";
 import BaseNode from "../base";
-import { BaseCategory, NodeStatus } from "../base/types";
+import { BaseCategory, NodeMessageFlow, NodeStatus } from "../base/types";
 import {
-  MatchJoinNodeData,
   MatchJoinNodeDef,
-  MatchJoinNodeMessage,
   MatchJoinNodeOptions,
   MatchJoinNodeOptionsDefaults,
 } from "./types";
@@ -34,21 +32,17 @@ export default class MatchJoinNode<
     this.messages = {};
   }
 
-  public onInput(
-    msg: NodeMessage,
-    send: NodeSendFunction,
-    done: NodeDoneFunction
-  ) {
+  public input(messageFlow: NodeMessageFlow) {
     const matcher = this.config.matchers.find((matcher) => {
       const propertyValue = this.RED.util.getMessageProperty(
-        msg,
+        messageFlow.originalMsg,
         matcher.property
       );
       const compareValue = this.RED.util.evaluateNodeProperty(
         matcher.compare,
         matcher.compareType,
         this.node,
-        msg
+        messageFlow.originalMsg
       );
 
       const result = CompareOperation.func(
@@ -61,55 +55,39 @@ export default class MatchJoinNode<
     });
 
     if (matcher || !this.config.discardNotMatched) {
-      let matchedMsg: MatchJoinNodeMessage = {
-        ...msg,
-        originalTopic: msg.topic ?? "",
-        input: msg.payload,
-      };
-
       if (matcher) {
-        matchedMsg.topic = this.RED.util.evaluateNodeProperty(
+        messageFlow.topic = this.RED.util.evaluateNodeProperty(
           matcher.target,
           matcher.targetType,
           this.node,
-          msg
+          messageFlow.originalMsg
         );
       }
 
       if (this.config.join) {
-        if (!msg.topic) {
+        if (!messageFlow.topic) {
           this.node.error("No topic set for message");
           return;
         }
 
-        this.messages[msg.topic] = msg.payload;
+        this.messages[messageFlow.topic] = messageFlow.payload;
 
         if (Object.keys(this.messages).length >= this.config.minMsgCount) {
-          matchedMsg.input = this.messages;
-          this.matched({
-            msg: matchedMsg,
-            send,
-            payload: this.messages,
-          });
+          messageFlow.payload = this.messages;
+          messageFlow.updateAdditionalAttribute("input", this.messages);
+          this.matched(messageFlow);
         } else {
           this.nodeStatus = "waiting";
         }
       } else {
-        this.matched({
-          msg: matchedMsg,
-          send,
-          payload: msg.payload,
-        });
+        messageFlow.updateAdditionalAttribute("input", messageFlow.payload);
+        this.matched(messageFlow);
       }
-    }
-
-    if (done) {
-      done();
     }
   }
 
-  protected matched(data: MatchJoinNodeData) {
-    this.debounce(data);
+  protected matched(messageFlow: NodeMessageFlow) {
+    this.debounce(messageFlow);
   }
 
   protected statusColor(status: NodeStatus): NodeStatusFill {

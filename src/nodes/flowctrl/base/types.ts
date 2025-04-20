@@ -6,6 +6,7 @@ import {
   NodeDef,
   NodeMessage,
 } from "node-red";
+import { cloneDeep } from "../../../helpers/object.helper";
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
 import version from "../../../version";
 import { NodeCategory, NodeSendFunction } from "../../types";
@@ -46,6 +47,19 @@ const BaseNodeStatusOptionsDefaults: BaseNodeStatusOptions = {
   statusItem: "",
   statusTextItem: "",
 };
+
+export const BaseCategory: NodeCategory = {
+  label: "Smarthome Flow Control",
+  name: "flowctrl",
+  color: "#7fffd4",
+};
+
+export interface BaseNodeStatus {
+  status: NodeStatus;
+  statusItem: string;
+  statusText: string;
+  statusTextItem: string;
+}
 
 interface BaseNodeDebounceOptions {
   debounce: boolean;
@@ -155,22 +169,99 @@ export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEdito
     inputs: { value: BaseNodeOptionsDefaults.inputs!, required: true },
   };
 
-export interface NodeSendOptions {
-  send?: NodeSendFunction;
-  payload?: any;
-  output?: number;
-  additionalAttributes?: Record<string, any>;
+export class NodeMessageFlow {
+  private readonly _originalMessage: NodeMessage;
+
+  private _topic?: string;
+  private _payload?: any;
+
+  protected additionalAttributes: Record<string, any> = {};
+
+  constructor(
+    msg: NodeMessage,
+    public output: number,
+    public send?: NodeSendFunction,
+    topic?: string,
+    payload?: any
+  ) {
+    this.topic = topic ?? msg.topic;
+    this.payload = payload ?? msg.payload;
+    this._originalMessage = cloneDeep<NodeMessage>(msg);
+  }
+
+  public get topic(): string | undefined {
+    return this._topic;
+  }
+
+  public set topic(topic: string | undefined) {
+    this._topic = topic;
+  }
+
+  public get payload(): any {
+    return cloneDeep<any>(this._payload);
+  }
+
+  public set payload(payload: any) {
+    this._payload = cloneDeep<any>(payload);
+  }
+
+  public get originalMsg(): NodeMessage {
+    return cloneDeep<NodeMessage>(this._originalMessage);
+  }
+
+  public get originalTopic(): string | undefined {
+    return this._originalMessage.topic;
+  }
+
+  public get originalPayload(): any {
+    return cloneDeep<any>(this._originalMessage.payload);
+  }
+
+  public updateAdditionalAttribute(key: string, value: any): void {
+    this.additionalAttributes[key] = value;
+  }
+
+  public getAdditionalAttribute(key: string): any {
+    return key in this.additionalAttributes
+      ? this.additionalAttributes[key]
+      : undefined;
+  }
+
+  public clone() {
+    const messageFlow = new NodeMessageFlow(
+      this.originalMsg,
+      this.output,
+      this.send
+    );
+    messageFlow.topic = this.topic;
+    messageFlow.payload = this.payload;
+    messageFlow.additionalAttributes = cloneDeep(this.additionalAttributes);
+    return messageFlow;
+  }
+
+  public newMessage(): NodeMessage {
+    return { topic: this.topic, payload: this.payload } as NodeMessage;
+  }
+
+  public message(): NodeMessage {
+    const msg = this.originalMsg;
+    msg.topic = this.topic;
+    msg.payload = this.payload;
+
+    return msg;
+  }
+
+  public addAttributes(msg: NodeMessage): NodeMessage {
+    Object.assign(msg, this.additionalAttributes);
+    return msg;
+  }
 }
 
 export type NodeStatus = string | number | boolean | Date | null;
 
-export interface BaseNodeDebounceData extends NodeSendOptions {
-  msg: NodeMessage;
-}
-
 export interface BaseNodeDebounceRunning {
   timer: NodeJS.Timeout | null;
-  lastData: BaseNodeDebounceData;
+  lastData: NodeMessageFlow;
 }
 
 export interface NodeEditorFormBuilderParams {
@@ -233,17 +324,4 @@ export interface NodeEditorFormBuilderSelectParams
 export interface NodeEditorFormBuilderHiddenInputParams {
   id: string;
   value: string | number | boolean;
-}
-
-export const BaseCategory: NodeCategory = {
-  label: "Smarthome Flow Control",
-  name: "flowctrl",
-  color: "#7fffd4",
-};
-
-export interface BaseNodeStatus {
-  status: NodeStatus;
-  statusItem: string;
-  statusText: string;
-  statusTextItem: string;
 }

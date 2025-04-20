@@ -1,7 +1,6 @@
-import { Node, NodeAPI, NodeMessageInFlow, NodeStatusFill } from "node-red";
+import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { cloneDeep } from "../../../helpers/object.helper";
-import { BaseNodeDebounceData } from "../../flowctrl/base/types";
-import { NodeDoneFunction, NodeSendFunction } from "../../types";
+import { NodeMessageFlow } from "../../flowctrl/base/types";
 import SwitchNode from "../switch";
 import {
   LogicalFunction,
@@ -61,52 +60,40 @@ export default class LogicalOpNode extends SwitchNode<
     this.messages = {};
   }
 
-  protected onInput(
-    msg: NodeMessageInFlow,
-    send: NodeSendFunction,
-    done: NodeDoneFunction
-  ): void {
-    if (typeof msg.payload !== "boolean") {
+  protected input(messageFlow: NodeMessageFlow): void {
+    if (typeof messageFlow.payload !== "boolean") {
       this.node.error("Payload must be a boolean value");
       return;
     }
 
     if (this.config.operation === LogicalFunction.not) {
-      this.switchHandling({
-        msg: msg,
-        send,
-        payload: LogicalOperation.not([msg.payload]),
-        additionalAttributes: { input: msg.payload },
-      });
+      messageFlow.updateAdditionalAttribute("input", messageFlow.payload);
+      messageFlow.payload = LogicalOperation.not([messageFlow.payload]);
     } else {
-      if (typeof msg.topic !== "string") {
+      if (typeof messageFlow.topic !== "string") {
         this.node.error("Topic must be a string");
         return;
       }
 
-      this.messages[msg.topic] = msg.payload;
+      this.messages[messageFlow.topic] = messageFlow.payload;
 
       if (Object.keys(this.messages).length >= this.config.minMsgCount) {
         const payloads = Object.values(this.messages);
-
-        this.switchHandling({
-          msg: msg,
-          send,
-          payload: LogicalOperation.func(this.config.operation, payloads),
-          additionalAttributes: { input: cloneDeep(this.messages) },
-        });
+        messageFlow.updateAdditionalAttribute(
+          "input",
+          cloneDeep(this.messages)
+        );
+        messageFlow.payload = LogicalOperation.func(
+          this.config.operation,
+          payloads
+        );
       } else {
         this.nodeStatus = "waiting";
+        return;
       }
     }
 
-    if (done) {
-      done();
-    }
-  }
-
-  protected updateStatusAfterDebounce(data: BaseNodeDebounceData): void {
-    this.nodeStatus = data.payload;
+    this.switchHandling(messageFlow);
   }
 
   protected statusColor(status: any): NodeStatusFill {

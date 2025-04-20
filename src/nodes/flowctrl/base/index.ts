@@ -9,19 +9,18 @@ import { formatDate } from "../../../helpers/date.helper";
 import { cloneDeep, isEqual } from "../../../helpers/object.helper";
 import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
+import StatusNode from "../status";
+import { StatusNodesConnector } from "../status/connector";
 import {
   BaseCategory,
-  BaseNodeDebounceData,
   BaseNodeDebounceRunning,
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
   BaseNodeStatus,
-  NodeSendOptions,
+  NodeMessageFlow,
   NodeStatus,
 } from "./types";
-import { StatusNodesConnector } from "../status/connector";
-import StatusNode from "../status";
 
 export default class BaseNode<
   T extends BaseNodeDef = BaseNodeDef,
@@ -123,21 +122,24 @@ export default class BaseNode<
     send: NodeSendFunction,
     done: NodeDoneFunction
   ) {
-    this.debounce({ msg: msg, send });
+    const messageFlow = new NodeMessageFlow(msg, 0, send);
+
+    this.input(messageFlow);
 
     if (done) {
       done();
     }
   }
 
-  protected debounce(data: BaseNodeDebounceData): void {
-    if (this.config.debounce) {
-      const key = this.debounceKey(data.msg);
+  protected input(messageFlow: NodeMessageFlow): void {
+    this.debounce(messageFlow);
+  }
 
-      const lastData: BaseNodeDebounceData = {
-        ...data,
-        msg: this.cloneMessage(data.msg),
-      };
+  protected debounce(messageFlow: NodeMessageFlow): void {
+    if (this.config.debounce) {
+      const key = this.debounceKey(messageFlow.topic);
+
+      const lastData = messageFlow.clone();
 
       if (this.debouncing[key]) {
         this.debouncing[key].lastData = lastData;
@@ -148,13 +150,10 @@ export default class BaseNode<
         };
       }
 
-      if (!this.debouncing[key].timer) {
+      if (!this.isDebounceRunning(key)) {
         if (this.config.debounceLeading) {
-          data.additionalAttributes = {
-            ...data.additionalAttributes,
-            debounced: "leading",
-          };
-          this.debounceListener(data);
+          messageFlow.updateAdditionalAttribute("debounced", "leading");
+          this.debounced(messageFlow);
         }
 
         if (this.config.debounceShowStatus) {
@@ -169,19 +168,14 @@ export default class BaseNode<
             }
 
             if (this.config.debounceShowStatus) {
-              this.viewNodeStatus(this.nodeStatus);
+              this.triggerNodeStatus();
             }
 
             if (this.config.debounceTrailing) {
-              const lastData = this.debouncing[key].lastData;
-              lastData.send = this.node.send.bind(this.node);
-              lastData.msg = this.cloneMessage(lastData.msg);
-              lastData.additionalAttributes = {
-                ...data.additionalAttributes,
-                debounced: "trailing",
-              };
+              const lastData = this.debouncing[key].lastData.clone();
+              lastData.updateAdditionalAttribute("debounced", "trailing");
 
-              this.debounceListener(lastData);
+              this.debounced(lastData);
             }
           },
           convertToMilliseconds(
@@ -191,65 +185,73 @@ export default class BaseNode<
         );
       }
     } else {
-      this.debouncePass(data);
+      this.debouncePass(messageFlow);
     }
   }
 
-  protected debounceKey(msg: NodeMessage): string {
-    return this.config.debounceTopic ? (msg.topic ?? "default") : "default";
+  protected debounceKey(topic?: string): string {
+    return this.config.debounceTopic ? (topic ?? "__default__") : "__default__";
   }
 
   protected isDebounceRunning(key: string): boolean {
     return Boolean(this.debouncing[key]?.timer);
   }
 
-  protected cloneMessage(msg: NodeMessage): NodeMessage {
+  protected debouncePass(messageFlow: NodeMessageFlow) {
+    messageFlow.updateAdditionalAttribute("debounced", "pass");
+    this.debounced(messageFlow);
+  }
+
+  protected debounced(messageFlow: NodeMessageFlow) {
+    this.sendMsg(messageFlow);
+    this.updateStatusAfterDebounce(messageFlow);
+  }
+
+  protected updateStatusAfterDebounce(_: NodeMessageFlow) {
+    this.nodeStatus = new Date();
+  }
+
+  protected cloneMessage(
+    msg: NodeMessage,
+    deleteMsgId: boolean = true
+  ): NodeMessage {
     const clonedMsg = cloneDeep<NodeMessage>(msg);
-    delete clonedMsg._msgid;
+
+    if (deleteMsgId) {
+      delete clonedMsg._msgid;
+    }
+
     return clonedMsg;
   }
 
-  protected debouncePass(data: BaseNodeDebounceData) {
-    data.additionalAttributes = {
-      ...data.additionalAttributes,
-      debounced: "passed",
-    };
-    this.debounceListener(data);
-  }
-
-  protected debounceListener(data: BaseNodeDebounceData) {
-    this.sendMsg(data.msg, data);
-    this.updateStatusAfterDebounce(data);
-  }
-
-  protected sendMsg(msg: NodeMessage, options: NodeSendOptions = {}) {
+  protected sendMsg(messageFlow: NodeMessageFlow) {
     const topicValue = this.RED.util.evaluateNodeProperty(
       this.config.topic,
       this.config.topicType,
       this.node,
-      msg
+      messageFlow
     );
-    const payload = options.payload ?? msg.payload;
 
-    if (this.config.newMsg ?? false) {
-      msg = { payload: payload, topic: topicValue };
-    } else {
-      msg.payload = payload;
-      msg.topic = topicValue;
-    }
+    messageFlow.topic = topicValue;
+    messageFlow.payload =
+      messageFlow.payload ?? messageFlow.originalMsg.payload;
+
+    const msg = this.config.newMsg
+      ? messageFlow.newMessage()
+      : messageFlow.message();
 
     if (this.config.filterUniquePayload ?? false) {
-      const compareKey = this.config.filterkey ?? msg.topic ?? "default";
+      const compareKey = this.config.filterkey ?? topicValue ?? "default";
 
       if (this.filterPayload(this.lastSentPayloads, msg, compareKey)) {
-        this.sendMsgToOutput(msg, options);
+        this.sendMsgToOutput(msg, messageFlow);
         this.lastSentPayloads[compareKey] =
           typeof msg.payload === "object" && msg.payload !== null
             ? cloneDeep<any>(msg.payload)
             : msg.payload;
       }
     } else {
-      this.sendMsgToOutput(msg, options);
+      this.sendMsgToOutput(msg, messageFlow);
     }
   }
 
@@ -265,8 +267,15 @@ export default class BaseNode<
     return lastSentPayloads[compareKey] !== msg.payload;
   }
 
-  protected updateStatusAfterDebounce(_: BaseNodeDebounceData) {
-    this.nodeStatus = new Date();
+  protected sendMsgToOutput(msg: NodeMessage, messageFlow: NodeMessageFlow) {
+    msg = messageFlow.addAttributes(msg);
+
+    let msgs = Array(this.config.outputs ?? 1).fill(null);
+    msgs[messageFlow.output] = msg;
+
+    const send: NodeSendFunction =
+      messageFlow.send ?? this.node.send.bind(this.node);
+    send(msgs);
   }
 
   protected get nodeStatus(): NodeStatus {
@@ -330,23 +339,9 @@ export default class BaseNode<
       statusText: this.statusTextFormatter(this.nodeStatus),
       statusTextItem: this.config.statusTextItem,
     };
-
     this.statusListeners.forEach((statusNode) => {
       statusNode.handleStatusReport(statusReport);
     });
-  }
-
-  protected sendMsgToOutput(msg: NodeMessage, options: NodeSendOptions = {}) {
-    if (options.additionalAttributes) {
-      Object.assign(msg, options.additionalAttributes);
-    }
-
-    let msgs = Array(this.config.outputs ?? 1).fill(null);
-    msgs[options.output ?? 0] = msg;
-
-    const send: NodeSendFunction =
-      options.send ?? this.node.send.bind(this.node);
-    send(msgs);
   }
 
   public toString(): string {

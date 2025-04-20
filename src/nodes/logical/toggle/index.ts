@@ -1,5 +1,5 @@
-import { Node, NodeAPI, NodeMessageInFlow } from "node-red";
-import { NodeDoneFunction, NodeSendFunction } from "../../types";
+import { Node, NodeAPI } from "node-red";
+import { NodeMessageFlow } from "../../flowctrl/base/types";
 import SwitchNode from "../switch";
 import {
   ToggleNodeDef,
@@ -19,12 +19,8 @@ export default class ToggleNode extends SwitchNode<
     super(RED, node, config, ToggleNodeOptionsDefaults);
   }
 
-  protected onInput(
-    msg: NodeMessageInFlow,
-    send: NodeSendFunction,
-    done: NodeDoneFunction
-  ): void {
-    const command = msg.payload;
+  protected input(messageFlow: NodeMessageFlow): void {
+    const command = messageFlow.payload;
 
     if (command === "toggle") {
       this.lastValue = !this.lastValue;
@@ -32,14 +28,7 @@ export default class ToggleNode extends SwitchNode<
       this.lastValue = command;
     }
 
-    this.switchHandling({
-      msg: msg,
-      send,
-      payload: this.lastValue,
-    });
-
-    if (done) {
-      done();
-    }
+    messageFlow.payload = this.lastValue;
+    this.switchHandling(messageFlow);
   }
 }
