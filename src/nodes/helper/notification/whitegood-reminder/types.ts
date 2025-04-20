@@ -1,4 +1,5 @@
 import { EditorNodePropertiesDef } from "node-red";
+import { TimeIntervalUnit } from "../../../../helpers/time.helper";
 import {
   BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
@@ -13,12 +14,14 @@ import {
 export enum WhitegoodReminderTarget {
   power = "power",
   runs = "runs",
+  emptied = "emptied",
 }
 
 export enum WhitegoodStatus {
   off = "off",
   standby = "standby",
   running = "running",
+  unemptied = "unemptied",
 }
 
 export interface WhitegoodReminderNodeOptions extends MatchJoinNodeOptions {
@@ -27,6 +30,9 @@ export interface WhitegoodReminderNodeOptions extends MatchJoinNodeOptions {
   cleanupEnabled: boolean;
   cleanupInterval: number;
   statusShowRuns: boolean;
+  emptyReminderEnabled: boolean;
+  emptyReminderInterval: number;
+  emptyReminderUnit: TimeIntervalUnit;
 }
 
 export const WhitegoodReminderNodeOptionsDefaults: WhitegoodReminderNodeOptions =
@@ -46,6 +52,9 @@ export const WhitegoodReminderNodeOptionsDefaults: WhitegoodReminderNodeOptions 
     standbyPowerLimit: 0.5,
     cleanupEnabled: false,
     cleanupInterval: 30,
+    emptyReminderEnabled: false,
+    emptyReminderInterval: 30,
+    emptyReminderUnit: TimeIntervalUnit.m,
     statusShowRuns: false,
     outputs: 2,
   };
@@ -91,6 +100,18 @@ export const WhitegoodReminderEditorNodePropertiesDefaults: EditorNodeProperties
     },
     cleanupInterval: {
       value: WhitegoodReminderNodeOptionsDefaults.cleanupInterval,
+      required: true,
+    },
+    emptyReminderEnabled: {
+      value: WhitegoodReminderNodeOptionsDefaults.emptyReminderEnabled,
+      required: true,
+    },
+    emptyReminderInterval: {
+      value: WhitegoodReminderNodeOptionsDefaults.emptyReminderInterval,
+      required: true,
+    },
+    emptyReminderUnit: {
+      value: WhitegoodReminderNodeOptionsDefaults.emptyReminderUnit,
       required: true,
     },
     statusShowRuns: {

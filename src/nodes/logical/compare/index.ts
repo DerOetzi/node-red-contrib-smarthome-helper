@@ -82,14 +82,23 @@ export class CompareOperation {
     propertyValue: string,
     compareValue: string
   ): boolean {
+    if (propertyValue === undefined || propertyValue === null) {
+      return false;
+    }
     return propertyValue.startsWith(compareValue);
   }
 
   public static endsWith(propertyValue: string, compareValue: string): boolean {
+    if (propertyValue === undefined || propertyValue === null) {
+      return false;
+    }
     return propertyValue.endsWith(compareValue);
   }
 
   public static contains(propertyValue: string, compareValue: string): boolean {
+    if (propertyValue === undefined || propertyValue === null) {
+      return false;
+    }
     return propertyValue.includes(compareValue);
   }
 

@@ -225,11 +225,14 @@ export default class BaseNode<
   }
 
   protected sendMsg(messageFlow: NodeMessageFlow) {
+    let tempMsg = messageFlow.message();
+    tempMsg = messageFlow.addAttributes(tempMsg);
+
     const topicValue = this.RED.util.evaluateNodeProperty(
       this.config.topic,
       this.config.topicType,
       this.node,
-      messageFlow
+      tempMsg
     );
 
     messageFlow.topic = topicValue;

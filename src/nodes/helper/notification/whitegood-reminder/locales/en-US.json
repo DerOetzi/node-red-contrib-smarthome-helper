@@ -1,31 +1,35 @@
 {
-    "name": "Whitegood Reminder",
-    "label": {
-        "offPowerLimit": "Limit off (W)",
-        "standbyPowerLimit": "Limit standby (W)",
-        "cleanupEnabled": "Remind clean",
-        "cleanupInterval": "Clean interval (runs)",
-        "statusShowRuns": "Show runs in status"
-    },
-    "select": {
-        "target": {
-            "power": "Power",
-            "runs": "Current runs"
-        }
-    },
-    "output": {
-        "notification": "Notification",
-        "runs": "Runs count"
-    },
-    "notify": {
-        "title": "Device notification",
-        "message": "{name} is ready.",
-        "cleanupMessage": "{name} is ready - time to clean it."
-    },
-    "status": {
-        "running": "Running",
-        "standby": "Standby",
-        "off": "Off",
-        "cleanup": "Cleanup"
+  "name": "Whitegood Reminder",
+  "label": {
+    "offPowerLimit": "Limit off (W)",
+    "standbyPowerLimit": "Limit standby (W)",
+    "cleanupEnabled": "Remind clean",
+    "cleanupInterval": "Clean interval (runs)",
+    "statusShowRuns": "Show runs in status",
+    "emptyReminderEnabled": "Unemptied reminder",
+    "emptyReminderInterval": "Unemptied interval"
+  },
+  "select": {
+    "target": {
+      "power": "Power",
+      "runs": "Current runs",
+      "emptied": "Emptied"
     }
+  },
+  "output": {
+    "notification": "Notification",
+    "runs": "Runs count"
+  },
+  "notify": {
+    "title": "Device notification",
+    "message": "{name} is ready.",
+    "cleanupMessage": "{name} is ready - time to clean it."
+  },
+  "status": {
+    "running": "Running",
+    "standby": "Standby",
+    "off": "Off",
+    "cleanup": "Cleanup",
+    "unemptied": "Unemptied"
+  }
 }

@@ -1,4 +1,5 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
+import { convertToMilliseconds } from "../../../../helpers/time.helper";
 import { NodeMessageFlow, NodeStatus } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
@@ -7,6 +8,7 @@ import {
   WhitegoodReminderNodeDef,
   WhitegoodReminderNodeOptions,
   WhitegoodReminderNodeOptionsDefaults,
+  WhitegoodReminderTarget,
   WhitegoodStatus,
 } from "./types";
 
@@ -21,18 +23,29 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
   private _runs: number = 0;
   private cleanupNeeded: boolean = false;
 
+  private timer: NodeJS.Timeout | null = null;
+
   constructor(RED: NodeAPI, node: Node, config: WhitegoodReminderNodeDef) {
     super(RED, node, config, WhitegoodReminderNodeOptionsDefaults);
   }
 
   protected matched(messageFlow: NodeMessageFlow): void {
     switch (messageFlow.topic) {
-      case "power":
+      case WhitegoodReminderTarget.power:
         this.checkPower(messageFlow);
         break;
-      case "runs":
+      case WhitegoodReminderTarget.runs:
         this.runs = messageFlow.payload as number;
         this.triggerNodeStatus();
+        break;
+      case WhitegoodReminderTarget.emptied:
+        if (
+          (messageFlow.payload as boolean) &&
+          (this.nodeStatus === WhitegoodStatus.unemptied || this.timer !== null)
+        ) {
+          this.clearTimer();
+          this.nodeStatus = WhitegoodStatus.off;
+        }
         break;
     }
   }
@@ -52,6 +65,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
     if (power < this.config.offPowerLimit) {
       this.finish(messageFlow);
     } else if (power > this.config.standbyPowerLimit) {
+      this.clearTimer();
       this.nodeStatus = WhitegoodStatus.running;
     } else if (this.nodeStatus === WhitegoodStatus.off) {
       this.nodeStatus = WhitegoodStatus.standby;
@@ -62,23 +76,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
     if (this.nodeStatus === WhitegoodStatus.running) {
       this.runs += 1;
 
-      let message = this.cleanupNeeded
-        ? this.RED._("helper.whitegood-reminder.notify.cleanupMessage")
-        : this.RED._("helper.whitegood-reminder.notify.message");
-
-      message = message.replace("{name}", this.config.name);
-
-      const whitegoodReminderMessageFlow = NotifyNodeMessageFlow.clone(
-        messageFlow,
-        "reminder",
-        {
-          title: this.RED._("helper.whitegood-reminder.notify.title"),
-          message,
-          onlyAtHome: true,
-        }
-      );
-
-      this.debounce(whitegoodReminderMessageFlow);
+      this.sendReminder(messageFlow);
 
       const runningMessageFlow = messageFlow.clone();
       runningMessageFlow.topic = "whitegoodRuns";
@@ -86,8 +84,60 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
       runningMessageFlow.output = 1;
 
       this.debounce(runningMessageFlow);
+
+      if (this.config.emptyReminderEnabled) {
+        delete messageFlow.send;
+        this.setTimer(messageFlow);
+        this.nodeStatus = WhitegoodStatus.unemptied;
+      } else {
+        this.nodeStatus = WhitegoodStatus.off;
+      }
+    } else if (this.nodeStatus !== WhitegoodStatus.unemptied) {
+      this.nodeStatus = WhitegoodStatus.off;
     }
-    this.nodeStatus = WhitegoodStatus.off;
+  }
+
+  private setTimer(messageFlow: NodeMessageFlow): void {
+    if (this.timer) {
+      this.clearTimer();
+    }
+
+    this.timer = setInterval(
+      () => {
+        this.sendReminder(messageFlow);
+      },
+      convertToMilliseconds(
+        this.config.emptyReminderInterval,
+        this.config.emptyReminderUnit
+      )
+    );
+  }
+
+  private clearTimer(): void {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
+  }
+
+  private sendReminder(messageFlow: NodeMessageFlow) {
+    let message = this.cleanupNeeded
+      ? this.RED._("helper.whitegood-reminder.notify.cleanupMessage")
+      : this.RED._("helper.whitegood-reminder.notify.message");
+
+    message = message.replace("{name}", this.config.name);
+
+    const whitegoodReminderMessageFlow = NotifyNodeMessageFlow.clone(
+      messageFlow,
+      "reminder",
+      {
+        title: this.RED._("helper.whitegood-reminder.notify.title"),
+        message,
+        onlyAtHome: true,
+      }
+    );
+
+    this.debounce(whitegoodReminderMessageFlow);
   }
 
   protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
@@ -102,6 +152,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
         color = "red";
         break;
       case WhitegoodStatus.standby:
+      case WhitegoodStatus.unemptied:
         color = "yellow";
         break;
       case WhitegoodStatus.running:

@@ -77,12 +77,13 @@
       "595ed5eb0826dce0",
       "d46e7c3f9e31a6c4",
       "9ae889eef2bcfd2f",
-      "10f7c72fc9568ad5"
+      "10f7c72fc9568ad5",
+      "67ace2f09f595f64"
     ],
     "x": 34,
     "y": 759,
     "w": 732,
-    "h": 442
+    "h": 462
   },
   {
     "id": "207093681a91a825",
@@ -723,7 +724,7 @@
     "payload": "0.05",
     "payloadType": "num",
     "x": 140,
-    "y": 960,
+    "y": 980,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -753,7 +754,7 @@
     "payload": "0.2",
     "payloadType": "num",
     "x": 140,
-    "y": 1000,
+    "y": 1020,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -783,7 +784,7 @@
     "payload": "400",
     "payloadType": "num",
     "x": 140,
-    "y": 1040,
+    "y": 1060,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -805,7 +806,7 @@
     "statusVal": "payload",
     "statusType": "auto",
     "x": 520,
-    "y": 1020,
+    "y": 1040,
     "wires": []
   },
   {
@@ -819,7 +820,7 @@
       "873452eea74ec486"
     ],
     "x": 610,
-    "y": 880,
+    "y": 900,
     "wires": [],
     "l": true
   },
@@ -846,7 +847,7 @@
     "payload": "0",
     "payloadType": "num",
     "x": 150,
-    "y": 1120,
+    "y": 1140,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -876,7 +877,7 @@
     "payload": "28",
     "payloadType": "num",
     "x": 150,
-    "y": 1160,
+    "y": 1180,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -936,7 +937,7 @@
     "cleanupInterval": 30,
     "statusShowRuns": false,
     "x": 330,
-    "y": 1000,
+    "y": 1020,
     "wires": [
       [
         "8b9de60f22b2ee9e"
@@ -979,6 +980,15 @@
         "compare": "power",
         "compareType": "str",
         "target": "power"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "emptied",
+        "compareType": "str",
+        "target": "emptied"
       }
     ],
     "join": false,
@@ -988,6 +998,9 @@
     "standbyPowerLimit": 0.5,
     "cleanupEnabled": false,
     "cleanupInterval": 30,
+    "emptyReminderEnabled": true,
+    "emptyReminderInterval": "10",
+    "emptyReminderUnit": "s",
     "statusShowRuns": true,
     "x": 330,
     "y": 840,
@@ -1348,6 +1361,36 @@
     "y": 1480,
     "wires": [
       []
+    ]
+  },
+  {
+    "id": "67ace2f09f595f64",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "g": "b8cf2a023c61d0db",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "emptied",
+    "payload": "true",
+    "payloadType": "bool",
+    "x": 150,
+    "y": 920,
+    "wires": [
+      [
+        "595ed5eb0826dce0"
+      ]
     ]
   }
 ]

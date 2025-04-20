@@ -285,7 +285,7 @@ export class NodeEditorFormEditableList<T> {
           this.addItem(data);
         },
       })
-      .editableList("addItems", (items as any) || []);
+      .editableList("addItems", (items as any) ?? []);
 
     return this;
   }

@@ -25,7 +25,9 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
     icon: "font-awesome/fa-plug",
     defaults: WhitegoodReminderEditorNodePropertiesDefaults,
     label: function () {
-      return this.name || i18n("helper.whitegood-reminder.name");
+      return this.name?.trim()
+        ? this.name.trim()
+        : i18n("helper.whitegood-reminder.name");
     },
     inputs: WhitegoodReminderNodeOptionsDefaults.inputs,
     outputs: WhitegoodReminderNodeOptionsDefaults.outputs,
@@ -42,7 +44,14 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
         translatePrefix: "flowctrl.match-join",
       });
 
-      inputMatcherList.showHideTarget(this.cleanupEnabled, "runs");
+      inputMatcherList.showHideTarget(
+        this.cleanupEnabled,
+        WhitegoodReminderTarget.runs
+      );
+      inputMatcherList.showHideTarget(
+        this.emptyReminderEnabled,
+        WhitegoodReminderTarget.emptied
+      );
 
       const whitegoodReminderOptionsBuilder = new NodeEditorFormBuilder(
         $("#whitegood-reminder-options"),
@@ -93,7 +102,39 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
       cleanupEnabled.on("change", function () {
         const cleanupEnabled = $(this).is(":checked");
         cleanupIntervalRow.toggle(cleanupEnabled);
-        inputMatcherList.removeTarget(cleanupEnabled, "runs");
+        inputMatcherList.removeTarget(
+          cleanupEnabled,
+          WhitegoodReminderTarget.runs
+        );
+      });
+
+      const emptyReminderEnabled =
+        whitegoodReminderOptionsBuilder.createCheckboxInput({
+          id: "node-input-emptyReminderEnabled",
+          label: "emptyReminderEnabled",
+          value: this.emptyReminderEnabled,
+          icon: "tint",
+        });
+
+      const emptyReminderIntervalRow = whitegoodReminderOptionsBuilder
+        .createTimeInput({
+          id: "node-input-emptyReminderInterval",
+          idType: "node-input-emptyReminderUnit",
+          label: "emptyReminderInterval",
+          value: this.emptyReminderInterval,
+          valueType: this.emptyReminderUnit,
+          icon: "clock-o",
+        })
+        .parent()
+        .toggle(this.emptyReminderEnabled);
+
+      emptyReminderEnabled.on("change", function () {
+        const emptyReminderEnabled = $(this).is(":checked");
+        emptyReminderIntervalRow.toggle(emptyReminderEnabled);
+        inputMatcherList.removeTarget(
+          emptyReminderEnabled,
+          WhitegoodReminderTarget.emptied
+        );
       });
     },
     oneditsave: function () {
