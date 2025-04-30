@@ -39,10 +39,11 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
         this.triggerNodeStatus();
         break;
       case WhitegoodReminderTarget.emptied:
-        if (
-          (messageFlow.payload as boolean) &&
-          (this.nodeStatus === WhitegoodStatus.unemptied || this.timer !== null)
-        ) {
+        if (messageFlow.payload as boolean) {
+          if (this.nodeStatus === WhitegoodStatus.running) {
+            this.runs += 1;
+          }
+
           this.clearTimer();
           this.nodeStatus = WhitegoodStatus.off;
         }
