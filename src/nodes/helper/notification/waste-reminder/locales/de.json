@@ -1,0 +1,18 @@
+{
+  "name": "Müllerinnerung",
+  "types": {
+    "no-waste": "nicht definiert",
+    "and": "und"
+  },
+  "select": {
+    "target": {
+      "types": "Nächste Mülltypen",
+      "remaining": "Verbleibende Tage"
+    }
+  },
+  "notification": {
+    "title": "Müllerinnerung",
+    "message": "Morgen wird {waste} abgeholt",
+    "message_plural": "Morgen werden {waste} abgeholt"
+  }
+}

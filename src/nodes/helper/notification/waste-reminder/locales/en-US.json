@@ -1,0 +1,18 @@
+{
+  "name": "Waste Reminder",
+  "types": {
+    "no-waste": "not defined",
+    "and": "and"
+  },
+  "select": {
+    "target": {
+      "types": "Next waste types",
+      "remaining": "Remaining days"
+    }
+  },
+  "notification": {
+    "title": "Waste Reminder",
+    "message": "Tomorrow {waste} will be collected",
+    "message_plural": "Tomorrow {waste} will be collected"
+  }
+}

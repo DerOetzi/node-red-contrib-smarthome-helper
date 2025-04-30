@@ -1392,5 +1392,281 @@
         "595ed5eb0826dce0"
       ]
     ]
+  },
+  {
+    "id": "eeafc10302e34bd3",
+    "type": "helper-waste-reminder",
+    "z": "27dba50801e5b614",
+    "name": "",
+    "version": "0.32.0",
+    "migrated": false,
+    "topic": "topic",
+    "topicType": "msg",
+    "initializeDelay": "",
+    "initializeDelayUnit": "",
+    "statusReportingEnabled": false,
+    "statusItem": "",
+    "statusTextItem": "",
+    "debounce": false,
+    "debounceTopic": false,
+    "debounceTime": 100,
+    "debounceShowStatus": false,
+    "debounceUnit": "ms",
+    "debounceLeading": false,
+    "debounceTrailing": true,
+    "filterUniquePayload": false,
+    "newMsg": false,
+    "outputs": 1,
+    "inputs": 1,
+    "matchers": [
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "types",
+        "compareType": "str",
+        "target": "types"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "remaining",
+        "compareType": "str",
+        "target": "remaining"
+      }
+    ],
+    "join": false,
+    "discardNotMatched": true,
+    "minMsgCount": 1,
+    "x": 520,
+    "y": 1740,
+    "wires": [
+      [
+        "468f58ba882bca90"
+      ]
+    ]
+  },
+  {
+    "id": "f10b530baeddf16b",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "remaining",
+    "payload": "9",
+    "payloadType": "num",
+    "x": 150,
+    "y": 1620,
+    "wires": [
+      [
+        "eeafc10302e34bd3"
+      ]
+    ]
+  },
+  {
+    "id": "3965d9d39accfcd3",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "remaining",
+    "payload": "1",
+    "payloadType": "num",
+    "x": 150,
+    "y": 1660,
+    "wires": [
+      [
+        "eeafc10302e34bd3"
+      ]
+    ]
+  },
+  {
+    "id": "cb8c21efdd6716f4",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "remaining",
+    "payload": "0",
+    "payloadType": "num",
+    "x": 150,
+    "y": 1700,
+    "wires": [
+      [
+        "eeafc10302e34bd3"
+      ]
+    ]
+  },
+  {
+    "id": "6acca31361f67999",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "name": "Biomüll",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "types",
+    "payload": "['Biomüll']",
+    "payloadType": "str",
+    "x": 130,
+    "y": 1780,
+    "wires": [
+      [
+        "eeafc10302e34bd3"
+      ]
+    ]
+  },
+  {
+    "id": "2b105fd36d55385d",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "types",
+    "payload": "Restmüll, Biomüll",
+    "payloadType": "str",
+    "x": 180,
+    "y": 1820,
+    "wires": [
+      [
+        "eeafc10302e34bd3"
+      ]
+    ]
+  },
+  {
+    "id": "6f7cbfb16cdeee8b",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "name": "Restmüll, Biomüll (JSON)",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "types",
+    "payload": "[\"Restmüll\",\"Biomüll\"]",
+    "payloadType": "json",
+    "x": 190,
+    "y": 1860,
+    "wires": [
+      [
+        "eeafc10302e34bd3"
+      ]
+    ]
+  },
+  {
+    "id": "e54ce1550a4a889a",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "name": "Restmüll, Biomüll, Papier",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "types",
+    "payload": "['Restmüll', 'Biomüll', 'Papier']",
+    "payloadType": "str",
+    "x": 190,
+    "y": 1900,
+    "wires": [
+      [
+        "eeafc10302e34bd3"
+      ]
+    ]
+  },
+  {
+    "id": "468f58ba882bca90",
+    "type": "debug",
+    "z": "27dba50801e5b614",
+    "name": "debug 2",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 740,
+    "y": 1740,
+    "wires": []
   }
 ]

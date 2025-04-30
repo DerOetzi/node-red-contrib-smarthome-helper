@@ -1,6 +1,6 @@
 {
   "name": "@deroetzi/node-red-contrib-smarthome-helper",
-  "version": "0.31.0",
+  "version": "0.32.0",
   "description": "A collection of personal helper nodes for Node-RED",
   "author": "Johannes Ott",
   "license": "MIT",
