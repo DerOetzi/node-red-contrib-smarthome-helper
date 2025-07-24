@@ -14,11 +14,15 @@ import {
 export enum WindowReminderTarget {
   window = "window",
   presence = "presence",
+  command = "command",
+  intervalSelect = "intervalSelect",
 }
 
 export interface WindowReminderNodeOptions extends MatchJoinNodeOptions {
   interval: number;
   intervalUnit: TimeIntervalUnit;
+  interval2: number;
+  intervalUnit2: TimeIntervalUnit;
 }
 
 export const WindowReminderNodeOptionsDefaults: WindowReminderNodeOptions = {
@@ -34,12 +38,24 @@ export const WindowReminderNodeOptionsDefaults: WindowReminderNodeOptions = {
       target: WindowReminderTarget.presence,
       targetType: "str",
     },
+    {
+      ...MatcherRowDefaults,
+      target: WindowReminderTarget.command,
+      targetType: "str",
+    },
+    {
+      ...MatcherRowDefaults,
+      target: WindowReminderTarget.intervalSelect,
+      targetType: "str",
+    },
   ],
   join: false,
   minMsgCount: 1,
   discardNotMatched: true,
   interval: 0,
   intervalUnit: TimeIntervalUnit.m,
+  interval2: 0,
+  intervalUnit2: TimeIntervalUnit.m,
 };
 
 export interface WindowReminderNodeDef
@@ -75,6 +91,14 @@ export const WindowReminderEditorNodePropertiesDefaults: EditorNodePropertiesDef
     },
     intervalUnit: {
       value: WindowReminderNodeOptionsDefaults.intervalUnit,
+      required: true,
+    },
+    interval2: {
+      value: WindowReminderNodeOptionsDefaults.interval2,
+      required: true,
+    },
+    intervalUnit2: {
+      value: WindowReminderNodeOptionsDefaults.intervalUnit2,
       required: true,
     },
   };

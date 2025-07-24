@@ -42,6 +42,16 @@ const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties
         translatePrefix: "flowctrl.match-join",
       });
 
+      inputMatcherList.showHideTarget(
+        this.interval > 0,
+        WindowReminderTarget.command
+      );
+
+      inputMatcherList.showHideTarget(
+        this.interval2 > 0,
+        WindowReminderTarget.intervalSelect
+      );
+
       const windowReminderOptionsBuilder = new NodeEditorFormBuilder(
         $("#window-reminder-options"),
         {
@@ -49,14 +59,37 @@ const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties
         }
       );
 
-      windowReminderOptionsBuilder.createTimeInput({
-        id: "node-input-interval",
-        idType: "node-input-intervalUnit",
-        label: "interval",
-        value: this.interval,
-        valueType: this.intervalUnit,
-        icon: "clock-o",
-      });
+      windowReminderOptionsBuilder
+        .createTimeInput({
+          id: "node-input-interval",
+          idType: "node-input-intervalUnit",
+          label: "interval",
+          value: this.interval,
+          valueType: this.intervalUnit,
+          icon: "clock-o",
+        })
+        .on("change", function () {
+          inputMatcherList.removeTarget(
+            Number($(this).val() ?? 0) > 0,
+            WindowReminderTarget.command
+          );
+        });
+
+      windowReminderOptionsBuilder
+        .createTimeInput({
+          id: "node-input-interval2",
+          idType: "node-input-intervalUnit2",
+          label: "interval2",
+          value: this.interval2,
+          valueType: this.intervalUnit2,
+          icon: "clock-o",
+        })
+        .on("change", function () {
+          inputMatcherList.removeTarget(
+            Number($(this).val() ?? 0) > 0,
+            WindowReminderTarget.intervalSelect
+          );
+        });
     },
     oneditsave: function () {
       this.matchers = inputMatcherList.values();

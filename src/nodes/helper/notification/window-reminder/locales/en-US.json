@@ -2,12 +2,15 @@
   "name": "Window reminder",
   "description": "This node can remind you if a window is opened for a long time. It can also notify you if nobody is at home.",
   "label": {
-    "interval": "Interval"
+    "interval": "Interval 0",
+    "interval2": "Interval 1"
   },
   "select": {
     "target": {
       "window": "window open",
-      "presence": "presence"
+      "presence": "presence",
+      "command": "command",
+      "intervalSelect": "interval select"
     }
   },
   "notification": {

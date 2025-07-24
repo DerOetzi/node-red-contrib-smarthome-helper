@@ -44,18 +44,21 @@
       "label": true
     },
     "nodes": [
-      "e9d81b73d53c7e10",
       "79f0ae5e656d4006",
       "f53d8ab15e415e9d",
       "14ea56f25f90f23d",
       "bc322bfb3add5fce",
       "552df2256d978cb3",
-      "d6ed4a7c1dbb805b"
+      "d6ed4a7c1dbb805b",
+      "c921f54ba143ab34",
+      "fed4d7d9bb7e8cbc",
+      "285d48cad95455ad",
+      "9b854ab330bb6f2e"
     ],
     "x": 34,
     "y": 439,
-    "w": 752,
-    "h": 282
+    "w": 832,
+    "h": 442
   },
   {
     "id": "b8cf2a023c61d0db",
@@ -81,7 +84,7 @@
       "67ace2f09f595f64"
     ],
     "x": 34,
-    "y": 759,
+    "y": 1019,
     "w": 732,
     "h": 462
   },
@@ -105,9 +108,33 @@
       "d4e3ab23f8d81a82"
     ],
     "x": 34,
-    "y": 1239,
+    "y": 1519,
     "w": 672,
     "h": 282
+  },
+  {
+    "id": "d5584d14f41bfbeb",
+    "type": "group",
+    "z": "27dba50801e5b614",
+    "name": "Waste reminder",
+    "style": {
+      "label": true
+    },
+    "nodes": [
+      "468f58ba882bca90",
+      "eeafc10302e34bd3",
+      "f10b530baeddf16b",
+      "3965d9d39accfcd3",
+      "cb8c21efdd6716f4",
+      "6acca31361f67999",
+      "2b105fd36d55385d",
+      "6f7cbfb16cdeee8b",
+      "e54ce1550a4a889a"
+    ],
+    "x": 34,
+    "y": 1839,
+    "w": 812,
+    "h": 362
   },
   {
     "id": "8bc62636237651ab",
@@ -492,63 +519,6 @@
     "l": true
   },
   {
-    "id": "e9d81b73d53c7e10",
-    "type": "helper-window-reminder",
-    "z": "27dba50801e5b614",
-    "g": "913e1cc086959c6a",
-    "name": "Test",
-    "version": "0.27.0",
-    "migrated": false,
-    "topic": "topic",
-    "topicType": "msg",
-    "statusReportingEnabled": false,
-    "statusItem": "",
-    "statusTextItem": "",
-    "debounce": false,
-    "debounceTopic": false,
-    "debounceTime": 100,
-    "debounceShowStatus": false,
-    "debounceUnit": "ms",
-    "debounceLeading": false,
-    "debounceTrailing": true,
-    "filterUniquePayload": false,
-    "newMsg": false,
-    "outputs": 1,
-    "inputs": 1,
-    "matchers": [
-      {
-        "targetType": "str",
-        "property": "topic",
-        "propertyType": "msg",
-        "operation": "startsWith",
-        "compare": "window",
-        "compareType": "str",
-        "target": "window"
-      },
-      {
-        "targetType": "str",
-        "property": "topic",
-        "propertyType": "msg",
-        "operation": "eq",
-        "compare": "presence",
-        "compareType": "str",
-        "target": "presence"
-      }
-    ],
-    "join": false,
-    "discardNotMatched": true,
-    "minMsgCount": 1,
-    "interval": "10",
-    "intervalUnit": "s",
-    "x": 410,
-    "y": 600,
-    "wires": [
-      [
-        "d6ed4a7c1dbb805b"
-      ]
-    ]
-  },
-  {
     "id": "79f0ae5e656d4006",
     "type": "inject",
     "z": "27dba50801e5b614",
@@ -574,7 +544,7 @@
     "y": 480,
     "wires": [
       [
-        "e9d81b73d53c7e10"
+        "c921f54ba143ab34"
       ]
     ]
   },
@@ -604,7 +574,7 @@
     "y": 520,
     "wires": [
       [
-        "e9d81b73d53c7e10"
+        "c921f54ba143ab34"
       ]
     ]
   },
@@ -634,7 +604,7 @@
     "y": 580,
     "wires": [
       [
-        "e9d81b73d53c7e10"
+        "c921f54ba143ab34"
       ]
     ]
   },
@@ -664,7 +634,7 @@
     "y": 620,
     "wires": [
       [
-        "e9d81b73d53c7e10"
+        "c921f54ba143ab34"
       ]
     ]
   },
@@ -678,10 +648,10 @@
       "32b049afdc94479c"
     ],
     "x": 180,
-    "y": 680,
+    "y": 840,
     "wires": [
       [
-        "e9d81b73d53c7e10"
+        "c921f54ba143ab34"
       ]
     ],
     "l": true
@@ -696,7 +666,7 @@
     "links": [
       "873452eea74ec486"
     ],
-    "x": 630,
+    "x": 710,
     "y": 600,
     "wires": [],
     "l": true
@@ -724,7 +694,7 @@
     "payload": "0.05",
     "payloadType": "num",
     "x": 140,
-    "y": 980,
+    "y": 1240,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -754,7 +724,7 @@
     "payload": "0.2",
     "payloadType": "num",
     "x": 140,
-    "y": 1020,
+    "y": 1280,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -784,7 +754,7 @@
     "payload": "400",
     "payloadType": "num",
     "x": 140,
-    "y": 1060,
+    "y": 1320,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -806,7 +776,7 @@
     "statusVal": "payload",
     "statusType": "auto",
     "x": 520,
-    "y": 1040,
+    "y": 1300,
     "wires": []
   },
   {
@@ -820,7 +790,7 @@
       "873452eea74ec486"
     ],
     "x": 610,
-    "y": 900,
+    "y": 1160,
     "wires": [],
     "l": true
   },
@@ -847,7 +817,7 @@
     "payload": "0",
     "payloadType": "num",
     "x": 150,
-    "y": 1140,
+    "y": 1400,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -877,7 +847,7 @@
     "payload": "28",
     "payloadType": "num",
     "x": 150,
-    "y": 1180,
+    "y": 1440,
     "wires": [
       [
         "14b8c157ed9f8927"
@@ -937,7 +907,7 @@
     "cleanupInterval": 30,
     "statusShowRuns": false,
     "x": 330,
-    "y": 1020,
+    "y": 1280,
     "wires": [
       [
         "8b9de60f22b2ee9e"
@@ -1003,7 +973,7 @@
     "emptyReminderUnit": "s",
     "statusShowRuns": true,
     "x": 330,
-    "y": 840,
+    "y": 1100,
     "wires": [
       [
         "8b9de60f22b2ee9e"
@@ -1033,7 +1003,7 @@
     "payload": "0.05",
     "payloadType": "num",
     "x": 140,
-    "y": 800,
+    "y": 1060,
     "wires": [
       [
         "595ed5eb0826dce0"
@@ -1063,7 +1033,7 @@
     "payload": "0.2",
     "payloadType": "num",
     "x": 140,
-    "y": 840,
+    "y": 1100,
     "wires": [
       [
         "595ed5eb0826dce0"
@@ -1093,7 +1063,7 @@
     "payload": "400",
     "payloadType": "num",
     "x": 140,
-    "y": 880,
+    "y": 1140,
     "wires": [
       [
         "595ed5eb0826dce0"
@@ -1153,7 +1123,7 @@
     "alertInterval": "20",
     "alertIntervalUnit": "s",
     "x": 350,
-    "y": 1400,
+    "y": 1680,
     "wires": [
       [
         "7a8771527408875b",
@@ -1187,7 +1157,7 @@
     "payload": "55",
     "payloadType": "num",
     "x": 150,
-    "y": 1280,
+    "y": 1560,
     "wires": [
       [
         "1535516396f2ef71"
@@ -1217,7 +1187,7 @@
     "payload": "39",
     "payloadType": "num",
     "x": 150,
-    "y": 1320,
+    "y": 1600,
     "wires": [
       [
         "1535516396f2ef71"
@@ -1247,7 +1217,7 @@
     "payload": "38",
     "payloadType": "num",
     "x": 150,
-    "y": 1360,
+    "y": 1640,
     "wires": [
       [
         "1535516396f2ef71"
@@ -1269,7 +1239,7 @@
     "statusVal": "notify.title",
     "statusType": "msg",
     "x": 560,
-    "y": 1320,
+    "y": 1600,
     "wires": []
   },
   {
@@ -1283,7 +1253,7 @@
       "873452eea74ec486"
     ],
     "x": 570,
-    "y": 1400,
+    "y": 1680,
     "wires": [],
     "l": true
   },
@@ -1302,7 +1272,7 @@
     "statusVal": "payload",
     "statusType": "auto",
     "x": 550,
-    "y": 1460,
+    "y": 1740,
     "wires": []
   },
   {
@@ -1328,7 +1298,7 @@
     "payload": "1742410079",
     "payloadType": "num",
     "x": 160,
-    "y": 1440,
+    "y": 1720,
     "wires": [
       [
         "1535516396f2ef71"
@@ -1358,7 +1328,7 @@
     "payload": "2742410079",
     "payloadType": "num",
     "x": 160,
-    "y": 1480,
+    "y": 1760,
     "wires": [
       []
     ]
@@ -1386,7 +1356,7 @@
     "payload": "true",
     "payloadType": "bool",
     "x": 150,
-    "y": 920,
+    "y": 1180,
     "wires": [
       [
         "595ed5eb0826dce0"
@@ -1397,6 +1367,7 @@
     "id": "eeafc10302e34bd3",
     "type": "helper-waste-reminder",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "",
     "version": "0.32.0",
     "migrated": false,
@@ -1442,7 +1413,7 @@
     "discardNotMatched": true,
     "minMsgCount": 1,
     "x": 520,
-    "y": 1740,
+    "y": 2000,
     "wires": [
       [
         "468f58ba882bca90"
@@ -1453,6 +1424,7 @@
     "id": "f10b530baeddf16b",
     "type": "inject",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "",
     "props": [
       {
@@ -1471,7 +1443,7 @@
     "payload": "9",
     "payloadType": "num",
     "x": 150,
-    "y": 1620,
+    "y": 1880,
     "wires": [
       [
         "eeafc10302e34bd3"
@@ -1482,6 +1454,7 @@
     "id": "3965d9d39accfcd3",
     "type": "inject",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "",
     "props": [
       {
@@ -1500,7 +1473,7 @@
     "payload": "1",
     "payloadType": "num",
     "x": 150,
-    "y": 1660,
+    "y": 1920,
     "wires": [
       [
         "eeafc10302e34bd3"
@@ -1511,6 +1484,7 @@
     "id": "cb8c21efdd6716f4",
     "type": "inject",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "",
     "props": [
       {
@@ -1529,7 +1503,7 @@
     "payload": "0",
     "payloadType": "num",
     "x": 150,
-    "y": 1700,
+    "y": 1960,
     "wires": [
       [
         "eeafc10302e34bd3"
@@ -1540,6 +1514,7 @@
     "id": "6acca31361f67999",
     "type": "inject",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "Biomüll",
     "props": [
       {
@@ -1558,7 +1533,7 @@
     "payload": "['Biomüll']",
     "payloadType": "str",
     "x": 130,
-    "y": 1780,
+    "y": 2040,
     "wires": [
       [
         "eeafc10302e34bd3"
@@ -1569,6 +1544,7 @@
     "id": "2b105fd36d55385d",
     "type": "inject",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "",
     "props": [
       {
@@ -1587,7 +1563,7 @@
     "payload": "Restmüll, Biomüll",
     "payloadType": "str",
     "x": 180,
-    "y": 1820,
+    "y": 2080,
     "wires": [
       [
         "eeafc10302e34bd3"
@@ -1598,6 +1574,7 @@
     "id": "6f7cbfb16cdeee8b",
     "type": "inject",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "Restmüll, Biomüll (JSON)",
     "props": [
       {
@@ -1616,7 +1593,7 @@
     "payload": "[\"Restmüll\",\"Biomüll\"]",
     "payloadType": "json",
     "x": 190,
-    "y": 1860,
+    "y": 2120,
     "wires": [
       [
         "eeafc10302e34bd3"
@@ -1627,6 +1604,7 @@
     "id": "e54ce1550a4a889a",
     "type": "inject",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "Restmüll, Biomüll, Papier",
     "props": [
       {
@@ -1645,7 +1623,7 @@
     "payload": "['Restmüll', 'Biomüll', 'Papier']",
     "payloadType": "str",
     "x": 190,
-    "y": 1900,
+    "y": 2160,
     "wires": [
       [
         "eeafc10302e34bd3"
@@ -1656,6 +1634,7 @@
     "id": "468f58ba882bca90",
     "type": "debug",
     "z": "27dba50801e5b614",
+    "g": "d5584d14f41bfbeb",
     "name": "debug 2",
     "active": true,
     "tosidebar": true,
@@ -1666,7 +1645,176 @@
     "statusVal": "",
     "statusType": "auto",
     "x": 740,
-    "y": 1740,
+    "y": 2000,
     "wires": []
+  },
+  {
+    "id": "c921f54ba143ab34",
+    "type": "helper-window-reminder",
+    "z": "27dba50801e5b614",
+    "g": "913e1cc086959c6a",
+    "name": "Testfenster",
+    "version": "0.34.0",
+    "migrated": false,
+    "topic": "topic",
+    "topicType": "msg",
+    "initializeDelay": "",
+    "initializeDelayUnit": "",
+    "statusReportingEnabled": false,
+    "statusItem": "",
+    "statusTextItem": "",
+    "debounce": false,
+    "debounceTopic": false,
+    "debounceTime": 100,
+    "debounceShowStatus": false,
+    "debounceUnit": "ms",
+    "debounceLeading": false,
+    "debounceTrailing": true,
+    "filterUniquePayload": false,
+    "newMsg": false,
+    "outputs": 1,
+    "inputs": 1,
+    "matchers": [
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "startsWith",
+        "compare": "window",
+        "compareType": "str",
+        "target": "window"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "presence",
+        "compareType": "str",
+        "target": "presence"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "reminderclear",
+        "compareType": "str",
+        "target": "command"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "interval",
+        "compareType": "str",
+        "target": "intervalSelect"
+      }
+    ],
+    "join": false,
+    "discardNotMatched": true,
+    "minMsgCount": 1,
+    "interval": "10",
+    "intervalUnit": "s",
+    "interval2": "30",
+    "intervalUnit2": "s",
+    "x": 470,
+    "y": 600,
+    "wires": [
+      [
+        "d6ed4a7c1dbb805b"
+      ]
+    ]
+  },
+  {
+    "id": "fed4d7d9bb7e8cbc",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "g": "913e1cc086959c6a",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "reminderclear",
+    "payload": "clear",
+    "payloadType": "str",
+    "x": 170,
+    "y": 780,
+    "wires": [
+      [
+        "c921f54ba143ab34"
+      ]
+    ]
+  },
+  {
+    "id": "285d48cad95455ad",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "g": "913e1cc086959c6a",
+    "name": "Winter",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "interval",
+    "payload": "0",
+    "payloadType": "num",
+    "x": 130,
+    "y": 680,
+    "wires": [
+      [
+        "c921f54ba143ab34"
+      ]
+    ]
+  },
+  {
+    "id": "9b854ab330bb6f2e",
+    "type": "inject",
+    "z": "27dba50801e5b614",
+    "g": "913e1cc086959c6a",
+    "name": "Summer",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "interval",
+    "payload": "1",
+    "payloadType": "num",
+    "x": 140,
+    "y": 720,
+    "wires": [
+      [
+        "c921f54ba143ab34"
+      ]
+    ]
   }
 ]

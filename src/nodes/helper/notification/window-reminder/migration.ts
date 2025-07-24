@@ -15,6 +15,12 @@ class WindowReminderMigration extends MatchJoinMigration<WindowReminderEditorNod
       node.migrated = true;
     }
 
+    if (this.check(node, "0.34.0")) {
+      node.interval2 = 0;
+      node.intervalUnit2 = TimeIntervalUnit.m;
+      node.migrated = true;
+    }
+
     return this.migrate(node);
   }
 
