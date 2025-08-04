@@ -80,7 +80,8 @@ export enum AutomationGateCommand {
   Stop = "stop",
   Start = "start",
   Replay = "replay",
-  ResetFilter = "reset_filter",
+  ResetFilter = "resetFilter",
+  ResetFilterDeprecated = "reset_filter",
 }
 
 export interface AutomationGateNodeMessage extends NodeMessage {

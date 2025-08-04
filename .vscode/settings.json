@@ -1,10 +1,14 @@
 {
-    "errorLens.delay": 1000,
-    "errorLens.fontSize": "0.8em",
-    "errorLens.fontStyleItalic": true,
-    "errorLens.gutterIconsEnabled": true,
-    "errorLens.ignoreDirty": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnPaste": true,
-    "editor.formatOnSave": true
+  "errorLens.delay": 1000,
+  "errorLens.fontSize": "0.8em",
+  "errorLens.fontStyleItalic": true,
+  "errorLens.gutterIconsEnabled": true,
+  "errorLens.ignoreDirty": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "sonarlint.connectedMode.project": {
+    "connectionId": "deroetzi",
+    "projectKey": "DerOetzi_node-red-contrib-smarthome-helper"
+  }
 }

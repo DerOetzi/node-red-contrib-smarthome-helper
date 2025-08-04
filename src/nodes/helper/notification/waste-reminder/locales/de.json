@@ -13,6 +13,6 @@
   "notification": {
     "title": "Müllerinnerung",
     "message": "Morgen wird {waste} abgeholt",
-    "message_plural": "Morgen werden {waste} abgeholt"
+    "messagePlural": "Morgen werden {waste} abgeholt"
   }
 }

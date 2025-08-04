@@ -6,6 +6,7 @@ import {
   GateControlEditorNodePropertiesDefaults,
   GateControlNodeOptionsDefaults,
 } from "./types";
+import { gateControlMigration } from "./migration";
 
 const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
   category: GateControlNode.NodeCategoryLabel,
@@ -25,6 +26,7 @@ const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
   outputs: GateControlNodeOptionsDefaults.outputs,
   outputLabels: ["Delayed Message Output", "Gate Command Output"],
   oneditprepare: function () {
+    gateControlMigration.checkAndMigrate(this);
     BaseEditorNode.oneditprepare!.call(this);
 
     const gateControlOptionsBuilder = new NodeEditorFormBuilder(
@@ -43,7 +45,7 @@ const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
       id: "node-input-gateCommand",
       label: "gateCommand",
       value: this.gateCommand,
-      options: ["start", "stop", "pause", "replay", "reset_filter"],
+      options: ["start", "stop", "pause", "replay", "resetFilter"],
       icon: "comment",
     });
 

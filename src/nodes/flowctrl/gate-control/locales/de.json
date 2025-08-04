@@ -10,7 +10,7 @@
             "stop": "Stopp",
             "pause": "Pause",
             "replay": "Wiederholen",
-            "reset_filter": "Filter zurücksetzen"
+            "resetFilter": "Filter zurücksetzen"
         }
     }
 }

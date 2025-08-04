@@ -105,9 +105,9 @@
             "d7a297fd48e732a5",
             "f0a0cf96dbcf4fe5"
         ],
-        "x": 44,
+        "x": 34,
         "y": 719,
-        "w": 812,
+        "w": 822,
         "h": 462
     },
     {
@@ -1016,7 +1016,7 @@
         "gateCommand": "pause",
         "pauseTime": "10",
         "pauseUnit": "s",
-        "x": 300,
+        "x": 290,
         "y": 880,
         "wires": [
             [],
@@ -1047,7 +1047,7 @@
         "topic": "test",
         "payload": "",
         "payloadType": "date",
-        "x": 140,
+        "x": 130,
         "y": 760,
         "wires": [
             [
@@ -1077,7 +1077,7 @@
         "topic": "test",
         "payload": "",
         "payloadType": "date",
-        "x": 140,
+        "x": 130,
         "y": 820,
         "wires": [
             [
@@ -1107,7 +1107,7 @@
         "topic": "test",
         "payload": "",
         "payloadType": "date",
-        "x": 140,
+        "x": 130,
         "y": 880,
         "wires": [
             [
@@ -1137,7 +1137,7 @@
         "topic": "replay",
         "payload": "",
         "payloadType": "date",
-        "x": 140,
+        "x": 130,
         "y": 940,
         "wires": [
             [
@@ -1170,7 +1170,7 @@
         "gateCommand": "replay",
         "pauseTime": 1,
         "pauseUnit": "s",
-        "x": 280,
+        "x": 270,
         "y": 940,
         "wires": [
             [],
@@ -1185,7 +1185,7 @@
         "z": "296701fb4cce3477",
         "g": "db56b10dafca6933",
         "name": "",
-        "version": "0.27.0",
+        "version": "0.35.0",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
@@ -1204,7 +1204,7 @@
         "gateCommand": "stop",
         "pauseTime": 1,
         "pauseUnit": "s",
-        "x": 280,
+        "x": 270,
         "y": 820,
         "wires": [
             [],
@@ -1219,7 +1219,7 @@
         "z": "296701fb4cce3477",
         "g": "db56b10dafca6933",
         "name": "",
-        "version": "0.27.0",
+        "version": "0.35.0",
         "migrated": false,
         "topic": "topic",
         "topicType": "msg",
@@ -1238,7 +1238,7 @@
         "gateCommand": "start",
         "pauseTime": 1,
         "pauseUnit": "s",
-        "x": 280,
+        "x": 270,
         "y": 760,
         "wires": [
             [

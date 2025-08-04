@@ -105,10 +105,7 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
     return super.values({ targetType: "str" });
   }
 
-  public showHideTarget(
-    showHideTarget: boolean,
-    option: string
-  ): MatchJoinEditableList {
+  public showHideTarget(showHideTarget: boolean, option: string): this {
     this.listContainer
       ?.data("showHide_" + option, showHideTarget)
       .find('.target option[value="' + option + '"]')
@@ -117,7 +114,7 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
     return this;
   }
 
-  public removeTarget(keep: boolean, option: string): MatchJoinEditableList {
+  public removeTarget(keep: boolean, option: string): this {
     this.showHideTarget(keep, option);
 
     if (!keep) {

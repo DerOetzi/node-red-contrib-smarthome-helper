@@ -25,8 +25,12 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
       return i18n("flowctrl.automation-gate.output.message");
     },
     onadd: function () {
-      this.stateOpenLabel = i18n("flowctrl.automation-gate.stateOpenLabel");
-      this.stateClosedLabel = i18n("flowctrl.automation-gate.stateClosedLabel");
+      this.stateOpenLabel = i18n(
+        "flowctrl.automation-gate.default.stateOpenLabel"
+      );
+      this.stateClosedLabel = i18n(
+        "flowctrl.automation-gate.default.stateClosedLabel"
+      );
     },
     oneditprepare: function () {
       automationGateMigration.checkAndMigrate(this);

@@ -57,7 +57,7 @@ export default class WasteReminderNode extends MatchJoinNode<
       let message =
         this._types.length <= 1
           ? this.RED._("helper.waste-reminder.notification.message")
-          : this.RED._("helper.waste-reminder.notification.message_plural");
+          : this.RED._("helper.waste-reminder.notification.messagePlural");
 
       message = message.replace("{waste}", this.typesFormatted());
 
