@@ -1,22 +1,26 @@
 {
-	"name": "Node Red SmartHome Helper",
-	"dockerComposeFile": "docker-compose.dev.yml",
-	"service": "dev-container",
-	"workspaceFolder": "/workspace",
-	"features": {
-    	"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-		"ghcr.io/devcontainers/features/node:1": {},
-		"ghcr.io/r3dpoint/devcontainer-features/tailwindcss-standalone-cli:1": {},
-		"ghcr.io/gvatsal60/dev-container-features/sonarlint:1": {},
-		"ghcr.io/michidk/devcontainers-features/typos:1": {}
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"esbenp.prettier-vscode"
-			]
-		}
-	},
-	"remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
-	"postCreateCommand": "npm install; npm fund; npx gulp;"
+  "name": "Node Red SmartHome Helper",
+  "dockerComposeFile": "docker-compose.dev.yml",
+  "service": "dev-container",
+  "workspaceFolder": "/workspace",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/r3dpoint/devcontainer-features/tailwindcss-standalone-cli:1": {},
+    "ghcr.io/gvatsal60/dev-container-features/sonarlint:1": {},
+    "ghcr.io/michidk/devcontainers-features/typos:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "ghcr.io/devcontainers/features/github-cli:1": {},
+      "extensions": [
+        "SonarSource.sonarlint-vscode",
+        "ms-azuretools.vscode-containers",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
+  "postCreateCommand": "npm install; npm fund; npx gulp;"
 }
