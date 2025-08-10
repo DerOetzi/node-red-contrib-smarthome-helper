@@ -6,6 +6,7 @@ import { NodeCategory } from "../../../types";
 import {
   HelperNotificationCategory,
   NotifyMessage,
+  NotifyMessageType,
   NotifyNodeMessageFlow,
 } from "../types";
 import {
@@ -41,6 +42,7 @@ export default class MoistureAlertNode extends MatchJoinNode<
     this.notify = {
       title: this.RED._("helper.moisture-alert.notify.title"),
       message: message.replace("{name}", this.config.name),
+      type: NotifyMessageType.reminderHomeOrAll
     };
   }
 

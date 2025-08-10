@@ -498,7 +498,6 @@
             "c1255d700d5962c8",
             "3ff3a9627b0b9af0",
             "21f46b7a0ad20194",
-            "7a8771527408875b",
             "365a546d15961b26",
             "3baa50fc027f340e",
             "aff6f6d9ca149246",
@@ -7990,7 +7989,7 @@
         "props": [
             {
                 "p": "notify",
-                "v": "{\"title\":\"Only at home\",\"message\":\"This is only forwarded to those who are at home\",\"onlyAtHome\":true}",
+                "v": "{\"title\":\"Only at home\",\"message\":\"This is only forwarded to those who are at home\",\"type\":\"reminderHome\"}",
                 "vt": "json"
             },
             {
@@ -8654,7 +8653,6 @@
         "y": 1680,
         "wires": [
             [
-                "7a8771527408875b",
                 "365a546d15961b26"
             ],
             [
@@ -8753,24 +8751,6 @@
         ]
     },
     {
-        "id": "7a8771527408875b",
-        "type": "debug",
-        "z": "27dba50801e5b614",
-        "g": "207093681a91a825",
-        "name": "moisture_notification",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": true,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "notify.title",
-        "statusType": "msg",
-        "x": 560,
-        "y": 1600,
-        "wires": []
-    },
-    {
         "id": "365a546d15961b26",
         "type": "link out",
         "z": "27dba50801e5b614",
@@ -8791,7 +8771,7 @@
         "z": "27dba50801e5b614",
         "g": "207093681a91a825",
         "name": "moisture_last_alert",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": true,

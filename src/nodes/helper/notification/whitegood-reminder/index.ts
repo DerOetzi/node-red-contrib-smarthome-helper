@@ -3,7 +3,11 @@ import { convertToMilliseconds } from "../../../../helpers/time.helper";
 import { NodeMessageFlow, NodeStatus } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
-import { HelperNotificationCategory, NotifyNodeMessageFlow } from "../types";
+import {
+  HelperNotificationCategory,
+  NotifyMessageType,
+  NotifyNodeMessageFlow,
+} from "../types";
 import {
   WhitegoodReminderNodeDef,
   WhitegoodReminderNodeOptions,
@@ -24,6 +28,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
   private cleanupNeeded: boolean = false;
 
   private timer: NodeJS.Timeout | null = null;
+  private reminderCount: number = 0;
 
   constructor(RED: NodeAPI, node: Node, config: WhitegoodReminderNodeDef) {
     super(RED, node, config, WhitegoodReminderNodeOptionsDefaults);
@@ -119,6 +124,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
       clearTimeout(this.timer);
       this.timer = null;
     }
+    this.reminderCount = 0;
   }
 
   private sendReminder(messageFlow: NodeMessageFlow) {
@@ -134,7 +140,8 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
       {
         title: this.RED._("helper.whitegood-reminder.notify.title"),
         message,
-        onlyAtHome: true,
+        type: NotifyMessageType.reminderHomeOrFirstAll,
+        reminderCount: this.reminderCount++,
       }
     );
 

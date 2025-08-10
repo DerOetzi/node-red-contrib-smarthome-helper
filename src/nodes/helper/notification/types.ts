@@ -8,10 +8,19 @@ export const HelperNotificationCategory: NodeCategory = {
   color: "#87ceeb",
 };
 
+export enum NotifyMessageType {
+  alert = "alert",
+  reminderAll = "reminderAll",
+  reminderHome = "reminderHome",
+  reminderHomeOrAll = "reminderHomeOrAll",
+  reminderHomeOrFirstAll = "reminderHomeOrFirstAll",
+}
+
 export interface NotifyMessage {
   title: string;
   message: string;
-  onlyAtHome?: boolean;
+  type: NotifyMessageType;
+  reminderCount?: number;
 }
 
 export interface NotifyNodeMessage extends NodeMessage {

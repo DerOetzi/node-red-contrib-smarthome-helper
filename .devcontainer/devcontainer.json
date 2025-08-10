@@ -17,7 +17,8 @@
       "extensions": [
         "SonarSource.sonarlint-vscode",
         "ms-azuretools.vscode-containers",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode"
       ]
     }
   },

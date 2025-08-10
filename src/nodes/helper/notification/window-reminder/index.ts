@@ -7,6 +7,7 @@ import { NodeCategory } from "../../../types";
 import {
   HelperNotificationCategory,
   NotifyMessage,
+  NotifyMessageType,
   NotifyNodeMessageFlow,
 } from "../types";
 import {
@@ -118,7 +119,7 @@ export default class WindowReminderNode extends MatchJoinNode<
       )
         .replace("{windowName}", this.config.name)
         .replace("  ", " "),
-      onlyAtHome: onlyAtHome,
+      type: onlyAtHome ? NotifyMessageType.reminderHome : NotifyMessageType.alert
     } as NotifyMessage);
   }
 

@@ -2,7 +2,11 @@ import { Node, NodeAPI } from "node-red";
 import { NodeMessageFlow } from "nodes/flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
-import { HelperNotificationCategory, NotifyNodeMessage } from "../types";
+import {
+  HelperNotificationCategory,
+  NotifyMessageType,
+  NotifyNodeMessage,
+} from "../types";
 import {
   NotifyDispatcherNodeDef,
   NotifyDispatcherNodeOptions,
@@ -38,11 +42,18 @@ export default class NotifyDispatcherNode extends MatchJoinNode<
     const msg = messageFlow.originalMsg as NotifyNodeMessage;
     const notify = msg.notify;
     messageFlow.payload = notify;
+    const messageType = notify.type ?? NotifyMessageType.reminderAll;
 
-    let broadcast = !(notify.onlyAtHome ?? false);
+    let broadcast = [
+      NotifyMessageType.alert,
+      NotifyMessageType.reminderAll,
+    ].includes(messageType);
 
     if (!broadcast) {
-      broadcast = true;
+      broadcast =
+        NotifyMessageType.reminderHomeOrAll === messageType ||
+        (NotifyMessageType.reminderHomeOrFirstAll == messageType &&
+          (notify.reminderCount ?? 0) < 1);
 
       for (const [key, value] of Object.entries(this.personStates)) {
         if (value) {

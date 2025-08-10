@@ -10,5 +10,6 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "deroetzi",
     "projectKey": "DerOetzi_node-red-contrib-smarthome-helper"
-  }
+  },
+  "files.autoSave": "off"
 }
