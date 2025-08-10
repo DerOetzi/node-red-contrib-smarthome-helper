@@ -273,6 +273,7 @@ export interface NodeEditorFormBuilderParams {
 export interface NodeEditorFormBuilderInputParams {
   id: string;
   label: string;
+  labelPlaceholders?: Record<string, string>;
   icon: string;
   value?: string | number | boolean;
   translatePrefix?: string;

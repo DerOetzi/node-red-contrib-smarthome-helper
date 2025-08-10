@@ -34,10 +34,9 @@ export default class WindowReminderNode extends MatchJoinNode<
 
   constructor(RED: NodeAPI, node: Node, config: WindowReminderNodeDef) {
     super(RED, node, config, WindowReminderNodeOptionsDefaults);
-    this.intervals = [
-      convertToMilliseconds(config.interval, config.intervalUnit),
-      convertToMilliseconds(config.interval2, config.intervalUnit2),
-    ];
+    this.intervals = config.intervals.map((interval) =>
+      convertToMilliseconds(interval.interval, interval.intervalUnit)
+    );
   }
 
   protected matched(messageFlow: NodeMessageFlow): void {
@@ -74,9 +73,16 @@ export default class WindowReminderNode extends MatchJoinNode<
           this.clearTimer();
         }
         break;
-      case WindowReminderTarget.intervalSelect:
-        this.intervalSelected = messageFlow.payload as number;
+      case WindowReminderTarget.intervalSelect: {
+        const intervalSelected = messageFlow.payload as number;
+
+        if (intervalSelected < 0 || intervalSelected >= this.intervals.length) {
+          this.node.error("Unknown interval selected");
+        } else {
+          this.intervalSelected = intervalSelected;
+        }
         break;
+      }
     }
 
     this.nodeStatus = this.isWindowOpen();
@@ -89,7 +95,11 @@ export default class WindowReminderNode extends MatchJoinNode<
   private setTimer(messageFlow: NodeMessageFlow): void {
     this.clearTimer();
 
-    if (this.config.interval > 0) {
+    if (
+      this.intervalSelected >= 0 &&
+      this.intervalSelected < this.intervals.length &&
+      this.intervals[this.intervalSelected] > 0
+    ) {
       const notificationMessageFlow = this.prepareNotification(
         "reminder",
         messageFlow,
@@ -119,7 +129,9 @@ export default class WindowReminderNode extends MatchJoinNode<
       )
         .replace("{windowName}", this.config.name)
         .replace("  ", " "),
-      type: onlyAtHome ? NotifyMessageType.reminderHome : NotifyMessageType.alert
+      type: onlyAtHome
+        ? NotifyMessageType.reminderHome
+        : NotifyMessageType.alert,
     } as NotifyMessage);
   }
 

@@ -21,6 +21,24 @@ class WindowReminderMigration extends MatchJoinMigration<WindowReminderEditorNod
       node.migrated = true;
     }
 
+    if (this.check(node, "0.37.0")) {
+      node.intervals = [];
+      if (node.interval) {
+        node.intervals.push({
+          interval: node.interval,
+          intervalUnit: node.intervalUnit ?? TimeIntervalUnit.m,
+        });
+      }
+
+      if (node.interval2) {
+        node.intervals.push({
+          interval: node.interval2,
+          intervalUnit: node.intervalUnit2 ?? TimeIntervalUnit.m,
+        });
+      }
+      node.migrated = true;
+    }
+
     return this.migrate(node);
   }
 

@@ -1634,7 +1634,7 @@
     "z": "27dba50801e5b614",
     "g": "913e1cc086959c6a",
     "name": "Testfenster",
-    "version": "0.34.0",
+    "version": "0.37.0",
     "migrated": false,
     "topic": "topic",
     "topicType": "msg",
@@ -1695,6 +1695,16 @@
     "join": false,
     "discardNotMatched": true,
     "minMsgCount": 1,
+    "intervals": [
+      {
+        "interval": "10",
+        "intervalUnit": "s"
+      },
+      {
+        "interval": "30",
+        "intervalUnit": "s"
+      }
+    ],
     "interval": "10",
     "intervalUnit": "s",
     "interval2": "30",

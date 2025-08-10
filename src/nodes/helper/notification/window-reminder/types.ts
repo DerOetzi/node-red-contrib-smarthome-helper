@@ -18,11 +18,24 @@ export enum WindowReminderTarget {
   intervalSelect = "intervalSelect",
 }
 
-export interface WindowReminderNodeOptions extends MatchJoinNodeOptions {
+export interface WindowReminderIntervalRow {
   interval: number;
   intervalUnit: TimeIntervalUnit;
-  interval2: number;
-  intervalUnit2: TimeIntervalUnit;
+}
+
+export const WindowReminderIntervalRowDefaults: WindowReminderIntervalRow = {
+  interval: 10,
+  intervalUnit: TimeIntervalUnit.m,
+};
+
+export interface WindowReminderNodeOptions extends MatchJoinNodeOptions {
+  intervals: WindowReminderIntervalRow[];
+
+  //deprecated from 0.37.0
+  interval?: number;
+  intervalUnit?: TimeIntervalUnit;
+  interval2?: number;
+  intervalUnit2?: TimeIntervalUnit;
 }
 
 export const WindowReminderNodeOptionsDefaults: WindowReminderNodeOptions = {
@@ -38,24 +51,11 @@ export const WindowReminderNodeOptionsDefaults: WindowReminderNodeOptions = {
       target: WindowReminderTarget.presence,
       targetType: "str",
     },
-    {
-      ...MatcherRowDefaults,
-      target: WindowReminderTarget.command,
-      targetType: "str",
-    },
-    {
-      ...MatcherRowDefaults,
-      target: WindowReminderTarget.intervalSelect,
-      targetType: "str",
-    },
   ],
   join: false,
   minMsgCount: 1,
   discardNotMatched: true,
-  interval: 0,
-  intervalUnit: TimeIntervalUnit.m,
-  interval2: 0,
-  intervalUnit2: TimeIntervalUnit.m,
+  intervals: [],
 };
 
 export interface WindowReminderNodeDef
@@ -85,20 +85,24 @@ export const WindowReminderEditorNodePropertiesDefaults: EditorNodePropertiesDef
       value: WindowReminderNodeOptionsDefaults.minMsgCount,
       required: true,
     },
-    interval: {
-      value: WindowReminderNodeOptionsDefaults.interval,
+    intervals: {
+      value: WindowReminderNodeOptionsDefaults.intervals,
       required: true,
+    },
+    interval: {
+      value: "",
+      required: false,
     },
     intervalUnit: {
-      value: WindowReminderNodeOptionsDefaults.intervalUnit,
-      required: true,
+      value: "",
+      required: false,
     },
     interval2: {
-      value: WindowReminderNodeOptionsDefaults.interval2,
-      required: true,
+      value: "",
+      required: false,
     },
     intervalUnit2: {
-      value: WindowReminderNodeOptionsDefaults.intervalUnit2,
-      required: true,
+      value: "",
+      required: false,
     },
   };

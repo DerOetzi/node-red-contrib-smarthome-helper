@@ -2,7 +2,11 @@ import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { NodeMessageFlow, NodeStatus } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
-import { HelperNotificationCategory, NotifyMessageType, NotifyNodeMessageFlow } from "../types";
+import {
+  HelperNotificationCategory,
+  NotifyMessageType,
+  NotifyNodeMessageFlow,
+} from "../types";
 import {
   WasteReminderNodeDef,
   WasteReminderNodeOptions,
@@ -67,7 +71,7 @@ export default class WasteReminderNode extends MatchJoinNode<
         {
           title: this.RED._("helper.waste-reminder.notification.title"),
           message,
-          type: NotifyMessageType.reminderHomeOrAll,
+          type: NotifyMessageType.reminderAll,
         }
       );
 

@@ -216,9 +216,16 @@ export class NodeEditorFormBuilder {
       params.translatePrefix ??
       this.params.translatePrefix;
 
+    let text = i18n(`${labelTranslatePrefix}.label.${params.label}`);
+    if (params.labelPlaceholders) {
+      text = text.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+        return params.labelPlaceholders![key] || "";
+      });
+    }
+
     const labelTag = $("<label/>", {
       for: id,
-      text: i18n(`${labelTranslatePrefix}.label.${params.label}`),
+      text,
     }).appendTo(formRow);
 
     labelTag.prepend(" ").prepend($("<i/>", { class: `fa fa-${params.icon}` }));
@@ -274,7 +281,7 @@ export class NodeEditorFormEditableList<T> {
         header: $("<div>").append(
           $("<label>").text(i18n(`${headerPrefix}.${id}`))
         ),
-        addItem: (rowContainer: JQuery, _: number, data: T) => {
+        addItem: (rowContainer: JQuery, idx: number, data: T) => {
           rowContainer.css({
             overflow: "hidden",
             whiteSpace: "nowrap",
@@ -282,7 +289,11 @@ export class NodeEditorFormEditableList<T> {
 
           this.rowBuilder!.newContainer(rowContainer);
 
-          this.addItem(data);
+          this.addItem(data, idx);
+          this.emitChange();
+        },
+        removeItem: () => {
+          this.emitChange();
         },
       })
       .editableList("addItems", (items as any) ?? []);
@@ -290,7 +301,11 @@ export class NodeEditorFormEditableList<T> {
     return this;
   }
 
-  protected addItem(data: T): void {
+  private emitChange(): void {
+    this.listContainer?.trigger("change");
+  }
+
+  protected addItem(data: T, idx?: number): void {
     throw new Error("Not implemented");
   }
 
