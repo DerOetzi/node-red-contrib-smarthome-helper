@@ -47,6 +47,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
   protected onClose(): void {
     super.onClose();
+    this.clearTimer();
     this.activeConditions = {};
     this.windowsStates = {};
   }
