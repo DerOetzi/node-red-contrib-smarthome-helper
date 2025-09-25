@@ -1,0 +1,13 @@
+{
+  "name": "Hygro-Rechner",
+  "select": {
+    "target": {
+      "temperature": "Temperatur",
+      "humidity": "Luftfeuchtigkeit"
+    }
+  },
+  "output": {
+    "dewPoint": "Taupunkt",
+    "absoluteHumidity": "Absolute Feuchtigkeit"
+  }
+}

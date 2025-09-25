@@ -1,0 +1,13 @@
+{
+  "name": "Hygro Calculator",
+  "select": {
+    "target": {
+      "temperature": "Temperature",
+      "humidity": "Humidity"
+    }
+  },
+  "output": {
+    "dewPoint": "Dew Point",
+    "absoluteHumidity": "Absolute Humidity"
+  }
+}

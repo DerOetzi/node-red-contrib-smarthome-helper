@@ -11,5 +11,6 @@
     "connectionId": "deroetzi",
     "projectKey": "DerOetzi_node-red-contrib-smarthome-helper"
   },
-  "files.autoSave": "off"
+  "files.autoSave": "off",
+  "editor.tabSize": 2
 }

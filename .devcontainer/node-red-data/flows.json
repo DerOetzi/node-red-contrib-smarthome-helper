@@ -7664,6 +7664,331 @@
         "wires": []
     },
     {
+        "id": "b7467ce00d276104",
+        "type": "helper-hygro-calculator",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "version": "0.37.0",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": "",
+        "initializeDelayUnit": "",
+        "statusReportingEnabled": false,
+        "statusItem": "",
+        "statusTextItem": "",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "temperature",
+                "compareType": "str",
+                "target": "temperature"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "humidity",
+                "compareType": "str",
+                "target": "humidity"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "x": 440,
+        "y": 1820,
+        "wires": [
+            [
+                "820da6225e40cde3"
+            ],
+            [
+                "ee67191944b26ba5"
+            ]
+        ]
+    },
+    {
+        "id": "c360956337f7ba2c",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "temperature",
+        "payload": "21",
+        "payloadType": "num",
+        "x": 180,
+        "y": 1660,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "4d9aa1f84123ed10",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "temperature",
+        "payload": "5",
+        "payloadType": "num",
+        "x": 170,
+        "y": 1700,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "131bc4ad246ad43f",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "temperature",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 170,
+        "y": 1740,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "5a3db991a53d62ad",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "temperature",
+        "payload": "-10",
+        "payloadType": "num",
+        "x": 180,
+        "y": 1780,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "e51fafc12a5f3ae6",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "40",
+        "payloadType": "num",
+        "x": 170,
+        "y": 1860,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "92696df967e3b9d4",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "95",
+        "payloadType": "num",
+        "x": 170,
+        "y": 1980,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "91c13362fd55cfe3",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "70",
+        "payloadType": "num",
+        "x": 170,
+        "y": 1940,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "58e14273fcfa7c42",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "60",
+        "payloadType": "num",
+        "x": 170,
+        "y": 1900,
+        "wires": [
+            [
+                "b7467ce00d276104"
+            ]
+        ]
+    },
+    {
+        "id": "820da6225e40cde3",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "name": "absoluteHumidity",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 690,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "ee67191944b26ba5",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "name": "DewPoint",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 660,
+        "y": 1840,
+        "wires": []
+    },
+    {
         "id": "8bc62636237651ab",
         "type": "helper-notify-dispatcher",
         "z": "27dba50801e5b614",
