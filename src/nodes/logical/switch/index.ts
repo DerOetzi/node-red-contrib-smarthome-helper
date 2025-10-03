@@ -74,6 +74,7 @@ export default class SwitchNode<
       : this.config.falseType;
 
     if (configType === "__stop__") {
+      this.nodeStatus = result;
       return;
     }
 
