@@ -1,8 +1,17 @@
 import { Node, NodeAPI } from "node-red";
 import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
+import { ArithmeticOperation } from "../../../operator/arithmetic";
 import { NodeCategory } from "../../../types";
 import { HelperClimateCategory } from "../types";
+import {
+  ALPHA_NEGATIVE,
+  ALPHA_POSITIVE,
+  BETA_NEGATIVE,
+  BETA_POSITIVE,
+  MAGNUS_FIT_PARAMETER,
+  ZERO_CELSIUS_IN_KELVIN,
+} from "./constants";
 import {
   HygroCalculatorNodeDef,
   HygroCalculatorNodeOptions,
@@ -15,13 +24,6 @@ export default class HygroCalculatorNode extends MatchJoinNode<
 > {
   protected static readonly _nodeCategory: NodeCategory = HelperClimateCategory;
   protected static readonly _nodeType: string = "hygro-calculator";
-
-  private static readonly MAGNUS_FIT_PARAMETER = 6.1078;
-  private static readonly ZERO_CELSIUS_IN_KELVIN = 273.15;
-  private static readonly ALPHA_POSITIVE = 7.5;
-  private static readonly BETA_POSITIVE = 237.3;
-  private static readonly ALPHA_NEGATIVE = 9.5;
-  private static readonly BETA_NEGATIVE = 265.5;
 
   private temperature?: number;
   private humidity?: number;
@@ -54,7 +56,10 @@ export default class HygroCalculatorNode extends MatchJoinNode<
 
       this.debounce(
         new NodeMessageFlow(
-          { topic: "absoluteHumidity", payload: this.absoluteHumidity },
+          {
+            topic: "absoluteHumidity",
+            payload: ArithmeticOperation.round(this.absoluteHumidity, 1),
+          },
           0
         )
       );
@@ -65,7 +70,13 @@ export default class HygroCalculatorNode extends MatchJoinNode<
       );
 
       this.debounce(
-        new NodeMessageFlow({ topic: "dewPoint", payload: this.dewPoint }, 1)
+        new NodeMessageFlow(
+          {
+            topic: "dewPoint",
+            payload: ArithmeticOperation.round(this.dewPoint, 1),
+          },
+          1
+        )
       );
     }
   }
@@ -78,17 +89,12 @@ export default class HygroCalculatorNode extends MatchJoinNode<
       HygroCalculatorNode.calculateVaporPressure(temperature, humidity),
       1e-12
     );
-    const v = Math.log10(vp / HygroCalculatorNode.MAGNUS_FIT_PARAMETER);
+    const v = Math.log10(vp / MAGNUS_FIT_PARAMETER);
 
-    const tdWaterPos =
-      (HygroCalculatorNode.BETA_POSITIVE * v) /
-      (HygroCalculatorNode.ALPHA_POSITIVE - v);
+    const tdWaterPos = (BETA_POSITIVE * v) / (ALPHA_POSITIVE - v);
     if (tdWaterPos >= 0) return tdWaterPos;
 
-    return (
-      (HygroCalculatorNode.BETA_NEGATIVE * v) /
-      (HygroCalculatorNode.ALPHA_NEGATIVE - v)
-    );
+    return (BETA_NEGATIVE * v) / (ALPHA_NEGATIVE - v);
   }
 
   public static calculateAbsoluteHumidity(
@@ -113,7 +119,7 @@ export default class HygroCalculatorNode extends MatchJoinNode<
 
   public static calculateSaturationVaporPressure(temperature: number): number {
     return (
-      HygroCalculatorNode.MAGNUS_FIT_PARAMETER *
+      MAGNUS_FIT_PARAMETER *
       Math.pow(
         10,
         (HygroCalculatorNode.alpha(temperature) * temperature) /
@@ -123,19 +129,15 @@ export default class HygroCalculatorNode extends MatchJoinNode<
   }
 
   private static alpha(temperature: number): number {
-    return temperature >= 0
-      ? HygroCalculatorNode.ALPHA_POSITIVE
-      : HygroCalculatorNode.ALPHA_NEGATIVE;
+    return temperature >= 0 ? ALPHA_POSITIVE : ALPHA_NEGATIVE;
   }
 
   private static beta(temperature: number): number {
-    return temperature >= 0
-      ? HygroCalculatorNode.BETA_POSITIVE
-      : HygroCalculatorNode.BETA_NEGATIVE;
+    return temperature >= 0 ? BETA_POSITIVE : BETA_NEGATIVE;
   }
 
   private static toKelvin(temperature: number): number {
-    return temperature + HygroCalculatorNode.ZERO_CELSIUS_IN_KELVIN;
+    return temperature + ZERO_CELSIUS_IN_KELVIN;
   }
 
   protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {
@@ -152,9 +154,9 @@ export default class HygroCalculatorNode extends MatchJoinNode<
     if (status === undefined) {
       text = "Unknown";
     } else {
-      text = `AH: ${status.toFixed(2)} g/m³`;
+      text = `AH: ${status.toFixed(1)} g/m³`;
       if (this.dewPoint !== undefined) {
-        text += `, DP: ${this.dewPoint.toFixed(2)} °C`;
+        text += `, DP: ${this.dewPoint.toFixed(1)} °C`;
       }
     }
 

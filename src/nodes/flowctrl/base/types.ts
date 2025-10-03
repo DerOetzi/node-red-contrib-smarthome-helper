@@ -205,6 +205,47 @@ export class NodeMessageFlow {
     this._payload = cloneDeep<any>(payload);
   }
 
+  public getPayload<T>(): T | undefined {
+    return this._payload as T;
+  }
+
+  public payloadAsNumber(): number | undefined {
+    if (this._payload === undefined || this._payload === null) {
+      return undefined;
+    }
+
+    const value = Number(this._payload);
+    return isNaN(value) ? undefined : value;
+  }
+
+  public payloadAsBoolean(): boolean | undefined {
+    if (this._payload === undefined || this._payload === null) {
+      return undefined;
+    }
+
+    if (typeof this._payload === "boolean") {
+      return this._payload;
+    }
+
+    if (typeof this._payload === "number") {
+      return this._payload !== 0;
+    }
+
+    if (typeof this._payload === "string") {
+      const lower = this._payload.toLowerCase().trim();
+
+      if (lower === "true" || lower === "1" || lower === "on") {
+        return true;
+      }
+
+      if (lower === "false" || lower === "0" || lower === "off") {
+        return false;
+      }
+    }
+
+    return undefined;
+  }
+
   public get originalMsg(): NodeMessage {
     return cloneDeep<NodeMessage>(this._originalMessage);
   }
