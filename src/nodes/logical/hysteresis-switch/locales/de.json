@@ -1,0 +1,8 @@
+{
+  "name": "Hysterese-Schalter",
+  "label": {
+    "upperThreshold": "Oberer Schwellenwert",
+    "lowerThreshold": "Unterer Schwellenwert",
+    "initialState": "Anfangszustand"
+  }
+}

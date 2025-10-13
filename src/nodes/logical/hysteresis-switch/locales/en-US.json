@@ -1,0 +1,8 @@
+{
+  "name": "Hysteresis Switch",
+  "label": {
+    "upperThreshold": "Upper Threshold",
+    "lowerThreshold": "Lower Threshold",
+    "initialState": "Initial State"
+  }
+}

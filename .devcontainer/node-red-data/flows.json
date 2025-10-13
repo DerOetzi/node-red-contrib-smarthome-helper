@@ -533,6 +533,27 @@
         "h": 362
     },
     {
+        "id": "dd950ad7dfc41b59",
+        "type": "group",
+        "z": "53b3ec2ae623090e",
+        "name": "Logical hysteresis examples",
+        "style": {
+            "label": true
+        },
+        "nodes": [
+            "bf4227b54d141490",
+            "a68f8328a8fa440d",
+            "c1de94e9ba386aa0",
+            "ab93ffe43688e446",
+            "33cbdd6b8d5c39b0",
+            "28450e2f721791c2"
+        ],
+        "x": 694,
+        "y": 619,
+        "w": 392,
+        "h": 242
+    },
+    {
         "id": "8bec7e68c72547f8",
         "type": "flowctrl-base",
         "z": "296701fb4cce3477",
@@ -4214,6 +4235,199 @@
         "x": 510,
         "y": 480,
         "wires": []
+    },
+    {
+        "id": "bf4227b54d141490",
+        "type": "logical-hysteresis-switch",
+        "z": "53b3ec2ae623090e",
+        "g": "dd950ad7dfc41b59",
+        "name": "",
+        "version": "0.41.0",
+        "migrated": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "initializeDelay": "",
+        "initializeDelayUnit": "",
+        "statusReportingEnabled": false,
+        "statusItem": "",
+        "statusTextItem": "",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceTime": 100,
+        "debounceShowStatus": false,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "target": "payload",
+        "targetType": "msg",
+        "trueValue": "true",
+        "trueType": "bool",
+        "falseValue": "false",
+        "falseType": "bool",
+        "seperatedOutputs": false,
+        "debounceFlank": "both",
+        "upperThreshold": "60",
+        "lowerThreshold": "50",
+        "initialState": false,
+        "x": 970,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a68f8328a8fa440d",
+        "type": "inject",
+        "z": "53b3ec2ae623090e",
+        "g": "dd950ad7dfc41b59",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "45",
+        "payloadType": "num",
+        "x": 790,
+        "y": 660,
+        "wires": [
+            [
+                "bf4227b54d141490"
+            ]
+        ]
+    },
+    {
+        "id": "c1de94e9ba386aa0",
+        "type": "inject",
+        "z": "53b3ec2ae623090e",
+        "g": "dd950ad7dfc41b59",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "50",
+        "payloadType": "num",
+        "x": 790,
+        "y": 700,
+        "wires": [
+            [
+                "bf4227b54d141490"
+            ]
+        ]
+    },
+    {
+        "id": "ab93ffe43688e446",
+        "type": "inject",
+        "z": "53b3ec2ae623090e",
+        "g": "dd950ad7dfc41b59",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "55",
+        "payloadType": "num",
+        "x": 790,
+        "y": 740,
+        "wires": [
+            [
+                "bf4227b54d141490"
+            ]
+        ]
+    },
+    {
+        "id": "33cbdd6b8d5c39b0",
+        "type": "inject",
+        "z": "53b3ec2ae623090e",
+        "g": "dd950ad7dfc41b59",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "60",
+        "payloadType": "num",
+        "x": 790,
+        "y": 780,
+        "wires": [
+            [
+                "bf4227b54d141490"
+            ]
+        ]
+    },
+    {
+        "id": "28450e2f721791c2",
+        "type": "inject",
+        "z": "53b3ec2ae623090e",
+        "g": "dd950ad7dfc41b59",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "test1",
+        "payload": "65",
+        "payloadType": "num",
+        "x": 790,
+        "y": 820,
+        "wires": [
+            [
+                "bf4227b54d141490"
+            ]
+        ]
     },
     {
         "id": "220475cb0bbd0590",
