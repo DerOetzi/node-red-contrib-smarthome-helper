@@ -1,8 +1,10 @@
+import { NodeRegistryEntry } from "nodes/types";
 import ArithmeticNode from "./arithmetic";
 import ArithmeticEditorNode from "./arithmetic/editor";
 
-export const OperatorNodes = [ArithmeticNode];
-
-export const OperatorEditorNodes = {
-  [ArithmeticNode.NodeTypeName]: ArithmeticEditorNode,
+export const OperatorNodesRegistry: { [key: string]: NodeRegistryEntry } = {
+  [ArithmeticNode.NodeTypeName]: {
+    node: ArithmeticNode,
+    editor: ArithmeticEditorNode,
+  },
 };

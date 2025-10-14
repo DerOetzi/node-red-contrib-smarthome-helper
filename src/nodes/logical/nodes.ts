@@ -1,3 +1,4 @@
+import { NodeRegistryEntry } from "nodes/types";
 import CompareNode from "./compare";
 import CompareEditorNode from "./compare/editor";
 import HysteresisSwitchNode from "./hysteresis-switch";
@@ -9,18 +10,25 @@ import SwitchEditorNode from "./switch/editor";
 import ToogleNode from "./toggle";
 import ToggleEditorNode from "./toggle/editor";
 
-export const LogicalNodes = [
-  CompareNode,
-  HysteresisSwitchNode,
-  LogicalOpNode,
-  SwitchNode,
-  ToogleNode,
-];
-
-export const LogicalEditorNodes = {
-  [CompareNode.NodeTypeName]: CompareEditorNode,
-  [HysteresisSwitchNode.NodeTypeName]: HysteresisSwitchEditorNode,
-  [LogicalOpNode.NodeTypeName]: LogicalOpEditorNode,
-  [SwitchNode.NodeTypeName]: SwitchEditorNode,
-  [ToogleNode.NodeTypeName]: ToggleEditorNode,
+export const LogicalNodesRegistry: { [key: string]: NodeRegistryEntry } = {
+  [CompareNode.NodeTypeName]: {
+    node: CompareNode,
+    editor: CompareEditorNode,
+  },
+  [HysteresisSwitchNode.NodeTypeName]: {
+    node: HysteresisSwitchNode,
+    editor: HysteresisSwitchEditorNode,
+  },
+  [LogicalOpNode.NodeTypeName]: {
+    node: LogicalOpNode,
+    editor: LogicalOpEditorNode,
+  },
+  [SwitchNode.NodeTypeName]: {
+    node: SwitchNode,
+    editor: SwitchEditorNode,
+  },
+  [ToogleNode.NodeTypeName]: {
+    node: ToogleNode,
+    editor: ToggleEditorNode,
+  },
 };

@@ -1,3 +1,4 @@
+import { NodeRegistryEntry } from "nodes/types";
 import MoistureAlertNode from "./moisture-alert";
 import MoistureAlertEditorNode from "./moisture-alert/editor";
 import NotifyDispatcherNode from "./notify-dispatcher";
@@ -9,18 +10,27 @@ import WhitegoodReminderEditorNode from "./whitegood-reminder/editor";
 import WindowReminderNode from "./window-reminder";
 import WindowReminderEditorNode from "./window-reminder/editor";
 
-export const HelperNotificationNodes = [
-  MoistureAlertNode,
-  NotifyDispatcherNode,
-  WasteReminderNode,
-  WhitegoodReminderNode,
-  WindowReminderNode,
-];
-
-export const HelperNotificationEditorNodes = {
-  [MoistureAlertNode.NodeTypeName]: MoistureAlertEditorNode,
-  [NotifyDispatcherNode.NodeTypeName]: NotifyDispatcherEditorNode,
-  [WasteReminderNode.NodeTypeName]: WasteReminderEditorNode,
-  [WhitegoodReminderNode.NodeTypeName]: WhitegoodReminderEditorNode,
-  [WindowReminderNode.NodeTypeName]: WindowReminderEditorNode,
+export const HelperNotificationNodesRegistry: {
+  [key: string]: NodeRegistryEntry;
+} = {
+  [MoistureAlertNode.NodeTypeName]: {
+    node: MoistureAlertNode,
+    editor: MoistureAlertEditorNode,
+  },
+  [NotifyDispatcherNode.NodeTypeName]: {
+    node: NotifyDispatcherNode,
+    editor: NotifyDispatcherEditorNode,
+  },
+  [WasteReminderNode.NodeTypeName]: {
+    node: WasteReminderNode,
+    editor: WasteReminderEditorNode,
+  },
+  [WhitegoodReminderNode.NodeTypeName]: {
+    node: WhitegoodReminderNode,
+    editor: WhitegoodReminderEditorNode,
+  },
+  [WindowReminderNode.NodeTypeName]: {
+    node: WindowReminderNode,
+    editor: WindowReminderEditorNode,
+  },
 };

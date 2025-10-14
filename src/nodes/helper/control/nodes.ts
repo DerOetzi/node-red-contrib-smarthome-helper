@@ -1,11 +1,17 @@
+import { NodeRegistryEntry } from "nodes/types";
 import EventMapperNode from "./event-mapper";
 import EventMapperEditorNode from "./event-mapper/editor";
 import MotionControllerNode from "./motion-controller";
 import MotionControllerEditorNode from "./motion-controller/editor";
 
-export const HelperControlNodes = [EventMapperNode, MotionControllerNode];
-
-export const HelperControlEditorNodes = {
-  [EventMapperNode.NodeTypeName]: EventMapperEditorNode,
-  [MotionControllerNode.NodeTypeName]: MotionControllerEditorNode,
-};
+export const HelperControlNodesRegistry: { [key: string]: NodeRegistryEntry } =
+  {
+    [EventMapperNode.NodeTypeName]: {
+      node: EventMapperNode,
+      editor: EventMapperEditorNode,
+    },
+    [MotionControllerNode.NodeTypeName]: {
+      node: MotionControllerNode,
+      editor: MotionControllerEditorNode,
+    },
+  };

@@ -1,11 +1,17 @@
+import { NodeRegistryEntry } from "nodes/types";
 import HeatingControllerNode from "./heating-controller";
 import HeatingControllerEditorNode from "./heating-controller/editor";
 import HygroCalculatorNode from "./hygro-calculator";
 import HygroCalculatorEditorNode from "./hygro-calculator/editor";
 
-export const HelperClimateNodes = [HeatingControllerNode, HygroCalculatorNode];
-
-export const HelperClimateEditorNodes = {
-  [HeatingControllerNode.NodeTypeName]: HeatingControllerEditorNode,
-  [HygroCalculatorNode.NodeTypeName]: HygroCalculatorEditorNode,
-};
+export const HelperClimateNodesRegistry: { [key: string]: NodeRegistryEntry } =
+  {
+    [HeatingControllerNode.NodeTypeName]: {
+      node: HeatingControllerNode,
+      editor: HeatingControllerEditorNode,
+    },
+    [HygroCalculatorNode.NodeTypeName]: {
+      node: HygroCalculatorNode,
+      editor: HygroCalculatorEditorNode,
+    },
+  };

@@ -1,4 +1,4 @@
-import { NodeMessage } from "node-red";
+import { EditorNodeDef, NodeMessage } from "node-red";
 
 export interface NodeCategory {
   label: string;
@@ -11,3 +11,9 @@ export type NodeSendFunction = (
 ) => void;
 
 export type NodeDoneFunction = (err?: Error, msg?: NodeMessage) => void;
+
+export interface NodeRegistryEntry {
+  node: any;
+  editor: EditorNodeDef<any>;
+  migration?: any;
+}

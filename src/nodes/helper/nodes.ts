@@ -1,21 +1,11 @@
-import { HelperClimateEditorNodes, HelperClimateNodes } from "./climate/nodes";
-import { HelperControlEditorNodes, HelperControlNodes } from "./control/nodes";
-import { HelperLightEditorNodes, HelperLightNodes } from "./light/nodes";
-import {
-  HelperNotificationEditorNodes,
-  HelperNotificationNodes,
-} from "./notification/nodes";
+import { HelperClimateNodesRegistry } from "./climate/nodes";
+import { HelperControlNodesRegistry } from "./control/nodes";
+import { HelperLightNodesRegistry } from "./light/nodes";
+import { HelperNotificationNodesRegistry } from "./notification/nodes";
 
-export const HelperNodes = [
-  ...HelperClimateNodes,
-  ...HelperControlNodes,
-  ...HelperLightNodes,
-  ...HelperNotificationNodes,
-];
-
-export const HelperEditorNodes = {
-  ...HelperClimateEditorNodes,
-  ...HelperControlEditorNodes,
-  ...HelperLightEditorNodes,
-  ...HelperNotificationEditorNodes,
+export const HelperNodesRegistry = {
+  ...HelperClimateNodesRegistry,
+  ...HelperControlNodesRegistry,
+  ...HelperLightNodesRegistry,
+  ...HelperNotificationNodesRegistry,
 };
