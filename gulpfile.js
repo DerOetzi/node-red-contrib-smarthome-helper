@@ -162,18 +162,22 @@ task("copyIcons", () => {
 });
 
 task("buildLocales", () => {
-  return src("src/nodes/**/locales/*.json").pipe(
+  return src(["src/nodes/**/locales/*.json", "src/locales/**/*.json"]).pipe(
     through.obj(function (file, _, cb) {
       if (file.isBuffer()) {
         const relativePath = path.relative("src/nodes", file.path);
         const pathParts = relativePath.split(path.sep);
 
-        const category = pathParts[0];
+        let category = pathParts[0];
 
         let languageFile;
         let node;
 
-        if (pathParts.length > 4) {
+        if (category === ".." && pathParts[1] === "locales") {
+          category = "common";
+          languageFile = pathParts[3];
+          node = pathParts[2];
+        } else if (pathParts.length > 4) {
           languageFile = pathParts[4];
           node = pathParts[2];
         } else {
@@ -258,7 +262,10 @@ task("watch", () => {
 
   watch(["src/**/*.ts", "!src/**/editor.ts"], series("buildSourceFiles"));
 
-  watch(["src/nodes/**/locales/*.json"], series("buildLocales"));
+  watch(
+    ["src/nodes/**/locales/*.json", "src/locales/**/*.json"],
+    series("buildLocales")
+  );
 
   watch(["icons/*"], series("copyIcons"));
 });

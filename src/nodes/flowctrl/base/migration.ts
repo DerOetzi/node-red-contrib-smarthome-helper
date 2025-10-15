@@ -15,7 +15,10 @@ export default class Migration<
     node: EditorNodeInstance<T>,
     forceNewestVersion: boolean = false
   ): boolean {
+    node.migrated = false;
+
     const nodeSnapshot = cloneDeep<EditorNodeInstance<T>>(node);
+
     this._migrationSteps(nodeSnapshot);
 
     if (
@@ -32,6 +35,8 @@ export default class Migration<
     node: EditorNodeInstance<T>,
     forceNewestVersion: boolean = false
   ): boolean {
+    node.migrated = false;
+
     this._migrationSteps(node);
 
     if (forceNewestVersion && this.checkMigrationStepRequired(node, version)) {

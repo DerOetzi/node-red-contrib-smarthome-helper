@@ -1,6 +1,4 @@
 import { EditorNodeDef, NodeMessage } from "node-red";
-import BaseNode from "./flowctrl/base";
-import { BaseNodeDef, BaseNodeOptions } from "./flowctrl/base/types";
 
 export interface NodeCategory {
   label: string;

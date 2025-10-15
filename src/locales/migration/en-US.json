@@ -1,0 +1,10 @@
+{
+  "title": "Smart Home Helper Nodes Migration",
+  "message": "There are nodes which require migration to the latest version.",
+  "attention": "Attention",
+  "warning": "Please review the changes carefully.",
+  "buttonLabel": "Upgrade Smart Home Helper Nodes",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "result": "Migration completed successfully. {count} nodes were updated. Please redeploy your flows to apply the changes."
+}

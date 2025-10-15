@@ -1,0 +1,10 @@
+{
+  "title": "Migration der Smart-Home-Helfer-Knoten",
+  "message": "Es gibt Knoten, die auf die neueste Version migriert werden müssen.",
+  "attention": "Achtung",
+  "warning": "Bitte überprüfen Sie die Änderungen sorgfältig.",
+  "buttonLabel": "Smart-Home-Helfer-Knoten aktualisieren",
+  "ok": "OK",
+  "cancel": "Abbrechen",
+  "result": "Migration erfolgreich abgeschlossen. {count} Knoten wurden aktualisiert. Bitte übernehmen Sie Ihre Flows erneut, um die Änderungen anzuwenden."
+}
