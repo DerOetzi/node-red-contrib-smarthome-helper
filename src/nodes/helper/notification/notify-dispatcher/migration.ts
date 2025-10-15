@@ -1,5 +1,5 @@
 import { EditorNodeInstance } from "node-red";
-import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
+import MatchJoinMigration from "../../../flowctrl/match-join/migration";
 import { MatcherRowDefaults } from "../../../flowctrl/match-join/types";
 import { NotApplicableCompareFunction } from "../../../logical/compare/types";
 import {
@@ -7,13 +7,11 @@ import {
   NotifyDispatcherTarget,
 } from "./types";
 
-class NotifyDispatcherMigration extends MatchJoinMigration<NotifyDispatcherEditorNodeProperties> {
-  public checkAndMigrate(
+export default class NotifyDispatcherMigration extends MatchJoinMigration<NotifyDispatcherEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<NotifyDispatcherEditorNodeProperties>
-  ): boolean {
-    node = this.migrateMatchJoinNode(node);
-
-    if (this.check(node, "0.21.5")) {
+  ): EditorNodeInstance<NotifyDispatcherEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.21.5")) {
       node.join = false;
       node = this.migratePersonCount(node);
       node = this.addMessageProperty(node);
@@ -21,7 +19,7 @@ class NotifyDispatcherMigration extends MatchJoinMigration<NotifyDispatcherEdito
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 
   private migratePersonCount(
@@ -53,5 +51,3 @@ class NotifyDispatcherMigration extends MatchJoinMigration<NotifyDispatcherEdito
     return node;
   }
 }
-
-export const notifyDispatcherMigration = new NotifyDispatcherMigration();

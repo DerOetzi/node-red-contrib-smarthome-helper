@@ -1,17 +1,17 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
-import { matchJoinMigration } from "../../flowctrl/match-join/migration";
 import ArithmeticNode from "./";
 import {
   AdditionalValueRow,
   ArithmeticEditorNodeProperties,
-  ArithmeticEditorNodePropertiesDefaults,
   ArithmeticFunction,
+  ArithmeticNodeOptions,
   ArithmeticNodeOptionsDefaults,
   ArithmeticTarget,
 } from "./types";
@@ -41,7 +41,10 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
   category: ArithmeticNode.NodeCategoryLabel,
   color: ArithmeticNode.NodeColor,
   icon: "arithmetic.svg",
-  defaults: ArithmeticEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<
+    ArithmeticNodeOptions,
+    ArithmeticEditorNodeProperties
+  >(ArithmeticNodeOptionsDefaults),
   label: function () {
     const operator = i18n(
       "operator.arithmetic.select.operation." + this.operation
@@ -60,8 +63,6 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
     return i18n("operator.arithmetic.output.result");
   },
   oneditprepare: function () {
-    matchJoinMigration.checkAndMigrate(this);
-
     BaseEditorNode.oneditprepare!.call(this);
 
     operandMatcherList

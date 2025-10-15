@@ -1,8 +1,4 @@
-import { EditorNodePropertiesDef } from "node-red";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -50,39 +46,6 @@ export interface EventMapperNodeDef
 export interface EventMapperEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     EventMapperNodeOptions {}
-
-export const EventMapperEditorNodePropertiesDefaults: EditorNodePropertiesDef<EventMapperEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: EventMapperNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    discardNotMatched: {
-      value: EventMapperNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    join: {
-      value: EventMapperNodeOptionsDefaults.join,
-      required: true,
-    },
-    minMsgCount: {
-      value: EventMapperNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    outputs: {
-      value: EventMapperNodeOptionsDefaults.outputs,
-      required: true,
-    },
-    rules: {
-      value: EventMapperNodeOptionsDefaults.rules,
-      required: true,
-    },
-    ignoreUnknownEvents: {
-      value: EventMapperNodeOptionsDefaults.ignoreUnknownEvents,
-      required: true,
-    },
-  };
 
 export const autocompleteEvents = [
   "toggle",

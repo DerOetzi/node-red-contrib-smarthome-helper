@@ -1,19 +1,17 @@
 import { EditorNodeInstance } from "node-red";
-import { SwitchMigration } from "../switch/migration";
+import SwitchMigration from "../switch/migration";
 import { LogicalFunction, LogicalOpEditorNodeProperties } from "./types";
 
-export class LogicalOpMigration extends SwitchMigration<LogicalOpEditorNodeProperties> {
-  public checkAndMigrate(
+export default class LogicalOpMigration extends SwitchMigration<LogicalOpEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<LogicalOpEditorNodeProperties>
-  ): boolean {
-    node = this.migrateSwitchNode(node);
-
-    if (this.check(node, "0.21.0")) {
+  ): EditorNodeInstance<LogicalOpEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.21.0")) {
       node = this.migrateLogicalToOperation(node);
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 
   private migrateLogicalToOperation(
@@ -27,5 +25,3 @@ export class LogicalOpMigration extends SwitchMigration<LogicalOpEditorNodePrope
     return node;
   }
 }
-
-export const logicalOpMigration = new LogicalOpMigration();

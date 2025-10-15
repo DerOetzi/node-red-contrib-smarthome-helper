@@ -1,7 +1,5 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   SwitchEditorNodeProperties,
-  SwitchEditorNodePropertiesDefaults,
   SwitchNodeDef,
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
@@ -56,30 +54,6 @@ export interface CompareNodeDef extends SwitchNodeDef, CompareNodeOptions {}
 export interface CompareEditorNodeProperties
   extends SwitchEditorNodeProperties,
     CompareNodeOptions {}
-
-export const CompareEditorNodePropertiesDefaults: EditorNodePropertiesDef<CompareEditorNodeProperties> =
-  {
-    ...SwitchEditorNodePropertiesDefaults,
-    seperatedOutputs: {
-      value: CompareNodeOptionsDefaults.seperatedOutputs,
-      required: true,
-    },
-    outputs: { value: CompareNodeOptionsDefaults.outputs, required: true },
-    property: { value: CompareNodeOptionsDefaults.property, required: true },
-    propertyType: {
-      value: CompareNodeOptionsDefaults.propertyType,
-      required: true,
-    },
-    operation: { value: CompareNodeOptionsDefaults.operation, required: true },
-    compare: { value: CompareNodeOptionsDefaults.compare, required: true },
-    compareType: {
-      value: CompareNodeOptionsDefaults.compareType,
-      required: true,
-    },
-    operator: { value: "", required: false },
-    value: { value: "", required: false },
-    valueType: { value: "", required: false },
-  };
 
 export interface Comparator {
   func: (propertyValue: any, compareValue?: any) => boolean;

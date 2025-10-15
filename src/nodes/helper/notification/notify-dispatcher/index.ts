@@ -1,5 +1,6 @@
 import { Node, NodeAPI } from "node-red";
-import { NodeMessageFlow } from "nodes/flowctrl/base/types";
+import Migration from "../../../flowctrl/base/migration";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
 import {
@@ -7,6 +8,7 @@ import {
   NotifyMessageType,
   NotifyNodeMessage,
 } from "../types";
+import NotifyDispatcherMigration from "./migration";
 import {
   NotifyDispatcherNodeDef,
   NotifyDispatcherNodeOptions,
@@ -22,6 +24,8 @@ export default class NotifyDispatcherNode extends MatchJoinNode<
   protected static readonly _nodeCategory: NodeCategory =
     HelperNotificationCategory;
   protected static readonly _nodeType = "notify-dispatcher";
+  protected static readonly _migration: Migration<any> =
+    new NotifyDispatcherMigration();
 
   private personStates: Partial<Record<NotifyDispatcherTarget, boolean>> = {};
 

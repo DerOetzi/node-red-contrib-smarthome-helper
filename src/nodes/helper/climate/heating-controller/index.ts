@@ -14,6 +14,8 @@ import {
   HeatingControllerTarget,
   HeatMode,
 } from "./types";
+import Migration from "../../../flowctrl/base/migration";
+import HeatingControllerMigration from "./migration";
 
 export default class HeatingControllerNode extends MatchJoinNode<
   HeatingControllerNodeDef,
@@ -21,6 +23,8 @@ export default class HeatingControllerNode extends MatchJoinNode<
 > {
   protected static readonly _nodeCategory: NodeCategory = HelperClimateCategory;
   protected static readonly _nodeType: string = "heating-controller";
+  protected static readonly _migration: Migration<any> =
+    new HeatingControllerMigration();
 
   private timer: NodeJS.Timeout | null = null;
 

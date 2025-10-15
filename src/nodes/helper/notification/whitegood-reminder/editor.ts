@@ -1,14 +1,14 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import WhitegoodReminderNode from "./";
-import { whitegoodReminderMigration } from "./migration";
 import {
   WhitegoodReminderEditorNodeProperties,
-  WhitegoodReminderEditorNodePropertiesDefaults,
+  WhitegoodReminderNodeOptions,
   WhitegoodReminderNodeOptionsDefaults,
   WhitegoodReminderTarget,
 } from "./types";
@@ -23,7 +23,10 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
     category: WhitegoodReminderNode.NodeCategoryLabel,
     color: WhitegoodReminderNode.NodeColor,
     icon: "font-awesome/fa-plug",
-    defaults: WhitegoodReminderEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      WhitegoodReminderNodeOptions,
+      WhitegoodReminderEditorNodeProperties
+    >(WhitegoodReminderNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()
@@ -37,7 +40,6 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
       return i18n(`helper.whitegood-reminder.output.${outputs[index]}`);
     },
     oneditprepare: function () {
-      whitegoodReminderMigration.checkAndMigrate(this);
       BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {

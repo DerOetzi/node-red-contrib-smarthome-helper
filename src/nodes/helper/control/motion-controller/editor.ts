@@ -1,14 +1,14 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import MotionControllerNode from "./";
-import { motionControllerMigration } from "./migration";
 import {
   MotionControllerEditorNodeProperties,
-  MotionControllerEditorNodePropertiesDefaults,
+  MotionControllerNodeOptions,
   MotionControllerNodeOptionsDefaults,
   MotionControllerTarget,
 } from "./types";
@@ -23,7 +23,10 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
     category: MotionControllerNode.NodeCategoryLabel,
     color: MotionControllerNode.NodeColor,
     icon: "font-awesome/fa-male",
-    defaults: MotionControllerEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      MotionControllerNodeOptions,
+      MotionControllerEditorNodeProperties
+    >(MotionControllerNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()
@@ -43,8 +46,6 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
       );
     },
     oneditprepare: function () {
-      motionControllerMigration.checkAndMigrate(this);
-
       BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {

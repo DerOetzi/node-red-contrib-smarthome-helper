@@ -1,12 +1,15 @@
 import { EditorNodeDef } from "node-red";
-import { i18n, NodeEditorFormBuilder } from "../../flowctrl/base/editor";
+import {
+  createEditorDefaults,
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
 import SwitchEditorNode from "../switch/editor";
 import CompareNode from "./";
-import { compareMigration } from "./migration";
 import {
   ApplicableCompareFunction,
   CompareEditorNodeProperties,
-  CompareEditorNodePropertiesDefaults,
+  CompareNodeOptions,
   CompareNodeOptionsDefaults,
   NotApplicableCompareFunction,
 } from "./types";
@@ -15,7 +18,11 @@ const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
   category: CompareNode.NodeCategoryLabel,
   color: CompareNode.NodeColor,
   icon: "font-awesome/fa-search",
-  defaults: CompareEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<
+    CompareNodeOptions,
+    CompareEditorNodeProperties
+  >(CompareNodeOptionsDefaults),
+  // Migration support for older versions of the switch node.
   label: function () {
     const operation = i18n(
       "logical.compare.select.operation." + this.operation
@@ -37,8 +44,6 @@ const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
     return undefined;
   },
   oneditprepare: function () {
-    compareMigration.checkAndMigrate(this);
-
     SwitchEditorNode.oneditprepare!.call(this);
 
     const compareOptionsBuilder = new NodeEditorFormBuilder(

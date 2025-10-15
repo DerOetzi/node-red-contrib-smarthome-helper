@@ -1,27 +1,25 @@
 import { EditorNodeInstance } from "node-red";
-import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
+import MatchJoinMigration from "../../../flowctrl/match-join/migration";
 import {
   WhitegoodReminderEditorNodeProperties,
   WhitegoodReminderNodeOptionsDefaults,
 } from "./types";
 
-class WhitegoodReminderMigration extends MatchJoinMigration<WhitegoodReminderEditorNodeProperties> {
-  public checkAndMigrate(
+export default class WhitegoodReminderMigration extends MatchJoinMigration<WhitegoodReminderEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<WhitegoodReminderEditorNodeProperties>
-  ): boolean {
-    node = this.migrateMatchJoinNode(node);
-
-    if (this.check(node, "0.23.3")) {
+  ): EditorNodeInstance<WhitegoodReminderEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.23.3")) {
       node = this.migrateRunOutputs(node);
       node.migrated = true;
     }
 
-    if (this.check(node, "0.25.3")) {
+    if (this.checkMigrationStepRequired(node, "0.25.3")) {
       node.statusShowRuns = WhitegoodReminderNodeOptionsDefaults.statusShowRuns;
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 
   private migrateRunOutputs(
@@ -31,5 +29,3 @@ class WhitegoodReminderMigration extends MatchJoinMigration<WhitegoodReminderEdi
     return node;
   }
 }
-
-export const whitegoodReminderMigration = new WhitegoodReminderMigration();

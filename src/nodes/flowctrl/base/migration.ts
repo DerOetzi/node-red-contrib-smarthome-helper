@@ -1,28 +1,63 @@
 import type { EditorNodeInstance, EditorRED } from "node-red";
 import version from "../../../version";
 import { BaseEditorNodeProperties } from "./types";
+import { cloneDeep } from "../../../helpers/object.helper";
 
 declare const RED: EditorRED;
 
-export class Migration<
+const INITIAL_VERSION = "0.21.0";
+const REMOVE_DELAY_VERSION = "0.27.0";
+
+export default class Migration<
   T extends BaseEditorNodeProperties = BaseEditorNodeProperties,
 > {
-  public checkAndMigrate(node: EditorNodeInstance<T>): boolean {
-    if (this.check(node, "0.21.0")) {
-      //force to set any version
-      node.migrated = true;
+  public check(
+    node: EditorNodeInstance<T>,
+    forceNewestVersion: boolean = false
+  ): boolean {
+    const nodeSnapshot = cloneDeep<EditorNodeInstance<T>>(node);
+    this._migrationSteps(nodeSnapshot);
+
+    if (
+      forceNewestVersion &&
+      this.checkMigrationStepRequired(nodeSnapshot, version)
+    ) {
+      nodeSnapshot.migrated = true;
     }
 
-    if (this.check(node, "0.27.0")) {
-      delete node.initializeDelay;
-      delete node.initializeDelayUnit;
+    return nodeSnapshot.migrated;
+  }
+
+  public checkAndMigrate(
+    node: EditorNodeInstance<T>,
+    forceNewestVersion: boolean = false
+  ): boolean {
+    this._migrationSteps(node);
+
+    if (forceNewestVersion && this.checkMigrationStepRequired(node, version)) {
       node.migrated = true;
     }
 
     return this.migrate(node);
   }
 
-  protected check(
+  protected _migrationSteps(
+    node: EditorNodeInstance<T>
+  ): EditorNodeInstance<T> {
+    if (this.checkMigrationStepRequired(node, INITIAL_VERSION)) {
+      node.migrated = true;
+    }
+
+    if (this.checkMigrationStepRequired(node, REMOVE_DELAY_VERSION)) {
+      delete node.initializeDelay;
+      delete node.initializeDelayUnit;
+      node.migrated = true;
+    }
+
+    return node;
+  }
+
+  protected checkMigrationStepRequired(
     node: EditorNodeInstance<T>,
     compareVersion: string
   ): boolean {
@@ -30,16 +65,17 @@ export class Migration<
       return true;
     }
 
-    const nodeVersionParts = node.version.split(".").map(Number);
-    const compareVersionParts = compareVersion.split(".").map(Number);
+    const versionAParts = node.version.split(".").map(Number);
+    const versionBParts = compareVersion.split(".").map(Number);
 
-    for (let i = 0; i < compareVersionParts.length; i++) {
-      if (nodeVersionParts[i] < compareVersionParts[i]) {
+    for (let i = 0; i < versionAParts.length; i++) {
+      if (versionAParts[i] < versionBParts[i]) {
         return true;
-      } else if (nodeVersionParts[i] > compareVersionParts[i]) {
+      } else if (versionAParts[i] > versionBParts[i]) {
         return false;
       }
     }
+
     return false;
   }
 
@@ -62,5 +98,3 @@ export class Migration<
     return node;
   }
 }
-
-export const baseMigration = new Migration();

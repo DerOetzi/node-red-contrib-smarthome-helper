@@ -1,5 +1,5 @@
 import { EditorNodeInstance } from "node-red";
-import { MatchJoinMigration } from "../../flowctrl/match-join/migration";
+import MatchJoinMigration from "../../flowctrl/match-join/migration";
 import { MatcherRowDefaults } from "../../flowctrl/match-join/types";
 import {
   StatusEditorNodeProperties,
@@ -7,13 +7,11 @@ import {
   StatusNodeTarget,
 } from "./types";
 
-class StatusNodeMigration extends MatchJoinMigration<StatusEditorNodeProperties> {
-  public checkAndMigrate(
+export default class StatusNodeMigration extends MatchJoinMigration<StatusEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<StatusEditorNodeProperties>
-  ): boolean {
-    node = this.migrateMatchJoinNode(node);
-
-    if (this.check(node, "0.28.0")) {
+  ): EditorNodeInstance<StatusEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.28.0")) {
       node.join = false;
       node.matchers = [
         {
@@ -26,8 +24,6 @@ class StatusNodeMigration extends MatchJoinMigration<StatusEditorNodeProperties>
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 }
-
-export const statusNodeMigration = new StatusNodeMigration();

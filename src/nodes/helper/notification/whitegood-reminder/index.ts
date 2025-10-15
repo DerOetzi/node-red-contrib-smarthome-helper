@@ -1,5 +1,6 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
+import Migration from "../../../flowctrl/base/migration";
 import { NodeMessageFlow, NodeStatus } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
@@ -8,6 +9,7 @@ import {
   NotifyMessageType,
   NotifyNodeMessageFlow,
 } from "../types";
+import WhitegoodReminderMigration from "./migration";
 import {
   WhitegoodReminderNodeDef,
   WhitegoodReminderNodeOptions,
@@ -23,6 +25,8 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
   protected static readonly _nodeCategory: NodeCategory =
     HelperNotificationCategory;
   protected static readonly _nodeType: string = "whitegood-reminder";
+  protected static readonly _migration: Migration<any> =
+    new WhitegoodReminderMigration();
 
   private _runs: number = 0;
   private cleanupNeeded: boolean = false;

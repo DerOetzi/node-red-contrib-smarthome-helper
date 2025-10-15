@@ -1,5 +1,6 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../base/editor";
@@ -9,7 +10,7 @@ import {
   MatcherRowDefaults,
   MatchFixedTargets,
   MatchJoinEditorNodeProperties,
-  MatchJoinEditorNodePropertiesDefaults,
+  MatchJoinNodeOptions,
   MatchJoinNodeOptionsDefaults,
 } from "./types";
 
@@ -17,7 +18,6 @@ import {
   ApplicableCompareFunction,
   NotApplicableCompareFunction,
 } from "../../logical/compare/types";
-import { MatchJoinMigration } from "./migration";
 
 export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow> {
   constructor(private readonly fixedTargets?: MatchFixedTargets) {
@@ -130,15 +130,16 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
   }
 }
 
-const migration = new MatchJoinMigration();
-
 const matchers = new MatchJoinEditableList();
 
 const MatchJoinEditorNode: EditorNodeDef<MatchJoinEditorNodeProperties> = {
   category: MatchJoinNode.NodeCategoryLabel,
   color: MatchJoinNode.NodeColor,
   icon: "join.svg",
-  defaults: MatchJoinEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<
+    MatchJoinNodeOptions,
+    MatchJoinEditorNodeProperties
+  >(MatchJoinNodeOptionsDefaults),
   label: function () {
     const label = this.join ? "join" : "match";
     return this.name ? `${this.name} (${label})` : label;
@@ -146,8 +147,6 @@ const MatchJoinEditorNode: EditorNodeDef<MatchJoinEditorNodeProperties> = {
   inputs: MatchJoinNodeOptionsDefaults.inputs,
   outputs: MatchJoinNodeOptionsDefaults.outputs,
   oneditprepare: function () {
-    migration.checkAndMigrate(this);
-
     BaseEditorNode.oneditprepare!.call(this);
 
     matchers.initialize("matcher-rows", this.matchers, {

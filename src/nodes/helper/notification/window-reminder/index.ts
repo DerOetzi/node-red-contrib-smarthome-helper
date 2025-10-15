@@ -1,5 +1,6 @@
 import { Node, NodeAPI } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
+import Migration from "../../../flowctrl/base/migration";
 import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { LogicalOperation } from "../../../logical/op";
@@ -10,6 +11,7 @@ import {
   NotifyMessageType,
   NotifyNodeMessageFlow,
 } from "../types";
+import WindowReminderMigration from "./migration";
 import {
   WindowReminderNodeDef,
   WindowReminderNodeOptions,
@@ -24,6 +26,8 @@ export default class WindowReminderNode extends MatchJoinNode<
   protected static readonly _nodeCategory: NodeCategory =
     HelperNotificationCategory;
   protected static readonly _nodeType: string = "window-reminder";
+  protected static readonly _migration: Migration<any> =
+    new WindowReminderMigration();
 
   private windows: Record<string, boolean> = {};
   private presence: boolean = true;

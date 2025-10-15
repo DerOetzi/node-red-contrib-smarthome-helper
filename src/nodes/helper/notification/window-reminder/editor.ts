@@ -1,16 +1,16 @@
 import { EditorNodeDef } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import WindowReminderNode from "./";
-import { windowReminderMigration } from "./migration";
 import {
   WindowReminderEditorNodeProperties,
-  WindowReminderEditorNodePropertiesDefaults,
   WindowReminderIntervalRow,
+  WindowReminderNodeOptions,
   WindowReminderNodeOptionsDefaults,
   WindowReminderTarget,
 } from "./types";
@@ -41,7 +41,10 @@ const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties
     category: WindowReminderNode.NodeCategoryLabel,
     color: WindowReminderNode.NodeColor,
     icon: "font-awesome/fa-window-restore",
-    defaults: WindowReminderEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      WindowReminderNodeOptions,
+      WindowReminderEditorNodeProperties
+    >(WindowReminderNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()
@@ -53,10 +56,7 @@ const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties
       return i18n("helper.window-reminder.output.notification");
     },
     oneditprepare: function () {
-      windowReminderMigration.checkAndMigrate(this);
       BaseEditorNode.oneditprepare!.call(this);
-
-      console.log(this.intervals.length);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {
         translatePrefix: "flowctrl.match-join",

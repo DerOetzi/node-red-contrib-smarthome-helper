@@ -1,11 +1,10 @@
-import { EditorNodeDef, EditorRED } from "node-red";
+import { EditorNodeDef, EditorNodePropertiesDef, EditorRED } from "node-red";
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
 import version from "../../../version";
 import BaseNode from "./";
-import { baseMigration } from "./migration";
 import {
   BaseEditorNodeProperties,
-  BaseEditorNodePropertiesDefaults,
+  BaseNodeOptions,
   BaseNodeOptionsDefaults,
   NodeEditorFormBuilderAutocompleteInputParams,
   NodeEditorFormBuilderHiddenInputParams,
@@ -334,11 +333,26 @@ export class NodeEditorFormEditableList<T> {
   }
 }
 
+export function createEditorDefaults<
+  T extends BaseNodeOptions = BaseNodeOptions,
+  U extends BaseEditorNodeProperties = BaseEditorNodeProperties,
+>(defaults: T): EditorNodePropertiesDef<U> {
+  return {
+    ...Object.keys(defaults).reduce(
+      (acc: Record<string, { value: any }>, key) => {
+        acc[key] = { value: (defaults as any)[key] };
+        return acc;
+      },
+      {} as Record<string, { value: any }>
+    ),
+  } as EditorNodePropertiesDef<U>;
+}
+
 const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
   category: BaseNode.NodeCategoryLabel,
   color: BaseNode.NodeColor,
   icon: "font-awesome/fa-cogs",
-  defaults: BaseEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults(BaseNodeOptionsDefaults),
   label: function () {
     return this.name?.trim() ? this.name.trim() : i18n("flowctrl.base.name");
   },
@@ -347,7 +361,7 @@ const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
   oneditprepare: function () {
     const baseOptions = $("#base-common-options");
 
-    if (this.migrated || baseMigration.checkAndMigrate(this)) {
+    if (this.migrated) {
       baseOptions.parent().prepend(
         $("<div/>", {
           text: i18n("flowctrl.base.migrated").replace("{version}", version),
@@ -365,7 +379,7 @@ const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
     commonOptionsBuilder.createTextInput({
       id: "node-input-name",
       label: "name",
-      value: this.name!,
+      value: this.name,
       icon: "code",
     });
 

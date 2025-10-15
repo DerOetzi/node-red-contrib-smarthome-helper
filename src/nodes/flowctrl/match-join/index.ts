@@ -8,6 +8,8 @@ import {
   MatchJoinNodeOptions,
   MatchJoinNodeOptionsDefaults,
 } from "./types";
+import Migration from "../base/migration";
+import MatchJoinMigration from "./migration";
 
 export default class MatchJoinNode<
   T extends MatchJoinNodeDef = MatchJoinNodeDef,
@@ -15,6 +17,8 @@ export default class MatchJoinNode<
 > extends BaseNode<T, U> {
   protected static readonly _nodeCategory: NodeCategory = BaseCategory;
   protected static readonly _nodeType: string = "match-join";
+  protected static readonly _migration: Migration<any> =
+    new MatchJoinMigration();
 
   private messages: Record<string, any> = {};
 

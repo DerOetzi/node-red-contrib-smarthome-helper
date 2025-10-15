@@ -1,30 +1,28 @@
 import { EditorNodeInstance } from "node-red";
-import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
+import MatchJoinMigration from "../../../flowctrl/match-join/migration";
 import { MatcherRow } from "../../../flowctrl/match-join/types";
 import {
   MotionControllerEditorNodeProperties,
   MotionControllerTarget,
 } from "./types";
 
-export class MotionControllerMigration extends MatchJoinMigration<MotionControllerEditorNodeProperties> {
-  public checkAndMigrate(
+export default class MotionControllerMigration extends MatchJoinMigration<MotionControllerEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<MotionControllerEditorNodeProperties>
-  ): boolean {
-    node = this.migrateMatchJoinNode(node);
-
-    if (this.check(node, "0.21.3")) {
+  ): EditorNodeInstance<MotionControllerEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.21.3")) {
       node.join = false;
       node = this.migrateMatcherTargets(node);
       node = this.migrateStatusDelay(node);
       node.migrated = true;
     }
 
-    if (this.check(node, "0.27.1")) {
+    if (this.checkMigrationStepRequired(node, "0.27.1")) {
       node.outputs = 1;
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 
   private migrateMatcherTargets(
@@ -50,5 +48,3 @@ export class MotionControllerMigration extends MatchJoinMigration<MotionControll
     return node;
   }
 }
-
-export const motionControllerMigration = new MotionControllerMigration();

@@ -1,9 +1,5 @@
-import { EditorNodePropertiesDef } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -65,44 +61,3 @@ export interface WindowReminderNodeDef
 export interface WindowReminderEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     WindowReminderNodeOptions {}
-
-export const WindowReminderEditorNodePropertiesDefaults: EditorNodePropertiesDef<WindowReminderEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: WindowReminderNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    join: {
-      value: WindowReminderNodeOptionsDefaults.join,
-      required: true,
-    },
-    discardNotMatched: {
-      value: WindowReminderNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    minMsgCount: {
-      value: WindowReminderNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    intervals: {
-      value: WindowReminderNodeOptionsDefaults.intervals,
-      required: true,
-    },
-    interval: {
-      value: "",
-      required: false,
-    },
-    intervalUnit: {
-      value: "",
-      required: false,
-    },
-    interval2: {
-      value: "",
-      required: false,
-    },
-    intervalUnit2: {
-      value: "",
-      required: false,
-    },
-  };

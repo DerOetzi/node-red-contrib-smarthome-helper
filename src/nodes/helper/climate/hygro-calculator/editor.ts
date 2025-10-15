@@ -1,11 +1,13 @@
 import { EditorNodeDef } from "node-red";
 import HygroCalculatorNode from ".";
-import BaseEditorNode, { i18n } from "../../../flowctrl/base/editor";
+import BaseEditorNode, {
+  createEditorDefaults,
+  i18n,
+} from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
-import { matchJoinMigration } from "../../../flowctrl/match-join/migration";
 import {
   HygroCalculatorEditorNodeProperties,
-  HygroCalculatorEditorNodePropertiesDefaults,
+  HygroCalculatorNodeOptions,
   HygroCalculatorNodeOptionsDefaults,
   HygroCalculatorTarget,
 } from "./types";
@@ -20,7 +22,10 @@ const HygroCalculatorEditorNode: EditorNodeDef<HygroCalculatorEditorNodeProperti
     category: HygroCalculatorNode.NodeCategoryLabel,
     color: HygroCalculatorNode.NodeColor,
     icon: "font-awesome/fa-tint",
-    defaults: HygroCalculatorEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      HygroCalculatorNodeOptions,
+      HygroCalculatorEditorNodeProperties
+    >(HygroCalculatorNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()
@@ -34,8 +39,6 @@ const HygroCalculatorEditorNode: EditorNodeDef<HygroCalculatorEditorNodeProperti
       return i18n(`helper.hygro-calculator.output.${outputs[index]}`);
     },
     oneditprepare: function () {
-      matchJoinMigration.checkAndMigrate(this);
-
       BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {

@@ -1,25 +1,20 @@
 import { EditorNodeInstance } from "node-red";
-import { CompareMigration } from "../../logical/compare/migration";
-import { Migration } from "../base/migration";
+import CompareMigration from "../../logical/compare/migration";
+import Migration from "../base/migration";
 import { MatcherRow, MatchJoinEditorNodeProperties } from "./types";
 
-export class MatchJoinMigration<
+export default class MatchJoinMigration<
   T extends MatchJoinEditorNodeProperties = MatchJoinEditorNodeProperties,
 > extends Migration<T> {
-  public checkAndMigrate(node: EditorNodeInstance<T>): boolean {
-    node = this.migrateMatchJoinNode(node);
-    return this.migrate(node);
-  }
-
-  protected migrateMatchJoinNode(
+  protected _migrationSteps(
     node: EditorNodeInstance<T>
   ): EditorNodeInstance<T> {
-    if (this.check(node, "0.21.2")) {
+    if (this.checkMigrationStepRequired(node, "0.21.2")) {
       node = this.migrateMatchersOperation(node);
       node.migrated = true;
     }
 
-    return node;
+    return super._migrationSteps(node);
   }
 
   protected migrateMatchersOperation(
@@ -40,5 +35,3 @@ export class MatchJoinMigration<
     return node;
   }
 }
-
-export const matchJoinMigration = new MatchJoinMigration();

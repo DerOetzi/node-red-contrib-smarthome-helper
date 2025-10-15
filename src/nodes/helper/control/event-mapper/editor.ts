@@ -1,5 +1,6 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
@@ -9,14 +10,13 @@ import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import {
   autocompleteEvents,
   EventMapperEditorNodeProperties,
-  EventMapperEditorNodePropertiesDefaults,
+  EventMapperNodeOptions,
   EventMapperNodeOptionsDefaults,
   EventMapperRule,
   EventMapperTarget,
 } from "./types";
 
 import EventMapperNode from "./";
-import { eventMapperMigration } from "./migration";
 
 const eventMatcherList = new MatchJoinEditableList({
   targets: Object.values(EventMapperTarget),
@@ -71,7 +71,10 @@ const EventMapperEditorNode: EditorNodeDef<EventMapperEditorNodeProperties> = {
   category: EventMapperNode.NodeCategoryLabel,
   color: EventMapperNode.NodeColor,
   icon: "font-awesome/fa-map-signs",
-  defaults: EventMapperEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<
+    EventMapperNodeOptions,
+    EventMapperEditorNodeProperties
+  >(EventMapperNodeOptionsDefaults),
   label: function () {
     return this.name || i18n("helper.event-mapper.name");
   },
@@ -81,8 +84,6 @@ const EventMapperEditorNode: EditorNodeDef<EventMapperEditorNodeProperties> = {
     return this.rules[index]?.event || "event " + index;
   },
   oneditprepare: function () {
-    eventMapperMigration.checkAndMigrate(this);
-
     BaseEditorNode.oneditprepare!.call(this);
 
     eventMatcherList.initialize("matcher-rows", this.matchers, {

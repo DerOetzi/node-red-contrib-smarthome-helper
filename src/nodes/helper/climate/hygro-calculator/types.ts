@@ -1,8 +1,4 @@
-import { EditorNodePropertiesDef } from "node-red";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -44,28 +40,3 @@ export interface HygroCalculatorNodeDef
 export interface HygroCalculatorEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     HygroCalculatorNodeOptions {}
-
-export const HygroCalculatorEditorNodePropertiesDefaults: EditorNodePropertiesDef<HygroCalculatorEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: HygroCalculatorNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    discardNotMatched: {
-      value: HygroCalculatorNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    join: {
-      value: HygroCalculatorNodeOptionsDefaults.join,
-      required: true,
-    },
-    minMsgCount: {
-      value: HygroCalculatorNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    outputs: {
-      value: HygroCalculatorNodeOptionsDefaults.outputs,
-      required: true,
-    },
-  };

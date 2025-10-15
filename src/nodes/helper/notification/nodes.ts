@@ -1,4 +1,4 @@
-import { NodeRegistryEntry } from "nodes/types";
+import { NodeRegistryEntry } from "../../types";
 import MoistureAlertNode from "./moisture-alert";
 import MoistureAlertEditorNode from "./moisture-alert/editor";
 import NotifyDispatcherNode from "./notify-dispatcher";

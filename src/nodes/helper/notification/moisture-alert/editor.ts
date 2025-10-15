@@ -1,13 +1,14 @@
 import { EditorNodeDef } from "node-red";
 import MoistureAlertNode from ".";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import {
   MoistureAlertEditorNodeProperties,
-  MoistureAlertEditorNodePropertiesDefaults,
+  MoistureAlertNodeOptions,
   MoistureAlertNodeOptionsDefaults,
   MoistureAlertTarget,
 } from "./types";
@@ -22,7 +23,10 @@ const MoistureAlertEditorNode: EditorNodeDef<MoistureAlertEditorNodeProperties> 
     category: MoistureAlertNode.NodeCategoryLabel,
     color: MoistureAlertNode.NodeColor,
     icon: "font-awesome/fa-leaf",
-    defaults: MoistureAlertEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      MoistureAlertNodeOptions,
+      MoistureAlertEditorNodeProperties
+    >(MoistureAlertNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()

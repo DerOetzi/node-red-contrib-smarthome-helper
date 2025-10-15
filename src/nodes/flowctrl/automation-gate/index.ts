@@ -1,7 +1,9 @@
 import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
 import { NodeCategory, NodeSendFunction } from "../../types";
 import BaseNode from "../base";
+import Migration from "../base/migration";
 import { NodeMessageFlow, NodeStatus } from "../base/types";
+import AutomationGateMigration from "./migration";
 import {
   AutomationGateCategory,
   AutomationGateCommand,
@@ -18,6 +20,8 @@ export default class AutomationGateNode extends BaseNode<
   protected static readonly _nodeCategory: NodeCategory =
     AutomationGateCategory;
   protected static readonly _nodeType: string = "automation-gate";
+  protected static readonly _migration: Migration<any> =
+    new AutomationGateMigration();
 
   private pauseTimer: NodeJS.Timeout | null = null;
   private lastMessages: Record<string, NodeMessageFlow> = {};

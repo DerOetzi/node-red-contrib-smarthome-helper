@@ -1,9 +1,5 @@
-import { EditorNodePropertiesDef } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -52,40 +48,3 @@ export interface MoistureAlertNodeDef
 export interface MoistureAlertEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     MoistureAlertNodeOptions {}
-
-export const MoistureAlertEditorNodePropertiesDefaults: EditorNodePropertiesDef<MoistureAlertEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: MoistureAlertNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    join: {
-      value: MoistureAlertNodeOptionsDefaults.join,
-      required: true,
-    },
-    discardNotMatched: {
-      value: MoistureAlertNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    outputs: {
-      value: MoistureAlertNodeOptionsDefaults.outputs,
-      required: true,
-    },
-    minMsgCount: {
-      value: MoistureAlertNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    alertThreshold: {
-      value: MoistureAlertNodeOptionsDefaults.alertThreshold,
-      required: true,
-    },
-    alertInterval: {
-      value: MoistureAlertNodeOptionsDefaults.alertInterval,
-      required: true,
-    },
-    alertIntervalUnit: {
-      value: MoistureAlertNodeOptionsDefaults.alertIntervalUnit,
-      required: true,
-    },
-  };

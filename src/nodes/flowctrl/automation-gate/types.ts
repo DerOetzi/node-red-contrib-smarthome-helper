@@ -1,8 +1,7 @@
-import { EditorNodePropertiesDef, NodeMessage } from "node-red";
+import { NodeMessage } from "node-red";
 import { NodeCategory } from "../../types";
 import {
   BaseEditorNodeProperties,
-  BaseEditorNodePropertiesDefaults,
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
@@ -37,43 +36,6 @@ export interface AutomationGateNodeDef
 export interface AutomationGateEditorNodeProperties
   extends BaseEditorNodeProperties,
     AutomationGateNodeOptions {}
-
-export const AutomationGateEditorNodePropertiesDefaults: EditorNodePropertiesDef<AutomationGateEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    startupState: {
-      value: AutomationGateNodeOptionsDefaults.startupState,
-      required: true,
-    },
-    autoReplay: {
-      value: AutomationGateNodeOptionsDefaults.autoReplay,
-      required: true,
-    },
-    setAutomationInProgress: {
-      value: AutomationGateNodeOptionsDefaults.setAutomationInProgress,
-      required: false,
-    },
-    automationProgressId: {
-      value: AutomationGateNodeOptionsDefaults.automationProgressId,
-      required: false,
-    },
-    stateOpenLabel: {
-      value: AutomationGateNodeOptionsDefaults.stateOpenLabel,
-      required: true,
-    },
-    stateClosedLabel: {
-      value: AutomationGateNodeOptionsDefaults.stateClosedLabel,
-      required: true,
-    },
-    outputs: {
-      value: AutomationGateNodeOptionsDefaults.outputs,
-      required: true,
-    },
-    statusDelay: {
-      value: "",
-      required: false,
-    },
-  };
 
 export enum AutomationGateCommand {
   Pause = "pause",

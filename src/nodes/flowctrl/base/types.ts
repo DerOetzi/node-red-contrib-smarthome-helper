@@ -1,6 +1,5 @@
 import {
   EditorNodeProperties,
-  EditorNodePropertiesDef,
   EditorWidgetTypedInputType,
   EditorWidgetTypedInputTypeDefinition,
   NodeDef,
@@ -12,6 +11,7 @@ import version from "../../../version";
 import { NodeCategory, NodeSendFunction } from "../../types";
 
 interface BaseNodeCommonOptions {
+  name: string;
   version: string;
   topic: string;
   topicType: string;
@@ -27,6 +27,7 @@ interface BaseNodeCommonOptions {
 }
 
 const BaseNodeCommonOptionsDefaults: BaseNodeCommonOptions = {
+  name: "",
   version: version,
   topic: "topic",
   topicType: "msg",
@@ -99,75 +100,9 @@ export interface BaseNodeDef extends NodeDef, BaseNodeOptions {
 export interface BaseEditorNodeProperties
   extends EditorNodeProperties,
     BaseNodeOptions {
+  name: string;
   migrated: boolean;
 }
-
-export const BaseEditorNodePropertiesDefaults: EditorNodePropertiesDef<BaseEditorNodeProperties> =
-  {
-    name: { value: "", required: false },
-    version: { value: BaseNodeOptionsDefaults.version, required: true },
-    migrated: { value: false, required: true },
-    topic: { value: BaseNodeOptionsDefaults.topic, required: true },
-    topicType: {
-      value: BaseNodeOptionsDefaults.topicType,
-      required: true,
-    },
-    initializeDelay: {
-      value: "",
-      required: false,
-    },
-    initializeDelayUnit: {
-      value: "",
-      required: false,
-    },
-    statusReportingEnabled: {
-      value: BaseNodeStatusOptionsDefaults.statusReportingEnabled,
-      required: false,
-    },
-    statusItem: {
-      value: BaseNodeStatusOptionsDefaults.statusItem,
-      required: false,
-    },
-    statusTextItem: {
-      value: BaseNodeStatusOptionsDefaults.statusTextItem,
-      required: false,
-    },
-    debounce: {
-      value: BaseNodeOptionsDefaults.debounce,
-      required: false,
-    },
-    debounceTopic: {
-      value: BaseNodeOptionsDefaults.debounceTopic,
-      required: false,
-    },
-    debounceTime: {
-      value: BaseNodeOptionsDefaults.debounceTime,
-      required: false,
-    },
-    debounceShowStatus: {
-      value: BaseNodeOptionsDefaults.debounceShowStatus,
-      required: false,
-    },
-    debounceUnit: {
-      value: BaseNodeOptionsDefaults.debounceUnit,
-      required: false,
-    },
-    debounceLeading: {
-      value: BaseNodeOptionsDefaults.debounceLeading,
-      required: false,
-    },
-    debounceTrailing: {
-      value: BaseNodeOptionsDefaults.debounceTrailing,
-      required: false,
-    },
-    filterUniquePayload: {
-      value: BaseNodeOptionsDefaults.filterUniquePayload,
-      required: false,
-    },
-    newMsg: { value: BaseNodeOptionsDefaults.newMsg, required: false },
-    outputs: { value: BaseNodeOptionsDefaults.outputs, required: true },
-    inputs: { value: BaseNodeOptionsDefaults.inputs!, required: true },
-  };
 
 export class NodeMessageFlow {
   private readonly _originalMessage: NodeMessage;

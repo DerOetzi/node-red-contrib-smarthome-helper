@@ -1,8 +1,10 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
+import Migration from "../../../flowctrl/base/migration";
 import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
 import { HelperLightCategory } from "../types";
+import LightControllerMigration from "./migration";
 import {
   HomeAssistantLightAction,
   LightCommand,
@@ -19,6 +21,8 @@ export default class LightControllerNode extends MatchJoinNode<
 > {
   protected static readonly _nodeCategory: NodeCategory = HelperLightCategory;
   protected static readonly _nodeType: string = "light-controller";
+  protected static readonly _migration: Migration<any> =
+    new LightControllerMigration();
 
   private colorTemperature: number;
   private fixColorHue: number;

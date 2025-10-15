@@ -1,14 +1,14 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
 import SwitchNode from "./";
-import { switchMigration } from "./migration";
 import {
   DebounceFlank,
   SwitchEditorNodeProperties,
-  SwitchEditorNodePropertiesDefaults,
+  SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
 } from "./types";
 
@@ -16,7 +16,9 @@ const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
   category: SwitchNode.NodeCategoryLabel,
   color: SwitchNode.NodeColor,
   icon: "switch.svg",
-  defaults: SwitchEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<SwitchNodeOptions, SwitchEditorNodeProperties>(
+    SwitchNodeOptionsDefaults
+  ),
   label: function () {
     return this.name?.trim() ? this.name.trim() : i18n("logical.switch.name");
   },
@@ -32,8 +34,6 @@ const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
     }
   },
   oneditprepare: function () {
-    switchMigration.checkAndMigrate(this);
-
     BaseEditorNode.oneditprepare!.call(this);
 
     const switchOptionsBuilder = new NodeEditorFormBuilder(

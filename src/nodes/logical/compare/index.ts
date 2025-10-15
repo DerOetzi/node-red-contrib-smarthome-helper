@@ -1,6 +1,8 @@
 import { Node, NodeAPI } from "node-red";
-import { NodeMessageFlow } from "nodes/flowctrl/base/types";
+import Migration from "../../flowctrl/base/migration";
+import { NodeMessageFlow } from "../../flowctrl/base/types";
 import SwitchNode from "../switch";
+import CompareMigration from "./migration";
 import {
   ApplicableCompareFunction,
   CompareNodeDef,
@@ -112,6 +114,7 @@ export default class CompareNode extends SwitchNode<
   CompareNodeOptions
 > {
   protected static readonly _nodeType = "compare";
+  protected static readonly _migration: Migration<any> = new CompareMigration();
 
   constructor(RED: NodeAPI, node: Node, config: CompareNodeDef) {
     super(RED, node, config, CompareNodeOptionsDefaults);

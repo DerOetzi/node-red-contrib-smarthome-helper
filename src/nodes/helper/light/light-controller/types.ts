@@ -1,7 +1,5 @@
-import { EditorNodePropertiesDef } from "node-red";
 import { cloneDeep } from "../../../../helpers/object.helper";
 import {
-  BaseEditorNodePropertiesDefaults,
   BaseNodeOptionsDefaults,
   NodeMessageFlow,
 } from "../../../flowctrl/base/types";
@@ -105,79 +103,6 @@ export interface LightControllerNodeDef
 export interface LightControllerEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     LightControllerNodeOptions {}
-
-export const LightControllerEditorNodePropertiesDefaults: EditorNodePropertiesDef<LightControllerEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: LightControllerNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    discardNotMatched: {
-      value: LightControllerNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    join: {
-      value: LightControllerNodeOptionsDefaults.join,
-      required: true,
-    },
-    minMsgCount: {
-      value: LightControllerNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    identifiers: {
-      value: LightControllerNodeOptionsDefaults.identifiers,
-      required: true,
-    },
-    lightbulbType: {
-      value: LightControllerNodeOptionsDefaults.lightbulbType,
-      required: true,
-    },
-    homeAssistantOutput: {
-      value: LightControllerNodeOptionsDefaults.homeAssistantOutput,
-      required: true,
-    },
-    onBrightness: {
-      value: LightControllerNodeOptionsDefaults.onBrightness,
-      required: true,
-    },
-    transitionTime: {
-      value: LightControllerNodeOptionsDefaults.transitionTime,
-      required: true,
-    },
-    colorTemperature: {
-      value: LightControllerNodeOptionsDefaults.colorTemperature,
-      required: true,
-    },
-    nightmodeBrightness: {
-      value: LightControllerNodeOptionsDefaults.nightmodeBrightness,
-      required: true,
-    },
-    colorCycle: {
-      value: LightControllerNodeOptionsDefaults.colorCycle,
-      required: true,
-    },
-    fixColorHue: {
-      value: LightControllerNodeOptionsDefaults.fixColorHue,
-      required: true,
-    },
-    fixColorSaturation: {
-      value: LightControllerNodeOptionsDefaults.fixColorSaturation,
-      required: true,
-    },
-    onCommand: {
-      value: LightControllerNodeOptionsDefaults.onCommand,
-      required: true,
-    },
-    offCommand: {
-      value: LightControllerNodeOptionsDefaults.offCommand,
-      required: true,
-    },
-    nightmodeCommand: {
-      value: LightControllerNodeOptionsDefaults.nightmodeCommand,
-      required: true,
-    },
-  };
 
 export class LightControllerNodeMessageFlow extends NodeMessageFlow {
   public get lightbulbs(): string[] | undefined {

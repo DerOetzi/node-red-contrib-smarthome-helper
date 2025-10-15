@@ -1,8 +1,4 @@
-import { EditorNodePropertiesDef } from "node-red";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -56,40 +52,3 @@ export interface ArithmeticNodeDef
 export interface ArithmeticEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     ArithmeticNodeOptions {}
-
-export const ArithmeticEditorNodePropertiesDefaults: EditorNodePropertiesDef<ArithmeticEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: ArithmeticNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    discardNotMatched: {
-      value: ArithmeticNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    join: {
-      value: ArithmeticNodeOptionsDefaults.join,
-      required: true,
-    },
-    minMsgCount: {
-      value: ArithmeticNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    operation: {
-      value: ArithmeticNodeOptionsDefaults.operation,
-      required: true,
-    },
-    minValueCount: {
-      value: ArithmeticNodeOptionsDefaults.minValueCount,
-      required: true,
-    },
-    precision: {
-      value: ArithmeticNodeOptionsDefaults.precision,
-      required: true,
-    },
-    additionalValues: {
-      value: ArithmeticNodeOptionsDefaults.additionalValues,
-      required: false,
-    },
-  };

@@ -1,11 +1,13 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
+import Migration from "../../../flowctrl/base/migration";
 import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { LogicalOperation } from "../../../logical/op";
 import { NodeCategory } from "../../../types";
 import { LightCommand } from "../../light/light-controller/types";
 import { HelperControlCategory } from "../types";
+import MotionControllerMigration from "./migration";
 import {
   MotionControllerCommand,
   MotionControllerNodeDef,
@@ -21,6 +23,8 @@ export default class MotionControllerNode extends MatchJoinNode<
 > {
   protected static readonly _nodeCategory: NodeCategory = HelperControlCategory;
   protected static readonly _nodeType: string = "motion-controller";
+  protected static readonly _migration: Migration<any> =
+    new MotionControllerMigration();
 
   private timer: NodeJS.Timeout | null = null;
 

@@ -1,7 +1,5 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   SwitchEditorNodeProperties,
-  SwitchEditorNodePropertiesDefaults,
   SwitchNodeDef,
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
@@ -39,25 +37,3 @@ export interface LogicalOpNodeDef extends SwitchNodeDef, LogicalOpNodeOptions {}
 export interface LogicalOpEditorNodeProperties
   extends SwitchEditorNodeProperties,
     LogicalOpNodeOptions {}
-
-export const LogicalOpEditorNodePropertiesDefaults: EditorNodePropertiesDef<LogicalOpEditorNodeProperties> =
-  {
-    ...SwitchEditorNodePropertiesDefaults,
-    seperatedOutputs: {
-      value: LogicalOpNodeOptionsDefaults.seperatedOutputs,
-      required: true,
-    },
-    outputs: { value: LogicalOpNodeOptionsDefaults.outputs, required: true },
-    operation: {
-      value: LogicalOpNodeOptionsDefaults.operation,
-      required: true,
-    },
-    minMsgCount: {
-      value: LogicalOpNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    logical: {
-      value: "",
-      required: false,
-    },
-  };

@@ -15,6 +15,8 @@ import {
   StatusNodeScope,
   StatusNodeTarget,
 } from "./types";
+import Migration from "../base/migration";
+import StatusNodeMigration from "./migration";
 
 export default class StatusNode extends MatchJoinNode<
   StatusNodeDef,
@@ -22,6 +24,8 @@ export default class StatusNode extends MatchJoinNode<
 > {
   protected static readonly _nodeCategory: NodeCategory = BaseCategory;
   protected static readonly _nodeType: string = "status";
+  protected static readonly _migration: Migration<any> =
+    new StatusNodeMigration();
 
   private readonly inactiveQueue: Map<string, BaseNodeStatus> = new Map();
 

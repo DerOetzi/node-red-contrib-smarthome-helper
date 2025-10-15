@@ -11,6 +11,7 @@ import { convertToMilliseconds } from "../../../helpers/time.helper";
 import { NodeCategory, NodeDoneFunction, NodeSendFunction } from "../../types";
 import StatusNode from "../status";
 import { StatusNodesConnector } from "../status/connector";
+import Migration from "./migration";
 import {
   BaseCategory,
   BaseNodeDebounceRunning,
@@ -28,6 +29,7 @@ export default class BaseNode<
 > {
   protected static readonly _nodeCategory: NodeCategory = BaseCategory;
   protected static readonly _nodeType: string = "base";
+  protected static readonly _migration: Migration<any> = new Migration();
 
   public static get NodeTypeName(): string {
     return `${this._nodeCategory.name}-${this._nodeType}`;
@@ -43,6 +45,10 @@ export default class BaseNode<
 
   public static get NodeColor(): string {
     return this._nodeCategory.color;
+  }
+
+  public static get Migration(): Migration<any> {
+    return this._migration;
   }
 
   protected readonly config: T;

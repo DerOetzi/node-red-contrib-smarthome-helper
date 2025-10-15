@@ -1,10 +1,7 @@
-import { EditorNodePropertiesDef, NodeMessage } from "node-red";
+import { NodeMessage } from "node-red";
 
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -81,59 +78,6 @@ export interface MotionControllerNodeDef
 export interface MotionControllerEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     MotionControllerNodeOptions {}
-
-export const MotionControllerEditorNodePropertiesDefaults: EditorNodePropertiesDef<MotionControllerEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: MotionControllerNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    discardNotMatched: {
-      value: MotionControllerNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    join: {
-      value: MotionControllerNodeOptionsDefaults.join,
-      required: true,
-    },
-    minMsgCount: {
-      value: MotionControllerNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    timer: {
-      value: MotionControllerNodeOptionsDefaults.timer,
-      required: true,
-    },
-    timerUnit: {
-      value: MotionControllerNodeOptionsDefaults.timerUnit,
-      required: true,
-    },
-    nightmodeEnabled: {
-      value: MotionControllerNodeOptionsDefaults.nightmodeEnabled,
-      required: true,
-    },
-    onlyDarkness: {
-      value: MotionControllerNodeOptionsDefaults.onlyDarkness,
-      required: true,
-    },
-    onCommand: {
-      value: MotionControllerNodeOptionsDefaults.onCommand,
-      required: true,
-    },
-    offCommand: {
-      value: MotionControllerNodeOptionsDefaults.offCommand,
-      required: true,
-    },
-    nightmodeCommand: {
-      value: MotionControllerNodeOptionsDefaults.nightmodeCommand,
-      required: true,
-    },
-    statusDelay: {
-      value: "",
-      required: false,
-    },
-  };
 
 export interface MotionControllerNodeMessage extends NodeMessage {
   command?: MotionControllerCommand;

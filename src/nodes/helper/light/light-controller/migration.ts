@@ -1,26 +1,22 @@
 import { EditorNodeInstance } from "node-red";
-import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
+import MatchJoinMigration from "../../../flowctrl/match-join/migration";
 import { LightControllerEditorNodeProperties } from "./types";
 
-export class LightControllerMigration extends MatchJoinMigration<LightControllerEditorNodeProperties> {
-  public checkAndMigrate(
+export default class LightControllerMigration extends MatchJoinMigration<LightControllerEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<LightControllerEditorNodeProperties>
-  ): boolean {
-    node = this.migrateMatchJoinNode(node);
-
-    if (this.check(node, "0.21.3")) {
+  ): EditorNodeInstance<LightControllerEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.21.3")) {
       node.join = false;
       node.migrated = true;
     }
 
-    if (this.check(node, "0.25.3")) {
+    if (this.checkMigrationStepRequired(node, "0.25.3")) {
       node.colorTemperature =
         Math.round(1000000 / node.colorTemperature / 50) * 50;
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 }
-
-export const lightControllerMigration = new LightControllerMigration();

@@ -1,7 +1,5 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   SwitchEditorNodeProperties,
-  SwitchEditorNodePropertiesDefaults,
   SwitchNodeDef,
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
@@ -30,28 +28,3 @@ export interface HysteresisSwitchNodeDef
 export interface HysteresisSwitchEditorNodeProperties
   extends SwitchEditorNodeProperties,
     HysteresisSwitchNodeOptions {}
-
-export const HysteresisSwitchEditorNodePropertiesDefaults: EditorNodePropertiesDef<HysteresisSwitchEditorNodeProperties> =
-  {
-    ...SwitchEditorNodePropertiesDefaults,
-    seperatedOutputs: {
-      value: HysteresisSwitchNodeOptionsDefaults.seperatedOutputs,
-      required: true,
-    },
-    outputs: {
-      value: HysteresisSwitchNodeOptionsDefaults.outputs,
-      required: true,
-    },
-    upperThreshold: {
-      value: HysteresisSwitchNodeOptionsDefaults.upperThreshold,
-      required: true,
-    },
-    lowerThreshold: {
-      value: HysteresisSwitchNodeOptionsDefaults.lowerThreshold,
-      required: true,
-    },
-    initialState: {
-      value: HysteresisSwitchNodeOptionsDefaults.initialState,
-      required: true,
-    },
-  };

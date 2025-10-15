@@ -1,20 +1,16 @@
 import { EditorNodeInstance } from "node-red";
-import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
+import MatchJoinMigration from "../../../flowctrl/match-join/migration";
 import { EventMapperEditorNodeProperties } from "./types";
 
-export class EventMapperMigration extends MatchJoinMigration<EventMapperEditorNodeProperties> {
-  public checkAndMigrate(
+export default class EventMapperMigration extends MatchJoinMigration<EventMapperEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<EventMapperEditorNodeProperties>
-  ): boolean {
-    node = this.migrateMatchJoinNode(node);
-
-    if (this.check(node, "0.21.1")) {
+  ): EditorNodeInstance<EventMapperEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.21.1")) {
       node.join = false;
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 }
-
-export const eventMapperMigration = new EventMapperMigration();

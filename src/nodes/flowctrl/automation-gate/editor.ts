@@ -1,10 +1,13 @@
 import { EditorNodeDef } from "node-red";
-import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "../base/editor";
+import BaseEditorNode, {
+  createEditorDefaults,
+  i18n,
+  NodeEditorFormBuilder,
+} from "../base/editor";
 import AutomationGateNode from "./";
-import { automationGateMigration } from "./migration";
 import {
   AutomationGateEditorNodeProperties,
-  AutomationGateEditorNodePropertiesDefaults,
+  AutomationGateNodeOptions,
   AutomationGateNodeOptionsDefaults,
 } from "./types";
 
@@ -13,7 +16,10 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
     category: AutomationGateNode.NodeCategoryLabel,
     color: AutomationGateNode.NodeColor,
     icon: "font-awesome/fa-chain-broken",
-    defaults: AutomationGateEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      AutomationGateNodeOptions,
+      AutomationGateEditorNodeProperties
+    >(AutomationGateNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()
@@ -33,7 +39,6 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
       );
     },
     oneditprepare: function () {
-      automationGateMigration.checkAndMigrate(this);
       BaseEditorNode.oneditprepare!.call(this);
 
       const automationGateOptionsBuilder = new NodeEditorFormBuilder(

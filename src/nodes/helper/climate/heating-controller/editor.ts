@@ -1,14 +1,14 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import HeatingControllerNode from "./";
-import { heatingControllerMigration } from "./migration";
 import {
   HeatingControllerEditorNodeProperties,
-  HeatingControllerEditorNodePropertiesDefaults,
+  HeatingControllerNodeOptions,
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
 } from "./types";
@@ -23,7 +23,10 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     category: HeatingControllerNode.NodeCategoryLabel,
     color: HeatingControllerNode.NodeColor,
     icon: "font-awesome/fa-thermometer-half",
-    defaults: HeatingControllerEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      HeatingControllerNodeOptions,
+      HeatingControllerEditorNodeProperties
+    >(HeatingControllerNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()
@@ -49,8 +52,6 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
       );
     },
     oneditprepare: function () {
-      heatingControllerMigration.checkAndMigrate(this);
-
       BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {

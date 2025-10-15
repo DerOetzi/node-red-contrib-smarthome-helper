@@ -1,4 +1,4 @@
-import { NodeRegistryEntry } from "nodes/types";
+import { NodeRegistryEntry } from "../types";
 import ArithmeticNode from "./arithmetic";
 import ArithmeticEditorNode from "./arithmetic/editor";
 

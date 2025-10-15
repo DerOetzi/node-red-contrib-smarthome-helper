@@ -1,9 +1,6 @@
-import { EditorNodePropertiesDef, NodeMessage } from "node-red";
+import { NodeMessage } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -116,87 +113,6 @@ export interface HeatingControllerNodeDef
 export interface HeatingControllerEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     HeatingControllerNodeOptions {}
-
-export const HeatingControllerEditorNodePropertiesDefaults: EditorNodePropertiesDef<HeatingControllerEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: HeatingControllerNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    discardNotMatched: {
-      value: HeatingControllerNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    join: {
-      value: HeatingControllerNodeOptionsDefaults.join,
-      required: true,
-    },
-    minMsgCount: {
-      value: HeatingControllerNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    outputs: {
-      value: HeatingControllerNodeOptionsDefaults.outputs,
-      required: true,
-    },
-    reactivateEnabled: {
-      value: HeatingControllerNodeOptionsDefaults.reactivateEnabled,
-      required: true,
-    },
-    pause: {
-      value: HeatingControllerNodeOptionsDefaults.pause,
-      required: true,
-    },
-    pauseUnit: {
-      value: HeatingControllerNodeOptionsDefaults.pauseUnit,
-      required: true,
-    },
-    defaultActive: {
-      value: HeatingControllerNodeOptionsDefaults.defaultActive,
-      required: true,
-    },
-    boostEnabled: {
-      value: HeatingControllerNodeOptionsDefaults.boostEnabled,
-      required: true,
-    },
-    boostTemperatureOffset: {
-      value: HeatingControllerNodeOptionsDefaults.boostTemperatureOffset,
-      required: true,
-    },
-    frostProtectionTemperature: {
-      value: HeatingControllerNodeOptionsDefaults.frostProtectionTemperature,
-      required: true,
-    },
-    pvBoostEnabled: {
-      value: HeatingControllerNodeOptionsDefaults.pvBoostEnabled,
-      required: true,
-    },
-    pvBoostTemperatureOffset: {
-      value: HeatingControllerNodeOptionsDefaults.pvBoostTemperatureOffset,
-      required: true,
-    },
-    comfortCommand: {
-      value: HeatingControllerNodeOptionsDefaults.comfortCommand,
-      required: true,
-    },
-    ecoCommand: {
-      value: HeatingControllerNodeOptionsDefaults.ecoCommand,
-      required: true,
-    },
-    boostCommand: {
-      value: HeatingControllerNodeOptionsDefaults.boostCommand,
-      required: true,
-    },
-    frostProtectionCommand: {
-      value: HeatingControllerNodeOptionsDefaults.frostProtectionCommand,
-      required: true,
-    },
-    statusDelay: {
-      value: "",
-      required: false,
-    },
-  };
 
 export interface HeatingControllerNodeMessage extends NodeMessage {
   command?: HeatingControllerCommand;

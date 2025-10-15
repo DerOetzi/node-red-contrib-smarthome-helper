@@ -1,14 +1,14 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import NotifyDispatcherNode from "./";
-import { notifyDispatcherMigration } from "./migration";
 import {
-  NotifyDispatcherEditorNodeDefaults,
   NotifyDispatcherEditorNodeProperties,
+  NotifyDispatcherNodeOptions,
   NotifyDispatcherNodeOptionsDefaults,
   NotifyDispatcherTarget,
 } from "./types";
@@ -23,7 +23,10 @@ const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProper
     category: NotifyDispatcherNode.NodeCategoryLabel,
     color: NotifyDispatcherNode.NodeColor,
     icon: "font-awesome/fa-bell",
-    defaults: NotifyDispatcherEditorNodeDefaults,
+    defaults: createEditorDefaults<
+      NotifyDispatcherNodeOptions,
+      NotifyDispatcherEditorNodeProperties
+    >(NotifyDispatcherNodeOptionsDefaults),
     label: function () {
       return this.name?.trim()
         ? this.name.trim()
@@ -35,7 +38,6 @@ const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProper
       return index === 0 ? "broadcast" : "person " + index;
     },
     oneditprepare: function () {
-      notifyDispatcherMigration.checkAndMigrate(this);
       BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {

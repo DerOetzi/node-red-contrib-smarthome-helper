@@ -1,8 +1,4 @@
-import { EditorNodePropertiesDef } from "node-red";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -78,32 +74,3 @@ export interface NotifyDispatcherNodeDef
 export interface NotifyDispatcherEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     NotifyDispatcherNodeOptions {}
-
-export const NotifyDispatcherEditorNodeDefaults: EditorNodePropertiesDef<NotifyDispatcherEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: NotifyDispatcherNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    join: {
-      value: NotifyDispatcherNodeOptionsDefaults.join,
-      required: true,
-    },
-    discardNotMatched: {
-      value: NotifyDispatcherNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    minMsgCount: {
-      value: NotifyDispatcherNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    persons: {
-      value: NotifyDispatcherNodeOptionsDefaults.persons,
-      required: true,
-    },
-    outputs: {
-      value: NotifyDispatcherNodeOptionsDefaults.outputs,
-      required: true,
-    },
-  };

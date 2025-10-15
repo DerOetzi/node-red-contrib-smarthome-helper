@@ -1,25 +1,18 @@
 import { EditorNodeInstance } from "node-red";
-import { Migration } from "../../flowctrl/base/migration";
+import Migration from "../../flowctrl/base/migration";
 import { SwitchEditorNodeProperties } from "./types";
 
-export class SwitchMigration<
+export default class SwitchMigration<
   T extends SwitchEditorNodeProperties = SwitchEditorNodeProperties,
 > extends Migration<T> {
-  public checkAndMigrate(node: EditorNodeInstance<T>): boolean {
-    node = this.migrateSwitchNode(node);
-    return this.migrate(node);
-  }
-
-  protected migrateSwitchNode(
+  protected _migrationSteps(
     node: EditorNodeInstance<T>
   ): EditorNodeInstance<T> {
-    if (this.check(node, "0.22.2")) {
+    if (this.checkMigrationStepRequired(node, "0.22.2")) {
       node.targetType = "msg";
       node.migrated = true;
     }
 
-    return node;
+    return super._migrationSteps(node);
   }
 }
-
-export const switchMigration = new SwitchMigration();

@@ -1,12 +1,15 @@
 import { EditorNodeDef } from "node-red";
-import { i18n, NodeEditorFormBuilder } from "../../flowctrl/base/editor";
+import {
+  createEditorDefaults,
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
 import SwitchEditorNode from "../switch/editor";
 import LogicalOpNode from "./";
-import { logicalOpMigration } from "./migration";
 import {
   LogicalFunction,
   LogicalOpEditorNodeProperties,
-  LogicalOpEditorNodePropertiesDefaults,
+  LogicalOpNodeOptions,
   LogicalOpNodeOptionsDefaults,
 } from "./types";
 
@@ -14,7 +17,10 @@ const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
   category: LogicalOpNode.NodeCategoryLabel,
   color: LogicalOpNode.NodeColor,
   icon: "font-awesome/fa-some-lightbulb-o",
-  defaults: LogicalOpEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<
+    LogicalOpNodeOptions,
+    LogicalOpEditorNodeProperties
+  >(LogicalOpNodeOptionsDefaults),
   label: function () {
     const logicalOp = i18n("logical.op.select.operation." + this.operation);
     let label: string = logicalOp;
@@ -34,8 +40,6 @@ const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
     return undefined;
   },
   oneditprepare: function () {
-    logicalOpMigration.checkAndMigrate(this);
-
     SwitchEditorNode.oneditprepare!.call(this);
 
     const logicalOpOptionsBuilder = new NodeEditorFormBuilder(

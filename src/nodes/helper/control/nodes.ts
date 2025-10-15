@@ -1,4 +1,4 @@
-import { NodeRegistryEntry } from "nodes/types";
+import { NodeRegistryEntry } from "../../types";
 import EventMapperNode from "./event-mapper";
 import EventMapperEditorNode from "./event-mapper/editor";
 import MotionControllerNode from "./motion-controller";

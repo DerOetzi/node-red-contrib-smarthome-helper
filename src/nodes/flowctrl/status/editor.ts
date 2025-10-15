@@ -1,11 +1,14 @@
 import { EditorNodeDef } from "node-red";
 import StatusNode from ".";
-import BaseEditorNode, { i18n, NodeEditorFormBuilder } from "../base/editor";
+import BaseEditorNode, {
+  createEditorDefaults,
+  i18n,
+  NodeEditorFormBuilder,
+} from "../base/editor";
 import { MatchJoinEditableList } from "../match-join/editor";
-import { statusNodeMigration } from "./migration";
 import {
   StatusEditorNodeProperties,
-  StatusEditorNodePropertiesDefaults,
+  StatusNodeOptions,
   StatusNodeOptionsDefaults,
   StatusNodeScope,
   StatusNodeTarget,
@@ -20,7 +23,9 @@ const StatusEditorNode: EditorNodeDef<StatusEditorNodeProperties> = {
   category: StatusNode.NodeCategoryLabel,
   color: StatusNode.NodeColor,
   icon: "font-awesome/fa-key",
-  defaults: StatusEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<StatusNodeOptions, StatusEditorNodeProperties>(
+    StatusNodeOptionsDefaults
+  ),
   label: function () {
     return this.name?.trim() ? this.name.trim() : i18n("flowctrl.status.name");
   },
@@ -32,7 +37,6 @@ const StatusEditorNode: EditorNodeDef<StatusEditorNodeProperties> = {
     return i18n(`flowctrl.status.output.${outputs[index]}`);
   },
   oneditprepare: function () {
-    statusNodeMigration.checkAndMigrate(this);
     BaseEditorNode.oneditprepare!.call(this);
 
     inputMatcherList.initialize("matcher-rows", this.matchers, {

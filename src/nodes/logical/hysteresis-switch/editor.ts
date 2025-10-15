@@ -1,20 +1,27 @@
 import { EditorNodeDef } from "node-red";
+import HysteresisSwitchNode from ".";
+import {
+  createEditorDefaults,
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../flowctrl/base/editor";
+import SwitchEditorNode from "../switch/editor";
 import {
   HysteresisSwitchEditorNodeProperties,
-  HysteresisSwitchEditorNodePropertiesDefaults,
+  HysteresisSwitchNodeOptions,
   HysteresisSwitchNodeOptionsDefaults,
 } from "./types";
-import HysteresisSwitchNode from ".";
-import { i18n, NodeEditorFormBuilder } from "../../flowctrl/base/editor";
-import { switchMigration } from "../switch/migration";
-import SwitchEditorNode from "../switch/editor";
 
 const HysteresisSwitchEditorNode: EditorNodeDef<HysteresisSwitchEditorNodeProperties> =
   {
     category: HysteresisSwitchNode.NodeCategoryLabel,
     color: HysteresisSwitchNode.NodeColor,
     icon: "font-awesome/fa-toggle-on",
-    defaults: HysteresisSwitchEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      HysteresisSwitchNodeOptions,
+      HysteresisSwitchEditorNodeProperties
+    >(HysteresisSwitchNodeOptionsDefaults),
+    // Migration support for older versions of the switch node.
     label: function () {
       let name = i18n("logical.hysteresis-switch.name");
       if (this.name) {
@@ -25,8 +32,6 @@ const HysteresisSwitchEditorNode: EditorNodeDef<HysteresisSwitchEditorNodeProper
     inputs: HysteresisSwitchNodeOptionsDefaults.inputs,
     outputs: HysteresisSwitchNodeOptionsDefaults.outputs,
     oneditprepare: function () {
-      switchMigration.checkAndMigrate(this);
-
       SwitchEditorNode.oneditprepare!.call(this);
 
       const hysteresisSwitchOptionsBuilder = new NodeEditorFormBuilder(

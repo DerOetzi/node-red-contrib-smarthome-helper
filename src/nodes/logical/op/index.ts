@@ -8,6 +8,8 @@ import {
   LogicalOpNodeOptions,
   LogicalOpNodeOptionsDefaults,
 } from "./types";
+import Migration from "../../flowctrl/base/migration";
+import LogicalOpMigration from "./migration";
 
 export class LogicalOperation {
   public static func(operation: LogicalFunction, values: boolean[]): boolean {
@@ -48,6 +50,8 @@ export default class LogicalOpNode extends SwitchNode<
   LogicalOpNodeOptions
 > {
   protected static readonly _nodeType = "op";
+  protected static readonly _migration: Migration<any> =
+    new LogicalOpMigration();
 
   private messages: Record<string, boolean> = {};
 

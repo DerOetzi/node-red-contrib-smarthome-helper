@@ -1,4 +1,4 @@
-import { NodeRegistryEntry } from "nodes/types";
+import { NodeRegistryEntry } from "../types";
 import CompareNode from "./compare";
 import CompareEditorNode from "./compare/editor";
 import HysteresisSwitchNode from "./hysteresis-switch";

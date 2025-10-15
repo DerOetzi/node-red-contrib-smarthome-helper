@@ -1,11 +1,9 @@
-import { EditorNodePropertiesDef } from "node-red";
 import {
   ApplicableCompareFunction,
   NotApplicableCompareFunction,
 } from "../../logical/compare/types";
 import {
   BaseEditorNodeProperties,
-  BaseEditorNodePropertiesDefaults,
   BaseNodeDef,
   BaseNodeOptions,
   BaseNodeOptionsDefaults,
@@ -60,24 +58,3 @@ export interface MatchJoinNodeDef extends BaseNodeDef, MatchJoinNodeOptions {}
 export interface MatchJoinEditorNodeProperties
   extends BaseEditorNodeProperties,
     MatchJoinNodeOptions {}
-
-export const MatchJoinEditorNodePropertiesDefaults: EditorNodePropertiesDef<MatchJoinEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: MatchJoinNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    discardNotMatched: {
-      value: MatchJoinNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    join: {
-      value: MatchJoinNodeOptionsDefaults.join,
-      required: true,
-    },
-    minMsgCount: {
-      value: MatchJoinNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-  };

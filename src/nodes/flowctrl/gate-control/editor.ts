@@ -1,18 +1,23 @@
 import { EditorNodeDef } from "node-red";
-import BaseEditorNode, { NodeEditorFormBuilder } from "../base/editor";
+import BaseEditorNode, {
+  createEditorDefaults,
+  NodeEditorFormBuilder,
+} from "../base/editor";
 import GateControlNode from "./";
 import {
   GateControlEditorNodeProperties,
-  GateControlEditorNodePropertiesDefaults,
+  GateControlNodeOptions,
   GateControlNodeOptionsDefaults,
 } from "./types";
-import { gateControlMigration } from "./migration";
 
 const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
   category: GateControlNode.NodeCategoryLabel,
   color: GateControlNode.NodeColor,
   icon: "font-awesome/fa-key",
-  defaults: GateControlEditorNodePropertiesDefaults,
+  defaults: createEditorDefaults<
+    GateControlNodeOptions,
+    GateControlEditorNodeProperties
+  >(GateControlNodeOptionsDefaults),
   label: function () {
     let label = this.name?.trim() ? this.name.trim() : this.gateCommand;
 
@@ -26,7 +31,6 @@ const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
   outputs: GateControlNodeOptionsDefaults.outputs,
   outputLabels: ["Delayed Message Output", "Gate Command Output"],
   oneditprepare: function () {
-    gateControlMigration.checkAndMigrate(this);
     BaseEditorNode.oneditprepare!.call(this);
 
     const gateControlOptionsBuilder = new NodeEditorFormBuilder(

@@ -1,7 +1,9 @@
 import { Node, NodeAPI } from "node-red";
 import BaseNode from "../../flowctrl/base";
+import Migration from "../../flowctrl/base/migration";
 import { NodeMessageFlow } from "../../flowctrl/base/types";
 import { NodeCategory } from "../../types";
+import SwitchMigration from "./migration";
 import {
   DebounceFlank,
   LogicalOpCategory,
@@ -16,6 +18,7 @@ export default class SwitchNode<
 > extends BaseNode<T, U> {
   protected static readonly _nodeCategory: NodeCategory = LogicalOpCategory;
   protected static readonly _nodeType: string = "switch";
+  protected static readonly _migration: Migration<any> = new SwitchMigration();
 
   constructor(
     RED: NodeAPI,

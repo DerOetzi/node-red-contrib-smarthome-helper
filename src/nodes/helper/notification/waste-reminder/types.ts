@@ -1,8 +1,4 @@
-import { EditorNodePropertiesDef } from "node-red";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -43,24 +39,3 @@ export interface WasteReminderNodeDef
 export interface WasteReminderEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     WasteReminderNodeOptions {}
-
-export const WasteReminderEditorNodePropertiesDefaults: EditorNodePropertiesDef<WasteReminderEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: WasteReminderNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    join: {
-      value: WasteReminderNodeOptionsDefaults.join,
-      required: true,
-    },
-    discardNotMatched: {
-      value: WasteReminderNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    minMsgCount: {
-      value: WasteReminderNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-  };

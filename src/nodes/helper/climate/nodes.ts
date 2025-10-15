@@ -1,4 +1,4 @@
-import { NodeRegistryEntry } from "nodes/types";
+import { NodeRegistryEntry } from "../../types";
 import HeatingControllerNode from "./heating-controller";
 import HeatingControllerEditorNode from "./heating-controller/editor";
 import HygroCalculatorNode from "./hygro-calculator";

@@ -1,12 +1,24 @@
 import { EditorNodeInstance } from "node-red";
-import { SwitchMigration } from "../switch/migration";
+import SwitchMigration from "../switch/migration";
 import {
   ApplicableCompareFunction,
   CompareEditorNodeProperties,
   NotApplicableCompareFunction,
 } from "./types";
 
-export class CompareMigration extends SwitchMigration<CompareEditorNodeProperties> {
+export default class CompareMigration extends SwitchMigration<CompareEditorNodeProperties> {
+  protected _migrationSteps(
+    node: EditorNodeInstance<CompareEditorNodeProperties>
+  ): EditorNodeInstance<CompareEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.21.2")) {
+      node = this.migrateOperatorToOperation(node);
+      node = this.migrateValueToCompare(node);
+      node.migrated = true;
+    }
+
+    return super._migrationSteps(node);
+  }
+
   public static migrateOperationValues(
     operation: string
   ): ApplicableCompareFunction | NotApplicableCompareFunction {
@@ -45,20 +57,6 @@ export class CompareMigration extends SwitchMigration<CompareEditorNodePropertie
     }
   }
 
-  public checkAndMigrate(
-    node: EditorNodeInstance<CompareEditorNodeProperties>
-  ): boolean {
-    node = this.migrateSwitchNode(node);
-
-    if (this.check(node, "0.21.2")) {
-      node = this.migrateOperatorToOperation(node);
-      node = this.migrateValueToCompare(node);
-      node.migrated = true;
-    }
-
-    return this.migrate(node);
-  }
-
   private migrateOperatorToOperation(
     node: EditorNodeInstance<CompareEditorNodeProperties>
   ): EditorNodeInstance<CompareEditorNodeProperties> {
@@ -84,5 +82,3 @@ export class CompareMigration extends SwitchMigration<CompareEditorNodePropertie
     return node;
   }
 }
-
-export const compareMigration = new CompareMigration();

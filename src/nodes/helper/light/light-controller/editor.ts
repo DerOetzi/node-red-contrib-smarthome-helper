@@ -1,15 +1,15 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import LightControllerNode from "./";
-import { lightControllerMigration } from "./migration";
 import {
   LightControllerEditorNodeProperties,
-  LightControllerEditorNodePropertiesDefaults,
+  LightControllerNodeOptions,
   LightControllerNodeOptionsDefaults,
   LightControllerTarget,
   LightIdentifierRow,
@@ -41,7 +41,10 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
     category: LightControllerNode.NodeCategoryLabel,
     color: LightControllerNode.NodeColor,
     icon: "font-awesome/fa-lightbulb-o",
-    defaults: LightControllerEditorNodePropertiesDefaults,
+    defaults: createEditorDefaults<
+      LightControllerNodeOptions,
+      LightControllerEditorNodeProperties
+    >(LightControllerNodeOptionsDefaults),
     label: function () {
       const label = i18n(
         "helper.light-controller.select.lightbulbType." + this.lightbulbType
@@ -61,8 +64,6 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
       );
     },
     oneditprepare: function () {
-      lightControllerMigration.checkAndMigrate(this);
-
       BaseEditorNode.oneditprepare!.call(this);
 
       inputMatcherList.initialize("matcher-rows", this.matchers, {

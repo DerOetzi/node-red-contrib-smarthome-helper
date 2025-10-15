@@ -1,4 +1,4 @@
-import { NodeRegistryEntry } from "nodes/types";
+import { NodeRegistryEntry } from "../../types";
 import LightControllerNode from "./light-controller";
 import LightControllerEditorNode from "./light-controller/editor";
 

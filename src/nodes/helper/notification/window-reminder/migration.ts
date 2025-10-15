@@ -1,27 +1,25 @@
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import { MatchJoinMigration } from "../../../flowctrl/match-join/migration";
+import MatchJoinMigration from "../../../flowctrl/match-join/migration";
 import { EditorNodeInstance } from "node-red";
 import { WindowReminderEditorNodeProperties } from "./types";
 
-class WindowReminderMigration extends MatchJoinMigration<WindowReminderEditorNodeProperties> {
-  public checkAndMigrate(
+export default class WindowReminderMigration extends MatchJoinMigration<WindowReminderEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<WindowReminderEditorNodeProperties>
-  ): boolean {
-    node = this.migrateMatchJoinNode(node);
-
-    if (this.check(node, "0.21.7")) {
+  ): EditorNodeInstance<WindowReminderEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.21.7")) {
       node.join = false;
       node = this.migrateInterval(node);
       node.migrated = true;
     }
 
-    if (this.check(node, "0.34.0")) {
+    if (this.checkMigrationStepRequired(node, "0.34.0")) {
       node.interval2 = 0;
       node.intervalUnit2 = TimeIntervalUnit.m;
       node.migrated = true;
     }
 
-    if (this.check(node, "0.37.0")) {
+    if (this.checkMigrationStepRequired(node, "0.37.0")) {
       node.intervals = [];
       if (node.interval) {
         node.intervals.push({
@@ -39,7 +37,7 @@ class WindowReminderMigration extends MatchJoinMigration<WindowReminderEditorNod
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 
   private migrateInterval(
@@ -52,5 +50,3 @@ class WindowReminderMigration extends MatchJoinMigration<WindowReminderEditorNod
     return node;
   }
 }
-
-export const windowReminderMigration = new WindowReminderMigration();

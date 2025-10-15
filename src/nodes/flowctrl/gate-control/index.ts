@@ -7,7 +7,9 @@ import {
   AutomationGateNodeMessage,
 } from "../automation-gate/types";
 import BaseNode from "../base";
+import Migration from "../base/migration";
 import { NodeMessageFlow } from "../base/types";
+import GateControlMigration from "./migration";
 import {
   GateControlNodeDef,
   GateControlNodeOptions,
@@ -21,6 +23,8 @@ export default class GateControlNode extends BaseNode<
   protected static readonly _nodeCategory: NodeCategory =
     AutomationGateCategory;
   protected static readonly _nodeType: string = "gate-control";
+  protected static readonly _migration: Migration<any> =
+    new GateControlMigration();
 
   private readonly gateControlMsg: AutomationGateNodeMessage;
 

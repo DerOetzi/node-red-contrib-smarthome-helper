@@ -1,9 +1,5 @@
-import { EditorNodePropertiesDef } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import {
-  BaseEditorNodePropertiesDefaults,
-  BaseNodeOptionsDefaults,
-} from "../../../flowctrl/base/types";
+import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
@@ -66,60 +62,3 @@ export interface WhitegoodReminderNodeDef
 export interface WhitegoodReminderEditorNodeProperties
   extends MatchJoinEditorNodeProperties,
     WhitegoodReminderNodeOptions {}
-
-export const WhitegoodReminderEditorNodePropertiesDefaults: EditorNodePropertiesDef<WhitegoodReminderEditorNodeProperties> =
-  {
-    ...BaseEditorNodePropertiesDefaults,
-    matchers: {
-      value: WhitegoodReminderNodeOptionsDefaults.matchers,
-      required: true,
-    },
-    join: {
-      value: WhitegoodReminderNodeOptionsDefaults.join,
-      required: true,
-    },
-    discardNotMatched: {
-      value: WhitegoodReminderNodeOptionsDefaults.discardNotMatched,
-      required: true,
-    },
-    minMsgCount: {
-      value: WhitegoodReminderNodeOptionsDefaults.minMsgCount,
-      required: true,
-    },
-    offPowerLimit: {
-      value: WhitegoodReminderNodeOptionsDefaults.offPowerLimit,
-      required: true,
-    },
-    standbyPowerLimit: {
-      value: WhitegoodReminderNodeOptionsDefaults.standbyPowerLimit,
-      required: true,
-    },
-    cleanupEnabled: {
-      value: WhitegoodReminderNodeOptionsDefaults.cleanupEnabled,
-      required: true,
-    },
-    cleanupInterval: {
-      value: WhitegoodReminderNodeOptionsDefaults.cleanupInterval,
-      required: true,
-    },
-    emptyReminderEnabled: {
-      value: WhitegoodReminderNodeOptionsDefaults.emptyReminderEnabled,
-      required: true,
-    },
-    emptyReminderInterval: {
-      value: WhitegoodReminderNodeOptionsDefaults.emptyReminderInterval,
-      required: true,
-    },
-    emptyReminderUnit: {
-      value: WhitegoodReminderNodeOptionsDefaults.emptyReminderUnit,
-      required: true,
-    },
-    statusShowRuns: {
-      value: WhitegoodReminderNodeOptionsDefaults.statusShowRuns,
-      required: true,
-    },
-    outputs: {
-      value: WhitegoodReminderNodeOptionsDefaults.outputs,
-      required: true,
-    },
-  };

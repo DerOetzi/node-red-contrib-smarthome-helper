@@ -1,4 +1,4 @@
-import { NodeRegistryEntry } from "nodes/types";
+import { NodeRegistryEntry } from "../types";
 import AutomationGateNode from "./automation-gate";
 import AutomationGateEditorNode from "./automation-gate/editor";
 import BaseNode from "./base";

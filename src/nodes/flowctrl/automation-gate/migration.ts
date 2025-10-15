@@ -1,22 +1,22 @@
 import { EditorNodeInstance } from "node-red";
-import { Migration } from "../base/migration";
+import Migration from "../base/migration";
 import { AutomationGateEditorNodeProperties } from "./types";
 
-class AutomationGateMigration extends Migration<AutomationGateEditorNodeProperties> {
-  public checkAndMigrate(
+export default class AutomationGateMigration extends Migration<AutomationGateEditorNodeProperties> {
+  protected _migrationSteps(
     node: EditorNodeInstance<AutomationGateEditorNodeProperties>
-  ): boolean {
-    if (this.check(node, "0.22.3")) {
+  ): EditorNodeInstance<AutomationGateEditorNodeProperties> {
+    if (this.checkMigrationStepRequired(node, "0.22.3")) {
       node = this.migrateStatusDelay(node);
       node.migrated = true;
     }
 
-    if (this.check(node, "0.27.1")) {
+    if (this.checkMigrationStepRequired(node, "0.27.1")) {
       node.outputs = 1;
       node.migrated = true;
     }
 
-    return this.migrate(node);
+    return super._migrationSteps(node);
   }
 
   private migrateStatusDelay(
@@ -28,5 +28,3 @@ class AutomationGateMigration extends Migration<AutomationGateEditorNodeProperti
     return node;
   }
 }
-
-export const automationGateMigration = new AutomationGateMigration();

@@ -1,8 +1,10 @@
 import { Node, NodeAPI } from "node-red";
+import Migration from "../../../flowctrl/base/migration";
 import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import MatchJoinNode from "../../../flowctrl/match-join";
 import { NodeCategory } from "../../../types";
 import { HelperControlCategory } from "../types";
+import EventMapperMigration from "./migration";
 import {
   EventMapperNodeDef,
   EventMapperNodeOptions,
@@ -16,6 +18,8 @@ export default class EventMapperNode extends MatchJoinNode<
 > {
   protected static readonly _nodeCategory: NodeCategory = HelperControlCategory;
   protected static readonly _nodeType: string = "event-mapper";
+  protected static readonly _migration: Migration<any> =
+    new EventMapperMigration();
 
   constructor(RED: NodeAPI, node: Node, config: EventMapperNodeDef) {
     super(RED, node, config, EventMapperNodeOptionsDefaults);
