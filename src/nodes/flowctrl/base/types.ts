@@ -223,6 +223,7 @@ export class NodeMessageFlow {
     const msg = this.originalMsg;
     msg.topic = this.topic;
     msg.payload = this.payload;
+    msg.originalTopic = this.originalTopic;
 
     return msg;
   }
