@@ -1,17 +1,23 @@
 {
-    "label": {
-        "operation": "Operation",
-        "minMsgCount": "Minimale Nachrichtenzahl"
-    },
-    "select": {
+    "name": "Logische Operation",
+    "description": "Führt logische Operationen auf mehreren Eingangswerten aus",
+    "field": {
         "operation": {
-            "and": "UND",
-            "or": "ODER",
-            "not": "NICHT",
-            "xor": "EXKLUSIV ODER",
-            "nand": "NICHT UND",
-            "nor": "NICHT ODER",
-            "nxor": "NICHT EXKLUSIV ODER"
+            "label": "Operation",
+            "description": "Art der logischen Operation",
+            "options": {
+                "and": "UND",
+                "or": "ODER",
+                "not": "NICHT",
+                "xor": "EXKLUSIV ODER",
+                "nand": "NICHT UND",
+                "nor": "NICHT ODER",
+                "nxor": "NICHT EXKLUSIV ODER"
+            }
+        },
+        "minMsgCount": {
+            "label": "Minimale Nachrichtenzahl",
+            "description": "Mindestanzahl an Nachrichten für die Operation"
         }
     }
 }

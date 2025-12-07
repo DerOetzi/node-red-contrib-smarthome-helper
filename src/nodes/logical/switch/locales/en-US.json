@@ -1,22 +1,45 @@
 {
     "name": "Logical Switch",
-    "label": {
-        "target": "Set property",
-        "trueValue": "True",
-        "falseValue": "False",
-        "seperatedOutputs": "Seperated Outputs",
-        "debounceFlank": "Debounce flank"
-    },
-    "select": {
+    "description": "Processes boolean values and routes them accordingly",
+    "field": {
+        "target": {
+            "label": "Set property",
+            "description": "Property to set"
+        },
+        "trueValue": {
+            "label": "True",
+            "description": "Value for true"
+        },
+        "falseValue": {
+            "label": "False",
+            "description": "Value for false"
+        },
+        "seperatedOutputs": {
+            "label": "Seperated Outputs",
+            "description": "Uses separate outputs for true and false"
+        },
         "debounceFlank": {
-            "both": "Both",
-            "rising": "Rising",
-            "falling": "Falling"
+            "label": "Debounce flank",
+            "description": "Debounces rising and/or falling edges",
+            "options": {
+                "both": "Both",
+                "rising": "Rising",
+                "falling": "Falling"
+            }
         }
     },
     "output": {
-        "true": "True",
-        "false": "False",
-        "result": "Logical result"
+        "true": {
+            "name": "True",
+            "description": "Output for true values"
+        },
+        "false": {
+            "name": "False",
+            "description": "Output for false values"
+        },
+        "result": {
+            "name": "Logical result",
+            "description": "Combined output with boolean result"
+        }
     }
 }

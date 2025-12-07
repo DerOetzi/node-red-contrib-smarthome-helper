@@ -1,24 +1,38 @@
 {
     "name": "Status",
-    "label": {
-        "scope": "Scope",
-        "initialActive": "Initial active"
-    },
-    "output": {
-        "status": "Node status",
-        "statusText": "Text status"
-    },
-    "select": {
-        "target": {
-            "activeCondition": "Active condition"
-        },
+    "description": "Collects and processes status messages from other nodes",
+    "field": {
         "scope": {
-            "global": "Global",
-            "flow": "Flow",
-            "group": "Group"
+            "label": "Scope",
+            "description": "Scope for status collection",
+            "options": {
+                "global": "Global",
+                "flow": "Flow",
+                "group": "Group"
+            }
+        },
+        "initialActive": {
+            "label": "Initial active",
+            "description": "Starts the node in active state"
         }
     },
-    "status": {
+    "input": {
+        "activeCondition": {
+            "name": "Active condition",
+            "description": "Input for the activation condition"
+        }
+    },
+    "output": {
+        "status": {
+            "name": "Node status",
+            "description": "Outputs the current node status"
+        },
+        "statusText": {
+            "name": "Text status",
+            "description": "Outputs the status text"
+        }
+    },
+    "state": {
         "active": "Active",
         "inactive": "Inactive"
     }

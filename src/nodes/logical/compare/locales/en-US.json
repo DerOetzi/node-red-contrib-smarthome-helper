@@ -1,25 +1,34 @@
 {
-    "label": {
-        "property": "Property",
-        "operation": "Compare",
-        "compare": "With"
-    },
-    "select": {
+    "name": "Compare",
+    "description": "Compares message properties with configured values",
+    "field": {
+        "property": {
+            "label": "Property",
+            "description": "Property in the message to compare"
+        },
         "operation": {
-            "eq": "equal",
-            "ne": "not equal",
-            "lt": "less than",
-            "lte": "less than or equal",
-            "gt": "greater than",
-            "gte": "greater than or equal",
-            "isTrue": "is true",
-            "isFalse": "is false",
-            "empty": "is empty",
-            "notEmpty": "is not empty",
-            "startsWith": "starts with",
-            "endsWith": "ends with",
-            "contains": "contains",
-            "regex": "matches regex"
+            "label": "Compare",
+            "description": "Comparison operation",
+            "options": {
+                "eq": "equal",
+                "ne": "not equal",
+                "lt": "less than",
+                "lte": "less than or equal",
+                "gt": "greater than",
+                "gte": "greater than or equal",
+                "isTrue": "is true",
+                "isFalse": "is false",
+                "empty": "is empty",
+                "notEmpty": "is not empty",
+                "startsWith": "starts with",
+                "endsWith": "ends with",
+                "contains": "contains",
+                "regex": "matches regex"
+            }
+        },
+        "compare": {
+            "label": "With",
+            "description": "Value for comparison"
         }
     }
 }

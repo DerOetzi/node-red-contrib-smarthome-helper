@@ -2,6 +2,7 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
 import SwitchNode from "./";
@@ -27,10 +28,10 @@ const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
   outputLabels: function (index) {
     if (this.seperatedOutputs) {
       return index === 0
-        ? i18n("logical.switch.output.true")
-        : i18n("logical.switch.output.false");
+        ? i18nOutputLabel("logical.switch", "true")
+        : i18nOutputLabel("logical.switch", "false");
     } else if (index === 0) {
-      return i18n("logical.switch.output.result");
+      return i18nOutputLabel("logical.switch", "result");
     }
   },
   oneditprepare: function () {

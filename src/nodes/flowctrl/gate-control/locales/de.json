@@ -1,16 +1,25 @@
 {
-    "label": {
-        "delay": "Nachricht verzögern (ms)",
-        "gateCommand": "Befehl",
-        "pauseTime": "Pausenzeit"
-    },
-    "select": {
+    "name": "Gate-Steuerung",
+    "description": "Sendet Steuerbefehle an Automation-Gate-Knoten",
+    "field": {
+        "delay": {
+            "label": "Nachricht verzögern (ms)",
+            "description": "Verzögerung vor dem Senden des Befehls in Millisekunden"
+        },
         "gateCommand": {
-            "start": "Start",
-            "stop": "Stopp",
-            "pause": "Pause",
-            "replay": "Wiederholen",
-            "resetFilter": "Filter zurücksetzen"
+            "label": "Befehl",
+            "description": "Steuerbefehl für das Gate",
+            "options": {
+                "start": "Start",
+                "stop": "Stopp",
+                "pause": "Pause",
+                "replay": "Wiederholen",
+                "resetFilter": "Filter zurücksetzen"
+            }
+        },
+        "pauseTime": {
+            "label": "Pausenzeit",
+            "description": "Dauer der Pause"
         }
     }
 }

@@ -1,3 +1,4 @@
 {
-    "name": "Toggle"
+    "name": "Toggle",
+    "description": "Schaltet zwischen zwei Zuständen um"
 }

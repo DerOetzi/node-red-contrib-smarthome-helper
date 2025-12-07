@@ -1,3 +1,4 @@
 {
-    "name": "Toggle"
+    "name": "Toggle",
+    "description": "Toggles between two states"
 }
