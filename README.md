@@ -59,6 +59,41 @@ Here is an example of how you might use the provided nodes to manage a smart lig
 1. Add an **Automation Gate** to ensure lights only turn on when motion is detected and it is nighttime.
 2. Use a **Control Gate** to manually disable the lighting automation during specific situations, such as when you are hosting guests.
 
+## Development
+
+### Adding Help Text to Nodes
+
+This repository automatically generates Node-RED help text from locale files during the build process. To add help text to a node, add a `help` section to the node's locale JSON file (e.g., `locales/en-US.json`):
+
+```json
+{
+    "name": "Node Name",
+    "description": "Brief description",
+    "help": {
+        "description": "Detailed description of what the node does",
+        "inputs": {
+            "propertyName": {
+                "name": "propertyName",
+                "description": "Description of this input property"
+            }
+        },
+        "outputs": {
+            "propertyName": {
+                "name": "propertyName", 
+                "description": "Description of this output property"
+            }
+        },
+        "details": [
+            {
+                "text": "Additional detail paragraph"
+            }
+        ]
+    }
+}
+```
+
+See existing nodes for examples: `automation-gate`, `arithmetic`, `switch`, or `light-controller`.
+
 ## Contributing
 
 Feel free to contribute by opening issues or creating pull requests. Contributions are always welcome to make this project even better.
