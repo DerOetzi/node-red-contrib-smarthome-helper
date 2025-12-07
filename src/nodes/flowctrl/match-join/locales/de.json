@@ -21,8 +21,11 @@
     },
     "fixedTargets": {
         "matcher-rows": "Eingabeparameter",
-        "label": {
-            "target": "Parameter"
+        "field": {
+            "target": {
+                "label": "Parameter",
+                "description": "Eingabeparameter zum Abgleichen"
+            }
         }
     },
     "matcher-rows": "Übereinstimmungen"

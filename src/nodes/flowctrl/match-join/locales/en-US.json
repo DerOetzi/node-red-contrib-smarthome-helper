@@ -21,8 +21,11 @@
     },
     "fixedTargets": {
         "matcher-rows": "Input parameters",
-        "label": {
-            "target": "Parameter"
+        "field": {
+            "target": {
+                "label": "Parameter",
+                "description": "Input parameter to match"
+            }
         }
     },
     "matcher-rows": "Topic Matchers"
