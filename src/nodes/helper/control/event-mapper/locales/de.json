@@ -1,14 +1,25 @@
 {
     "name": "Ereignis Mapper",
+    "description": "Ordnet Eingabeereignisse basierend auf konfigurierten Regeln Ausgabeereignissen zu",
     "rule-rows": "Zuordnungsregeln",
-    "label": {
-        "event": "Eingabe",
-        "mapped": "Zuordnen",
-        "ignoreUnknownEvents": "Unbekannte Ereignisse ignorieren"
+    "field": {
+        "event": {
+            "label": "Eingabe",
+            "description": "Eingabeereigniswert"
+        },
+        "mapped": {
+            "label": "Zuordnen",
+            "description": "Zugeordneter Ausgabeereigniswert"
+        },
+        "ignoreUnknownEvents": {
+            "label": "Unbekannte Ereignisse ignorieren",
+            "description": "Ereignisse ignorieren, die zu keiner Regel passen"
+        }
     },
-    "select": {
-        "target": {
-            "event": "Ereignis"
+    "input": {
+        "event": {
+            "name": "Ereignis",
+            "description": "Zuzuordnendes Eingabeereignis"
         }
     }
 }

@@ -1,21 +1,56 @@
 {
     "name": "Notify Dispatcher",
-    "label": {
-        "persons": "Persons"
+    "description": "Dispatches notifications to persons based on their presence status",
+    "field": {
+        "persons": {
+            "label": "Persons",
+            "description": "Number of persons to track"
+        }
     },
-    "select": {
-        "target": {
-            "message": "Message",
-            "person1": "Presence 1st person",
-            "person2": "Presence 2nd person",
-            "person3": "Presence 3rd person",
-            "person4": "Presence 4th person",
-            "person5": "Presence 5th person",
-            "person6": "Presence 6th person",
-            "person7": "Presence 7th person",
-            "person8": "Presence 8th person",
-            "person9": "Presence 9th person",
-            "person10": "Presence 10th person"
+    "input": {
+        "message": {
+            "name": "Message",
+            "description": "Notification message to dispatch"
+        },
+        "person1": {
+            "name": "Presence 1st person",
+            "description": "Presence status of first person"
+        },
+        "person2": {
+            "name": "Presence 2nd person",
+            "description": "Presence status of second person"
+        },
+        "person3": {
+            "name": "Presence 3rd person",
+            "description": "Presence status of third person"
+        },
+        "person4": {
+            "name": "Presence 4th person",
+            "description": "Presence status of fourth person"
+        },
+        "person5": {
+            "name": "Presence 5th person",
+            "description": "Presence status of fifth person"
+        },
+        "person6": {
+            "name": "Presence 6th person",
+            "description": "Presence status of sixth person"
+        },
+        "person7": {
+            "name": "Presence 7th person",
+            "description": "Presence status of seventh person"
+        },
+        "person8": {
+            "name": "Presence 8th person",
+            "description": "Presence status of eighth person"
+        },
+        "person9": {
+            "name": "Presence 9th person",
+            "description": "Presence status of ninth person"
+        },
+        "person10": {
+            "name": "Presence 10th person",
+            "description": "Presence status of tenth person"
         }
     }
 }

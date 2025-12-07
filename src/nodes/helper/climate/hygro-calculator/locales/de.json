@@ -1,13 +1,24 @@
 {
   "name": "Hygro-Rechner",
-  "select": {
-    "target": {
-      "temperature": "Temperatur",
-      "humidity": "Luftfeuchtigkeit"
+  "description": "Berechnet Taupunkt und absolute Luftfeuchtigkeit aus Temperatur und Luftfeuchtigkeit",
+  "input": {
+    "temperature": {
+      "name": "Temperatur",
+      "description": "Temperatureingabe"
+    },
+    "humidity": {
+      "name": "Luftfeuchtigkeit",
+      "description": "Relative Luftfeuchtigkeitseingabe"
     }
   },
   "output": {
-    "dewPoint": "Taupunkt",
-    "absoluteHumidity": "Absolute Feuchtigkeit"
+    "dewPoint": {
+      "name": "Taupunkt",
+      "description": "Berechnete Taupunkttemperatur"
+    },
+    "absoluteHumidity": {
+      "name": "Absolute Feuchtigkeit",
+      "description": "Berechnete absolute Luftfeuchtigkeit"
+    }
   }
 }

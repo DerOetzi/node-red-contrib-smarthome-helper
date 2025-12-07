@@ -1,31 +1,66 @@
 {
   "name": "Whitegood Reminder",
-  "label": {
-    "offPowerLimit": "Limit off (W)",
-    "standbyPowerLimit": "Limit standby (W)",
-    "cleanupEnabled": "Remind clean",
-    "cleanupInterval": "Clean interval (runs)",
-    "statusShowRuns": "Show runs in status",
-    "emptyReminderEnabled": "Unemptied reminder",
-    "emptyReminderInterval": "Unemptied interval"
+  "description": "Monitors appliance power consumption and sends notifications when cycles complete",
+  "field": {
+    "offPowerLimit": {
+      "label": "Limit off (W)",
+      "description": "Power threshold for off state"
+    },
+    "standbyPowerLimit": {
+      "label": "Limit standby (W)",
+      "description": "Power threshold for standby state"
+    },
+    "cleanupEnabled": {
+      "label": "Remind clean",
+      "description": "Enable cleanup reminders"
+    },
+    "cleanupInterval": {
+      "label": "Clean interval (runs)",
+      "description": "Number of runs between cleanup reminders"
+    },
+    "statusShowRuns": {
+      "label": "Show runs in status",
+      "description": "Display run count in node status"
+    },
+    "emptyReminderEnabled": {
+      "label": "Unemptied reminder",
+      "description": "Enable unemptied appliance reminders"
+    },
+    "emptyReminderInterval": {
+      "label": "Unemptied interval",
+      "description": "Time before unemptied reminder"
+    }
   },
-  "select": {
-    "target": {
-      "power": "Power",
-      "runs": "Current runs",
-      "emptied": "Emptied"
+  "input": {
+    "power": {
+      "name": "Power",
+      "description": "Current power consumption"
+    },
+    "runs": {
+      "name": "Current runs",
+      "description": "Current run count"
+    },
+    "emptied": {
+      "name": "Emptied",
+      "description": "Signal that appliance was emptied"
     }
   },
   "output": {
-    "notification": "Notification",
-    "runs": "Runs count"
+    "notification": {
+      "name": "Notification",
+      "description": "Notification message output"
+    },
+    "runs": {
+      "name": "Runs count",
+      "description": "Updated run count"
+    }
   },
-  "notify": {
+  "notification": {
     "title": "Device notification",
     "message": "{name} is ready.",
     "cleanupMessage": "{name} is ready - time to clean it."
   },
-  "status": {
+  "state": {
     "running": "Running",
     "standby": "Standby",
     "off": "Off",

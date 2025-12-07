@@ -1,31 +1,66 @@
 {
   "name": "Maschinenerinnerung",
-  "label": {
-    "offPowerLimit": "Limit aus (W)",
-    "standbyPowerLimit": "Limit Standby (W)",
-    "cleanupEnabled": "Reinigung erinnern",
-    "cleanupInterval": "Reinigungsintervall (Läufe)",
-    "statusShowRuns": "Läufe im Status anzeigen",
-    "emptyReminderEnabled": "Erinnerung an nicht geleert",
-    "emptyReminderInterval": "Intervall für nicht geleert"
+  "description": "Überwacht den Stromverbrauch von Geräten und sendet Benachrichtigungen bei Beendigung von Zyklen",
+  "field": {
+    "offPowerLimit": {
+      "label": "Limit aus (W)",
+      "description": "Leistungsschwelle für Aus-Zustand"
+    },
+    "standbyPowerLimit": {
+      "label": "Limit Standby (W)",
+      "description": "Leistungsschwelle für Standby-Zustand"
+    },
+    "cleanupEnabled": {
+      "label": "Reinigung erinnern",
+      "description": "Reinigungserinnerungen aktivieren"
+    },
+    "cleanupInterval": {
+      "label": "Reinigungsintervall (Läufe)",
+      "description": "Anzahl der Läufe zwischen Reinigungserinnerungen"
+    },
+    "statusShowRuns": {
+      "label": "Läufe im Status anzeigen",
+      "description": "Laufanzahl im Knotenstatus anzeigen"
+    },
+    "emptyReminderEnabled": {
+      "label": "Erinnerung an nicht geleert",
+      "description": "Erinnerungen für nicht geleerte Geräte aktivieren"
+    },
+    "emptyReminderInterval": {
+      "label": "Intervall für nicht geleert",
+      "description": "Zeit vor Erinnerung an nicht geleert"
+    }
   },
-  "select": {
-    "target": {
-      "power": "Leistung",
-      "runs": "Aktuelle Läufe",
-      "emptied": "Geleert"
+  "input": {
+    "power": {
+      "name": "Leistung",
+      "description": "Aktueller Stromverbrauch"
+    },
+    "runs": {
+      "name": "Aktuelle Läufe",
+      "description": "Aktuelle Laufanzahl"
+    },
+    "emptied": {
+      "name": "Geleert",
+      "description": "Signal, dass das Gerät geleert wurde"
     }
   },
   "output": {
-    "notification": "Benachrichtigung",
-    "runs": "Laufanzahl"
+    "notification": {
+      "name": "Benachrichtigung",
+      "description": "Benachrichtigungsnachrichtenausgabe"
+    },
+    "runs": {
+      "name": "Laufanzahl",
+      "description": "Aktualisierte Laufanzahl"
+    }
   },
-  "notify": {
+  "notification": {
     "title": "Gerätebenachrichtigung",
     "message": "{name} ist fertig.",
     "cleanupMessage": "{name} ist fertig - Zeit zum Reinigen"
   },
-  "status": {
+  "state": {
     "running": "Läuft",
     "standby": "Standby",
     "off": "Aus",

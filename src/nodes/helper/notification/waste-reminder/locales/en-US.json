@@ -1,13 +1,18 @@
 {
   "name": "Waste Reminder",
+  "description": "Reminds about upcoming waste collection days",
   "types": {
     "no-waste": "not defined",
     "and": "and"
   },
-  "select": {
-    "target": {
-      "types": "Next waste types",
-      "remaining": "Remaining days"
+  "input": {
+    "types": {
+      "name": "Next waste types",
+      "description": "Types of waste to be collected next"
+    },
+    "remaining": {
+      "name": "Remaining days",
+      "description": "Days remaining until collection"
     }
   },
   "notification": {
