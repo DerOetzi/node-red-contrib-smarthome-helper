@@ -1,40 +1,94 @@
 {
-    "label": {
-        "identifier": "Lightbulb",
-        "lightbulbType": "Lightbulb Type",
-        "homeAssistantOutput": "Home Assistant Output",
-        "onBrightness": "Brightness",
-        "transitionTime": "Transition Time",
-        "colorTemperature": "Color Temperature (K)",
-        "nightmodeBrightness": "Nightmode Brightness",
-        "colorCycle": "Color Cycle",
-        "fixColorHue": "Hue",
-        "fixColorSaturation": "Saturation",
-        "onCommand": "Command On",
-        "offCommand": "Command Off",
-        "nightmodeCommand": "Command Nightmode"
-    },
+    "name": "Light Controller",
+    "description": "Intelligent control for different light types with brightness and color settings",
     "identifier-rows": "Lightbulbs",
     "default": {
         "onCommand": "On",
         "offCommand": "Off",
         "nightmodeCommand": "Night"
     },
-    "select": {
-        "target": {
-            "command": "Command",
-            "colorTemperature": "Color Temperature",
-            "hue": "Hue",
-            "saturation": "Saturation"
+    "field": {
+        "identifier": {
+            "label": "Lightbulb",
+            "description": "Unique identifier for the light"
         },
         "lightbulbType": {
-            "dimmable": "Dimmable",
-            "colortemperature": "Color Temperature",
-            "switch": "Switch",
-            "rgb": "RGB"
+            "label": "Lightbulb Type",
+            "description": "Type of light bulb",
+            "options": {
+                "dimmable": "Dimmable",
+                "colortemperature": "Color Temperature",
+                "switch": "Switch",
+                "rgb": "RGB"
+            }
+        },
+        "homeAssistantOutput": {
+            "label": "Home Assistant Output",
+            "description": "Formats output for Home Assistant"
+        },
+        "onBrightness": {
+            "label": "Brightness",
+            "description": "Brightness when turning on"
+        },
+        "transitionTime": {
+            "label": "Transition Time",
+            "description": "Time for transition effects"
+        },
+        "colorTemperature": {
+            "label": "Color Temperature (K)",
+            "description": "Color temperature in Kelvin"
+        },
+        "nightmodeBrightness": {
+            "label": "Nightmode Brightness",
+            "description": "Reduced brightness in night mode"
+        },
+        "colorCycle": {
+            "label": "Color Cycle",
+            "description": "Enables color cycle mode"
+        },
+        "fixColorHue": {
+            "label": "Hue",
+            "description": "Fixed hue value"
+        },
+        "fixColorSaturation": {
+            "label": "Saturation",
+            "description": "Fixed color saturation"
+        },
+        "onCommand": {
+            "label": "Command On",
+            "description": "Command text for turning on"
+        },
+        "offCommand": {
+            "label": "Command Off",
+            "description": "Command text for turning off"
+        },
+        "nightmodeCommand": {
+            "label": "Command Nightmode",
+            "description": "Command text for night mode"
+        }
+    },
+    "input": {
+        "command": {
+            "name": "Command",
+            "description": "Control command for the light"
+        },
+        "colorTemperature": {
+            "name": "Color Temperature",
+            "description": "Desired color temperature"
+        },
+        "hue": {
+            "name": "Hue",
+            "description": "Desired hue value"
+        },
+        "saturation": {
+            "name": "Saturation",
+            "description": "Desired color saturation"
         }
     },
     "output": {
-        "command": "Command"
+        "command": {
+            "name": "Command",
+            "description": "Output command to the light"
+        }
     }
 }

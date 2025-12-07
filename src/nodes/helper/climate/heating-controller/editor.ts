@@ -2,6 +2,7 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
@@ -37,7 +38,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     outputLabels: function (index: number) {
       const outputs = ["heatmode", "temperature", "window"];
 
-      return i18n(`helper.heating-controller.output.${outputs[index]}`);
+      return i18nOutputLabel("helper.heating-controller", outputs[index]);
     },
     onadd: function () {
       this.comfortCommand = i18n(

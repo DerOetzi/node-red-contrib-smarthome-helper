@@ -2,6 +2,7 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nOutputLabel,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
@@ -47,14 +48,14 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
     >(LightControllerNodeOptionsDefaults),
     label: function () {
       const label = i18n(
-        "helper.light-controller.select.lightbulbType." + this.lightbulbType
+        "helper.light-controller.field.lightbulbType.options." + this.lightbulbType
       );
       return this.name ? `${this.name} (${label})` : label;
     },
     inputs: LightControllerNodeOptionsDefaults.inputs,
     outputs: LightControllerNodeOptionsDefaults.outputs,
     outputLabels: function (_: number) {
-      return i18n("helper.light-controller.output.command");
+      return i18nOutputLabel("helper.light-controller", "command");
     },
     onadd: function () {
       this.onCommand = i18n("helper.light-controller.default.onCommand");
