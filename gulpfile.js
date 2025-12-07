@@ -18,6 +18,7 @@ const source = require("vinyl-source-stream");
 const path = require("path");
 const through = require("through2");
 const fs = require("fs");
+const glob = require("glob");
 
 const jsonfile = require("jsonfile");
 
@@ -150,9 +151,11 @@ function generateHelpHtml(nodeType, helpData) {
         const output = helpData.outputs[key];
         sections.push(`<li>${escapeHtml(output.name)}`);
         sections.push('<dl class="message-properties">');
+        sections.push(`<dt>${escapeHtml(key)}`);
         sections.push(
-          `<dt>payload <span class="property-type">${escapeHtml(output.description)}</span></dt>`,
+          `<span class="property-type">${escapeHtml(output.description)}</span>`,
         );
+        sections.push("</dt>");
         sections.push("</dl>");
         sections.push("</li>");
       });
@@ -179,7 +182,7 @@ function generateHelpHtml(nodeType, helpData) {
   }
 
   const helpContent = sections.join("\n");
-  return `<script type="text/markdown" data-help-name="${nodeType}">\n${helpContent}\n</script>\n`;
+  return `<script type="text/html" data-help-name="${nodeType}">\n${helpContent}\n</script>\n`;
 }
 
 /**
@@ -190,7 +193,7 @@ function buildHelpFiles() {
 
   // Read all locale files
   const localePattern = "src/nodes/**/locales/*.json";
-  const files = require("glob").sync(localePattern);
+  const files = glob.sync(localePattern);
 
   files.forEach((filePath) => {
     const relativePath = path.relative("src/nodes", filePath);
