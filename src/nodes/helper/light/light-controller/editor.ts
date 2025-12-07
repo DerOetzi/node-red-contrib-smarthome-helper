@@ -2,6 +2,7 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nFieldDefault,
   i18nOutputLabel,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
@@ -58,10 +59,14 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
       return i18nOutputLabel("helper.light-controller", "command");
     },
     onadd: function () {
-      this.onCommand = i18n("helper.light-controller.default.onCommand");
-      this.offCommand = i18n("helper.light-controller.default.offCommand");
-      this.nightmodeCommand = i18n(
-        "helper.light-controller.default.nightmodeCommand"
+      this.onCommand = i18nFieldDefault("helper.light-controller", "onCommand");
+      this.offCommand = i18nFieldDefault(
+        "helper.light-controller",
+        "offCommand"
+      );
+      this.nightmodeCommand = i18nFieldDefault(
+        "helper.light-controller",
+        "nightmodeCommand"
       );
     },
     oneditprepare: function () {

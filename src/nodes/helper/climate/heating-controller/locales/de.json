@@ -2,12 +2,6 @@
     "name": "Heizungssteuerung",
     "description": "Intelligente Steuerung für Heizsysteme mit Komfort- und Eco-Modi",
     "matcher-rows": "Eingabeparameter",
-    "default": {
-        "comfortCommand": "Komfort",
-        "ecoCommand": "Absenk",
-        "boostCommand": "Boost",
-        "frostProtectionCommand": "Frostschutz"
-    },
     "field": {
         "target": {
             "label": "Parameter",
@@ -39,19 +33,23 @@
         },
         "comfortCommand": {
             "label": "Komfortbefehl",
-            "description": "Befehl für Komfortmodus"
+            "description": "Befehl für Komfortmodus",
+            "default": "Komfort"
         },
         "ecoCommand": {
             "label": "Absenk Befehl",
-            "description": "Befehl für Eco-Modus"
+            "description": "Befehl für Eco-Modus",
+            "default": "Absenk"
         },
         "boostCommand": {
             "label": "Boost Befehl",
-            "description": "Befehl für Boost-Modus"
+            "description": "Befehl für Boost-Modus",
+            "default": "Boost"
         },
         "frostProtectionCommand": {
             "label": "Frostschutz Befehl",
-            "description": "Befehl für Frostschutzmodus"
+            "description": "Befehl für Frostschutzmodus",
+            "default": "Frostschutz"
         },
         "pvBoostEnabled": {
             "label": "PV Boost aktiviert",

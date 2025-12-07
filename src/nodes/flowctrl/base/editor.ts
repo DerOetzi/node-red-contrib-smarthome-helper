@@ -68,6 +68,18 @@ export function i18nInputLabel(prefix: string, inputKey: string): string {
   );
 }
 
+/**
+ * Helper function to get field default value with new structure support.
+ * Tries new structure: field.X.default, falls back to: default.X
+ */
+export function i18nFieldDefault(prefix: string, fieldKey: string): string {
+  return i18nWithFallback(
+    prefix,
+    `field.${fieldKey}.default`,
+    `default.${fieldKey}`
+  );
+}
+
 export class NodeEditorFormBuilder {
   private readonly uniqueIdCounters: Record<string, number> = {};
 

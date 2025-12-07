@@ -12,11 +12,13 @@
         },
         "stateOpenLabel": {
             "label": "Beschriftung offen",
-            "description": "Anzeigetext für den geöffneten Zustand"
+            "description": "Anzeigetext für den geöffneten Zustand",
+            "default": "Automatisch"
         },
         "stateClosedLabel": {
             "label": "Beschriftung geschlossen",
-            "description": "Anzeigetext für den geschlossenen Zustand"
+            "description": "Anzeigetext für den geschlossenen Zustand",
+            "default": "Manuell"
         },
         "setAutomationInProgress": {
             "label": "Automatisierung läuft setzen",
@@ -32,9 +34,5 @@
             "name": "Nachricht",
             "description": "Nachricht, wenn das Tor geöffnet ist"
         }
-    },
-    "default": {
-        "stateOpenLabel": "Automatisch",
-        "stateClosedLabel": "Manuell"
     }
 }

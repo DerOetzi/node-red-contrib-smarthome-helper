@@ -2,12 +2,6 @@
     "name": "Heating Controller",
     "description": "Intelligent control for heating systems with comfort and eco modes",
     "matcher-rows": "Input parameters",
-    "default": {
-        "comfortCommand": "Comfort",
-        "ecoCommand": "ECO",
-        "boostCommand": "Boost",
-        "frostProtectionCommand": "Frost Protection"
-    },
     "field": {
         "target": {
             "label": "Parameter",
@@ -39,19 +33,23 @@
         },
         "comfortCommand": {
             "label": "Comfort command",
-            "description": "Command for comfort mode"
+            "description": "Command for comfort mode",
+            "default": "Comfort"
         },
         "ecoCommand": {
             "label": "ECO command",
-            "description": "Command for eco mode"
+            "description": "Command for eco mode",
+            "default": "ECO"
         },
         "boostCommand": {
             "label": "Boost command",
-            "description": "Command for boost mode"
+            "description": "Command for boost mode",
+            "default": "Boost"
         },
         "frostProtectionCommand": {
             "label": "Frost protection command",
-            "description": "Command for frost protection mode"
+            "description": "Command for frost protection mode",
+            "default": "Frost Protection"
         },
         "pvBoostEnabled": {
             "label": "PV Boost enabled",

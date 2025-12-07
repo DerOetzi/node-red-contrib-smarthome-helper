@@ -2,11 +2,6 @@
     "name": "Lichtsteuerung",
     "description": "Intelligente Steuerung für verschiedene Lampentypen mit Helligkeits- und Farbeinstellungen",
     "identifier-rows": "Glühbirnen",
-    "default": {
-        "onCommand": "An",
-        "offCommand": "Aus",
-        "nightmodeCommand": "Nacht"
-    },
     "field": {
         "identifier": {
             "label": "Lampe",
@@ -56,15 +51,18 @@
         },
         "onCommand": {
             "label": "Befehl Ein",
-            "description": "Befehlstext für Einschalten"
+            "description": "Befehlstext für Einschalten",
+            "default": "An"
         },
         "offCommand": {
             "label": "Befehl Aus",
-            "description": "Befehlstext für Ausschalten"
+            "description": "Befehlstext für Ausschalten",
+            "default": "Aus"
         },
         "nightmodeCommand": {
             "label": "Befehl Nachtmodus",
-            "description": "Befehlstext für Nachtmodus"
+            "description": "Befehlstext für Nachtmodus",
+            "default": "Nacht"
         }
     },
     "input": {

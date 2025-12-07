@@ -12,11 +12,13 @@
         },
         "stateOpenLabel": {
             "label": "Open label",
-            "description": "Display text for the open state"
+            "description": "Display text for the open state",
+            "default": "Automatic"
         },
         "stateClosedLabel": {
             "label": "Closed label",
-            "description": "Display text for the closed state"
+            "description": "Display text for the closed state",
+            "default": "Manual"
         },
         "setAutomationInProgress": {
             "label": "Set automation in progress",
@@ -32,9 +34,5 @@
             "name": "Message",
             "description": "Message when gate is open"
         }
-    },
-    "default": {
-        "stateOpenLabel": "Automatic",
-        "stateClosedLabel": "Manual"
     }
 }

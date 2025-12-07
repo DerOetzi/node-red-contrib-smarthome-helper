@@ -2,6 +2,7 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nFieldDefault,
   i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../base/editor";
@@ -32,11 +33,13 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
       return i18nOutputLabel("flowctrl.automation-gate", "message");
     },
     onadd: function () {
-      this.stateOpenLabel = i18n(
-        "flowctrl.automation-gate.default.stateOpenLabel"
+      this.stateOpenLabel = i18nFieldDefault(
+        "flowctrl.automation-gate",
+        "stateOpenLabel"
       );
-      this.stateClosedLabel = i18n(
-        "flowctrl.automation-gate.default.stateClosedLabel"
+      this.stateClosedLabel = i18nFieldDefault(
+        "flowctrl.automation-gate",
+        "stateClosedLabel"
       );
     },
     oneditprepare: function () {

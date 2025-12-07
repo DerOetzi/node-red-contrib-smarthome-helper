@@ -2,11 +2,6 @@
     "name": "Light Controller",
     "description": "Intelligent control for different light types with brightness and color settings",
     "identifier-rows": "Lightbulbs",
-    "default": {
-        "onCommand": "On",
-        "offCommand": "Off",
-        "nightmodeCommand": "Night"
-    },
     "field": {
         "identifier": {
             "label": "Lightbulb",
@@ -56,15 +51,18 @@
         },
         "onCommand": {
             "label": "Command On",
-            "description": "Command text for turning on"
+            "description": "Command text for turning on",
+            "default": "On"
         },
         "offCommand": {
             "label": "Command Off",
-            "description": "Command text for turning off"
+            "description": "Command text for turning off",
+            "default": "Off"
         },
         "nightmodeCommand": {
             "label": "Command Nightmode",
-            "description": "Command text for night mode"
+            "description": "Command text for night mode",
+            "default": "Night"
         }
     },
     "input": {
