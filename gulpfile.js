@@ -86,6 +86,147 @@ const buildForm = lazypipe()
   })
   .pipe(() => wrap(uiFormWrap, { type: currentNode }, { variable: "data" }));
 
+/**
+ * Helper function to escape HTML special characters
+ */
+function escapeHtml(text) {
+  const map = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
+/**
+ * Generates Node-RED help HTML from structured help data
+ */
+function generateHelpHtml(nodeType, helpData) {
+  if (!helpData) {
+    return "";
+  }
+
+  const sections = [];
+
+  // Main description
+  sections.push(`<p>${escapeHtml(helpData.description)}</p>`);
+
+  // Inputs section
+  if (helpData.inputs && Object.keys(helpData.inputs).length > 0) {
+    sections.push("<h3>Inputs</h3>");
+    sections.push('<dl class="message-properties">');
+    for (const [key, input] of Object.entries(helpData.inputs)) {
+      sections.push(`<dt>${escapeHtml(input.name)}`);
+      sections.push(`<span class="property-type">msg.${escapeHtml(key)}</span>`);
+      sections.push("</dt>");
+      sections.push(`<dd>${escapeHtml(input.description)}</dd>`);
+    }
+    sections.push("</dl>");
+  }
+
+  // Outputs section
+  if (helpData.outputs && Object.keys(helpData.outputs).length > 0) {
+    sections.push("<h3>Outputs</h3>");
+    const outputKeys = Object.keys(helpData.outputs);
+
+    if (outputKeys.length === 1) {
+      sections.push('<dl class="message-properties">');
+      const [key, output] = Object.entries(helpData.outputs)[0];
+      sections.push(`<dt>${escapeHtml(output.name)}`);
+      sections.push(`<span class="property-type">msg.${escapeHtml(key)}</span>`);
+      sections.push("</dt>");
+      sections.push(`<dd>${escapeHtml(output.description)}</dd>`);
+      sections.push("</dl>");
+    } else {
+      // Multiple outputs
+      sections.push('<ol class="node-ports">');
+      outputKeys.forEach((key) => {
+        const output = helpData.outputs[key];
+        sections.push(`<li>${escapeHtml(output.name)}`);
+        sections.push('<dl class="message-properties">');
+        sections.push(
+          `<dt>payload <span class="property-type">${escapeHtml(output.description)}</span></dt>`,
+        );
+        sections.push("</dl>");
+        sections.push("</li>");
+      });
+      sections.push("</ol>");
+    }
+  }
+
+  // Details section
+  if (helpData.details && helpData.details.length > 0) {
+    sections.push("<h3>Details</h3>");
+    helpData.details.forEach((detail) => {
+      sections.push(`<p>${escapeHtml(detail.text)}</p>`);
+    });
+  }
+
+  // Custom sections
+  if (helpData.sections && helpData.sections.length > 0) {
+    helpData.sections.forEach((section) => {
+      if (section.title) {
+        sections.push(`<h3>${escapeHtml(section.title)}</h3>`);
+      }
+      sections.push(`<p>${escapeHtml(section.content)}</p>`);
+    });
+  }
+
+  const helpContent = sections.join("\n");
+  return `<script type="text/markdown" data-help-name="${nodeType}">\n${helpContent}\n</script>\n`;
+}
+
+/**
+ * Generates help HTML from locale files for all nodes
+ */
+function buildHelpFiles() {
+  const localeFiles = {};
+
+  // Read all locale files
+  const localePattern = "src/nodes/**/locales/*.json";
+  const files = require("glob").sync(localePattern);
+
+  files.forEach((filePath) => {
+    const relativePath = path.relative("src/nodes", filePath);
+    const pathParts = relativePath.split(path.sep);
+
+    let category = pathParts[0];
+    let node;
+    let languageFile;
+
+    if (pathParts.length > 4) {
+      languageFile = pathParts[4];
+      node = pathParts[2];
+    } else {
+      languageFile = pathParts[3];
+      node = pathParts[1];
+    }
+
+    const language = path.basename(languageFile, ".json");
+    const content = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+    const nodeType = `${category}-${node}`;
+
+    if (!localeFiles[nodeType]) {
+      localeFiles[nodeType] = {};
+    }
+    localeFiles[nodeType][language] = content;
+  });
+
+  // Generate help HTML for each node (use English as primary)
+  let helpHtml = "";
+  for (const [nodeType, locales] of Object.entries(localeFiles)) {
+    const locale = locales["en-US"] || locales["de"] || Object.values(locales)[0];
+    if (locale && locale.help) {
+      helpHtml += generateHelpHtml(nodeType, locale.help);
+    }
+  }
+
+  return helpHtml;
+}
+
 task("buildEditorFiles", () => {
   const css = src(["src/nodes/**/*.scss", "!_*.scss"]).pipe(buildSass());
 
@@ -136,7 +277,9 @@ task("buildEditorFiles", () => {
     )
     .on("finish", function () {
       const finalFilePath = path.join(editorFilePath, "index.html");
-      fs.writeFileSync(finalFilePath, this.concatContent);
+      // Generate and append help HTML
+      const helpHtml = buildHelpFiles();
+      fs.writeFileSync(finalFilePath, this.concatContent + helpHtml);
     });
 });
 
