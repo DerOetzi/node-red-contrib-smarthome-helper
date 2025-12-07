@@ -22,7 +22,7 @@ const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
     LogicalOpEditorNodeProperties
   >(LogicalOpNodeOptionsDefaults),
   label: function () {
-    const logicalOp = i18n("logical.op.select.operation." + this.operation);
+    const logicalOp = i18n("logical.op.field.operation.options." + this.operation);
     let label: string = logicalOp;
 
     if (this.name) {
