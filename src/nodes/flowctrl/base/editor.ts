@@ -25,59 +25,27 @@ export function i18n(term: string): string {
 }
 
 /**
- * Helper function to get i18n text with fallback from old to new locale structure.
- * Tries the new structure first (field.X.label), then falls back to old (label.X).
- */
-function i18nWithFallback(
-  prefix: string,
-  path: string,
-  fallbackPath?: string
-): string {
-  const namespace = "@deroetzi/node-red-contrib-smarthome-helper/all";
-  let result = RED._(`${namespace}:${prefix}.${path}`);
-  
-  // If the result is the same as the key, it means the translation was not found
-  if (result === `${prefix}.${path}` && fallbackPath) {
-    result = RED._(`${namespace}:${prefix}.${fallbackPath}`);
-  }
-  
-  return result;
-}
-
-/**
- * Helper function to get output label with new structure support.
- * Tries new structure: output.X.name, falls back to: output.X
+ * Helper function to get output label.
+ * Uses structure: output.X.name
  */
 export function i18nOutputLabel(prefix: string, outputKey: string): string {
-  return i18nWithFallback(
-    prefix,
-    `output.${outputKey}.name`,
-    `output.${outputKey}`
-  );
+  return i18n(`${prefix}.output.${outputKey}.name`);
 }
 
 /**
- * Helper function to get input label with new structure support.
- * Tries new structure: input.X.name, falls back to: select.target.X
+ * Helper function to get input label.
+ * Uses structure: input.X.name
  */
 export function i18nInputLabel(prefix: string, inputKey: string): string {
-  return i18nWithFallback(
-    prefix,
-    `input.${inputKey}.name`,
-    `select.target.${inputKey}`
-  );
+  return i18n(`${prefix}.input.${inputKey}.name`);
 }
 
 /**
- * Helper function to get field default value with new structure support.
- * Tries new structure: field.X.default, falls back to: default.X
+ * Helper function to get field default value.
+ * Uses structure: field.X.default
  */
 export function i18nFieldDefault(prefix: string, fieldKey: string): string {
-  return i18nWithFallback(
-    prefix,
-    `field.${fieldKey}.default`,
-    `default.${fieldKey}`
-  );
+  return i18n(`${prefix}.field.${fieldKey}.default`);
 }
 
 export class NodeEditorFormBuilder {
@@ -228,11 +196,8 @@ export class NodeEditorFormBuilder {
         let optionText: string;
         
         if (typeof option === "string") {
-          // Try new structure: field.X.options.Y, fallback to old: select.X.Y
-          optionText = i18nWithFallback(
-            optionTranslatePrefix,
-            `field.${params.label}.options.${option}`,
-            `select.${params.label}.${option}`
+          optionText = i18n(
+            `${optionTranslatePrefix}.field.${params.label}.options.${option}`
           );
         } else {
           optionText = option.label;
@@ -279,12 +244,7 @@ export class NodeEditorFormBuilder {
       params.translatePrefix ??
       this.params.translatePrefix;
 
-    // Try new structure: field.X.label, fallback to old structure: label.X
-    let text = i18nWithFallback(
-      labelTranslatePrefix,
-      `field.${params.label}.label`,
-      `label.${params.label}`
-    );
+    let text = i18n(`${labelTranslatePrefix}.field.${params.label}.label`);
     
     if (params.labelPlaceholders) {
       text = text.replace(/\{\{(\w+)\}\}/g, (_, key) => {
