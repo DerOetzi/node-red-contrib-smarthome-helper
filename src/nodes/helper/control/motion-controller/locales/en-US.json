@@ -53,5 +53,56 @@
         "automationOff": "Manual",
         "motion": "Motion detected",
         "noMotion": "No motion detected"
+    },
+    "help": {
+        "description": "Intelligent motion-activated lighting controller with support for darkness detection, nightmode, timer-based auto-off, and manual override.",
+        "inputs": {
+            "motion": {
+                "name": "motion",
+                "description": "Boolean indicating motion detection (true = motion detected)"
+            },
+            "darkness": {
+                "name": "darkness",
+                "description": "Boolean indicating darkness (true = dark, required when 'Only in darkness' is enabled)"
+            },
+            "night": {
+                "name": "night",
+                "description": "Boolean indicating nightmode state (true = nightmode active)"
+            },
+            "manualControl": {
+                "name": "manualControl",
+                "description": "Boolean to override automatic control (true = disable automation)"
+            },
+            "command": {
+                "name": "command",
+                "description": "Direct command to control lights ('On', 'Off', or 'Night')"
+            }
+        },
+        "outputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Light control command based on motion, darkness, and mode settings"
+            }
+        },
+        "details": [
+            {
+                "text": "Configure matchers to identify motion, darkness, nightmode, and manual control inputs from different message sources."
+            },
+            {
+                "text": "When motion is detected (and darkness condition is met if enabled), lights turn on and stay on for the configured timer duration."
+            },
+            {
+                "text": "Enable 'Only in darkness' to activate lights only when it's dark, preventing unnecessary activation during daytime."
+            },
+            {
+                "text": "Enable 'Nightmode enabled' to use dimmed nightmode lighting during nighttime hours instead of full brightness."
+            },
+            {
+                "text": "Manual control input can disable automation temporarily, allowing manual light control without interference."
+            },
+            {
+                "text": "The timer resets with each new motion detection, keeping lights on as long as movement continues."
+            }
+        ]
     }
 }

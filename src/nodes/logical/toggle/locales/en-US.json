@@ -1,4 +1,33 @@
 {
     "name": "Toggle",
-    "description": "Toggles between two states"
+    "description": "Toggles between two states",
+    "help": {
+        "description": "Toggles between true and false states with each incoming message. Extends Logical Switch functionality with state toggling.",
+        "inputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Any incoming message triggers a toggle"
+            }
+        },
+        "outputs": {
+            "result": {
+                "name": "result",
+                "description": "Alternating true/false values with each message"
+            }
+        },
+        "details": [
+            {
+                "text": "Each incoming message toggles the internal state between true and false."
+            },
+            {
+                "text": "Inherits all Logical Switch features: custom true/false values, separated outputs, property targeting, and debounce settings."
+            },
+            {
+                "text": "Useful for creating flip-flop circuits, alternating patterns, or toggle switches in automation flows."
+            },
+            {
+                "text": "The initial state is false and changes to true with the first message."
+            }
+        ]
+    }
 }
