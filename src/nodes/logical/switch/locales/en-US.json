@@ -41,5 +41,37 @@
             "name": "Logical result",
             "description": "Combined output with boolean result"
         }
+    },
+    "help": {
+        "description": "Processes boolean values, maps them to configured true/false values, and routes messages to separate outputs or a single output.",
+        "inputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Boolean value or value that can be interpreted as boolean"
+            }
+        },
+        "outputs": {
+            "result": {
+                "name": "result",
+                "description": "Message with mapped true/false value (single output mode) or routed to true/false outputs (separated mode)"
+            }
+        },
+        "details": [
+            {
+                "text": "Configure custom values for true and false states. Input values are converted to boolean and then mapped to these configured values."
+            },
+            {
+                "text": "Enable 'Separated Outputs' to route true values to output 1 and false values to output 2. Disable to send all values to a single output."
+            },
+            {
+                "text": "Configure 'Set property' to specify which message property should contain the result (default: msg.payload)."
+            },
+            {
+                "text": "Use 'Debounce flank' to filter out rapid state changes: 'Both' debounces all changes, 'Rising' only debounces false→true transitions, 'Falling' only debounces true→false transitions."
+            },
+            {
+                "text": "Useful for converting sensor states, processing boolean logic, or creating ON/OFF control signals."
+            }
+        ]
     }
 }
