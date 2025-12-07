@@ -1,15 +1,37 @@
 {
     "name": "Automatisierungsgate",
-    "label": {
-        "startupState": "Beim Start öffnen",
-        "autoReplay": "Autom. Wiederholung bei Fortsetzung",
-        "stateOpenLabel": "Beschriftung offen",
-        "stateClosedLabel": "Beschriftung geschlossen",
-        "setAutomationInProgress": "Automatisierung läuft setzen",
-        "automationProgressId": "Kennung"
+    "description": "Steuert den Durchfluss von Nachrichten zwischen automatischem und manuellem Modus",
+    "field": {
+        "startupState": {
+            "label": "Beim Start öffnen",
+            "description": "Öffnet das Gate beim Start des Flows"
+        },
+        "autoReplay": {
+            "label": "Autom. Wiederholung bei Fortsetzung",
+            "description": "Sendet die letzte Nachricht erneut, wenn das Gate wieder geöffnet wird"
+        },
+        "stateOpenLabel": {
+            "label": "Beschriftung offen",
+            "description": "Anzeigetext für den geöffneten Zustand"
+        },
+        "stateClosedLabel": {
+            "label": "Beschriftung geschlossen",
+            "description": "Anzeigetext für den geschlossenen Zustand"
+        },
+        "setAutomationInProgress": {
+            "label": "Automatisierung läuft setzen",
+            "description": "Setzt einen Kontext-Wert, der anzeigt, dass eine Automatisierung aktiv ist"
+        },
+        "automationProgressId": {
+            "label": "Kennung",
+            "description": "Eindeutiger Bezeichner für den Automatisierungsstatus"
+        }
     },
     "output": {
-        "message": "Nachricht, wenn das Tor geöffnet ist"
+        "message": {
+            "name": "Nachricht",
+            "description": "Nachricht, wenn das Tor geöffnet ist"
+        }
     },
     "default": {
         "stateOpenLabel": "Automatisch",

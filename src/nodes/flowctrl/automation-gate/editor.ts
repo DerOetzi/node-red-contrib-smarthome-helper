@@ -2,6 +2,7 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../base/editor";
 import AutomationGateNode from "./";
@@ -28,7 +29,7 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
     inputs: AutomationGateNodeOptionsDefaults.inputs,
     outputs: AutomationGateNodeOptionsDefaults.outputs,
     outputLabels: function (_index) {
-      return i18n("flowctrl.automation-gate.output.message");
+      return i18nOutputLabel("flowctrl.automation-gate", "message");
     },
     onadd: function () {
       this.stateOpenLabel = i18n(

@@ -1,15 +1,37 @@
 {
     "name": "Automation Gate",
-    "label": {
-        "startupState": "Open on startup",
-        "autoReplay": "Auto replay on unpause",
-        "stateOpenLabel": "Open label",
-        "stateClosedLabel": "Closed label",
-        "setAutomationInProgress": "Set automation in progress",
-        "automationProgressId": "Automation progress identifier"
+    "description": "Controls message flow between automatic and manual modes",
+    "field": {
+        "startupState": {
+            "label": "Open on startup",
+            "description": "Opens the gate when the flow starts"
+        },
+        "autoReplay": {
+            "label": "Auto replay on unpause",
+            "description": "Resends the last message when the gate reopens"
+        },
+        "stateOpenLabel": {
+            "label": "Open label",
+            "description": "Display text for the open state"
+        },
+        "stateClosedLabel": {
+            "label": "Closed label",
+            "description": "Display text for the closed state"
+        },
+        "setAutomationInProgress": {
+            "label": "Set automation in progress",
+            "description": "Sets a context value indicating that automation is active"
+        },
+        "automationProgressId": {
+            "label": "Automation progress identifier",
+            "description": "Unique identifier for automation status"
+        }
     },
     "output": {
-        "message": "Message when gate is open"
+        "message": {
+            "name": "Message",
+            "description": "Message when gate is open"
+        }
     },
     "default": {
         "stateOpenLabel": "Automatic",

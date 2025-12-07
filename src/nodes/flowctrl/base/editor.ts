@@ -24,6 +24,50 @@ export function i18n(term: string): string {
   return RED._(`${namespace}:${term}`);
 }
 
+/**
+ * Helper function to get i18n text with fallback from old to new locale structure.
+ * Tries the new structure first (field.X.label), then falls back to old (label.X).
+ */
+function i18nWithFallback(
+  prefix: string,
+  path: string,
+  fallbackPath?: string
+): string {
+  const namespace = "@deroetzi/node-red-contrib-smarthome-helper/all";
+  let result = RED._(`${namespace}:${prefix}.${path}`);
+  
+  // If the result is the same as the key, it means the translation was not found
+  if (result === `${prefix}.${path}` && fallbackPath) {
+    result = RED._(`${namespace}:${prefix}.${fallbackPath}`);
+  }
+  
+  return result;
+}
+
+/**
+ * Helper function to get output label with new structure support.
+ * Tries new structure: output.X.name, falls back to: output.X
+ */
+export function i18nOutputLabel(prefix: string, outputKey: string): string {
+  return i18nWithFallback(
+    prefix,
+    `output.${outputKey}.name`,
+    `output.${outputKey}`
+  );
+}
+
+/**
+ * Helper function to get input label with new structure support.
+ * Tries new structure: input.X.name, falls back to: select.target.X
+ */
+export function i18nInputLabel(prefix: string, inputKey: string): string {
+  return i18nWithFallback(
+    prefix,
+    `input.${inputKey}.name`,
+    `select.target.${inputKey}`
+  );
+}
+
 export class NodeEditorFormBuilder {
   private readonly uniqueIdCounters: Record<string, number> = {};
 
@@ -169,10 +213,18 @@ export class NodeEditorFormBuilder {
 
     params.options.forEach(
       (option: string | NodeEditorFormBuilderSelectOption) => {
-        const optionText =
-          typeof option === "string"
-            ? i18n(`${optionTranslatePrefix}.select.${params.label}.${option}`)
-            : option.label;
+        let optionText: string;
+        
+        if (typeof option === "string") {
+          // Try new structure: field.X.options.Y, fallback to old: select.X.Y
+          optionText = i18nWithFallback(
+            optionTranslatePrefix,
+            `field.${params.label}.options.${option}`,
+            `select.${params.label}.${option}`
+          );
+        } else {
+          optionText = option.label;
+        }
 
         const optionValue = typeof option === "string" ? option : option.value;
 
@@ -215,7 +267,13 @@ export class NodeEditorFormBuilder {
       params.translatePrefix ??
       this.params.translatePrefix;
 
-    let text = i18n(`${labelTranslatePrefix}.label.${params.label}`);
+    // Try new structure: field.X.label, fallback to old structure: label.X
+    let text = i18nWithFallback(
+      labelTranslatePrefix,
+      `field.${params.label}.label`,
+      `label.${params.label}`
+    );
+    
     if (params.labelPlaceholders) {
       text = text.replace(/\{\{(\w+)\}\}/g, (_, key) => {
         return params.labelPlaceholders![key] || "";
