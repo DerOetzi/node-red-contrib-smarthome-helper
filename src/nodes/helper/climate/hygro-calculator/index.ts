@@ -16,6 +16,7 @@ import {
   HygroCalculatorNodeDef,
   HygroCalculatorNodeOptions,
   HygroCalculatorNodeOptionsDefaults,
+  HygroCalculatorTarget,
 } from "./types";
 
 export default class HygroCalculatorNode extends MatchJoinNode<
@@ -37,13 +38,13 @@ export default class HygroCalculatorNode extends MatchJoinNode<
 
   protected matched(messageFlow: NodeMessageFlow): void {
     const topic = messageFlow.topic;
-    const payload = messageFlow.payload as number;
+    const payload = messageFlow.payloadAsNumber();
 
     switch (topic) {
-      case "temperature":
+      case HygroCalculatorTarget.temperature:
         this.temperature = payload;
         break;
-      case "humidity":
+      case HygroCalculatorTarget.humidity:
         this.humidity = payload;
         break;
     }

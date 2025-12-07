@@ -144,18 +144,18 @@ export class NodeMessageFlow {
     return this._payload as T;
   }
 
-  public payloadAsNumber(): number | undefined {
+  public payloadAsNumber(defaultValue?: number): number | undefined {
     if (this._payload === undefined || this._payload === null) {
-      return undefined;
+      return defaultValue;
     }
 
     const value = Number(this._payload);
-    return isNaN(value) ? undefined : value;
+    return Number.isNaN(value) ? defaultValue : value;
   }
 
-  public payloadAsBoolean(): boolean | undefined {
+  public payloadAsBoolean(defaultValue: boolean): boolean {
     if (this._payload === undefined || this._payload === null) {
-      return undefined;
+      return defaultValue;
     }
 
     if (typeof this._payload === "boolean") {
@@ -178,7 +178,7 @@ export class NodeMessageFlow {
       }
     }
 
-    return undefined;
+    return defaultValue;
   }
 
   public get originalMsg(): NodeMessage {

@@ -8,6 +8,9 @@
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/r3dpoint/devcontainer-features/tailwindcss-standalone-cli:1": {},
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17"
+    },
     "ghcr.io/gvatsal60/dev-container-features/sonarlint:1": {},
     "ghcr.io/michidk/devcontainers-features/typos:1": {}
   },

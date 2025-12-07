@@ -8098,6 +8098,320 @@
         "wires": []
     },
     {
+        "id": "5c031bae7437586d",
+        "type": "helper-dehumidifier-controller",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "version": "0.44.0",
+        "topic": "topic",
+        "topicType": "msg",
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 1,
+        "inputs": 1,
+        "statusReportingEnabled": false,
+        "statusItem": "",
+        "statusTextItem": "",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceShowStatus": false,
+        "debounceTime": 100,
+        "debounceUnit": "ms",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "humidity",
+                "compareType": "str",
+                "target": "humidity"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "temperature",
+                "compareType": "str",
+                "target": "temperature"
+            }
+        ],
+        "join": false,
+        "discardNotMatched": true,
+        "minMsgCount": 1,
+        "minHumidity": 45,
+        "maxHumidity": 60,
+        "baseTarget": 50,
+        "tempSlope": 2,
+        "tempOnMin": 15,
+        "tempOffMin": 13,
+        "tempOffMax": 22,
+        "windowEnabled": false,
+        "windowDelay": 5,
+        "windowDelayUnit": "m",
+        "minOnTime": 10,
+        "minOnTimeUnit": "s",
+        "minOffTime": 10,
+        "minOffTimeUnit": "s",
+        "x": 380,
+        "y": 2340,
+        "wires": [
+            [
+                "33cc79c8e2db4ba9"
+            ]
+        ]
+    },
+    {
+        "id": "46ca9be28b1665ca",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "temperature",
+        "payload": "21",
+        "payloadType": "num",
+        "x": 160,
+        "y": 2200,
+        "wires": [
+            [
+                "5c031bae7437586d"
+            ]
+        ]
+    },
+    {
+        "id": "a18fca94c6d57fd5",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "40",
+        "payloadType": "num",
+        "x": 170,
+        "y": 2260,
+        "wires": [
+            [
+                "5c031bae7437586d"
+            ]
+        ]
+    },
+    {
+        "id": "616daff04c5d1f99",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "70",
+        "payloadType": "num",
+        "x": 170,
+        "y": 2420,
+        "wires": [
+            [
+                "5c031bae7437586d"
+            ]
+        ]
+    },
+    {
+        "id": "410997fa51e77be8",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "60",
+        "payloadType": "num",
+        "x": 170,
+        "y": 2380,
+        "wires": [
+            [
+                "5c031bae7437586d"
+            ]
+        ]
+    },
+    {
+        "id": "af6426f35fa76caa",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "temperature",
+        "payload": "20",
+        "payloadType": "num",
+        "x": 160,
+        "y": 2160,
+        "wires": [
+            [
+                "5c031bae7437586d"
+            ]
+        ]
+    },
+    {
+        "id": "038fe941f8c0d2a8",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "temperature",
+        "payload": "19",
+        "payloadType": "num",
+        "x": 160,
+        "y": 2120,
+        "wires": [
+            [
+                "5c031bae7437586d"
+            ]
+        ]
+    },
+    {
+        "id": "6406375c156ec91b",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "45",
+        "payloadType": "num",
+        "x": 170,
+        "y": 2300,
+        "wires": [
+            [
+                "5c031bae7437586d"
+            ]
+        ]
+    },
+    {
+        "id": "69bb3a3c0cd12be3",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "humidity",
+        "payload": "48",
+        "payloadType": "num",
+        "x": 170,
+        "y": 2340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "33cc79c8e2db4ba9",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "msg",
+        "x": 580,
+        "y": 2340,
+        "wires": []
+    },
+    {
         "id": "8bc62636237651ab",
         "type": "helper-notify-dispatcher",
         "z": "27dba50801e5b614",

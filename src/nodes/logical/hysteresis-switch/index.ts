@@ -24,7 +24,7 @@ export default class HysteresisSwitchNode extends SwitchNode<
   protected input(messageFlow: NodeMessageFlow): void {
     const payload = messageFlow.payloadAsNumber();
 
-    if (typeof payload === "undefined") {
+    if (payload === undefined) {
       this.node.error("Payload is not a number", messageFlow.payload);
       return;
     }
