@@ -28,5 +28,37 @@
             }
         }
     },
-    "matcher-rows": "Topic Matchers"
+    "matcher-rows": "Topic Matchers",
+    "help": {
+        "description": "Matches incoming messages based on configured property comparisons, optionally sets topics, and can join multiple matched messages into a single output.",
+        "inputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Message with properties to match"
+            }
+        },
+        "outputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Matched message or joined messages (depending on configuration)"
+            }
+        },
+        "details": [
+            {
+                "text": "Configure matchers to define which messages should be recognized. Each matcher compares a message property against a value using operations like equal, not equal, less than, greater than, etc."
+            },
+            {
+                "text": "When 'Set Topic' is configured, matching messages will have their topic changed to the configured value."
+            },
+            {
+                "text": "Enable 'Join' to collect multiple matched messages and combine them into a single message. Set 'Min Message Count' to specify how many messages must match before joining."
+            },
+            {
+                "text": "When joining, all matched message properties are combined into msg.payload as an object with properties named after their topics."
+            },
+            {
+                "text": "Enable 'Discard Not Matched' to block messages that don't match any configured matcher."
+            }
+        ]
+    }
 }

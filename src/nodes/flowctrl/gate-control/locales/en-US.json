@@ -21,5 +21,34 @@
             "label": "Pause time",
             "description": "Duration of the pause"
         }
+    },
+    "help": {
+        "description": "Sends control commands to Automation Gate nodes. This node generates messages with gate control commands.",
+        "inputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Any incoming message triggers the command generation"
+            }
+        },
+        "outputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Original message payload with gate control properties added"
+            }
+        },
+        "details": [
+            {
+                "text": "This node adds msg.gate property with the configured command: 'start', 'stop', 'pause', 'replay', or 'resetFilter'."
+            },
+            {
+                "text": "For 'pause' command, it also adds msg.pause property with the configured pause duration."
+            },
+            {
+                "text": "Optional delay can be configured to postpone the command transmission."
+            },
+            {
+                "text": "Connect this node to an Automation Gate node to control its behavior dynamically."
+            }
+        ]
     }
 }

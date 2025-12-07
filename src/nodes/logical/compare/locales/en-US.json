@@ -30,5 +30,37 @@
             "label": "With",
             "description": "Value for comparison"
         }
+    },
+    "help": {
+        "description": "Compares a message property with a configured value using various comparison operations. Sends true/false outputs based on the result.",
+        "inputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Message containing the property to compare"
+            }
+        },
+        "outputs": {
+            "result": {
+                "name": "result",
+                "description": "Boolean result (true/false) of the comparison"
+            }
+        },
+        "details": [
+            {
+                "text": "Configure which message property to compare (e.g., msg.payload, msg.temperature)."
+            },
+            {
+                "text": "Select a comparison operation: equal, not equal, less than, less than or equal, greater than, greater than or equal, is true, is false, is empty, is not empty, starts with, ends with, contains, or matches regex."
+            },
+            {
+                "text": "For most operations, provide a comparison value. For 'is true', 'is false', 'is empty', and 'is not empty', no comparison value is needed."
+            },
+            {
+                "text": "The node evaluates the comparison and sends the result (true or false) to one of two outputs."
+            },
+            {
+                "text": "Use with switch nodes or other logical nodes to build complex decision flows."
+            }
+        ]
     }
 }

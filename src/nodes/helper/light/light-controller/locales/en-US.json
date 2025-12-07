@@ -88,5 +88,52 @@
             "name": "Command",
             "description": "Output command to the light"
         }
+    },
+    "help": {
+        "description": "Intelligent controller for different light types (switch, dimmable, color temperature, RGB) with support for brightness, color settings, night mode, and color cycling.",
+        "inputs": {
+            "command": {
+                "name": "command",
+                "description": "Control command: 'On', 'Off', 'Night', or custom configured commands"
+            },
+            "colorTemperature": {
+                "name": "colorTemperature",
+                "description": "Color temperature in Kelvin (for color temperature lights)"
+            },
+            "hue": {
+                "name": "hue",
+                "description": "Hue value 0-360 (for RGB lights)"
+            },
+            "saturation": {
+                "name": "saturation",
+                "description": "Saturation 0-100 (for RGB lights)"
+            }
+        },
+        "outputs": {
+            "payload": {
+                "name": "payload",
+                "description": "Light control message with brightness, color, and state information"
+            }
+        },
+        "details": [
+            {
+                "text": "Configure multiple lightbulbs with different types: Switch (on/off only), Dimmable (brightness control), Color Temperature (warm/cool white), or RGB (full color)."
+            },
+            {
+                "text": "Each lightbulb type supports different parameters: brightness for dimmable, color temperature for color temperature lights, hue/saturation for RGB lights."
+            },
+            {
+                "text": "Night mode provides dimmed lighting using the configured nightmode brightness level."
+            },
+            {
+                "text": "RGB lights support color cycling mode and fixed color settings via hue and saturation values."
+            },
+            {
+                "text": "Enable 'Home Assistant Output' to format messages for Home Assistant light entities."
+            },
+            {
+                "text": "Configure transition times for smooth brightness and color changes."
+            }
+        ]
     }
 }
