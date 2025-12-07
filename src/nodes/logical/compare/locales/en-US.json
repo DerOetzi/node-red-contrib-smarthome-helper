@@ -11,7 +11,7 @@
             "description": "Comparison operation",
             "options": {
                 "eq": "equal",
-                "ne": "not equal",
+                "neq": "not equal",
                 "lt": "less than",
                 "lte": "less than or equal",
                 "gt": "greater than",

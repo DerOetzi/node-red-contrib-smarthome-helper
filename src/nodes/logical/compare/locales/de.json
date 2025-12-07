@@ -11,7 +11,7 @@
             "description": "Vergleichsoperation",
             "options": {
                 "eq": "gleich",
-                "ne": "ungleich",
+                "neq": "ungleich",
                 "lt": "weniger als",
                 "lte": "weniger als oder gleich",
                 "gt": "größer als",
