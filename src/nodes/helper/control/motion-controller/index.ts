@@ -204,17 +204,17 @@ export default class MotionControllerNode extends MatchJoinNode<
     if (status === null) {
       text = "Unknown";
     } else if (this.blocked) {
-      text = this.RED._("helper.motion-controller.status.automationOff");
+      text = this.RED._("helper.motion-controller.state.automationOff");
     } else if (this.timer) {
-      text = this.RED._("helper.motion-controller.status.active");
+      text = this.RED._("helper.motion-controller.state.active");
     } else {
-      text = this.RED._("helper.motion-controller.status.automationOn");
+      text = this.RED._("helper.motion-controller.state.automationOn");
     }
 
     if (this.isMotion()) {
-      text += " - " + this.RED._("helper.motion-controller.status.motion");
+      text += " - " + this.RED._("helper.motion-controller.state.motion");
     } else {
-      text += " - " + this.RED._("helper.motion-controller.status.noMotion");
+      text += " - " + this.RED._("helper.motion-controller.state.noMotion");
     }
 
     return text;

@@ -37,10 +37,10 @@ export default class MoistureAlertNode extends MatchJoinNode<
       this.config.alertIntervalUnit
     );
 
-    const message = this.RED._("helper.moisture-alert.notify.message");
+    const message = this.RED._("helper.moisture-alert.notification.message");
 
     this.notify = {
-      title: this.RED._("helper.moisture-alert.notify.title"),
+      title: this.RED._("helper.moisture-alert.notification.title"),
       message: message.replace("{name}", this.config.name),
       type: NotifyMessageType.reminderHomeOrAll
     };
@@ -101,7 +101,7 @@ export default class MoistureAlertNode extends MatchJoinNode<
     let statusText = this.lastMoisture + " % - ";
 
     statusText += this.RED._(
-      `helper.moisture-alert.status.${status ? "ok" : "alert"}`
+      `helper.moisture-alert.state.${status ? "ok" : "alert"}`
     );
 
     return statusText;

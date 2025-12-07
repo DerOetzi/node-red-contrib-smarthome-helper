@@ -150,9 +150,9 @@ export default class WindowReminderNode extends MatchJoinNode<
     status = super.statusTextFormatter(status);
 
     if (status === "true") {
-      status = this.RED._("helper.window-reminder.status.open");
+      status = this.RED._("helper.window-reminder.state.open");
     } else if (status === "false") {
-      status = this.RED._("helper.window-reminder.status.closed");
+      status = this.RED._("helper.window-reminder.state.closed");
     }
 
     return status;

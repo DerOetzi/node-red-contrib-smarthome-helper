@@ -133,8 +133,8 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
 
   private sendReminder(messageFlow: NodeMessageFlow, reminderCount: number) {
     let message = this.cleanupNeeded
-      ? this.RED._("helper.whitegood-reminder.notify.cleanupMessage")
-      : this.RED._("helper.whitegood-reminder.notify.message");
+      ? this.RED._("helper.whitegood-reminder.notification.cleanupMessage")
+      : this.RED._("helper.whitegood-reminder.notification.message");
 
     message = message.replace("{name}", this.config.name);
 
@@ -142,7 +142,7 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
       messageFlow,
       "reminder",
       {
-        title: this.RED._("helper.whitegood-reminder.notify.title"),
+        title: this.RED._("helper.whitegood-reminder.notification.title"),
         message,
         type: NotifyMessageType.reminderHomeOrFirstAll,
         reminderCount,
@@ -181,11 +181,11 @@ export default class WhitegoodReminderNode extends MatchJoinNode<
     status = super.statusTextFormatter(status);
 
     if (Object.values(WhitegoodStatus).includes(status as WhitegoodStatus)) {
-      status = this.RED._("helper.whitegood-reminder.status." + status);
+      status = this.RED._("helper.whitegood-reminder.state." + status);
 
       if (this.cleanupNeeded) {
         status +=
-          " - " + this.RED._("helper.whitegood-reminder.status.cleanup");
+          " - " + this.RED._("helper.whitegood-reminder.state.cleanup");
       }
 
       if (this.config.statusShowRuns) {
