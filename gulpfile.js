@@ -119,7 +119,9 @@ function generateHelpHtml(nodeType, helpData) {
     sections.push('<dl class="message-properties">');
     for (const [key, input] of Object.entries(helpData.inputs)) {
       sections.push(`<dt>${escapeHtml(input.name)}`);
-      sections.push(`<span class="property-type">msg.${escapeHtml(key)}</span>`);
+      sections.push(
+        `<span class="property-type">msg.${escapeHtml(key)}</span>`,
+      );
       sections.push("</dt>");
       sections.push(`<dd>${escapeHtml(input.description)}</dd>`);
     }
@@ -135,7 +137,9 @@ function generateHelpHtml(nodeType, helpData) {
       sections.push('<dl class="message-properties">');
       const [key, output] = Object.entries(helpData.outputs)[0];
       sections.push(`<dt>${escapeHtml(output.name)}`);
-      sections.push(`<span class="property-type">msg.${escapeHtml(key)}</span>`);
+      sections.push(
+        `<span class="property-type">msg.${escapeHtml(key)}</span>`,
+      );
       sections.push("</dt>");
       sections.push(`<dd>${escapeHtml(output.description)}</dd>`);
       sections.push("</dl>");
@@ -192,7 +196,7 @@ function buildHelpFiles() {
     const relativePath = path.relative("src/nodes", filePath);
     const pathParts = relativePath.split(path.sep);
 
-    let category = pathParts[0];
+    const category = pathParts[0];
     let node;
     let languageFile;
 
@@ -218,7 +222,8 @@ function buildHelpFiles() {
   // Generate help HTML for each node (use English as primary)
   let helpHtml = "";
   for (const [nodeType, locales] of Object.entries(localeFiles)) {
-    const locale = locales["en-US"] || locales["de"] || Object.values(locales)[0];
+    const locale =
+      locales["en-US"] || locales["de"] || Object.values(locales)[0];
     if (locale && locale.help) {
       helpHtml += generateHelpHtml(nodeType, locale.help);
     }
