@@ -1,24 +1,53 @@
 {
     "name": "Bewegungssteuerung",
-    "label": {
-        "timer": "Timer",
-        "onlyDarkness": "Nur bei Dunkelheit",
-        "nightmodeEnabled": "Nachtmodus aktiviert"
+    "description": "Steuert Lichter basierend auf Bewegungserkennung mit optionalen Dunkelheits- und Nachtmodus-Einstellungen",
+    "field": {
+        "timer": {
+            "label": "Timer",
+            "description": "Zeit, um Lichter nach Bewegung eingeschaltet zu lassen"
+        },
+        "onlyDarkness": {
+            "label": "Nur bei Dunkelheit",
+            "description": "Nur aktivieren, wenn es dunkel ist"
+        },
+        "nightmodeEnabled": {
+            "label": "Nachtmodus aktiviert",
+            "description": "Nachtmodus-Funktionalität aktivieren"
+        }
     },
-    "select": {
-        "target": {
-            "motion": "Bewegung",
-            "darkness": "Dunkelheit",
-            "night": "Nachtmodus",
-            "manualControl": "Manuelle Kontrolle",
-            "command": "Befehl"
+    "input": {
+        "motion": {
+            "name": "Bewegung",
+            "description": "Bewegungssensor-Eingabe"
+        },
+        "darkness": {
+            "name": "Dunkelheit",
+            "description": "Dunkelheitssensor-Eingabe"
+        },
+        "night": {
+            "name": "Nachtmodus",
+            "description": "Nachtmodus-Status-Eingabe"
+        },
+        "manualControl": {
+            "name": "Manuelle Kontrolle",
+            "description": "Manuelle Steuerungsüberschreibung"
+        },
+        "command": {
+            "name": "Befehl",
+            "description": "Direkte Befehlseingabe"
         }
     },
     "output": {
-        "action": "Aktion",
-        "status": "Status"
+        "action": {
+            "name": "Aktion",
+            "description": "Lichtaktionsbefehl"
+        },
+        "status": {
+            "name": "Status",
+            "description": "Aktueller Status"
+        }
     },
-    "status": {
+    "state": {
         "automationOn": "Automatisch",
         "active": "Aktiv",
         "automationOff": "Manuell",

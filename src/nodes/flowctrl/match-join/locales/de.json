@@ -1,14 +1,31 @@
 {
-    "label": {
-        "discardNotMatched": "Nicht Übereinstimmende verwerfen",
-        "join": "Verbinden",
-        "minMsgCount": "Minimale Nachrichtenzahl",
-        "target": "Topic festlegen"
+    "name": "Match Join",
+    "description": "Ändert das Topic von Nachrichten basierend auf Eigenschaften. Verbindet Nachrichten basierend auf übereinstimmenden Eigenschaften.",
+    "field": {
+        "discardNotMatched": {
+            "label": "Nicht Übereinstimmende verwerfen",
+            "description": "Verwirft Nachrichten, die keine Übereinstimmung haben"
+        },
+        "join": {
+            "label": "Verbinden",
+            "description": "Verbindet mehrere Nachrichten zu einer"
+        },
+        "minMsgCount": {
+            "label": "Minimale Nachrichtenzahl",
+            "description": "Mindestanzahl an Nachrichten, die übereinstimmen müssen"
+        },
+        "target": {
+            "label": "Topic festlegen",
+            "description": "Setzt das Topic für übereinstimmende Nachrichten"
+        }
     },
     "fixedTargets": {
         "matcher-rows": "Eingabeparameter",
-        "label": {
-            "target": "Parameter"
+        "field": {
+            "target": {
+                "label": "Parameter",
+                "description": "Eingabeparameter zum Abgleichen"
+            }
         }
     },
     "matcher-rows": "Übereinstimmungen"

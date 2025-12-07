@@ -105,7 +105,9 @@
       "b19ee5bc1795fd02",
       "8bcd9d80a8ada497",
       "ef9919e3cd200f45",
-      "fb4944b41bb1f7f1"
+      "fb4944b41bb1f7f1",
+      "bc4190c1272dc724",
+      "be4d97e52a71a7f2"
     ],
     "x": 54,
     "y": 379,
@@ -1555,10 +1557,10 @@
     "y": 440,
     "wires": [
       [
-        "1a7e38b67e78e65d"
+        "bc4190c1272dc724"
       ],
       [
-        "1a7e38b67e78e65d"
+        "be4d97e52a71a7f2"
       ]
     ]
   },
@@ -2189,6 +2191,76 @@
     "wires": [
       [
         "bdb192f971a27c36"
+      ]
+    ]
+  },
+  {
+    "id": "bc4190c1272dc724",
+    "type": "change",
+    "z": "50a63383c0611497",
+    "g": "2366616d8806730a",
+    "name": "On",
+    "rules": [
+      {
+        "t": "set",
+        "p": "command",
+        "pt": "msg",
+        "to": "block",
+        "tot": "str"
+      },
+      {
+        "t": "set",
+        "p": "action",
+        "pt": "msg",
+        "to": "On",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 670,
+    "y": 420,
+    "wires": [
+      [
+        "1a7e38b67e78e65d"
+      ]
+    ]
+  },
+  {
+    "id": "be4d97e52a71a7f2",
+    "type": "change",
+    "z": "50a63383c0611497",
+    "g": "2366616d8806730a",
+    "name": "Off",
+    "rules": [
+      {
+        "t": "set",
+        "p": "command",
+        "pt": "msg",
+        "to": "block",
+        "tot": "str"
+      },
+      {
+        "t": "set",
+        "p": "action",
+        "pt": "msg",
+        "to": "Off",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 670,
+    "y": 460,
+    "wires": [
+      [
+        "1a7e38b67e78e65d"
       ]
     ]
   }

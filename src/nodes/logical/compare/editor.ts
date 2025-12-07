@@ -25,7 +25,7 @@ const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
   // Migration support for older versions of the switch node.
   label: function () {
     const operation = i18n(
-      "logical.compare.select.operation." + this.operation
+      "logical.compare.field.operation.options." + this.operation
     );
     let label: string = operation;
 

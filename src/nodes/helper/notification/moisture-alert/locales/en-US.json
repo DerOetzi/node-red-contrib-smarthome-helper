@@ -1,24 +1,41 @@
 {
     "name": "Moisture Alert",
-    "label": {
-        "alertThreshold": "Alert Threshold",
-        "alertInterval": "Interval between alerts"
-    },
-    "select": {
-        "target": {
-            "moisture": "Moisture",
-            "lastAlert": "Last Alert Timestamp"
+    "description": "Monitors soil moisture and sends alerts when watering is needed",
+    "field": {
+        "alertThreshold": {
+            "label": "Alert Threshold",
+            "description": "Moisture level that triggers alert"
+        },
+        "alertInterval": {
+            "label": "Interval between alerts",
+            "description": "Minimum time between repeated alerts"
         }
     },
-    "notify": {
+    "input": {
+        "moisture": {
+            "name": "Moisture",
+            "description": "Current moisture level"
+        },
+        "lastAlert": {
+            "name": "Last Alert Timestamp",
+            "description": "Timestamp of last alert"
+        }
+    },
+    "notification": {
         "title": "Watering Reminder",
         "message": "The plant {name} needs water."
     },
     "output": {
-        "notification": "Notification",
-        "lastAlert": "Last Alert Timestamp"
+        "notification": {
+            "name": "Notification",
+            "description": "Alert notification output"
+        },
+        "lastAlert": {
+            "name": "Last Alert Timestamp",
+            "description": "Updated last alert timestamp"
+        }
     },
-    "status": {
+    "state": {
         "alert": "Needs water",
         "ok": "OK"
     }

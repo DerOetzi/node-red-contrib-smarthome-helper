@@ -1,44 +1,118 @@
 {
     "name": "Heating Controller",
-    "label": {
-        "reactivateEnabled": "Re-enable",
-        "pause": "Pause",
-        "defaultActive": "Default active",
-        "boostEnabled": "Boost enabled",
-        "boostTemperatureOffset": "Boost temperature offset",
-        "frostProtectionTemperature": "Frost protection temperature",
-        "comfortCommand": "Comfort command",
-        "ecoCommand": "ECO command",
-        "boostCommand": "Boost command",
-        "frostProtectionCommand": "Frost protection command",
-        "pvBoostEnabled": "PV Boost enabled",
-        "pvBoostTemperatureOffset": "PV Boost temperature offset"
-    },
-    "default": {
-        "comfortCommand": "Comfort",
-        "ecoCommand": "ECO",
-        "boostCommand": "Boost",
-        "frostProtectionCommand": "Frost Protection"
-    },
-    "select": {
+    "description": "Intelligent control for heating systems with comfort and eco modes",
+    "matcher-rows": "Input parameters",
+    "field": {
         "target": {
-            "activeCondition": "Active condition",
-            "comfortTemperature": "Comfort temperature",
-            "ecoTemperatureOffset": "ECO temperature offset",
-            "windowOpen": "Window open",
-            "manualControl": "Manual control",
-            "command": "Command",
-            "pvBoost": "PV Boost",
-            "pvBoostTemperatureOffset": "PV Boost temperature offset"
+            "label": "Parameter",
+            "description": "Input parameter for heating control"
+        },
+        "reactivateEnabled": {
+            "label": "Re-enable",
+            "description": "Enables automatic reactivation after manual control"
+        },
+        "pause": {
+            "label": "Pause",
+            "description": "Pause time before reactivation"
+        },
+        "defaultActive": {
+            "label": "Default active",
+            "description": "Default active state"
+        },
+        "boostEnabled": {
+            "label": "Boost enabled",
+            "description": "Enables boost mode"
+        },
+        "boostTemperatureOffset": {
+            "label": "Boost temperature offset",
+            "description": "Temperature increase in boost mode"
+        },
+        "frostProtectionTemperature": {
+            "label": "Frost protection temperature",
+            "description": "Minimum temperature for frost protection"
+        },
+        "comfortCommand": {
+            "label": "Comfort command",
+            "description": "Command for comfort mode",
+            "default": "Comfort"
+        },
+        "ecoCommand": {
+            "label": "ECO command",
+            "description": "Command for eco mode",
+            "default": "ECO"
+        },
+        "boostCommand": {
+            "label": "Boost command",
+            "description": "Command for boost mode",
+            "default": "Boost"
+        },
+        "frostProtectionCommand": {
+            "label": "Frost protection command",
+            "description": "Command for frost protection mode",
+            "default": "Frost Protection"
+        },
+        "pvBoostEnabled": {
+            "label": "PV Boost enabled",
+            "description": "Enables PV-based boost mode"
+        },
+        "pvBoostTemperatureOffset": {
+            "label": "PV Boost temperature offset",
+            "description": "Temperature increase with PV surplus"
+        }
+    },
+    "input": {
+        "activeCondition": {
+            "name": "Active condition",
+            "description": "Input for activation condition"
+        },
+        "comfortTemperature": {
+            "name": "Comfort temperature",
+            "description": "Desired comfort temperature"
+        },
+        "ecoTemperatureOffset": {
+            "name": "ECO temperature offset",
+            "description": "Temperature reduction in eco mode"
+        },
+        "windowOpen": {
+            "name": "Window open",
+            "description": "Window contact status"
+        },
+        "manualControl": {
+            "name": "Manual control",
+            "description": "Signal for manual control"
+        },
+        "command": {
+            "name": "Command",
+            "description": "Direct control command"
+        },
+        "pvBoost": {
+            "name": "PV Boost",
+            "description": "PV surplus signal"
+        },
+        "pvBoostTemperatureOffset": {
+            "name": "PV Boost temperature offset",
+            "description": "Dynamic PV temperature offset"
         }
     },
     "output": {
-        "heatmode": "Heat mode",
-        "temperature": "Temperature",
-        "window": "Window open",
-        "status": "Status"
+        "heatmode": {
+            "name": "Heat mode",
+            "description": "Current heating mode"
+        },
+        "temperature": {
+            "name": "Temperature",
+            "description": "Target temperature"
+        },
+        "window": {
+            "name": "Window open",
+            "description": "Window status"
+        },
+        "status": {
+            "name": "Status",
+            "description": "Status message"
+        }
     },
-    "status": {
+    "state": {
         "automationOn": "Automated",
         "automationOff": "Manual"
     }

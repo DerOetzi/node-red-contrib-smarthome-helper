@@ -1,27 +1,48 @@
 {
-    "label": {
-        "minValueCount": "Mind. Anzahl Operanden",
-        "operation": "Operation",
-        "precision": "Genauigkeit",
-        "additionalValue": "Operand"
-    },
-    "select": {
-        "operation": {
-            "add": "Summe",
-            "sub": "Differenz",
-            "mul": "Produkt",
-            "round": "Runden",
-            "mean": "Mittelwert",
-            "min": "Minimum",
-            "max": "Maximum"
+    "name": "Arithmetik",
+    "description": "Führt arithmetische Operationen auf Zahlenwerten aus",
+    "field": {
+        "minValueCount": {
+            "label": "Mind. Anzahl Operanden",
+            "description": "Mindestanzahl an Operanden für die Berechnung"
         },
-        "target": {
-            "value": "Operand",
-            "minuend": "Minuend"
+        "operation": {
+            "label": "Operation",
+            "description": "Art der arithmetischen Operation",
+            "options": {
+                "add": "Summe",
+                "sub": "Differenz",
+                "mul": "Produkt",
+                "round": "Runden",
+                "mean": "Mittelwert",
+                "min": "Minimum",
+                "max": "Maximum"
+            }
+        },
+        "precision": {
+            "label": "Genauigkeit",
+            "description": "Anzahl der Dezimalstellen"
+        },
+        "additionalValue": {
+            "label": "Operand",
+            "description": "Zusätzlicher Operand für die Berechnung"
+        }
+    },
+    "input": {
+        "value": {
+            "name": "Operand",
+            "description": "Eingabewert für die Operation"
+        },
+        "minuend": {
+            "name": "Minuend",
+            "description": "Wert, von dem subtrahiert wird"
         }
     },
     "additional-values-rows": "Zusätzliche Operanden",
     "output": {
-        "result": "Ergebnis"
+        "result": {
+            "name": "Ergebnis",
+            "description": "Ergebnis der arithmetischen Operation"
+        }
     }
 }

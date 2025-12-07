@@ -248,9 +248,9 @@ export default class HeatingControllerNode extends MatchJoinNode<
     if (status === null) {
       text = "Unknown";
     } else if (this.blocked) {
-      text = this.RED._("helper.heating-controller.status.automationOff");
+      text = this.RED._("helper.heating-controller.state.automationOff");
     } else {
-      text = this.RED._("helper.heating-controller.status.automationOn");
+      text = this.RED._("helper.heating-controller.state.automationOn");
     }
 
     const targetTemperature = this.determineHeatingSetpoint(this.lastHeatmode);

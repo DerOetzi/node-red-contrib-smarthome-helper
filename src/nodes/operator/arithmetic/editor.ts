@@ -2,6 +2,7 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nOutputLabel,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../../flowctrl/base/editor";
@@ -47,7 +48,7 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
   >(ArithmeticNodeOptionsDefaults),
   label: function () {
     const operator = i18n(
-      "operator.arithmetic.select.operation." + this.operation
+      "operator.arithmetic.field.operation.options." + this.operation
     );
     let label: string = operator;
 
@@ -60,7 +61,7 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
   inputs: ArithmeticNodeOptionsDefaults.inputs,
   outputs: ArithmeticNodeOptionsDefaults.outputs,
   outputLabels: function (index: number) {
-    return i18n("operator.arithmetic.output.result");
+    return i18nOutputLabel("operator.arithmetic", "result");
   },
   oneditprepare: function () {
     BaseEditorNode.oneditprepare!.call(this);

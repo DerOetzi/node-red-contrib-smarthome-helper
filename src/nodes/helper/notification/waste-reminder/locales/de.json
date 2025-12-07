@@ -1,13 +1,18 @@
 {
   "name": "Müllerinnerung",
+  "description": "Erinnert an bevorstehende Müllabholungstage",
   "types": {
     "no-waste": "nicht definiert",
     "and": "und"
   },
-  "select": {
-    "target": {
-      "types": "Nächste Mülltypen",
-      "remaining": "Verbleibende Tage"
+  "input": {
+    "types": {
+      "name": "Nächste Mülltypen",
+      "description": "Arten von Müll, die als nächstes abgeholt werden"
+    },
+    "remaining": {
+      "name": "Verbleibende Tage",
+      "description": "Verbleibende Tage bis zur Abholung"
     }
   },
   "notification": {

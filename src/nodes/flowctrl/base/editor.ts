@@ -24,6 +24,30 @@ export function i18n(term: string): string {
   return RED._(`${namespace}:${term}`);
 }
 
+/**
+ * Helper function to get output label.
+ * Uses structure: output.X.name
+ */
+export function i18nOutputLabel(prefix: string, outputKey: string): string {
+  return i18n(`${prefix}.output.${outputKey}.name`);
+}
+
+/**
+ * Helper function to get input label.
+ * Uses structure: input.X.name
+ */
+export function i18nInputLabel(prefix: string, inputKey: string): string {
+  return i18n(`${prefix}.input.${inputKey}.name`);
+}
+
+/**
+ * Helper function to get field default value.
+ * Uses structure: field.X.default
+ */
+export function i18nFieldDefault(prefix: string, fieldKey: string): string {
+  return i18n(`${prefix}.field.${fieldKey}.default`);
+}
+
 export class NodeEditorFormBuilder {
   private readonly uniqueIdCounters: Record<string, number> = {};
 
@@ -169,10 +193,15 @@ export class NodeEditorFormBuilder {
 
     params.options.forEach(
       (option: string | NodeEditorFormBuilderSelectOption) => {
-        const optionText =
-          typeof option === "string"
-            ? i18n(`${optionTranslatePrefix}.select.${params.label}.${option}`)
-            : option.label;
+        let optionText: string;
+        
+        if (typeof option === "string") {
+          optionText = i18n(
+            `${optionTranslatePrefix}.field.${params.label}.options.${option}`
+          );
+        } else {
+          optionText = option.label;
+        }
 
         const optionValue = typeof option === "string" ? option : option.value;
 
@@ -215,7 +244,8 @@ export class NodeEditorFormBuilder {
       params.translatePrefix ??
       this.params.translatePrefix;
 
-    let text = i18n(`${labelTranslatePrefix}.label.${params.label}`);
+    let text = i18n(`${labelTranslatePrefix}.field.${params.label}.label`);
+    
     if (params.labelPlaceholders) {
       text = text.replace(/\{\{(\w+)\}\}/g, (_, key) => {
         return params.labelPlaceholders![key] || "";

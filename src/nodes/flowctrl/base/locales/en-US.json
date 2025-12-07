@@ -1,19 +1,59 @@
 {
     "name": "Flow control",
+    "description": "Base class for flow control nodes",
     "migrated": "The node has been migrated to version {version}.",
-    "label": {
-        "name": "Name",
-        "topic": "Topic",
-        "filterUniquePayload": "Not send same payload",
-        "newMsg": "New message",
-        "debounce": "Debounce",
-        "debounceTopic": "Per topic",
-        "debounceShowStatus": "Show status",
-        "debounceTime": "Delay",
-        "debounceLeading": "Leading (immediate)",
-        "debounceTrailing": "Trailing (delayed)",
-        "statusReportingEnabled": "Status reporting",
-        "statusItem": "Status item",
-        "statusTextItem": "Text status item"
+    "field": {
+        "name": {
+            "label": "Name",
+            "description": "Name of the node"
+        },
+        "topic": {
+            "label": "Topic",
+            "description": "Topic for outgoing messages"
+        },
+        "filterUniquePayload": {
+            "label": "Not send same payload",
+            "description": "Filters out duplicate payloads"
+        },
+        "newMsg": {
+            "label": "New message",
+            "description": "Sends a new message instead of forwarding the incoming one"
+        },
+        "debounce": {
+            "label": "Debounce",
+            "description": "Delays message output"
+        },
+        "debounceTopic": {
+            "label": "Per topic",
+            "description": "Applies debounce per topic"
+        },
+        "debounceShowStatus": {
+            "label": "Show status",
+            "description": "Shows debounce status on the node"
+        },
+        "debounceTime": {
+            "label": "Delay",
+            "description": "Delay time for debounce"
+        },
+        "debounceLeading": {
+            "label": "Leading (immediate)",
+            "description": "Sends the first message immediately"
+        },
+        "debounceTrailing": {
+            "label": "Trailing (delayed)",
+            "description": "Sends the last message after delay"
+        },
+        "statusReportingEnabled": {
+            "label": "Status reporting",
+            "description": "Enables status reporting"
+        },
+        "statusItem": {
+            "label": "Status item",
+            "description": "Property for status value"
+        },
+        "statusTextItem": {
+            "label": "Text status item",
+            "description": "Property for status text"
+        }
     }
 }

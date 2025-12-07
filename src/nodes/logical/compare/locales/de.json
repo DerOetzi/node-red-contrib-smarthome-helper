@@ -1,25 +1,34 @@
 {
-    "label": {
-        "property": "Eigenschaft",
-        "operation": "Vergleichen",
-        "compare": "Mit"
-    },
-    "select": {
+    "name": "Vergleichen",
+    "description": "Vergleicht Nachrichteneigenschaften mit konfigurierten Werten",
+    "field": {
+        "property": {
+            "label": "Eigenschaft",
+            "description": "Zu vergleichende Eigenschaft in der Nachricht"
+        },
         "operation": {
-            "eq": "gleich",
-            "neq": "ungleich",
-            "lt": "weniger als",
-            "lte": "weniger als oder gleich",
-            "gt": "größer als",
-            "gte": "größer als oder gleich",
-            "isTrue": "ist wahr",
-            "isFalse": "ist falsch",
-            "empty": "ist leer",
-            "notEmpty": "ist nicht leer",
-            "startsWith": "beginnt mit",
-            "endsWith": "endet mit",
-            "contains": "enthält",
-            "regex": "entspricht Regex"
+            "label": "Vergleichen",
+            "description": "Vergleichsoperation",
+            "options": {
+                "eq": "gleich",
+                "neq": "ungleich",
+                "lt": "weniger als",
+                "lte": "weniger als oder gleich",
+                "gt": "größer als",
+                "gte": "größer als oder gleich",
+                "isTrue": "ist wahr",
+                "isFalse": "ist falsch",
+                "empty": "ist leer",
+                "notEmpty": "ist nicht leer",
+                "startsWith": "beginnt mit",
+                "endsWith": "endet mit",
+                "contains": "enthält",
+                "regex": "entspricht Regex"
+            }
+        },
+        "compare": {
+            "label": "Mit",
+            "description": "Wert für den Vergleich"
         }
     }
 }

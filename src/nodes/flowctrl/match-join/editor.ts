@@ -1,6 +1,7 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
+  i18nInputLabel,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../base/editor";
@@ -73,14 +74,19 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
     });
 
     if (this.fixedTargets) {
+      // Convert fixed targets to select options using input labels from new locale structure
+      const targetOptions = this.fixedTargets.targets.map((target) => ({
+        value: target,
+        label: i18nInputLabel(this.fixedTargets!.translatePrefix, target),
+      }));
+
       const targetSelect = this.rowBuilder!.createSelectInput({
         id: "target",
         label: "target",
         value: data.target,
-        options: this.fixedTargets.targets,
+        options: targetOptions,
         icon: "tag",
         translateLabelPrefix: this.headerPrefix,
-        translatePrefix: this.fixedTargets.translatePrefix,
       });
 
       this.fixedTargets.targets.forEach((target) => {

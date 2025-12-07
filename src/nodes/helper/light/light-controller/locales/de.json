@@ -1,40 +1,92 @@
 {
-    "label": {
-        "identifier": "Lampe",
-        "lightbulbType": "Lampentyp",
-        "homeAssistantOutput": "Home Assistant Ausgabe",
-        "onBrightness": "Helligkeit",
-        "transitionTime": "Übergangszeit",
-        "colorTemperature": "Farbtemperatur (K)",
-        "nightmodeBrightness": "Nachtmodus Helligkeit",
-        "colorCycle": "Farbzyklus",
-        "fixColorHue": "Farbton",
-        "fixColorSaturation": "Sättigung",
-        "onCommand": "Befehl Ein",
-        "offCommand": "Befehl Aus",
-        "nightmodeCommand": "Befehl Nachtmodus"
-    },
+    "name": "Lichtsteuerung",
+    "description": "Intelligente Steuerung für verschiedene Lampentypen mit Helligkeits- und Farbeinstellungen",
     "identifier-rows": "Glühbirnen",
-    "default": {
-        "onCommand": "An",
-        "offCommand": "Aus",
-        "nightmodeCommand": "Nacht"
-    },
-    "select": {
-        "target": {
-            "command": "Befehl",
-            "colorTemperature": "Farbtemperatur",
-            "hue": "Farbton",
-            "saturation": "Sättigung"
+    "field": {
+        "identifier": {
+            "label": "Lampe",
+            "description": "Eindeutige Kennung für die Lampe"
         },
         "lightbulbType": {
-            "dimmable": "Dimmbar",
-            "colortemperature": "Farbtemperatur",
-            "switch": "Schalter",
-            "rgb": "RGB"
+            "label": "Lampentyp",
+            "description": "Art der Lampe",
+            "options": {
+                "dimmable": "Dimmbar",
+                "colortemperature": "Farbtemperatur",
+                "switch": "Schalter",
+                "rgb": "RGB"
+            }
+        },
+        "homeAssistantOutput": {
+            "label": "Home Assistant Ausgabe",
+            "description": "Formatiert die Ausgabe für Home Assistant"
+        },
+        "onBrightness": {
+            "label": "Helligkeit",
+            "description": "Helligkeit beim Einschalten"
+        },
+        "transitionTime": {
+            "label": "Übergangszeit",
+            "description": "Zeit für Übergangseffekte"
+        },
+        "colorTemperature": {
+            "label": "Farbtemperatur (K)",
+            "description": "Farbtemperatur in Kelvin"
+        },
+        "nightmodeBrightness": {
+            "label": "Nachtmodus Helligkeit",
+            "description": "Reduzierte Helligkeit im Nachtmodus"
+        },
+        "colorCycle": {
+            "label": "Farbzyklus",
+            "description": "Aktiviert Farbzyklus-Modus"
+        },
+        "fixColorHue": {
+            "label": "Farbton",
+            "description": "Fester Farbton (Hue)"
+        },
+        "fixColorSaturation": {
+            "label": "Sättigung",
+            "description": "Feste Farbsättigung"
+        },
+        "onCommand": {
+            "label": "Befehl Ein",
+            "description": "Befehlstext für Einschalten",
+            "default": "An"
+        },
+        "offCommand": {
+            "label": "Befehl Aus",
+            "description": "Befehlstext für Ausschalten",
+            "default": "Aus"
+        },
+        "nightmodeCommand": {
+            "label": "Befehl Nachtmodus",
+            "description": "Befehlstext für Nachtmodus",
+            "default": "Nacht"
+        }
+    },
+    "input": {
+        "command": {
+            "name": "Befehl",
+            "description": "Steuerbefehl für die Lampe"
+        },
+        "colorTemperature": {
+            "name": "Farbtemperatur",
+            "description": "Gewünschte Farbtemperatur"
+        },
+        "hue": {
+            "name": "Farbton",
+            "description": "Gewünschter Farbton"
+        },
+        "saturation": {
+            "name": "Sättigung",
+            "description": "Gewünschte Farbsättigung"
         }
     },
     "output": {
-        "command": "Befehl"
+        "command": {
+            "name": "Befehl",
+            "description": "Ausgabebefehl an die Lampe"
+        }
     }
 }

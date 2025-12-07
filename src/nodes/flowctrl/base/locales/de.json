@@ -1,19 +1,59 @@
 {
     "name": "Flow-Steuerung",
+    "description": "Basisklasse für Flow-Steuerungsknoten",
     "migrated": "Der Knoten wurde auf Version {version} migriert.",
-    "label": {
-        "name": "Name",
-        "topic": "Topic",
-        "filterUniquePayload": "Gleiche Payload nicht erneut senden",
-        "newMsg": "Neue Nachricht",
-        "debounce": "Debounce",
-        "debounceTopic": "Pro Topic",
-        "debounceShowStatus": "Status anzeigen",
-        "debounceTime": "Verzögerung",
-        "debounceLeading": "Führend (sofort)",
-        "debounceTrailing": "Nachlaufend (verzögert)",
-        "statusReportingEnabled": "Statusberichterstattung",
-        "statusItem": "Statuselement",
-        "statusTextItem": "Element für Textstatus"
+    "field": {
+        "name": {
+            "label": "Name",
+            "description": "Name des Knotens"
+        },
+        "topic": {
+            "label": "Topic",
+            "description": "Topic für ausgehende Nachrichten"
+        },
+        "filterUniquePayload": {
+            "label": "Gleiche Payload nicht erneut senden",
+            "description": "Filtert doppelte Payloads heraus"
+        },
+        "newMsg": {
+            "label": "Neue Nachricht",
+            "description": "Sendet eine neue Nachricht anstatt die eingehende weiterzuleiten"
+        },
+        "debounce": {
+            "label": "Debounce",
+            "description": "Verzögert die Ausgabe von Nachrichten"
+        },
+        "debounceTopic": {
+            "label": "Pro Topic",
+            "description": "Wendet Debounce pro Topic an"
+        },
+        "debounceShowStatus": {
+            "label": "Status anzeigen",
+            "description": "Zeigt den Debounce-Status am Knoten an"
+        },
+        "debounceTime": {
+            "label": "Verzögerung",
+            "description": "Verzögerungszeit für Debounce"
+        },
+        "debounceLeading": {
+            "label": "Führend (sofort)",
+            "description": "Sendet die erste Nachricht sofort"
+        },
+        "debounceTrailing": {
+            "label": "Nachlaufend (verzögert)",
+            "description": "Sendet die letzte Nachricht nach Verzögerung"
+        },
+        "statusReportingEnabled": {
+            "label": "Statusberichterstattung",
+            "description": "Aktiviert die Statusberichterstattung"
+        },
+        "statusItem": {
+            "label": "Statuselement",
+            "description": "Eigenschaft für Statuswert"
+        },
+        "statusTextItem": {
+            "label": "Element für Textstatus",
+            "description": "Eigenschaft für Statustext"
+        }
     }
 }

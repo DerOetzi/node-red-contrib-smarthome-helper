@@ -1,8 +1,18 @@
 {
   "name": "Hysterese-Schalter",
-  "label": {
-    "upperThreshold": "Oberer Schwellenwert",
-    "lowerThreshold": "Unterer Schwellenwert",
-    "initialState": "Anfangszustand"
+  "description": "Schaltet zwischen zwei Zuständen mit Hysterese",
+  "field": {
+    "upperThreshold": {
+      "label": "Oberer Schwellenwert",
+      "description": "Schwellenwert für das Einschalten"
+    },
+    "lowerThreshold": {
+      "label": "Unterer Schwellenwert",
+      "description": "Schwellenwert für das Ausschalten"
+    },
+    "initialState": {
+      "label": "Anfangszustand",
+      "description": "Zustand beim Start"
+    }
   }
 }

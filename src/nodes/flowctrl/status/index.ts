@@ -107,7 +107,7 @@ export default class StatusNode extends MatchJoinNode<
 
   protected statusTextFormatter(status: NodeStatus): string {
     return this.RED._(
-      `flowctrl.status.status.${status ? "active" : "inactive"}`
+      `flowctrl.status.state.${status ? "active" : "inactive"}`
     );
   }
 }

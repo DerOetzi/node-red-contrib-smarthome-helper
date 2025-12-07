@@ -1,27 +1,48 @@
 {
-    "label": {
-        "minValueCount": "Min. operand count",
-        "operation": "Operation",
-        "precision": "Precision",
-        "additionalValue": "Operand"
-    },
-    "select": {
-        "operation": {
-            "add": "sum",
-            "sub": "difference",
-            "mul": "product",
-            "round": "round",
-            "mean": "mean",
-            "min": "minimum",
-            "max": "maximum"
+    "name": "Arithmetic",
+    "description": "Performs arithmetic operations on numeric values",
+    "field": {
+        "minValueCount": {
+            "label": "Min. operand count",
+            "description": "Minimum number of operands for calculation"
         },
-        "target": {
-            "value": "Operand",
-            "minuend": "Minuend"
+        "operation": {
+            "label": "Operation",
+            "description": "Type of arithmetic operation",
+            "options": {
+                "add": "sum",
+                "sub": "difference",
+                "mul": "product",
+                "round": "round",
+                "mean": "mean",
+                "min": "minimum",
+                "max": "maximum"
+            }
+        },
+        "precision": {
+            "label": "Precision",
+            "description": "Number of decimal places"
+        },
+        "additionalValue": {
+            "label": "Operand",
+            "description": "Additional operand for calculation"
+        }
+    },
+    "input": {
+        "value": {
+            "name": "Operand",
+            "description": "Input value for the operation"
+        },
+        "minuend": {
+            "name": "Minuend",
+            "description": "Value to subtract from"
         }
     },
     "additional-values-rows": "Additional operands",
     "output": {
-        "result": "Result"
+        "result": {
+            "name": "Result",
+            "description": "Result of the arithmetic operation"
+        }
     }
 }

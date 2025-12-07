@@ -1,13 +1,24 @@
 {
   "name": "Hygro Calculator",
-  "select": {
-    "target": {
-      "temperature": "Temperature",
-      "humidity": "Humidity"
+  "description": "Calculates dew point and absolute humidity from temperature and humidity",
+  "input": {
+    "temperature": {
+      "name": "Temperature",
+      "description": "Temperature input"
+    },
+    "humidity": {
+      "name": "Humidity",
+      "description": "Relative humidity input"
     }
   },
   "output": {
-    "dewPoint": "Dew Point",
-    "absoluteHumidity": "Absolute Humidity"
+    "dewPoint": {
+      "name": "Dew Point",
+      "description": "Calculated dew point temperature"
+    },
+    "absoluteHumidity": {
+      "name": "Absolute Humidity",
+      "description": "Calculated absolute humidity"
+    }
   }
 }

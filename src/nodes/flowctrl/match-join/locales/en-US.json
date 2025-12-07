@@ -1,16 +1,31 @@
 {
     "name": "Match Join",
     "description": "Change topic of messages based on matching properties. Join messages based on matching properties.",
-    "label": {
-        "discardNotMatched": "Discard Not Matched",
-        "join": "Join",
-        "minMsgCount": "Min Message Count",
-        "target": "Set Topic"
+    "field": {
+        "discardNotMatched": {
+            "label": "Discard Not Matched",
+            "description": "Discards messages that don't match"
+        },
+        "join": {
+            "label": "Join",
+            "description": "Joins multiple messages into one"
+        },
+        "minMsgCount": {
+            "label": "Min Message Count",
+            "description": "Minimum number of messages that must match"
+        },
+        "target": {
+            "label": "Set Topic",
+            "description": "Sets the topic for matching messages"
+        }
     },
     "fixedTargets": {
         "matcher-rows": "Input parameters",
-        "label": {
-            "target": "Parameter"
+        "field": {
+            "target": {
+                "label": "Parameter",
+                "description": "Input parameter to match"
+            }
         }
     },
     "matcher-rows": "Topic Matchers"

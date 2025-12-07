@@ -1,15 +1,28 @@
 {
   "name": "Window reminder",
   "description": "This node can remind you if a window is opened for a long time. It can also notify you if nobody is at home.",
-  "label": {
-    "interval": "Interval ({{row}})"
+  "field": {
+    "interval": {
+      "label": "Interval ({{row}})",
+      "description": "Erinnerungsintervall-Konfiguration"
+    }
   },
-  "select": {
-    "target": {
-      "window": "Fenster offen",
-      "presence": "Anwesenheit",
-      "command": "Befehl",
-      "intervalSelect": "Intervall auswählen"
+  "input": {
+    "window": {
+      "name": "Fenster offen",
+      "description": "Fenster-offen-Status"
+    },
+    "presence": {
+      "name": "Anwesenheit",
+      "description": "Anwesenheitserkennungsstatus"
+    },
+    "command": {
+      "name": "Befehl",
+      "description": "Befehlseingabe"
+    },
+    "intervalSelect": {
+      "name": "Intervall auswählen",
+      "description": "Ausgewählter Intervallindex"
     }
   },
   "window-reminder-intervals": "Intervalle",
@@ -19,7 +32,7 @@
     "leaving": "Fenster {windowName} ist noch offen",
     "alarm": "Fenster {windowName} wurde geöffnet, aber niemand ist zu Hause"
   },
-  "status": {
+  "state": {
     "open": "Fenster offen",
     "closed": "Fenster geschlossen"
   }

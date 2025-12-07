@@ -1,14 +1,25 @@
 {
     "name": "Event Mapper",
+    "description": "Maps input events to output events based on configured rules",
     "rule-rows": "Mapping rules",
-    "label": {
-        "event": "Input",
-        "mapped": "Mappe event",
-        "ignoreUnknownEvents": "Ignore unknown events"
+    "field": {
+        "event": {
+            "label": "Input",
+            "description": "Input event value"
+        },
+        "mapped": {
+            "label": "Mappe event",
+            "description": "Mapped output event value"
+        },
+        "ignoreUnknownEvents": {
+            "label": "Ignore unknown events",
+            "description": "Ignore events that don't match any rule"
+        }
     },
-    "select": {
-        "target": {
-            "event": "event"
+    "input": {
+        "event": {
+            "name": "event",
+            "description": "Input event to map"
         }
     }
 }

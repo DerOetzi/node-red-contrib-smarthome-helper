@@ -1,24 +1,38 @@
 {
     "name": "Status",
-    "label": {
-        "scope": "Scope",
-        "initialActive": "Initial aktiv"
-    },
-    "output": {
-        "status": "Nodestatus",
-        "statusText": "Textstatus"
-    },
-    "select": {
-        "target": {
-            "activeCondition": "Bedingung aktiv"
-        },
+    "description": "Sammelt und verarbeitet Statusmeldungen von anderen Knoten",
+    "field": {
         "scope": {
-            "global": "Global",
-            "flow": "Flow",
-            "group": "Gruppe"
+            "label": "Scope",
+            "description": "Bereich für die Statussammlung",
+            "options": {
+                "global": "Global",
+                "flow": "Flow",
+                "group": "Gruppe"
+            }
+        },
+        "initialActive": {
+            "label": "Initial aktiv",
+            "description": "Startet den Knoten im aktiven Zustand"
         }
     },
-    "status": {
+    "input": {
+        "activeCondition": {
+            "name": "Bedingung aktiv",
+            "description": "Eingabe für die Aktivierungsbedingung"
+        }
+    },
+    "output": {
+        "status": {
+            "name": "Nodestatus",
+            "description": "Gibt den aktuellen Knotenstatus aus"
+        },
+        "statusText": {
+            "name": "Textstatus",
+            "description": "Gibt den Statustext aus"
+        }
+    },
+    "state": {
         "active": "Aktiv",
         "inactive": "Inaktiv"
     }

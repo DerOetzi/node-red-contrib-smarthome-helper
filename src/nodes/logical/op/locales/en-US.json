@@ -1,17 +1,23 @@
 {
-    "label": {
-        "operation": "Operation",
-        "minMsgCount": "Minimum message count"
-    },
-    "select": {
+    "name": "Logical Operation",
+    "description": "Performs logical operations on multiple input values",
+    "field": {
         "operation": {
-            "and": "AND",
-            "or": "OR",
-            "not": "NOT",
-            "xor": "XOR",
-            "nand": "NAND",
-            "nor": "NOR",
-            "nxor": "XNOR"
+            "label": "Operation",
+            "description": "Type of logical operation",
+            "options": {
+                "and": "AND",
+                "or": "OR",
+                "not": "NOT",
+                "xor": "XOR",
+                "nand": "NAND",
+                "nor": "NOR",
+                "nxor": "XNOR"
+            }
+        },
+        "minMsgCount": {
+            "label": "Minimum message count",
+            "description": "Minimum number of messages for the operation"
         }
     }
 }

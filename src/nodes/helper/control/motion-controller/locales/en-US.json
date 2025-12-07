@@ -1,24 +1,53 @@
 {
     "name": "Motion Controller",
-    "label": {
-        "timer": "Timer",
-        "onlyDarkness": "Only in darkness",
-        "nightmodeEnabled": "Nightmode enabled"
+    "description": "Controls lights based on motion detection with optional darkness and nightmode settings",
+    "field": {
+        "timer": {
+            "label": "Timer",
+            "description": "Time to keep lights on after motion"
+        },
+        "onlyDarkness": {
+            "label": "Only in darkness",
+            "description": "Only activate when it's dark"
+        },
+        "nightmodeEnabled": {
+            "label": "Nightmode enabled",
+            "description": "Enable nightmode functionality"
+        }
     },
-    "select": {
-        "target": {
-            "motion": "motion",
-            "darkness": "darkness",
-            "night": "nightmode",
-            "manualControl": "manual control",
-            "command": "command"
+    "input": {
+        "motion": {
+            "name": "motion",
+            "description": "Motion sensor input"
+        },
+        "darkness": {
+            "name": "darkness",
+            "description": "Darkness sensor input"
+        },
+        "night": {
+            "name": "nightmode",
+            "description": "Nightmode state input"
+        },
+        "manualControl": {
+            "name": "manual control",
+            "description": "Manual control override input"
+        },
+        "command": {
+            "name": "command",
+            "description": "Direct command input"
         }
     },
     "output": {
-        "action": "Action",
-        "status": "Status"
+        "action": {
+            "name": "Action",
+            "description": "Light action command"
+        },
+        "status": {
+            "name": "Status",
+            "description": "Current status"
+        }
     },
-    "status": {
+    "state": {
         "automationOn": "Automated",
         "active": "Active",
         "automationOff": "Manual",

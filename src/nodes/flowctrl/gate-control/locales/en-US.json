@@ -1,16 +1,25 @@
 {
-    "label": {
-        "delay": "Delay message (ms)",
-        "gateCommand": "Gate Command",
-        "pauseTime": "Pause time"
-    },
-    "select": {
+    "name": "Gate Control",
+    "description": "Sends control commands to Automation Gate nodes",
+    "field": {
+        "delay": {
+            "label": "Delay message (ms)",
+            "description": "Delay before sending the command in milliseconds"
+        },
         "gateCommand": {
-            "start": "Start",
-            "stop": "Stop",
-            "pause": "Pause",
-            "replay": "Replay",
-            "resetFilter": "Reset Filter"
+            "label": "Gate Command",
+            "description": "Control command for the gate",
+            "options": {
+                "start": "Start",
+                "stop": "Stop",
+                "pause": "Pause",
+                "replay": "Replay",
+                "resetFilter": "Reset Filter"
+            }
+        },
+        "pauseTime": {
+            "label": "Pause time",
+            "description": "Duration of the pause"
         }
     }
 }

@@ -3,6 +3,7 @@ import StatusNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../base/editor";
 import { MatchJoinEditableList } from "../match-join/editor";
@@ -32,9 +33,9 @@ const StatusEditorNode: EditorNodeDef<StatusEditorNodeProperties> = {
   inputs: StatusNodeOptionsDefaults.inputs,
   outputs: StatusNodeOptionsDefaults.outputs,
   outputLabels: function (index: number) {
-    const outputs = ["status", "statustext"];
+    const outputs = ["status", "statusText"];
 
-    return i18n(`flowctrl.status.output.${outputs[index]}`);
+    return i18nOutputLabel("flowctrl.status", outputs[index]);
   },
   oneditprepare: function () {
     BaseEditorNode.oneditprepare!.call(this);

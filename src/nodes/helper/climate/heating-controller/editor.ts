@@ -2,6 +2,8 @@ import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
+  i18nFieldDefault,
+  i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
@@ -37,18 +39,24 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     outputLabels: function (index: number) {
       const outputs = ["heatmode", "temperature", "window"];
 
-      return i18n(`helper.heating-controller.output.${outputs[index]}`);
+      return i18nOutputLabel("helper.heating-controller", outputs[index]);
     },
     onadd: function () {
-      this.comfortCommand = i18n(
-        "helper.heating-controller.default.comfortCommand"
+      this.comfortCommand = i18nFieldDefault(
+        "helper.heating-controller",
+        "comfortCommand"
       );
-      this.ecoCommand = i18n("helper.heating-controller.default.ecoCommand");
-      this.boostCommand = i18n(
-        "helper.heating-controller.default.boostCommand"
+      this.ecoCommand = i18nFieldDefault(
+        "helper.heating-controller",
+        "ecoCommand"
       );
-      this.frostProtectionCommand = i18n(
-        "helper.heating-controller.default.frostProtectionCommand"
+      this.boostCommand = i18nFieldDefault(
+        "helper.heating-controller",
+        "boostCommand"
+      );
+      this.frostProtectionCommand = i18nFieldDefault(
+        "helper.heating-controller",
+        "frostProtectionCommand"
       );
     },
     oneditprepare: function () {

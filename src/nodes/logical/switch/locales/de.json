@@ -1,22 +1,45 @@
 {
     "name": "Bool. Weiche",
-    "label": {
-        "target": "Eigenschaft setzen",
-        "trueValue": "Wahr",
-        "falseValue": "Falsch",
-        "seperatedOutputs": "Getrennte Ausgänge",
-        "debounceFlank": "Flankenentprellen"
-    },
-    "select": {
+    "description": "Verarbeitet boolesche Werte und leitet sie entsprechend weiter",
+    "field": {
+        "target": {
+            "label": "Eigenschaft setzen",
+            "description": "Eigenschaft, die gesetzt werden soll"
+        },
+        "trueValue": {
+            "label": "Wahr",
+            "description": "Wert für wahr"
+        },
+        "falseValue": {
+            "label": "Falsch",
+            "description": "Wert für falsch"
+        },
+        "seperatedOutputs": {
+            "label": "Getrennte Ausgänge",
+            "description": "Verwendet separate Ausgänge für wahr und falsch"
+        },
         "debounceFlank": {
-            "both": "Beide",
-            "rising": "Steigend",
-            "falling": "Fallend"
+            "label": "Flankenentprellen",
+            "description": "Entprellt steigende und/oder fallende Flanken",
+            "options": {
+                "both": "Beide",
+                "rising": "Steigend",
+                "falling": "Fallend"
+            }
         }
     },
     "output": {
-        "true": "Wahr",
-        "false": "Falsch",
-        "result": "Boolsches Ergebnis"
+        "true": {
+            "name": "Wahr",
+            "description": "Ausgang für wahre Werte"
+        },
+        "false": {
+            "name": "Falsch",
+            "description": "Ausgang für falsche Werte"
+        },
+        "result": {
+            "name": "Boolsches Ergebnis",
+            "description": "Kombinierter Ausgang mit boolschem Ergebnis"
+        }
     }
 }

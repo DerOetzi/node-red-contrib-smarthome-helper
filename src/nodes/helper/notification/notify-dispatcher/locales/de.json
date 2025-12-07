@@ -1,21 +1,56 @@
 {
     "name": "Benachrichtigungsdispatcher",
-    "label": {
-        "persons": "Personen"
+    "description": "Verteilt Benachrichtigungen an Personen basierend auf ihrem Anwesenheitsstatus",
+    "field": {
+        "persons": {
+            "label": "Personen",
+            "description": "Anzahl der zu verfolgenden Personen"
+        }
     },
-    "select": {
-        "target": {
-            "message": "Nachricht",
-            "person1": "Anwesenheit 1. Person",
-            "person2": "Anwesenheit 2. Person",
-            "person3": "Anwesenheit 3. Person",
-            "person4": "Anwesenheit 4. Person",
-            "person5": "Anwesenheit 5. Person",
-            "person6": "Anwesenheit 6. Person",
-            "person7": "Anwesenheit 7. Person",
-            "person8": "Anwesenheit 8. Person",
-            "person9": "Anwesenheit 9. Person",
-            "person10": "Anwesenheit 10. Person"
+    "input": {
+        "message": {
+            "name": "Nachricht",
+            "description": "Zu versendende Benachrichtigungsnachricht"
+        },
+        "person1": {
+            "name": "Anwesenheit 1. Person",
+            "description": "Anwesenheitsstatus der ersten Person"
+        },
+        "person2": {
+            "name": "Anwesenheit 2. Person",
+            "description": "Anwesenheitsstatus der zweiten Person"
+        },
+        "person3": {
+            "name": "Anwesenheit 3. Person",
+            "description": "Anwesenheitsstatus der dritten Person"
+        },
+        "person4": {
+            "name": "Anwesenheit 4. Person",
+            "description": "Anwesenheitsstatus der vierten Person"
+        },
+        "person5": {
+            "name": "Anwesenheit 5. Person",
+            "description": "Anwesenheitsstatus der fünften Person"
+        },
+        "person6": {
+            "name": "Anwesenheit 6. Person",
+            "description": "Anwesenheitsstatus der sechsten Person"
+        },
+        "person7": {
+            "name": "Anwesenheit 7. Person",
+            "description": "Anwesenheitsstatus der siebten Person"
+        },
+        "person8": {
+            "name": "Anwesenheit 8. Person",
+            "description": "Anwesenheitsstatus der achten Person"
+        },
+        "person9": {
+            "name": "Anwesenheit 9. Person",
+            "description": "Anwesenheitsstatus der neunten Person"
+        },
+        "person10": {
+            "name": "Anwesenheit 10. Person",
+            "description": "Anwesenheitsstatus der zehnten Person"
         }
     }
 }
