@@ -71,16 +71,18 @@ export function generateHelpHtml(
       sections.push("</dl>");
     } else {
       // Multiple outputs
-      outputKeys.forEach((key, index) => {
+      sections.push("<ol class=\"node-ports\">");
+      outputKeys.forEach((key) => {
         const output = helpData.outputs![key];
-        sections.push(`<ol class="node-ports">`);
         sections.push(`<li>${escapeHtml(output.name)}`);
         sections.push("<dl class=\"message-properties\">");
-        sections.push(`<dt>payload <span class="property-type">${escapeHtml(output.description)}</span></dt>`);
+        sections.push(`<dt>${escapeHtml(key)}`);
+        sections.push(`<span class="property-type">${escapeHtml(output.description)}</span>`);
+        sections.push("</dt>");
         sections.push("</dl>");
         sections.push("</li>");
-        sections.push("</ol>");
       });
+      sections.push("</ol>");
     }
   }
 
@@ -103,7 +105,7 @@ export function generateHelpHtml(
   }
 
   const helpContent = sections.join("\n");
-  return `<script type="text/markdown" data-help-name="${nodeType}">\n${helpContent}\n</script>`;
+  return `<script type="text/html" data-help-name="${nodeType}">\n${helpContent}\n</script>`;
 }
 
 /**
