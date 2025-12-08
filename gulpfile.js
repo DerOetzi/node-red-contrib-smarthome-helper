@@ -102,23 +102,23 @@ function escapeHtml(text) {
 }
 
 /**
- * Generates Node-RED help HTML from structured help data
+ * Generates Node-RED help HTML from locale data
  */
-function generateHelpHtml(nodeType, helpData) {
-  if (!helpData) {
+function generateHelpHtml(nodeType, localeData) {
+  if (!localeData || !localeData.description) {
     return "";
   }
 
   const sections = [];
 
   // Main description
-  sections.push(`<p>${escapeHtml(helpData.description)}</p>`);
+  sections.push(`<p>${escapeHtml(localeData.description)}</p>`);
 
   // Inputs section
-  if (helpData.inputs && Object.keys(helpData.inputs).length > 0) {
+  if (localeData.input && Object.keys(localeData.input).length > 0) {
     sections.push("<h3>Inputs</h3>");
     sections.push('<dl class="message-properties">');
-    for (const [key, input] of Object.entries(helpData.inputs)) {
+    for (const [key, input] of Object.entries(localeData.input)) {
       sections.push(`<dt>${escapeHtml(input.name)}`);
       sections.push(
         `<span class="property-type">msg.${escapeHtml(key)}</span>`,
@@ -130,13 +130,13 @@ function generateHelpHtml(nodeType, helpData) {
   }
 
   // Outputs section
-  if (helpData.outputs && Object.keys(helpData.outputs).length > 0) {
+  if (localeData.output && Object.keys(localeData.output).length > 0) {
     sections.push("<h3>Outputs</h3>");
-    const outputKeys = Object.keys(helpData.outputs);
+    const outputKeys = Object.keys(localeData.output);
 
     if (outputKeys.length === 1) {
       sections.push('<dl class="message-properties">');
-      const [key, output] = Object.entries(helpData.outputs)[0];
+      const [key, output] = Object.entries(localeData.output)[0];
       sections.push(`<dt>${escapeHtml(output.name)}`);
       sections.push(
         `<span class="property-type">msg.${escapeHtml(key)}</span>`,
@@ -148,7 +148,7 @@ function generateHelpHtml(nodeType, helpData) {
       // Multiple outputs
       sections.push('<ol class="node-ports">');
       outputKeys.forEach((key) => {
-        const output = helpData.outputs[key];
+        const output = localeData.output[key];
         sections.push(`<li>${escapeHtml(output.name)}`);
         sections.push('<dl class="message-properties">');
         sections.push(`<dt>${escapeHtml(key)}`);
@@ -163,22 +163,16 @@ function generateHelpHtml(nodeType, helpData) {
     }
   }
 
-  // Details section
-  if (helpData.details && helpData.details.length > 0) {
+  // Details section from field descriptions
+  if (localeData.field && Object.keys(localeData.field).length > 0) {
     sections.push("<h3>Details</h3>");
-    helpData.details.forEach((detail) => {
-      sections.push(`<p>${escapeHtml(detail.text)}</p>`);
-    });
-  }
-
-  // Custom sections
-  if (helpData.sections && helpData.sections.length > 0) {
-    helpData.sections.forEach((section) => {
-      if (section.title) {
-        sections.push(`<h3>${escapeHtml(section.title)}</h3>`);
+    for (const [fieldKey, field] of Object.entries(localeData.field)) {
+      if (field.description) {
+        sections.push(
+          `<p><strong>${escapeHtml(field.label || fieldKey)}:</strong> ${escapeHtml(field.description)}</p>`,
+        );
       }
-      sections.push(`<p>${escapeHtml(section.content)}</p>`);
-    });
+    }
   }
 
   const helpContent = sections.join("\n");
@@ -227,8 +221,8 @@ function buildHelpFiles() {
   for (const [nodeType, locales] of Object.entries(localeFiles)) {
     const locale =
       locales["en-US"] || locales["de"] || Object.values(locales)[0];
-    if (locale && locale.help) {
-      helpHtml += generateHelpHtml(nodeType, locale.help);
+    if (locale) {
+      helpHtml += generateHelpHtml(nodeType, locale);
     }
   }
 

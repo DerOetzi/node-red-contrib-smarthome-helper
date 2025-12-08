@@ -44,41 +44,5 @@
             "name": "Ergebnis",
             "description": "Ergebnis der arithmetischen Operation"
         }
-    },
-    "help": {
-        "description": "Führt arithmetische Operationen (Summe, Differenz, Produkt, Runden, Mittelwert, Min, Max) auf Zahlenwerten aus mehreren Nachrichten aus.",
-        "inputs": {
-            "value": {
-                "name": "value",
-                "description": "Numerischer Operand für die Berechnung (über Eigenschaftsabgleich)"
-            },
-            "minuend": {
-                "name": "minuend",
-                "description": "Für Subtraktion: der Wert, von dem subtrahiert wird (optional, nur für 'Differenz'-Operation)"
-            }
-        },
-        "outputs": {
-            "payload": {
-                "name": "payload",
-                "description": "Das berechnete Ergebnis mit konfigurierter Genauigkeit"
-            }
-        },
-        "details": [
-            {
-                "text": "Konfigurieren Sie Matcher, um zu identifizieren, welche Nachrichteneigenschaften Operanden enthalten. Nachrichten werden gesammelt, bis die Mindestanzahl der Operanden erreicht ist."
-            },
-            {
-                "text": "Zusätzliche statische Operanden können in der Konfiguration für alle Operationen außer 'Runden' hinzugefügt werden."
-            },
-            {
-                "text": "Für die 'Differenz'-Operation konfigurieren Sie einen 'Minuend'-Matcher, um anzugeben, von welchem Wert subtrahiert werden soll."
-            },
-            {
-                "text": "Das Ergebnis wird auf die konfigurierte Genauigkeit (Anzahl der Dezimalstellen) gerundet."
-            },
-            {
-                "text": "Operationen: add (Summe), sub (Differenz), mul (Produkt), round (auf Genauigkeit runden), mean (Durchschnitt), min (Minimum), max (Maximum)."
-            }
-        ]
     }
 }

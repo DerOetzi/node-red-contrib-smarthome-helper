@@ -19,37 +19,5 @@
             "label": "Minimum message count",
             "description": "Minimum number of messages for the operation"
         }
-    },
-    "help": {
-        "description": "Performs logical operations (AND, OR, NOT, XOR, NAND, NOR, XNOR) on boolean values from multiple messages. Extends Logical Switch with multi-input logic.",
-        "inputs": {
-            "payload": {
-                "name": "payload",
-                "description": "Boolean input values to be combined using the logical operation"
-            }
-        },
-        "outputs": {
-            "result": {
-                "name": "result",
-                "description": "Boolean result of the logical operation"
-            }
-        },
-        "details": [
-            {
-                "text": "Configure matchers to collect boolean values from different messages. Messages are matched and collected until the minimum message count is reached."
-            },
-            {
-                "text": "Supported operations: AND (all true), OR (any true), NOT (invert), XOR (exactly one true), NAND (not all true), NOR (none true), XNOR (all same)."
-            },
-            {
-                "text": "Set 'Minimum message count' to specify how many boolean inputs must be received before evaluating the operation."
-            },
-            {
-                "text": "Inherits Logical Switch features: custom true/false values, separated outputs, property targeting, and debounce settings."
-            },
-            {
-                "text": "Useful for combining multiple sensor states, implementing safety interlocks, or building complex boolean logic."
-            }
-        ]
     }
 }

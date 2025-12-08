@@ -34,45 +34,5 @@
             "name": "Message",
             "description": "Message when gate is open"
         }
-    },
-    "help": {
-        "description": "Controls message flow between automatic and manual modes. The gate can be opened, closed, or paused to control whether messages pass through.",
-        "inputs": {
-            "payload": {
-                "name": "payload",
-                "description": "The message to pass through when the gate is open"
-            },
-            "gate": {
-                "name": "gate",
-                "description": "Control command: 'pause', 'stop', 'start', 'replay', or 'resetFilter'"
-            },
-            "pause": {
-                "name": "pause",
-                "description": "Duration in milliseconds to pause the gate (used with 'pause' command)"
-            }
-        },
-        "outputs": {
-            "payload": {
-                "name": "payload",
-                "description": "The original message payload when the gate is open"
-            }
-        },
-        "details": [
-            {
-                "text": "When the gate is open (Automatic mode), messages pass through. When closed (Manual mode), messages are blocked."
-            },
-            {
-                "text": "Send msg.gate='pause' with optional msg.pause (milliseconds) to temporarily pause the gate."
-            },
-            {
-                "text": "Send msg.gate='stop' to close the gate, or msg.gate='start' to open it."
-            },
-            {
-                "text": "Use msg.gate='replay' to resend the last message, or msg.gate='resetFilter' to clear the duplicate payload filter."
-            },
-            {
-                "text": "The node displays the current state using the configured open/closed labels (default: Automatic/Manual)."
-            }
-        ]
     }
 }
