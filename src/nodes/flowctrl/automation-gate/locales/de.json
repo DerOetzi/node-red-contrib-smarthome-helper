@@ -34,45 +34,5 @@
             "name": "Nachricht",
             "description": "Nachricht, wenn das Tor geöffnet ist"
         }
-    },
-    "help": {
-        "description": "Steuert den Nachrichtenfluss zwischen automatischem und manuellem Modus. Das Gate kann geöffnet, geschlossen oder pausiert werden, um zu steuern, ob Nachrichten durchgelassen werden.",
-        "inputs": {
-            "payload": {
-                "name": "payload",
-                "description": "Die durchzuleitende Nachricht, wenn das Gate geöffnet ist"
-            },
-            "gate": {
-                "name": "gate",
-                "description": "Steuerungsbefehl: 'pause', 'stop', 'start', 'replay' oder 'resetFilter'"
-            },
-            "pause": {
-                "name": "pause",
-                "description": "Dauer in Millisekunden für Gate-Pause (verwendet mit 'pause' Befehl)"
-            }
-        },
-        "outputs": {
-            "payload": {
-                "name": "payload",
-                "description": "Die ursprüngliche Nachricht, wenn das Gate geöffnet ist"
-            }
-        },
-        "details": [
-            {
-                "text": "Wenn das Gate geöffnet ist (Automatik-Modus), werden Nachrichten durchgelassen. Wenn geschlossen (Manuell-Modus), werden Nachrichten blockiert."
-            },
-            {
-                "text": "Senden Sie msg.gate='pause' mit optionalem msg.pause (Millisekunden), um das Gate vorübergehend zu pausieren."
-            },
-            {
-                "text": "Senden Sie msg.gate='stop' zum Schließen oder msg.gate='start' zum Öffnen des Gates."
-            },
-            {
-                "text": "Verwenden Sie msg.gate='replay' um die letzte Nachricht erneut zu senden, oder msg.gate='resetFilter' um den Duplikat-Payload-Filter zurückzusetzen."
-            },
-            {
-                "text": "Der Knoten zeigt den aktuellen Status mit den konfigurierten Offen/Geschlossen-Beschriftungen an (Standard: Automatisch/Manuell)."
-            }
-        ]
     }
 }

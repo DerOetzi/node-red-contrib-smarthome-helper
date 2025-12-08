@@ -35,37 +35,5 @@
     "state": {
         "active": "Active",
         "inactive": "Inactive"
-    },
-    "help": {
-        "description": "Collects and aggregates status information from other SmartHome Helper nodes. Can be activated/deactivated based on conditions.",
-        "inputs": {
-            "activeCondition": {
-                "name": "activeCondition",
-                "description": "Message matching configured matchers activates/deactivates status collection"
-            }
-        },
-        "outputs": {
-            "payload": {
-                "name": "payload",
-                "description": "Status message containing node status and text information"
-            }
-        },
-        "details": [
-            {
-                "text": "Collects status updates from other SmartHome Helper nodes within the configured scope: Global (all flows), Flow (current flow), or Group (current group)."
-            },
-            {
-                "text": "Configure matchers to define activation conditions. When matched, the node becomes active and starts outputting status messages."
-            },
-            {
-                "text": "Status messages include both status values (msg.status) and status text (msg.statusText) from connected nodes."
-            },
-            {
-                "text": "Use 'Initial active' to start collecting status immediately when the flow starts."
-            },
-            {
-                "text": "Useful for creating centralized dashboards, monitoring multiple nodes, or triggering actions based on aggregated status."
-            }
-        ]
     }
 }

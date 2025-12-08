@@ -44,41 +44,5 @@
             "name": "Result",
             "description": "Result of the arithmetic operation"
         }
-    },
-    "help": {
-        "description": "Performs arithmetic operations (sum, difference, product, round, mean, min, max) on numeric values from multiple messages.",
-        "inputs": {
-            "value": {
-                "name": "value",
-                "description": "Numeric operand for the calculation (via msg property matching)"
-            },
-            "minuend": {
-                "name": "minuend",
-                "description": "For subtraction: the value to subtract from (optional, only for 'difference' operation)"
-            }
-        },
-        "outputs": {
-            "payload": {
-                "name": "payload",
-                "description": "The calculated result with configured precision"
-            }
-        },
-        "details": [
-            {
-                "text": "Configure matchers to identify which message properties contain operands. Messages are matched and collected until the minimum operand count is reached."
-            },
-            {
-                "text": "Additional static operands can be added in the configuration for operations other than 'round'."
-            },
-            {
-                "text": "For 'difference' operation, configure a 'minuend' matcher to specify which value to subtract from."
-            },
-            {
-                "text": "The result is rounded to the configured precision (number of decimal places)."
-            },
-            {
-                "text": "Operations: add (sum), sub (difference), mul (product), round (round to precision), mean (average), min (minimum), max (maximum)."
-            }
-        ]
     }
 }

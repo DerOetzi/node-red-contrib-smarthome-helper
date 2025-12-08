@@ -61,38 +61,44 @@ Here is an example of how you might use the provided nodes to manage a smart lig
 
 ## Development
 
-### Adding Help Text to Nodes
+### Node Help Text Generation
 
-This repository automatically generates Node-RED help text from locale files during the build process. To add help text to a node, add a `help` section to the node's locale JSON file (e.g., `locales/en-US.json`):
+This repository automatically generates Node-RED help text from the existing locale file structure during the build process. No additional `help` section is needed - the help text is generated from the existing `description`, `input`, `output`, and `field` sections.
+
+**Locale File Structure:**
 
 ```json
 {
     "name": "Node Name",
-    "description": "Brief description",
-    "help": {
-        "description": "Detailed description of what the node does",
-        "inputs": {
-            "propertyName": {
-                "name": "propertyName",
-                "description": "Description of this input property"
-            }
-        },
-        "outputs": {
-            "propertyName": {
-                "name": "propertyName", 
-                "description": "Description of this output property"
-            }
-        },
-        "details": [
-            {
-                "text": "Additional detail paragraph"
-            }
-        ]
+    "description": "Brief description of what the node does",
+    "input": {
+        "propertyName": {
+            "name": "Property Name",
+            "description": "Description of this input property"
+        }
+    },
+    "output": {
+        "resultProperty": {
+            "name": "Result",
+            "description": "Description of this output property"
+        }
+    },
+    "field": {
+        "fieldName": {
+            "label": "Field Label",
+            "description": "Description of what this field configures"
+        }
     }
 }
 ```
 
-See existing nodes for examples: `automation-gate`, `arithmetic`, `switch`, or `light-controller`.
+The build process (`npm run build`) automatically:
+- Uses `description` for the main node description
+- Uses `input.*` for the Inputs section
+- Uses `output.*` for the Outputs section
+- Uses `field.*` descriptions for the Details section
+
+See existing nodes for examples: `automation-gate`, `arithmetic`, `compare`, or `status`.
 
 ## Contributing
 

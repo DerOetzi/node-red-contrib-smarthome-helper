@@ -21,34 +21,5 @@
             "label": "Pausenzeit",
             "description": "Dauer der Pause"
         }
-    },
-    "help": {
-        "description": "Sendet Steuerbefehle an Automatisierungsgate-Knoten. Dieser Knoten erzeugt Nachrichten mit Gate-Steuerbefehlen.",
-        "inputs": {
-            "payload": {
-                "name": "payload",
-                "description": "Jede eingehende Nachricht löst die Befehlserzeugung aus"
-            }
-        },
-        "outputs": {
-            "payload": {
-                "name": "payload",
-                "description": "Ursprüngliche Nachricht mit hinzugefügten Gate-Steuerungseigenschaften"
-            }
-        },
-        "details": [
-            {
-                "text": "Dieser Knoten fügt die msg.gate-Eigenschaft mit dem konfigurierten Befehl hinzu: 'start', 'stop', 'pause', 'replay' oder 'resetFilter'."
-            },
-            {
-                "text": "Für den 'pause'-Befehl wird auch die msg.pause-Eigenschaft mit der konfigurierten Pausendauer hinzugefügt."
-            },
-            {
-                "text": "Optional kann eine Verzögerung konfiguriert werden, um die Befehlsübertragung zu verzögern."
-            },
-            {
-                "text": "Verbinden Sie diesen Knoten mit einem Automatisierungsgate-Knoten, um dessen Verhalten dynamisch zu steuern."
-            }
-        ]
     }
 }
