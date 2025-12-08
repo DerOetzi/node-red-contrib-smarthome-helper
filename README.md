@@ -63,9 +63,22 @@ Here is an example of how you might use the provided nodes to manage a smart lig
 
 ### Node Help Text Generation
 
-This repository automatically generates Node-RED help text from the existing locale file structure during the build process. No additional `help` section is needed - the help text is generated from the existing `description`, `input`, `output`, and `field` sections.
+This repository automatically generates Node-RED help text **at runtime** using the i18n translation system. Help text is generated dynamically when the Node-RED editor loads, automatically displaying content in the user's configured language.
+
+**How It Works:**
+
+1. When nodes are registered in `src/editor.ts`, the system automatically injects help text for each node
+2. Help is generated dynamically using the `generateNodeHelp()` function from `src/nodes/flowctrl/base/editor.ts`
+3. The function reads locale data using the same i18n system used for node labels and UI text
+4. Help text is created from the existing locale structure:
+   - `description` → Main node description
+   - `input.*` → Inputs section
+   - `output.*` → Outputs section
+   - `field.*` → Details section
 
 **Locale File Structure:**
+
+No special help sections needed! The system uses your existing locale data:
 
 ```json
 {
@@ -92,11 +105,12 @@ This repository automatically generates Node-RED help text from the existing loc
 }
 ```
 
-The build process (`npm run build`) automatically:
-- Uses `description` for the main node description
-- Uses `input.*` for the Inputs section
-- Uses `output.*` for the Outputs section
-- Uses `field.*` descriptions for the Details section
+**Benefits:**
+- ✅ Help text automatically in user's language (German, English, etc.)
+- ✅ No build-time generation needed
+- ✅ Uses existing locale data (no duplication)
+- ✅ Updates immediately when user changes language
+- ✅ Consistent with Node-RED's i18n system
 
 See existing nodes for examples: `automation-gate`, `arithmetic`, `compare`, or `status`.
 

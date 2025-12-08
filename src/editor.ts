@@ -6,7 +6,7 @@ import { OperatorNodesRegistry } from "./nodes/operator/nodes";
 import { NodeRegistryEntry } from "./nodes/types";
 
 import version from "./version";
-import { i18n } from "nodes/flowctrl/base/editor";
+import { i18n, generateNodeHelp } from "nodes/flowctrl/base/editor";
 
 declare const RED: EditorRED;
 
@@ -24,8 +24,38 @@ const $migrationButton = createMigrationElements();
 RED.events.on("editor:open", checkAndMigrateNode);
 RED.events.on("nodes:add", checkNode);
 
+// Register all nodes and inject help dynamically
 for (const [type, entry] of Object.entries(nodesRegistry)) {
   RED.nodes.registerType(type, entry.editor);
+  // Inject help text dynamically after a short delay to ensure i18n is loaded
+  setTimeout(() => injectNodeHelp(type), 100);
+}
+
+/**
+ * Injects help text dynamically for a node type using i18n
+ */
+function injectNodeHelp(nodeType: string) {
+  // Check if help already exists
+  if ($(`script[data-help-name="${nodeType}"]`).length > 0) {
+    return;
+  }
+
+  // Convert node type to locale prefix (e.g., "flowctrl-automation-gate" -> "flowctrl.automation-gate")
+  const localePrefix = nodeType.replace(/-/g, ".");
+
+  // Generate help HTML using i18n
+  const helpHtml = generateNodeHelp(localePrefix);
+
+  if (!helpHtml) {
+    return; // No help content available
+  }
+
+  // Create and inject help script tag
+  const helpScript = document.createElement("script");
+  helpScript.setAttribute("type", "text/html");
+  helpScript.setAttribute("data-help-name", nodeType);
+  helpScript.innerHTML = helpHtml;
+  document.body.appendChild(helpScript);
 }
 
 function checkAndMigrateNode() {
