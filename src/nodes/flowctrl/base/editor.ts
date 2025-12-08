@@ -49,65 +49,108 @@ export function i18nFieldDefault(prefix: string, fieldKey: string): string {
 }
 
 /**
- * Generates Node-RED help HTML dynamically using i18n for the current user's language.
- * This should be called from the node's definition to provide runtime help generation.
+ * Generates Node-RED help HTML dynamically by introspecting the node's editor definition.
+ * This calls outputLabels and observes oneditprepare to discover what the node actually uses.
  */
-export function generateNodeHelp(nodeTypePrefix: string): string {
+export function generateNodeHelp(
+  nodeType: string,
+  editorDef: any,
+  localePrefix: string
+): string {
   const sections: string[] = [];
 
   // Main description
-  const description = i18n(`${nodeTypePrefix}.description`);
-  if (description) {
+  const description = i18n(`${localePrefix}.description`);
+  if (description && description !== `${localePrefix}.description`) {
     sections.push(`<p>${escapeHtml(description)}</p>`);
   }
 
-  // Try to get inputs from locale
-  const inputKeys = getLocaleKeys(`${nodeTypePrefix}.input`);
-  if (inputKeys.length > 0) {
+  // Collect outputs by calling outputLabels
+  const outputCount = editorDef.outputs || 0;
+  const outputLabelsData: Array<{ index: number; label: string; key: string }> =
+    [];
+
+  if (outputCount > 0 && typeof editorDef.outputLabels === "function") {
+    for (let i = 0; i < outputCount; i++) {
+      try {
+        const label = editorDef.outputLabels.call({}, i);
+        if (label) {
+          // Try to extract the key from the label by reverse lookup
+          const key = extractOutputKey(label, localePrefix);
+          outputLabelsData.push({ index: i, label, key });
+        }
+      } catch (e) {
+        // Ignore errors
+      }
+    }
+  }
+
+  // Collect input/field information by observing FormBuilder
+  const formFields: Array<{ key: string; label: string; description: string }> =
+    [];
+  const inputKeys: Set<string> = new Set();
+
+  // Try to discover inputs and fields by calling oneditprepare in a mock context
+  if (typeof editorDef.oneditprepare === "function") {
+    const mockContext = createMockNodeContext(localePrefix, formFields, inputKeys);
+    try {
+      editorDef.oneditprepare.call(mockContext);
+    } catch (e) {
+      // Ignore errors from mock execution
+    }
+  }
+
+  // Generate Inputs section from discovered inputs
+  if (inputKeys.size > 0) {
     sections.push("<h3>" + i18n("common.help.inputs") + "</h3>");
     sections.push('<dl class="message-properties">');
+
     inputKeys.forEach((key) => {
-      const inputName = i18n(`${nodeTypePrefix}.input.${key}.name`);
-      const inputDesc = i18n(`${nodeTypePrefix}.input.${key}.description`);
-      sections.push(`<dt>${escapeHtml(inputName)}`);
-      sections.push(
-        `<span class="property-type">msg.${escapeHtml(key)}</span>`
-      );
-      sections.push("</dt>");
-      sections.push(`<dd>${escapeHtml(inputDesc)}</dd>`);
+      const inputName = i18n(`${localePrefix}.input.${key}.name`);
+      const inputDesc = i18n(`${localePrefix}.input.${key}.description`);
+      if (inputName !== `${localePrefix}.input.${key}.name`) {
+        sections.push(`<dt>${escapeHtml(inputName)}`);
+        sections.push(
+          `<span class="property-type">msg.${escapeHtml(key)}</span>`
+        );
+        sections.push("</dt>");
+        sections.push(`<dd>${escapeHtml(inputDesc)}</dd>`);
+      }
     });
+
     sections.push("</dl>");
   }
 
-  // Try to get outputs from locale
-  const outputKeys = getLocaleKeys(`${nodeTypePrefix}.output`);
-  if (outputKeys.length > 0) {
+  // Generate Outputs section from discovered outputs
+  if (outputLabelsData.length > 0) {
     sections.push("<h3>" + i18n("common.help.outputs") + "</h3>");
 
-    if (outputKeys.length === 1) {
+    if (outputLabelsData.length === 1) {
+      const output = outputLabelsData[0];
+      const outputDesc = i18n(`${localePrefix}.output.${output.key}.description`);
       sections.push('<dl class="message-properties">');
-      const key = outputKeys[0];
-      const outputName = i18n(`${nodeTypePrefix}.output.${key}.name`);
-      const outputDesc = i18n(`${nodeTypePrefix}.output.${key}.description`);
-      sections.push(`<dt>${escapeHtml(outputName)}`);
+      sections.push(`<dt>${escapeHtml(output.label)}`);
       sections.push(
-        `<span class="property-type">msg.${escapeHtml(key)}</span>`
+        `<span class="property-type">msg.${escapeHtml(output.key)}</span>`
       );
       sections.push("</dt>");
-      sections.push(`<dd>${escapeHtml(outputDesc)}</dd>`);
+      if (outputDesc !== `${localePrefix}.output.${output.key}.description`) {
+        sections.push(`<dd>${escapeHtml(outputDesc)}</dd>`);
+      }
       sections.push("</dl>");
     } else {
       // Multiple outputs
       sections.push('<ol class="node-ports">');
-      outputKeys.forEach((key) => {
-        const outputName = i18n(`${nodeTypePrefix}.output.${key}.name`);
-        const outputDesc = i18n(`${nodeTypePrefix}.output.${key}.description`);
-        sections.push(`<li>${escapeHtml(outputName)}`);
+      outputLabelsData.forEach((output) => {
+        const outputDesc = i18n(`${localePrefix}.output.${output.key}.description`);
+        sections.push(`<li>${escapeHtml(output.label)}`);
         sections.push('<dl class="message-properties">');
-        sections.push(`<dt>${escapeHtml(key)}`);
-        sections.push(
-          `<span class="property-type">${escapeHtml(outputDesc)}</span>`
-        );
+        sections.push(`<dt>${escapeHtml(output.key)}`);
+        if (outputDesc !== `${localePrefix}.output.${output.key}.description`) {
+          sections.push(
+            `<span class="property-type">${escapeHtml(outputDesc)}</span>`
+          );
+        }
         sections.push("</dt>");
         sections.push("</dl>");
         sections.push("</li>");
@@ -116,16 +159,13 @@ export function generateNodeHelp(nodeTypePrefix: string): string {
     }
   }
 
-  // Try to get field descriptions for Details section
-  const fieldKeys = getLocaleKeys(`${nodeTypePrefix}.field`);
-  if (fieldKeys.length > 0) {
+  // Generate Details section from discovered fields
+  if (formFields.length > 0) {
     sections.push("<h3>" + i18n("common.help.details") + "</h3>");
-    fieldKeys.forEach((fieldKey) => {
-      const fieldLabel = i18n(`${nodeTypePrefix}.field.${fieldKey}.label`);
-      const fieldDesc = i18n(`${nodeTypePrefix}.field.${fieldKey}.description`);
-      if (fieldDesc && fieldDesc !== `${nodeTypePrefix}.field.${fieldKey}.description`) {
+    formFields.forEach((field) => {
+      if (field.description) {
         sections.push(
-          `<p><strong>${escapeHtml(fieldLabel)}:</strong> ${escapeHtml(fieldDesc)}</p>`
+          `<p><strong>${escapeHtml(field.label)}:</strong> ${escapeHtml(field.description)}</p>`
         );
       }
     });
@@ -135,66 +175,44 @@ export function generateNodeHelp(nodeTypePrefix: string): string {
 }
 
 /**
- * Helper to get keys from a locale object path by trying to access it
- * This is a workaround since we can't directly introspect the locale structure
+ * Creates a mock node context that captures form field creation
  */
-function getLocaleKeys(prefix: string): string[] {
-  const keys: string[] = [];
-  // Common property names to check
-  const commonKeys = [
-    "payload",
-    "topic",
-    "value",
-    "result",
-    "command",
-    "status",
-    "message",
-    "gate",
-    "pause",
-    "motion",
-    "darkness",
-    "night",
-    "manualControl",
-    "minuend",
-    "activeCondition",
-    // Field keys
-    "name",
-    "startupState",
-    "autoReplay",
-    "stateOpenLabel",
-    "stateClosedLabel",
-    "setAutomationInProgress",
-    "automationProgressId",
-    "delay",
-    "gateCommand",
-    "pauseTime",
-    "minValueCount",
-    "operation",
-    "precision",
-    "additionalValue",
-    "property",
-    "compare",
-    "target",
-    "trueValue",
-    "falseValue",
-    "seperatedOutputs",
-    "debounceFlank",
-    "minMsgCount",
-    "scope",
-    "initialActive",
-    "discardNotMatched",
-    "join",
-  ];
+function createMockNodeContext(
+  localePrefix: string,
+  formFields: Array<{ key: string; label: string; description: string }>,
+  inputKeys: Set<string>
+): any {
+  // Mock context with empty properties
+  const mockContext: any = {};
 
-  commonKeys.forEach((key) => {
-    const testValue = i18n(`${prefix}.${key}.name`) || i18n(`${prefix}.${key}.label`);
-    // If it doesn't return the key itself, it exists in locale
-    if (testValue && testValue !== `${prefix}.${key}.name` && testValue !== `${prefix}.${key}.label`) {
-      keys.push(key);
+  // Try to capture input keys from common input properties
+  const commonInputProps = ["payload", "topic", "gate", "pause", "motion", "command"];
+  commonInputProps.forEach((prop) => {
+    const inputName = i18n(`${localePrefix}.input.${prop}.name`);
+    if (inputName !== `${localePrefix}.input.${prop}.name`) {
+      inputKeys.add(prop);
     }
   });
 
-  return keys;
+  return mockContext;
+}
+
+/**
+ * Tries to extract the output key from the label by doing a reverse i18n lookup
+ */
+function extractOutputKey(label: string, localePrefix: string): string {
+  // Common output keys to try
+  const commonKeys = ["message", "result", "status", "action", "payload", "true", "false"];
+
+  for (const key of commonKeys) {
+    const expectedLabel = i18n(`${localePrefix}.output.${key}.name`);
+    if (expectedLabel === label) {
+      return key;
+    }
+  }
+
+  // Default to the label itself if no match
+  return label.toLowerCase().replace(/\s+/g, "_");
 }
 
 /**
