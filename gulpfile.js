@@ -18,7 +18,6 @@ const source = require("vinyl-source-stream");
 const path = require("path");
 const through = require("through2");
 const fs = require("fs");
-const glob = require("glob");
 
 const jsonfile = require("jsonfile");
 
@@ -87,148 +86,6 @@ const buildForm = lazypipe()
   })
   .pipe(() => wrap(uiFormWrap, { type: currentNode }, { variable: "data" }));
 
-/**
- * Helper function to escape HTML special characters
- */
-function escapeHtml(text) {
-  const map = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;",
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-/**
- * Generates Node-RED help HTML from locale data
- */
-function generateHelpHtml(nodeType, localeData) {
-  if (!localeData || !localeData.description) {
-    return "";
-  }
-
-  const sections = [];
-
-  // Main description
-  sections.push(`<p>${escapeHtml(localeData.description)}</p>`);
-
-  // Inputs section
-  if (localeData.input && Object.keys(localeData.input).length > 0) {
-    sections.push("<h3>Inputs</h3>");
-    sections.push('<dl class="message-properties">');
-    for (const [key, input] of Object.entries(localeData.input)) {
-      sections.push(`<dt>${escapeHtml(input.name)}`);
-      sections.push(
-        `<span class="property-type">msg.${escapeHtml(key)}</span>`,
-      );
-      sections.push("</dt>");
-      sections.push(`<dd>${escapeHtml(input.description)}</dd>`);
-    }
-    sections.push("</dl>");
-  }
-
-  // Outputs section
-  if (localeData.output && Object.keys(localeData.output).length > 0) {
-    sections.push("<h3>Outputs</h3>");
-    const outputKeys = Object.keys(localeData.output);
-
-    if (outputKeys.length === 1) {
-      sections.push('<dl class="message-properties">');
-      const [key, output] = Object.entries(localeData.output)[0];
-      sections.push(`<dt>${escapeHtml(output.name)}`);
-      sections.push(
-        `<span class="property-type">msg.${escapeHtml(key)}</span>`,
-      );
-      sections.push("</dt>");
-      sections.push(`<dd>${escapeHtml(output.description)}</dd>`);
-      sections.push("</dl>");
-    } else {
-      // Multiple outputs
-      sections.push('<ol class="node-ports">');
-      outputKeys.forEach((key) => {
-        const output = localeData.output[key];
-        sections.push(`<li>${escapeHtml(output.name)}`);
-        sections.push('<dl class="message-properties">');
-        sections.push(`<dt>${escapeHtml(key)}`);
-        sections.push(
-          `<span class="property-type">${escapeHtml(output.description)}</span>`,
-        );
-        sections.push("</dt>");
-        sections.push("</dl>");
-        sections.push("</li>");
-      });
-      sections.push("</ol>");
-    }
-  }
-
-  // Details section from field descriptions
-  if (localeData.field && Object.keys(localeData.field).length > 0) {
-    sections.push("<h3>Details</h3>");
-    for (const [fieldKey, field] of Object.entries(localeData.field)) {
-      if (field.description) {
-        sections.push(
-          `<p><strong>${escapeHtml(field.label || fieldKey)}:</strong> ${escapeHtml(field.description)}</p>`,
-        );
-      }
-    }
-  }
-
-  const helpContent = sections.join("\n");
-  return `<script type="text/html" data-help-name="${nodeType}">\n${helpContent}\n</script>\n`;
-}
-
-/**
- * Generates help HTML from locale files for all nodes
- */
-function buildHelpFiles() {
-  const localeFiles = {};
-
-  // Read all locale files
-  const localePattern = "src/nodes/**/locales/*.json";
-  const files = glob.sync(localePattern);
-
-  files.forEach((filePath) => {
-    const relativePath = path.relative("src/nodes", filePath);
-    const pathParts = relativePath.split(path.sep);
-
-    const category = pathParts[0];
-    let node;
-    let languageFile;
-
-    if (pathParts.length > 4) {
-      languageFile = pathParts[4];
-      node = pathParts[2];
-    } else {
-      languageFile = pathParts[3];
-      node = pathParts[1];
-    }
-
-    const language = path.basename(languageFile, ".json");
-    const content = JSON.parse(fs.readFileSync(filePath, "utf8"));
-
-    const nodeType = `${category}-${node}`;
-
-    if (!localeFiles[nodeType]) {
-      localeFiles[nodeType] = {};
-    }
-    localeFiles[nodeType][language] = content;
-  });
-
-  // Generate help HTML for each node (use English as primary)
-  let helpHtml = "";
-  for (const [nodeType, locales] of Object.entries(localeFiles)) {
-    const locale =
-      locales["en-US"] || locales["de"] || Object.values(locales)[0];
-    if (locale) {
-      helpHtml += generateHelpHtml(nodeType, locale);
-    }
-  }
-
-  return helpHtml;
-}
-
 task("buildEditorFiles", () => {
   const css = src(["src/nodes/**/*.scss", "!_*.scss"]).pipe(buildSass());
 
@@ -279,9 +136,7 @@ task("buildEditorFiles", () => {
     )
     .on("finish", function () {
       const finalFilePath = path.join(editorFilePath, "index.html");
-      // Generate and append help HTML
-      const helpHtml = buildHelpFiles();
-      fs.writeFileSync(finalFilePath, this.concatContent + helpHtml);
+      fs.writeFileSync(finalFilePath, this.concatContent);
     });
 });
 
