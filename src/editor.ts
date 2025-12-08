@@ -28,13 +28,14 @@ RED.events.on("nodes:add", checkNode);
 for (const [type, entry] of Object.entries(nodesRegistry)) {
   RED.nodes.registerType(type, entry.editor);
   // Inject help text dynamically after a short delay to ensure i18n is loaded
-  setTimeout(() => injectNodeHelp(type), 100);
+  setTimeout(() => injectNodeHelp(type, entry.editor), 100);
 }
 
 /**
  * Injects help text dynamically for a node type using i18n
+ * Calls outputLabels and observes the editor definition to discover what the node uses
  */
-function injectNodeHelp(nodeType: string) {
+function injectNodeHelp(nodeType: string, editorDef: any) {
   // Check if help already exists
   if ($(`script[data-help-name="${nodeType}"]`).length > 0) {
     return;
@@ -43,8 +44,8 @@ function injectNodeHelp(nodeType: string) {
   // Convert node type to locale prefix (e.g., "flowctrl-automation-gate" -> "flowctrl.automation-gate")
   const localePrefix = nodeType.replace(/-/g, ".");
 
-  // Generate help HTML using i18n
-  const helpHtml = generateNodeHelp(localePrefix);
+  // Generate help HTML using i18n and editor definition introspection
+  const helpHtml = generateNodeHelp(nodeType, editorDef, localePrefix);
 
   if (!helpHtml) {
     return; // No help content available
