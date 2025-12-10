@@ -93,10 +93,66 @@ export function generateNodeHelp(
   // Try to discover inputs and fields by calling oneditprepare in a mock context
   if (typeof editorDef.oneditprepare === "function") {
     const mockContext = createMockNodeContext(localePrefix, formFields, inputKeys);
+    
+    // Store original jQuery if it exists
+    const originalJQuery = typeof $ !== "undefined" ? $ : undefined;
+    
     try {
+      // Create a mock jQuery for capturing form builder calls
+      const mockJQuery = createMockJQuery(formFields, localePrefix);
+      
+      // Temporarily replace global $ with our mock (if in browser environment)
+      if (typeof window !== "undefined") {
+        (window as any).$ = mockJQuery;
+      }
+      
+      // Call oneditprepare with mock context
       editorDef.oneditprepare.call(mockContext);
+      
+      // Discover fields from the node's defaults
+      if (editorDef.defaults) {
+        Object.keys(editorDef.defaults).forEach((fieldKey) => {
+          if (fieldKey !== "name" && fieldKey !== "matchers") {
+            const fieldLabel = i18n(`${localePrefix}.field.${fieldKey}.label`);
+            const fieldDesc = i18n(`${localePrefix}.field.${fieldKey}.description`);
+            if (fieldLabel !== `${localePrefix}.field.${fieldKey}.label` && 
+                fieldDesc !== `${localePrefix}.field.${fieldKey}.description`) {
+              formFields.push({
+                key: fieldKey,
+                label: fieldLabel,
+                description: fieldDesc,
+              });
+            }
+          }
+        });
+      }
+      
+      // For match-join based nodes, try to discover inputs from their editable list targets
+      // These are typically defined in the locale as input.X.name
+      // Look for common match-join input patterns
+      const matchJoinInputPatterns = [
+        "value",
+        "minuend",
+        "motion",
+        "darkness",
+        "night",
+        "manualControl",
+        "activeCondition",
+      ];
+      matchJoinInputPatterns.forEach((pattern) => {
+        const inputName = i18n(`${localePrefix}.input.${pattern}.name`);
+        if (inputName !== `${localePrefix}.input.${pattern}.name`) {
+          inputKeys.add(pattern);
+        }
+      });
     } catch (e) {
       // Ignore errors from mock execution
+      console.debug("Error during oneditprepare mock execution:", e);
+    } finally {
+      // Restore original jQuery
+      if (typeof window !== "undefined" && originalJQuery) {
+        (window as any).$ = originalJQuery;
+      }
     }
   }
 
@@ -182,11 +238,36 @@ function createMockNodeContext(
   formFields: Array<{ key: string; label: string; description: string }>,
   inputKeys: Set<string>
 ): any {
-  // Mock context with empty properties
-  const mockContext: any = {};
+  // Mock context with empty properties that might be accessed during oneditprepare
+  const mockContext: any = {
+    // Common node properties
+    name: "",
+    join: false,
+    matchers: [],
+    discardNotMatched: false,
+    minMsgCount: 2,
+    // Other common properties
+    startupState: false,
+    autoReplay: false,
+    stateOpenLabel: "",
+    stateClosedLabel: "",
+  };
 
   // Try to capture input keys from common input properties
-  const commonInputProps = ["payload", "topic", "gate", "pause", "motion", "command"];
+  const commonInputProps = [
+    "payload",
+    "topic",
+    "gate",
+    "pause",
+    "motion",
+    "command",
+    "darkness",
+    "night",
+    "manualControl",
+    "value",
+    "minuend",
+    "activeCondition",
+  ];
   commonInputProps.forEach((prop) => {
     const inputName = i18n(`${localePrefix}.input.${prop}.name`);
     if (inputName !== `${localePrefix}.input.${prop}.name`) {
@@ -195,6 +276,60 @@ function createMockNodeContext(
   });
 
   return mockContext;
+}
+
+/**
+ * Creates a mock jQuery wrapper that captures form builder calls
+ */
+function createMockJQuery(
+  formFields: Array<{ key: string; label: string; description: string }>,
+  localePrefix: string
+): any {
+  const mockJQuery = function (selector: string) {
+    // Return a mock jQuery object with chainable methods
+    const mockElement: any = {
+      // Common jQuery methods that return this for chaining
+      append: () => mockElement,
+      prepend: () => mockElement,
+      after: () => mockElement,
+      before: () => mockElement,
+      addClass: () => mockElement,
+      removeClass: () => mockElement,
+      toggleClass: () => mockElement,
+      attr: () => mockElement,
+      prop: () => mockElement,
+      val: () => "",
+      text: () => "",
+      html: () => "",
+      css: () => mockElement,
+      show: () => mockElement,
+      hide: () => mockElement,
+      toggle: () => mockElement,
+      on: () => mockElement,
+      off: () => mockElement,
+      find: () => mockElement,
+      parent: () => mockElement,
+      children: () => mockElement,
+      data: () => undefined,
+      each: () => mockElement,
+      length: 0,
+      // EditableList methods
+      editableList: (method: string, ...args: any[]) => {
+        if (method === "addItem" || method === "addItems") {
+          // Could capture editable list items here
+        }
+        return mockElement;
+      },
+    };
+    return mockElement;
+  };
+
+  // Add jQuery utilities
+  mockJQuery.parseHTML = (html: string) => [];
+  mockJQuery.extend = (...args: any[]) => args[0];
+
+  // Make it available globally for the mock context
+  return mockJQuery;
 }
 
 /**
