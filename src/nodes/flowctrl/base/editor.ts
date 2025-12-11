@@ -48,6 +48,323 @@ export function i18nFieldDefault(prefix: string, fieldKey: string): string {
   return i18n(`${prefix}.field.${fieldKey}.default`);
 }
 
+/**
+ * Generates Node-RED help HTML dynamically by introspecting the node's editor definition.
+ * This calls outputLabels and observes oneditprepare to discover what the node actually uses.
+ */
+export function generateNodeHelp(
+  nodeType: string,
+  editorDef: any,
+  localePrefix: string
+): string {
+  const sections: string[] = [];
+
+  // Main description
+  const description = i18n(`${localePrefix}.description`);
+  if (description && description !== `${localePrefix}.description`) {
+    sections.push(`<p>${escapeHtml(description)}</p>`);
+  }
+
+  // Collect outputs by calling outputLabels
+  const outputCount = editorDef.outputs || 0;
+  const outputLabelsData: Array<{ index: number; label: string; key: string }> =
+    [];
+
+  if (outputCount > 0 && typeof editorDef.outputLabels === "function") {
+    for (let i = 0; i < outputCount; i++) {
+      try {
+        const label = editorDef.outputLabels.call({}, i);
+        if (label) {
+          // Try to extract the key from the label by reverse lookup
+          const key = extractOutputKey(label, localePrefix);
+          outputLabelsData.push({ index: i, label, key });
+        }
+      } catch (e) {
+        // Ignore errors
+      }
+    }
+  }
+
+  // Collect input/field information by observing FormBuilder
+  const formFields: Array<{ key: string; label: string; description: string }> =
+    [];
+  const inputKeys: Set<string> = new Set();
+
+  // Try to discover inputs and fields by calling oneditprepare in a mock context
+  if (typeof editorDef.oneditprepare === "function") {
+    const mockContext = createMockNodeContext(localePrefix, formFields, inputKeys);
+    
+    // Store original jQuery if it exists
+    const originalJQuery = typeof $ !== "undefined" ? $ : undefined;
+    
+    try {
+      // Create a mock jQuery for capturing form builder calls
+      const mockJQuery = createMockJQuery(formFields, localePrefix);
+      
+      // Temporarily replace global $ with our mock (if in browser environment)
+      if (typeof window !== "undefined") {
+        (window as any).$ = mockJQuery;
+      }
+      
+      // Call oneditprepare with mock context
+      editorDef.oneditprepare.call(mockContext);
+      
+      // Discover fields from the node's defaults
+      if (editorDef.defaults) {
+        Object.keys(editorDef.defaults).forEach((fieldKey) => {
+          if (fieldKey !== "name" && fieldKey !== "matchers") {
+            const fieldLabel = i18n(`${localePrefix}.field.${fieldKey}.label`);
+            const fieldDesc = i18n(`${localePrefix}.field.${fieldKey}.description`);
+            if (fieldLabel !== `${localePrefix}.field.${fieldKey}.label` && 
+                fieldDesc !== `${localePrefix}.field.${fieldKey}.description`) {
+              formFields.push({
+                key: fieldKey,
+                label: fieldLabel,
+                description: fieldDesc,
+              });
+            }
+          }
+        });
+      }
+      
+      // For match-join based nodes, try to discover inputs from their editable list targets
+      // These are typically defined in the locale as input.X.name
+      // Look for common match-join input patterns
+      const matchJoinInputPatterns = [
+        "value",
+        "minuend",
+        "motion",
+        "darkness",
+        "night",
+        "manualControl",
+        "activeCondition",
+      ];
+      matchJoinInputPatterns.forEach((pattern) => {
+        const inputName = i18n(`${localePrefix}.input.${pattern}.name`);
+        if (inputName !== `${localePrefix}.input.${pattern}.name`) {
+          inputKeys.add(pattern);
+        }
+      });
+    } catch (e) {
+      // Ignore errors from mock execution
+      console.debug("Error during oneditprepare mock execution:", e);
+    } finally {
+      // Restore original jQuery
+      if (typeof window !== "undefined" && originalJQuery) {
+        (window as any).$ = originalJQuery;
+      }
+    }
+  }
+
+  // Generate Inputs section from discovered inputs
+  if (inputKeys.size > 0) {
+    sections.push("<h3>" + i18n("common.help.inputs") + "</h3>");
+    sections.push('<dl class="message-properties">');
+
+    inputKeys.forEach((key) => {
+      const inputName = i18n(`${localePrefix}.input.${key}.name`);
+      const inputDesc = i18n(`${localePrefix}.input.${key}.description`);
+      if (inputName !== `${localePrefix}.input.${key}.name`) {
+        sections.push(`<dt>${escapeHtml(inputName)}`);
+        sections.push(
+          `<span class="property-type">msg.${escapeHtml(key)}</span>`
+        );
+        sections.push("</dt>");
+        sections.push(`<dd>${escapeHtml(inputDesc)}</dd>`);
+      }
+    });
+
+    sections.push("</dl>");
+  }
+
+  // Generate Outputs section from discovered outputs
+  if (outputLabelsData.length > 0) {
+    sections.push("<h3>" + i18n("common.help.outputs") + "</h3>");
+
+    if (outputLabelsData.length === 1) {
+      const output = outputLabelsData[0];
+      const outputDesc = i18n(`${localePrefix}.output.${output.key}.description`);
+      sections.push('<dl class="message-properties">');
+      sections.push(`<dt>${escapeHtml(output.label)}`);
+      sections.push(
+        `<span class="property-type">msg.${escapeHtml(output.key)}</span>`
+      );
+      sections.push("</dt>");
+      if (outputDesc !== `${localePrefix}.output.${output.key}.description`) {
+        sections.push(`<dd>${escapeHtml(outputDesc)}</dd>`);
+      }
+      sections.push("</dl>");
+    } else {
+      // Multiple outputs
+      sections.push('<ol class="node-ports">');
+      outputLabelsData.forEach((output) => {
+        const outputDesc = i18n(`${localePrefix}.output.${output.key}.description`);
+        sections.push(`<li>${escapeHtml(output.label)}`);
+        sections.push('<dl class="message-properties">');
+        sections.push(`<dt>${escapeHtml(output.key)}`);
+        if (outputDesc !== `${localePrefix}.output.${output.key}.description`) {
+          sections.push(
+            `<span class="property-type">${escapeHtml(outputDesc)}</span>`
+          );
+        }
+        sections.push("</dt>");
+        sections.push("</dl>");
+        sections.push("</li>");
+      });
+      sections.push("</ol>");
+    }
+  }
+
+  // Generate Details section from discovered fields
+  if (formFields.length > 0) {
+    sections.push("<h3>" + i18n("common.help.details") + "</h3>");
+    formFields.forEach((field) => {
+      if (field.description) {
+        sections.push(
+          `<p><strong>${escapeHtml(field.label)}:</strong> ${escapeHtml(field.description)}</p>`
+        );
+      }
+    });
+  }
+
+  return sections.join("\n");
+}
+
+/**
+ * Creates a mock node context that captures form field creation
+ */
+function createMockNodeContext(
+  localePrefix: string,
+  formFields: Array<{ key: string; label: string; description: string }>,
+  inputKeys: Set<string>
+): any {
+  // Mock context with empty properties that might be accessed during oneditprepare
+  const mockContext: any = {
+    // Common node properties
+    name: "",
+    join: false,
+    matchers: [],
+    discardNotMatched: false,
+    minMsgCount: 2,
+    // Other common properties
+    startupState: false,
+    autoReplay: false,
+    stateOpenLabel: "",
+    stateClosedLabel: "",
+  };
+
+  // Try to capture input keys from common input properties
+  const commonInputProps = [
+    "payload",
+    "topic",
+    "gate",
+    "pause",
+    "motion",
+    "command",
+    "darkness",
+    "night",
+    "manualControl",
+    "value",
+    "minuend",
+    "activeCondition",
+  ];
+  commonInputProps.forEach((prop) => {
+    const inputName = i18n(`${localePrefix}.input.${prop}.name`);
+    if (inputName !== `${localePrefix}.input.${prop}.name`) {
+      inputKeys.add(prop);
+    }
+  });
+
+  return mockContext;
+}
+
+/**
+ * Creates a mock jQuery wrapper that captures form builder calls
+ */
+function createMockJQuery(
+  formFields: Array<{ key: string; label: string; description: string }>,
+  localePrefix: string
+): any {
+  const mockJQuery = function (selector: string) {
+    // Return a mock jQuery object with chainable methods
+    const mockElement: any = {
+      // Common jQuery methods that return this for chaining
+      append: () => mockElement,
+      prepend: () => mockElement,
+      after: () => mockElement,
+      before: () => mockElement,
+      addClass: () => mockElement,
+      removeClass: () => mockElement,
+      toggleClass: () => mockElement,
+      attr: () => mockElement,
+      prop: () => mockElement,
+      val: () => "",
+      text: () => "",
+      html: () => "",
+      css: () => mockElement,
+      show: () => mockElement,
+      hide: () => mockElement,
+      toggle: () => mockElement,
+      on: () => mockElement,
+      off: () => mockElement,
+      find: () => mockElement,
+      parent: () => mockElement,
+      children: () => mockElement,
+      data: () => undefined,
+      each: () => mockElement,
+      length: 0,
+      // EditableList methods
+      editableList: (method: string, ...args: any[]) => {
+        if (method === "addItem" || method === "addItems") {
+          // Could capture editable list items here
+        }
+        return mockElement;
+      },
+    };
+    return mockElement;
+  };
+
+  // Add jQuery utilities
+  mockJQuery.parseHTML = (html: string) => [];
+  mockJQuery.extend = (...args: any[]) => args[0];
+
+  // Make it available globally for the mock context
+  return mockJQuery;
+}
+
+/**
+ * Tries to extract the output key from the label by doing a reverse i18n lookup
+ */
+function extractOutputKey(label: string, localePrefix: string): string {
+  // Common output keys to try
+  const commonKeys = ["message", "result", "status", "action", "payload", "true", "false"];
+
+  for (const key of commonKeys) {
+    const expectedLabel = i18n(`${localePrefix}.output.${key}.name`);
+    if (expectedLabel === label) {
+      return key;
+    }
+  }
+
+  // Default to the label itself if no match
+  return label.toLowerCase().replace(/\s+/g, "_");
+}
+
+/**
+ * Escapes HTML special characters
+ */
+function escapeHtml(text: string): string {
+  if (!text) return "";
+  const map: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
 export class NodeEditorFormBuilder {
   private readonly uniqueIdCounters: Record<string, number> = {};
 
