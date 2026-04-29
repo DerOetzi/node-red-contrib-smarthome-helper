@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18nInputLabel,
@@ -19,6 +20,14 @@ import {
   ApplicableCompareFunction,
   NotApplicableCompareFunction,
 } from "../../logical/compare/types";
+
+export const MatchJoinEditorMetadata: EditorMetadata = {
+  localePrefix: "flowctrl.match-join",
+  inputMode: "matcher-topic",
+  fieldKeys: ["discardNotMatched", "join", "minMsgCount", "target"],
+  inputKeys: [],
+  outputKeys: [],
+};
 
 export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow> {
   constructor(private readonly fixedTargets?: MatchFixedTargets) {
@@ -64,12 +73,12 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
       .parent()
       .toggle(
         ((data.operation ?? MatcherRowDefaults.operation) as string) in
-          ApplicableCompareFunction
+          ApplicableCompareFunction,
       );
 
     operationSelect.on("change", function () {
       compareInputRow.toggle(
-        ($(this).val() as string) in ApplicableCompareFunction
+        ($(this).val() as string) in ApplicableCompareFunction,
       );
     });
 
@@ -163,7 +172,7 @@ const MatchJoinEditorNode: EditorNodeDef<MatchJoinEditorNodeProperties> = {
       $("#matcher-join-options"),
       {
         translatePrefix: "flowctrl.match-join",
-      }
+      },
     );
 
     matchJoinOptionsBuilder.createCheckboxInput({

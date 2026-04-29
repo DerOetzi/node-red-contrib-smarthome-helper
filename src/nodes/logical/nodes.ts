@@ -1,60 +1,16 @@
 import { NodeRegistryEntry } from "../types";
 import CompareNode from "./compare";
-import CompareEditorNode from "./compare/editor";
+import CompareEditorNode, { CompareEditorMetadata } from "./compare/editor";
 import HysteresisSwitchNode from "./hysteresis-switch";
-import HysteresisSwitchEditorNode from "./hysteresis-switch/editor";
+import HysteresisSwitchEditorNode, {
+  HysteresisSwitchEditorMetadata,
+} from "./hysteresis-switch/editor";
 import LogicalOpNode from "./op";
-import LogicalOpEditorNode from "./op/editor";
+import LogicalOpEditorNode, { LogicalOpEditorMetadata } from "./op/editor";
 import SwitchNode from "./switch";
-import SwitchEditorNode from "./switch/editor";
+import SwitchEditorNode, { SwitchEditorMetadata } from "./switch/editor";
 import ToogleNode from "./toggle";
-import ToggleEditorNode from "./toggle/editor";
-
-const CompareEditorMetadata: NodeRegistryEntry["metadata"] = {
-  localePrefix: "logical.compare",
-  inputMode: "msg-property",
-  fieldKeys: ["property", "operation", "compare"],
-  inputKeys: [],
-  outputKeys: [],
-};
-
-const HysteresisSwitchEditorMetadata: NodeRegistryEntry["metadata"] = {
-  localePrefix: "logical.hysteresis-switch",
-  inputMode: "msg-property",
-  fieldKeys: ["upperThreshold", "lowerThreshold", "initialState"],
-  inputKeys: [],
-  outputKeys: [],
-};
-
-const LogicalOpEditorMetadata: NodeRegistryEntry["metadata"] = {
-  localePrefix: "logical.op",
-  inputMode: "msg-property",
-  fieldKeys: ["operation", "minMsgCount"],
-  inputKeys: [],
-  outputKeys: [],
-};
-
-const SwitchEditorMetadata: NodeRegistryEntry["metadata"] = {
-  localePrefix: "logical.switch",
-  inputMode: "msg-property",
-  fieldKeys: [
-    "target",
-    "trueValue",
-    "falseValue",
-    "seperatedOutputs",
-    "debounceFlank",
-  ],
-  inputKeys: [],
-  outputKeys: ["true", "false", "result"],
-};
-
-const ToggleEditorMetadata: NodeRegistryEntry["metadata"] = {
-  localePrefix: "logical.toggle",
-  inputMode: "msg-property",
-  fieldKeys: [],
-  inputKeys: [],
-  outputKeys: [],
-};
+import ToggleEditorNode, { ToggleEditorMetadata } from "./toggle/editor";
 
 export const LogicalNodesRegistry: { [key: string]: NodeRegistryEntry } = {
   [CompareNode.NodeTypeName]: {

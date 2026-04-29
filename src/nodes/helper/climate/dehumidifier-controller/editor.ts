@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import DehumidifierControllerNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
@@ -12,6 +13,28 @@ import {
   DehumidifierControllerNodeOptionsDefaults,
   DehumidifierControllerTarget,
 } from "./types";
+
+export const DehumidifierControllerEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.dehumidifier-controller",
+  inputMode: "matcher-topic",
+  fieldKeys: [
+    "target",
+    "minHumidity",
+    "maxHumidity",
+    "baseTarget",
+    "minOnTime",
+    "minOffTime",
+  ],
+  inputKeys: [
+    "humidity",
+    "temperature",
+    "windowOpen",
+    "compressorActive",
+    "nightMode",
+    "absenceMode",
+  ],
+  outputKeys: ["control"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(DehumidifierControllerTarget),
@@ -48,7 +71,7 @@ const DehumidifierControllerEditorNode: EditorNodeDef<DehumidifierControllerEdit
         $("#dehumidifier-controller-options"),
         {
           translatePrefix: "helper.dehumidifier-controller",
-        }
+        },
       );
 
       dehhumidifierControllerOptionsBuilder.createNumberInput({

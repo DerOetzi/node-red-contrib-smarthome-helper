@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import HysteresisSwitchNode from ".";
 import {
   createEditorDefaults,
@@ -11,6 +12,14 @@ import {
   HysteresisSwitchNodeOptions,
   HysteresisSwitchNodeOptionsDefaults,
 } from "./types";
+
+export const HysteresisSwitchEditorMetadata: EditorMetadata = {
+  localePrefix: "logical.hysteresis-switch",
+  inputMode: "msg-property",
+  fieldKeys: ["upperThreshold", "lowerThreshold", "initialState"],
+  inputKeys: [],
+  outputKeys: [],
+};
 
 const HysteresisSwitchEditorNode: EditorNodeDef<HysteresisSwitchEditorNodeProperties> =
   {
@@ -36,7 +45,7 @@ const HysteresisSwitchEditorNode: EditorNodeDef<HysteresisSwitchEditorNodeProper
 
       const hysteresisSwitchOptionsBuilder = new NodeEditorFormBuilder(
         $("#hysteresis-switch-options"),
-        { translatePrefix: "logical.hysteresis-switch" }
+        { translatePrefix: "logical.hysteresis-switch" },
       );
 
       hysteresisSwitchOptionsBuilder.createNumberInput({

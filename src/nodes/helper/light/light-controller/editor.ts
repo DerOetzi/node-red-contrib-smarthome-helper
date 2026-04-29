@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -17,6 +18,29 @@ import {
   LightIdentifierRow,
   LightType,
 } from "./types";
+
+export const LightControllerEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.light-controller",
+  inputMode: "matcher-topic",
+  fieldKeys: [
+    "identifier",
+    "lightbulbType",
+    "homeAssistantOutput",
+    "onBrightness",
+    "transitionTime",
+    "colorTemperature",
+    "nightmodeBrightness",
+    "colorCycle",
+    "fixColorHue",
+    "fixColorSaturation",
+    "onCommand",
+    "offCommand",
+    "nightmodeCommand",
+  ],
+  inputKeys: ["command", "colorTemperature", "hue", "saturation"],
+  outputKeys: ["command"],
+};
+
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(LightControllerTarget),
   translatePrefix: "helper.light-controller",
@@ -49,7 +73,8 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
     >(LightControllerNodeOptionsDefaults),
     label: function () {
       const label = i18n(
-        "helper.light-controller.field.lightbulbType.options." + this.lightbulbType
+        "helper.light-controller.field.lightbulbType.options." +
+          this.lightbulbType,
       );
       return this.name ? `${this.name} (${label})` : label;
     },
@@ -62,11 +87,11 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
       this.onCommand = i18nFieldDefault("helper.light-controller", "onCommand");
       this.offCommand = i18nFieldDefault(
         "helper.light-controller",
-        "offCommand"
+        "offCommand",
       );
       this.nightmodeCommand = i18nFieldDefault(
         "helper.light-controller",
-        "nightmodeCommand"
+        "nightmodeCommand",
       );
     },
     oneditprepare: function () {
@@ -82,7 +107,7 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
 
       const lightControllerOptionsBuilder = new NodeEditorFormBuilder(
         $("#light-controller-options"),
-        { translatePrefix: "helper.light-controller" }
+        { translatePrefix: "helper.light-controller" },
       );
 
       const lightbulbTypeSelect =
@@ -149,7 +174,7 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
 
       inputMatcherList.showHideTarget(
         isColorTemperature,
-        LightControllerTarget.colorTemperature
+        LightControllerTarget.colorTemperature,
       );
 
       const nightmodeBrightnessRow = lightControllerOptionsBuilder
@@ -171,7 +196,7 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
           label: "colorCycle",
           value: this.colorCycle,
           icon: "refresh",
-        }
+        },
       );
 
       const colorCycleRow = colorCycleInput.parent().toggle(isRGB);
@@ -205,7 +230,7 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
       inputMatcherList.showHideTarget(showColor, LightControllerTarget.hue);
       inputMatcherList.showHideTarget(
         showColor,
-        LightControllerTarget.saturation
+        LightControllerTarget.saturation,
       );
 
       lightControllerOptionsBuilder.line();
@@ -247,7 +272,7 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
         colorTemperatureRow.toggle(isColorTemperature);
         inputMatcherList.removeTarget(
           isColorTemperature,
-          LightControllerTarget.colorTemperature
+          LightControllerTarget.colorTemperature,
         );
 
         nightmodeBrightnessRow.toggle(!isSwitch);
@@ -259,7 +284,7 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
         inputMatcherList.removeTarget(showColor, LightControllerTarget.hue);
         inputMatcherList.removeTarget(
           showColor,
-          LightControllerTarget.saturation
+          LightControllerTarget.saturation,
         );
 
         nightmodeCommandRow.toggle(!isSwitch);
@@ -275,7 +300,7 @@ const LightControllerEditorNode: EditorNodeDef<LightControllerEditorNodeProperti
         inputMatcherList.removeTarget(showColor, LightControllerTarget.hue);
         inputMatcherList.removeTarget(
           showColor,
-          LightControllerTarget.saturation
+          LightControllerTarget.saturation,
         );
       });
     },

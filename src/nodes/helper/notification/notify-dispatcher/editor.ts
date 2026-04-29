@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -12,6 +13,38 @@ import {
   NotifyDispatcherNodeOptionsDefaults,
   NotifyDispatcherTarget,
 } from "./types";
+
+export const NotifyDispatcherEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.notify-dispatcher",
+  inputMode: "matcher-topic",
+  fieldKeys: ["persons"],
+  inputKeys: [
+    "message",
+    "person1",
+    "person2",
+    "person3",
+    "person4",
+    "person5",
+    "person6",
+    "person7",
+    "person8",
+    "person9",
+    "person10",
+  ],
+  outputKeys: [
+    "broadcast",
+    "person1",
+    "person2",
+    "person3",
+    "person4",
+    "person5",
+    "person6",
+    "person7",
+    "person8",
+    "person9",
+    "person10",
+  ],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(NotifyDispatcherTarget),
@@ -48,7 +81,7 @@ const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProper
         $("#notify-dispatcher-options"),
         {
           translatePrefix: "helper.notify-dispatcher",
-        }
+        },
       );
 
       for (let i = 1; i <= 10; i++) {
@@ -70,7 +103,7 @@ const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProper
           max: 10,
         })
         .on("change", function () {
-          const persons = parseInt($(this).val() as string, 10);
+          const persons = Number.parseInt($(this).val() as string, 10);
           for (let i = 1; i <= 10; i++) {
             inputMatcherList.removeTarget(i <= persons, `person${i}`);
           }

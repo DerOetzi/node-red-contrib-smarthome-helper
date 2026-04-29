@@ -50,6 +50,28 @@ export function i18nFieldDefault(prefix: string, fieldKey: string): string {
   return i18n(`${prefix}.field.${fieldKey}.default`);
 }
 
+export const BaseEditorMetadata: EditorMetadata = {
+  localePrefix: "flowctrl.base",
+  inputMode: "msg-property",
+  fieldKeys: [
+    "name",
+    "topic",
+    "filterUniquePayload",
+    "newMsg",
+    "debounce",
+    "debounceTopic",
+    "debounceShowStatus",
+    "debounceTime",
+    "debounceLeading",
+    "debounceTrailing",
+    "statusReportingEnabled",
+    "statusItem",
+    "statusTextItem",
+  ],
+  inputKeys: [],
+  outputKeys: [],
+};
+
 /**
  * Generates Node-RED help HTML dynamically by introspecting the node's editor definition.
  * This calls outputLabels and observes oneditprepare to discover what the node actually uses.

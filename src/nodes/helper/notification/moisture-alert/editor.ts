@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import MoistureAlertNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
@@ -12,6 +13,14 @@ import {
   MoistureAlertNodeOptionsDefaults,
   MoistureAlertTarget,
 } from "./types";
+
+export const MoistureAlertEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.moisture-alert",
+  inputMode: "matcher-topic",
+  fieldKeys: ["alertThreshold", "alertInterval"],
+  inputKeys: ["moisture", "lastAlert"],
+  outputKeys: ["notification", "lastAlert"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(MoistureAlertTarget),
@@ -50,7 +59,7 @@ const MoistureAlertEditorNode: EditorNodeDef<MoistureAlertEditorNodeProperties> 
         $("#moisture-alert-options"),
         {
           translatePrefix: "helper.moisture-alert",
-        }
+        },
       );
 
       moistureAlertOptionsBuilder.createNumberInput({

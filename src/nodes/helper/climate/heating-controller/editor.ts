@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -14,6 +15,37 @@ import {
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
 } from "./types";
+
+export const HeatingControllerEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.heating-controller",
+  inputMode: "matcher-topic",
+  fieldKeys: [
+    "target",
+    "reactivateEnabled",
+    "pause",
+    "defaultActive",
+    "boostEnabled",
+    "boostTemperatureOffset",
+    "frostProtectionTemperature",
+    "comfortCommand",
+    "ecoCommand",
+    "boostCommand",
+    "frostProtectionCommand",
+    "pvBoostEnabled",
+    "pvBoostTemperatureOffset",
+  ],
+  inputKeys: [
+    "activeCondition",
+    "comfortTemperature",
+    "ecoTemperatureOffset",
+    "windowOpen",
+    "manualControl",
+    "command",
+    "pvBoost",
+    "pvBoostTemperatureOffset",
+  ],
+  outputKeys: ["heatmode", "temperature", "window", "status"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(HeatingControllerTarget),
@@ -44,19 +76,19 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     onadd: function () {
       this.comfortCommand = i18nFieldDefault(
         "helper.heating-controller",
-        "comfortCommand"
+        "comfortCommand",
       );
       this.ecoCommand = i18nFieldDefault(
         "helper.heating-controller",
-        "ecoCommand"
+        "ecoCommand",
       );
       this.boostCommand = i18nFieldDefault(
         "helper.heating-controller",
-        "boostCommand"
+        "boostCommand",
       );
       this.frostProtectionCommand = i18nFieldDefault(
         "helper.heating-controller",
-        "frostProtectionCommand"
+        "frostProtectionCommand",
       );
     },
     oneditprepare: function () {
@@ -70,7 +102,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
         $("#heating-controller-options"),
         {
           translatePrefix: "helper.heating-controller",
-        }
+        },
       );
 
       const reactivateEnabled =
@@ -134,7 +166,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
 
       inputMatcherList.showHideTarget(
         this.pvBoostEnabled,
-        HeatingControllerTarget.pvBoost
+        HeatingControllerTarget.pvBoost,
       );
 
       const pvBoostTemperatureOffsetRow = heatingControllerOptionsBuilder
@@ -155,7 +187,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
         pvBoostTemperatureOffsetRow.toggle(isChecked);
         inputMatcherList.removeTarget(
           isChecked,
-          HeatingControllerTarget.pvBoost
+          HeatingControllerTarget.pvBoost,
         );
       });
 

@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -12,6 +13,22 @@ import {
   WhitegoodReminderNodeOptionsDefaults,
   WhitegoodReminderTarget,
 } from "./types";
+
+export const WhitegoodReminderEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.whitegood-reminder",
+  inputMode: "matcher-topic",
+  fieldKeys: [
+    "offPowerLimit",
+    "standbyPowerLimit",
+    "cleanupEnabled",
+    "cleanupInterval",
+    "statusShowRuns",
+    "emptyReminderEnabled",
+    "emptyReminderInterval",
+  ],
+  inputKeys: ["power", "runs", "emptied"],
+  outputKeys: ["notification", "runs"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(WhitegoodReminderTarget),
@@ -48,18 +65,18 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
 
       inputMatcherList.showHideTarget(
         this.cleanupEnabled,
-        WhitegoodReminderTarget.runs
+        WhitegoodReminderTarget.runs,
       );
       inputMatcherList.showHideTarget(
         this.emptyReminderEnabled,
-        WhitegoodReminderTarget.emptied
+        WhitegoodReminderTarget.emptied,
       );
 
       const whitegoodReminderOptionsBuilder = new NodeEditorFormBuilder(
         $("#whitegood-reminder-options"),
         {
           translatePrefix: "helper.whitegood-reminder",
-        }
+        },
       );
 
       whitegoodReminderOptionsBuilder.createNumberInput({
@@ -106,7 +123,7 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
         cleanupIntervalRow.toggle(cleanupEnabled);
         inputMatcherList.removeTarget(
           cleanupEnabled,
-          WhitegoodReminderTarget.runs
+          WhitegoodReminderTarget.runs,
         );
       });
 
@@ -135,7 +152,7 @@ const WhitegoodReminderEditorNode: EditorNodeDef<WhitegoodReminderEditorNodeProp
         emptyReminderIntervalRow.toggle(emptyReminderEnabled);
         inputMatcherList.removeTarget(
           emptyReminderEnabled,
-          WhitegoodReminderTarget.emptied
+          WhitegoodReminderTarget.emptied,
         );
       });
     },

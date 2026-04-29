@@ -12,6 +12,22 @@ import {
   AutomationGateNodeOptions,
   AutomationGateNodeOptionsDefaults,
 } from "./types";
+import { EditorMetadata } from "../../types";
+
+export const AutomationGateEditorMetadata: EditorMetadata = {
+  localePrefix: "flowctrl.automation-gate",
+  inputMode: "msg-property",
+  fieldKeys: [
+    "startupState",
+    "autoReplay",
+    "stateOpenLabel",
+    "stateClosedLabel",
+    "setAutomationInProgress",
+    "automationProgressId",
+  ],
+  inputKeys: ["gate", "pause"],
+  outputKeys: ["message"],
+};
 
 const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties> =
   {
@@ -29,17 +45,20 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
     },
     inputs: AutomationGateNodeOptionsDefaults.inputs,
     outputs: AutomationGateNodeOptionsDefaults.outputs,
-    outputLabels: function (_index) {
-      return i18nOutputLabel("flowctrl.automation-gate", "message");
+    outputLabels: function () {
+      return i18nOutputLabel(
+        AutomationGateEditorMetadata.localePrefix,
+        "message",
+      );
     },
     onadd: function () {
       this.stateOpenLabel = i18nFieldDefault(
-        "flowctrl.automation-gate",
-        "stateOpenLabel"
+        AutomationGateEditorMetadata.localePrefix,
+        "stateOpenLabel",
       );
       this.stateClosedLabel = i18nFieldDefault(
-        "flowctrl.automation-gate",
-        "stateClosedLabel"
+        AutomationGateEditorMetadata.localePrefix,
+        "stateClosedLabel",
       );
     },
     oneditprepare: function () {
@@ -48,8 +67,8 @@ const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties
       const automationGateOptionsBuilder = new NodeEditorFormBuilder(
         $("#automation-gate-options"),
         {
-          translatePrefix: "flowctrl.automation-gate",
-        }
+          translatePrefix: AutomationGateEditorMetadata.localePrefix,
+        },
       );
 
       automationGateOptionsBuilder.createCheckboxInput({

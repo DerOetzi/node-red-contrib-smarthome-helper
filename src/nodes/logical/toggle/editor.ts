@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import { createEditorDefaults, i18n } from "../../flowctrl/base/editor";
 import SwitchNodeEditor from "../switch/editor";
 import ToggleNode from "./";
@@ -8,12 +9,20 @@ import {
   ToggleNodeOptionsDefaults,
 } from "./types";
 
+export const ToggleEditorMetadata: EditorMetadata = {
+  localePrefix: "logical.toggle",
+  inputMode: "msg-property",
+  fieldKeys: [],
+  inputKeys: [],
+  outputKeys: [],
+};
+
 const ToggleEditorNode: EditorNodeDef<ToggleEditorNodeProperties> = {
   category: ToggleNode.NodeCategoryLabel,
   color: ToggleNode.NodeColor,
   icon: "font-awesome/fa-exchange",
   defaults: createEditorDefaults<ToggleNodeOptions, ToggleEditorNodeProperties>(
-    ToggleNodeOptionsDefaults
+    ToggleNodeOptionsDefaults,
   ),
   label: function () {
     return this.name?.trim() ? this.name.trim() : i18n("logical.toggle.name");
