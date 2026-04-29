@@ -1,8 +1,4 @@
 import { NodeRegistryEntry } from "../../types";
-import DehumidifierControllerNode from "./dehumidifier-controller";
-import DehumidifierControllerEditorNode, {
-  DehumidifierControllerEditorMetadata,
-} from "./dehumidifier-controller/editor";
 import HeatingControllerNode from "./heating-controller";
 import HeatingControllerEditorNode, {
   HeatingControllerEditorMetadata,
@@ -14,11 +10,6 @@ import HygroCalculatorEditorNode, {
 
 export const HelperClimateNodesRegistry: { [key: string]: NodeRegistryEntry } =
   {
-    [DehumidifierControllerNode.NodeTypeName]: {
-      node: DehumidifierControllerNode,
-      editor: DehumidifierControllerEditorNode,
-      metadata: DehumidifierControllerEditorMetadata,
-    },
     [HeatingControllerNode.NodeTypeName]: {
       node: HeatingControllerNode,
       editor: HeatingControllerEditorNode,

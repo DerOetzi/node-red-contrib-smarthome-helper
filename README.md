@@ -40,7 +40,6 @@ Requirements:
 
 ### Helper Climate
 
-- `dehumidifier-controller`: Control logic for dehumidification
 - `heating-controller`: Heating logic with modes and additional conditions
 - `hygro-calculator`: Calculates dew point and absolute humidity
 
