@@ -6,7 +6,7 @@ import { OperatorNodesRegistry } from "./nodes/operator/nodes";
 import { NodeRegistryEntry } from "./nodes/types";
 
 import version from "./version";
-import { i18n, generateNodeHelp } from "nodes/flowctrl/base/editor";
+import { i18n, generateNodeHelp } from "./nodes/flowctrl/base/editor";
 
 declare const RED: EditorRED;
 
