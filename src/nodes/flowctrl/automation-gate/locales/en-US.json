@@ -29,6 +29,16 @@
             "description": "Unique identifier for automation status"
         }
     },
+    "input": {
+        "gate": {
+            "name": "Gate command",
+            "description": "Control command: 'start' opens, 'stop' closes, 'pause' pauses for a given time, 'replay' resends the last message, 'resetFilter' resets the unique payload filter"
+        },
+        "pause": {
+            "name": "Pause duration",
+            "description": "Duration of the pause in milliseconds (used together with the 'pause' command)"
+        }
+    },
     "output": {
         "message": {
             "name": "Message",
