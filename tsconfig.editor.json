@@ -3,10 +3,10 @@
     "outDir": "./dist",
     "target": "es6",
     "module": "es2015",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "lib": ["es2016", "dom", "es6"],
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src",
+    "rootDir": "./src",
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   }

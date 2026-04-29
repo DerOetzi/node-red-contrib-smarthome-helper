@@ -1,7 +1,9 @@
 import { EditorNodeDef, EditorNodePropertiesDef, EditorRED } from "node-red";
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
+import { EditorMetadata } from "../../types";
 import version from "../../../version";
 import BaseNode from "./";
+import { generateNodeHelp as generateNodeHelpFromDefinition } from "./help";
 import {
   BaseEditorNodeProperties,
   BaseNodeOptions,
@@ -48,12 +50,53 @@ export function i18nFieldDefault(prefix: string, fieldKey: string): string {
   return i18n(`${prefix}.field.${fieldKey}.default`);
 }
 
+export const BaseEditorMetadata: EditorMetadata = {
+  localePrefix: "flowctrl.base",
+  inputMode: "msg-property",
+  fieldKeys: [
+    "name",
+    "topic",
+    "filterUniquePayload",
+    "newMsg",
+    "debounce",
+    "debounceTopic",
+    "debounceShowStatus",
+    "debounceTime",
+    "debounceLeading",
+    "debounceTrailing",
+    "statusReportingEnabled",
+    "statusItem",
+    "statusTextItem",
+  ],
+  inputKeys: [],
+  outputKeys: [],
+};
+
+/**
+ * Generates Node-RED help HTML dynamically by introspecting the node's editor definition.
+ * This calls outputLabels and observes oneditprepare to discover what the node actually uses.
+ */
+export function generateNodeHelp(
+  nodeType: string,
+  editorDef: any,
+  localePrefix: string,
+  metadata?: EditorMetadata,
+): string {
+  return generateNodeHelpFromDefinition(
+    nodeType,
+    editorDef,
+    localePrefix,
+    i18n,
+    metadata,
+  );
+}
+
 export class NodeEditorFormBuilder {
   private readonly uniqueIdCounters: Record<string, number> = {};
 
   constructor(
     private container: JQuery,
-    private readonly params: NodeEditorFormBuilderParams
+    private readonly params: NodeEditorFormBuilderParams,
   ) {}
 
   public newContainer(container: JQuery) {
@@ -78,7 +121,7 @@ export class NodeEditorFormBuilder {
   }
 
   public createTypedInput(
-    params: NodeEditorFormBuilderTypedInputParams
+    params: NodeEditorFormBuilderTypedInputParams,
   ): JQuery {
     const input = this.createTextInput(params);
 
@@ -100,14 +143,14 @@ export class NodeEditorFormBuilder {
       })
       .typedInput(
         "width",
-        params.width ?? this.params.defaultTypeInputWidth ?? 310
+        params.width ?? this.params.defaultTypeInputWidth ?? 310,
       );
 
     return input;
   }
 
   public createAutocompleteInput(
-    params: NodeEditorFormBuilderAutocompleteInputParams
+    params: NodeEditorFormBuilderAutocompleteInputParams,
   ): JQuery {
     const input = this.createTextInput(params);
 
@@ -142,7 +185,7 @@ export class NodeEditorFormBuilder {
   }
 
   public createNumberInput(
-    params: NodeEditorFormBuilderNumberInputParams
+    params: NodeEditorFormBuilderNumberInputParams,
   ): JQuery {
     const uniqueId = this.uniqueId(params.id);
     const formRow = this.createFormRowWithLabel(uniqueId, params);
@@ -194,10 +237,10 @@ export class NodeEditorFormBuilder {
     params.options.forEach(
       (option: string | NodeEditorFormBuilderSelectOption) => {
         let optionText: string;
-        
+
         if (typeof option === "string") {
           optionText = i18n(
-            `${optionTranslatePrefix}.field.${params.label}.options.${option}`
+            `${optionTranslatePrefix}.field.${params.label}.options.${option}`,
           );
         } else {
           optionText = option.label;
@@ -209,7 +252,7 @@ export class NodeEditorFormBuilder {
           value: optionValue,
           text: optionText,
         }).appendTo(select);
-      }
+      },
     );
 
     if (params.value) {
@@ -220,7 +263,7 @@ export class NodeEditorFormBuilder {
   }
 
   public createHiddenInput(
-    params: NodeEditorFormBuilderHiddenInputParams
+    params: NodeEditorFormBuilderHiddenInputParams,
   ): JQuery {
     const uniqueId = this.uniqueId(params.id);
     const input = $("<input/>", {
@@ -236,7 +279,7 @@ export class NodeEditorFormBuilder {
 
   private createFormRowWithLabel(
     id: string,
-    params: NodeEditorFormBuilderInputParams
+    params: NodeEditorFormBuilderInputParams,
   ): JQuery {
     const formRow = this.createFormRow();
     const labelTranslatePrefix =
@@ -245,7 +288,7 @@ export class NodeEditorFormBuilder {
       this.params.translatePrefix;
 
     let text = i18n(`${labelTranslatePrefix}.field.${params.label}.label`);
-    
+
     if (params.labelPlaceholders) {
       text = text.replace(/\{\{(\w+)\}\}/g, (_, key) => {
         return params.labelPlaceholders![key] || "";
@@ -289,7 +332,7 @@ export class NodeEditorFormEditableList<T> {
   public initialize(
     id: string,
     items: T[],
-    rowBuilderParams: NodeEditorFormBuilderParams
+    rowBuilderParams: NodeEditorFormBuilderParams,
   ): this {
     this.listContainer = $(`#${id}`);
 
@@ -308,7 +351,7 @@ export class NodeEditorFormEditableList<T> {
         sortable: true,
         height: "auto",
         header: $("<div>").append(
-          $("<label>").text(i18n(`${headerPrefix}.${id}`))
+          $("<label>").text(i18n(`${headerPrefix}.${id}`)),
         ),
         addItem: (rowContainer: JQuery, idx: number, data: T) => {
           rowContainer.css({
@@ -352,7 +395,7 @@ export class NodeEditorFormEditableList<T> {
             }
             return record;
           },
-          { ...defaults } as T
+          { ...defaults } as T,
         );
     });
   }
@@ -373,7 +416,7 @@ export function createEditorDefaults<
         acc[key] = { value: (defaults as any)[key] };
         return acc;
       },
-      {} as Record<string, { value: any }>
+      {} as Record<string, { value: any }>,
     ),
   } as EditorNodePropertiesDef<U>;
 }
@@ -396,7 +439,7 @@ const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
         $("<div/>", {
           text: i18n("flowctrl.base.migrated").replace("{version}", version),
           class: "migration-info",
-        })
+        }),
       );
       this.migrated = false;
       RED.editor.updateNodeProperties(this);
@@ -456,7 +499,7 @@ const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
       $("#base-status-options"),
       {
         translatePrefix: "flowctrl.base",
-      }
+      },
     );
 
     const statusReportingEnabledCheckbox =

@@ -1,0 +1,47 @@
+{
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "1.9.1",
+      "resolved": "ghcr.io/devcontainers/features/docker-outside-of-docker@sha256:dc89605f01ff2f24252c61f7c8ba2a58ccdbc14f2ebf87a7952d9e2b89834850",
+      "integrity": "sha256:dc89605f01ff2f24252c61f7c8ba2a58ccdbc14f2ebf87a7952d9e2b89834850"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "1.1.0",
+      "resolved": "ghcr.io/devcontainers/features/github-cli@sha256:d22f50b70ed75339b4eed1ba9ecde3a1791f90e88d37936517e3bace0bbad671",
+      "integrity": "sha256:d22f50b70ed75339b4eed1ba9ecde3a1791f90e88d37936517e3bace0bbad671"
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "1.8.0",
+      "resolved": "ghcr.io/devcontainers/features/java@sha256:9663ce0219ff85786e87901ce5f0a59f488edd5f99b46015192cda48468b233a",
+      "integrity": "sha256:9663ce0219ff85786e87901ce5f0a59f488edd5f99b46015192cda48468b233a"
+    },
+    "ghcr.io/devcontainers/features/node": {
+      "version": "2.0.0",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:fedd4c11f7adfb64283b578dddc7da906728daa25fa293351c9d913231acf12f",
+      "integrity": "sha256:fedd4c11f7adfb64283b578dddc7da906728daa25fa293351c9d913231acf12f"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "1.7.1",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:8c0de46939b61958041700ee89e3493f3b2e4131a06dc46b4d9423427d06e5f6",
+      "integrity": "sha256:8c0de46939b61958041700ee89e3493f3b2e4131a06dc46b4d9423427d06e5f6"
+    },
+    "ghcr.io/gvatsal60/dev-container-features/sonarlint:1": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/gvatsal60/dev-container-features/sonarlint@sha256:6727d8472f64a0f348e6052306b093e782929983456dcf14ee0360f79b1fe1ae",
+      "integrity": "sha256:6727d8472f64a0f348e6052306b093e782929983456dcf14ee0360f79b1fe1ae",
+      "dependsOn": [
+        "ghcr.io/devcontainers/features/node"
+      ]
+    },
+    "ghcr.io/michidk/devcontainers-features/typos:1": {
+      "version": "1.0.0",
+      "resolved": "ghcr.io/michidk/devcontainers-features/typos@sha256:da745af5afb8b09ef2d312b51555e5e077cc5ee9fa3fa56d17b51eca34dcd952",
+      "integrity": "sha256:da745af5afb8b09ef2d312b51555e5e077cc5ee9fa3fa56d17b51eca34dcd952"
+    },
+    "ghcr.io/r3dpoint/devcontainer-features/tailwindcss-standalone-cli:1": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/r3dpoint/devcontainer-features/tailwindcss-standalone-cli@sha256:b2b60737e993bf9b6c74838520111469a2f27e9d0ba648b8c4dc7d3ed38fdfe0",
+      "integrity": "sha256:b2b60737e993bf9b6c74838520111469a2f27e9d0ba648b8c4dc7d3ed38fdfe0"
+    }
+  }
+}

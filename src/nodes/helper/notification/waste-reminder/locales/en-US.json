@@ -15,6 +15,12 @@
       "description": "Days remaining until collection"
     }
   },
+  "output": {
+    "notification": {
+      "name": "Notification",
+      "description": "Notification output"
+    }
+  },
   "notification": {
     "title": "Waste Reminder",
     "message": "Tomorrow {waste} will be collected",

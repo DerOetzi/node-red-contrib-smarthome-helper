@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import StatusNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
@@ -15,6 +16,14 @@ import {
   StatusNodeTarget,
 } from "./types";
 
+export const StatusEditorMetadata: EditorMetadata = {
+  localePrefix: "flowctrl.status",
+  inputMode: "msg-property",
+  fieldKeys: ["scope", "initialActive"],
+  inputKeys: ["activeCondition"],
+  outputKeys: ["status", "statusText"],
+};
+
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(StatusNodeTarget),
   translatePrefix: "flowctrl.status",
@@ -25,7 +34,7 @@ const StatusEditorNode: EditorNodeDef<StatusEditorNodeProperties> = {
   color: StatusNode.NodeColor,
   icon: "font-awesome/fa-key",
   defaults: createEditorDefaults<StatusNodeOptions, StatusEditorNodeProperties>(
-    StatusNodeOptionsDefaults
+    StatusNodeOptionsDefaults,
   ),
   label: function () {
     return this.name?.trim() ? this.name.trim() : i18n("flowctrl.status.name");
@@ -46,7 +55,7 @@ const StatusEditorNode: EditorNodeDef<StatusEditorNodeProperties> = {
 
     const statusNodeOptionsBuilder = new NodeEditorFormBuilder(
       $("#status-node-options"),
-      { translatePrefix: "flowctrl.status" }
+      { translatePrefix: "flowctrl.status" },
     );
 
     statusNodeOptionsBuilder.createSelectInput({

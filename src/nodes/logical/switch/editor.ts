@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -13,12 +14,26 @@ import {
   SwitchNodeOptionsDefaults,
 } from "./types";
 
+export const SwitchEditorMetadata: EditorMetadata = {
+  localePrefix: "logical.switch",
+  inputMode: "msg-property",
+  fieldKeys: [
+    "target",
+    "trueValue",
+    "falseValue",
+    "seperatedOutputs",
+    "debounceFlank",
+  ],
+  inputKeys: [],
+  outputKeys: ["true", "false", "result"],
+};
+
 const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
   category: SwitchNode.NodeCategoryLabel,
   color: SwitchNode.NodeColor,
   icon: "switch.svg",
   defaults: createEditorDefaults<SwitchNodeOptions, SwitchEditorNodeProperties>(
-    SwitchNodeOptionsDefaults
+    SwitchNodeOptionsDefaults,
   ),
   label: function () {
     return this.name?.trim() ? this.name.trim() : i18n("logical.switch.name");
@@ -41,7 +56,7 @@ const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
       $("#logical-switch-options"),
       {
         translatePrefix: "logical.switch",
-      }
+      },
     );
 
     switchOptionsBuilder.createTypedInput({

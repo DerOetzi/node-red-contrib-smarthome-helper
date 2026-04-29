@@ -29,6 +29,16 @@
             "description": "Eindeutiger Bezeichner für den Automatisierungsstatus"
         }
     },
+    "input": {
+        "gate": {
+            "name": "Gate-Befehl",
+            "description": "Steuerbefehl: 'start' öffnet, 'stop' schließt, 'pause' pausiert für eine bestimmte Zeit, 'replay' sendet die letzte Nachricht erneut, 'resetFilter' setzt den Eindeutigkeitsfilter zurück"
+        },
+        "pause": {
+            "name": "Pausenzeit",
+            "description": "Dauer der Pause in Millisekunden (zusammen mit dem Befehl 'pause' verwendet)"
+        }
+    },
     "output": {
         "message": {
             "name": "Nachricht",

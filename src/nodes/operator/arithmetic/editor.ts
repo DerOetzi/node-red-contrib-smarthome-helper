@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -16,6 +17,14 @@ import {
   ArithmeticNodeOptionsDefaults,
   ArithmeticTarget,
 } from "./types";
+
+export const ArithmeticEditorMetadata: EditorMetadata = {
+  localePrefix: "operator.arithmetic",
+  inputMode: "msg-property",
+  fieldKeys: ["minValueCount", "operation", "precision", "additionalValue"],
+  inputKeys: ["value", "minuend"],
+  outputKeys: ["result"],
+};
 
 const operandMatcherList = new MatchJoinEditableList({
   targets: Object.values(ArithmeticTarget),
@@ -48,7 +57,7 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
   >(ArithmeticNodeOptionsDefaults),
   label: function () {
     const operator = i18n(
-      "operator.arithmetic.field.operation.options." + this.operation
+      "operator.arithmetic.field.operation.options." + this.operation,
     );
     let label: string = operator;
 
@@ -72,7 +81,7 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
       })
       .showHideTarget(
         this.operation === ArithmeticFunction.sub,
-        ArithmeticTarget.minuend
+        ArithmeticTarget.minuend,
       );
 
     additionalValuesList
@@ -83,7 +92,7 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
 
     const arithmeticOptionsBuilder = new NodeEditorFormBuilder(
       $("#arithmetic-options"),
-      { translatePrefix: "operator.arithmetic" }
+      { translatePrefix: "operator.arithmetic" },
     );
 
     const minValueCount = arithmeticOptionsBuilder.createNumberInput({
@@ -111,7 +120,7 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
 
         operandMatcherList.removeTarget(
           operation === ArithmeticFunction.sub,
-          ArithmeticTarget.minuend
+          ArithmeticTarget.minuend,
         );
 
         minValueCountRow.toggle(!isRound);

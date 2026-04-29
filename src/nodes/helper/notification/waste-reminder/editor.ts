@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import WasteReminderNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
@@ -11,6 +12,14 @@ import {
   WasteReminderNodeOptionsDefaults,
   WasteReminderTarget,
 } from "./types";
+
+export const WasteReminderEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.waste-reminder",
+  inputMode: "matcher-topic",
+  fieldKeys: [],
+  inputKeys: ["types", "remaining"],
+  outputKeys: ["notification"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(WasteReminderTarget),

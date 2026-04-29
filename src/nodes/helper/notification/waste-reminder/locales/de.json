@@ -15,6 +15,12 @@
       "description": "Verbleibende Tage bis zur Abholung"
     }
   },
+  "output": {
+    "notification": {
+      "name": "Benachrichtigung",
+      "description": "Benachrichtigungsausgabe"
+    }
+  },
   "notification": {
     "title": "Müllerinnerung",
     "message": "Morgen wird {waste} abgeholt",

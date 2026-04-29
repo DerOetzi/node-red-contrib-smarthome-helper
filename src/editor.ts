@@ -3,10 +3,10 @@ import { FlowCtrlNodesRegistry } from "./nodes/flowctrl/nodes";
 import { HelperNodesRegistry } from "./nodes/helper/nodes";
 import { LogicalNodesRegistry } from "./nodes/logical/nodes";
 import { OperatorNodesRegistry } from "./nodes/operator/nodes";
-import { NodeRegistryEntry } from "./nodes/types";
+import { EditorMetadata, NodeRegistryEntry } from "./nodes/types";
 
 import version from "./version";
-import { i18n } from "nodes/flowctrl/base/editor";
+import { i18n, generateNodeHelp } from "./nodes/flowctrl/base/editor";
 
 declare const RED: EditorRED;
 
@@ -24,8 +24,59 @@ const $migrationButton = createMigrationElements();
 RED.events.on("editor:open", checkAndMigrateNode);
 RED.events.on("nodes:add", checkNode);
 
+// Register all nodes and inject help dynamically
 for (const [type, entry] of Object.entries(nodesRegistry)) {
   RED.nodes.registerType(type, entry.editor);
+  // Inject help text dynamically after a short delay to ensure i18n is loaded
+  setTimeout(() => injectNodeHelp(type, entry.editor, entry.metadata), 100);
+}
+
+/**
+ * Injects help text dynamically for a node type using i18n
+ * Calls outputLabels and observes the editor definition to discover what the node uses
+ */
+function injectNodeHelp(
+  nodeType: string,
+  editorDef: any,
+  metadata?: EditorMetadata,
+) {
+  // Check if help already exists
+  if ($(`script[data-help-name="${nodeType}"]`).length > 0) {
+    return;
+  }
+
+  // Convert node type to locale prefix by replacing only the first separator.
+  // Example: "flowctrl-automation-gate" -> "flowctrl.automation-gate"
+  //          "helper-waste-reminder" -> "helper.waste-reminder"
+  const localePrefix = toLocalePrefix(nodeType);
+
+  // Generate help HTML using i18n and editor definition introspection
+  const helpHtml = generateNodeHelp(
+    nodeType,
+    editorDef,
+    localePrefix,
+    metadata,
+  );
+
+  if (!helpHtml) {
+    return; // No help content available
+  }
+
+  // Create and inject help script tag
+  const helpScript = document.createElement("script");
+  helpScript.setAttribute("type", "text/html");
+  helpScript.dataset.helpName = nodeType;
+  helpScript.innerHTML = helpHtml;
+  document.body.appendChild(helpScript);
+}
+
+function toLocalePrefix(nodeType: string): string {
+  const separatorIndex = nodeType.indexOf("-");
+  if (separatorIndex < 0) {
+    return nodeType;
+  }
+
+  return `${nodeType.slice(0, separatorIndex)}.${nodeType.slice(separatorIndex + 1)}`;
 }
 
 function checkAndMigrateNode() {
@@ -49,7 +100,7 @@ function checkNode(node: EditorNodeInstance<any>) {
     const migrationNeeded = entry.node.Migration.check(node);
     if (migrationNeeded) {
       console.log(
-        `Smart Home Helper: Node ${node.z} - ${node.name || node.id} of type ${node.type} requires migration. Please open and re-save the node to apply the migration.`
+        `Smart Home Helper: Node ${node.z} - ${node.name || node.id} of type ${node.type} requires migration. Please open and re-save the node to apply the migration.`,
       );
       $migrationButton.show();
     }
@@ -57,9 +108,11 @@ function checkNode(node: EditorNodeInstance<any>) {
 }
 
 function getNodeRegistryEntry(
-  node: EditorNodeInstance<any> | null
+  node: EditorNodeInstance<any> | null,
 ): NodeRegistryEntry | null {
-  if (!node) return null;
+  if (!node) {
+    return null;
+  }
   return nodesRegistry[node.type] || null;
 }
 
@@ -76,11 +129,11 @@ function createMigrationElements() {
       ${message}
       <div class="ui-state-error ha-alert-box"><strong>${attention}:</strong> ${warning}</div>
     </div>
-    `
+    `,
   );
 
   const $migrationButtonHTML = $.parseHTML(
-    `<li><button id="upgrade-smarthome-helper-node"><i class="fa fa-refresh"></i> ${buttonLabel}</button></li>`
+    `<li><button id="upgrade-smarthome-helper-node"><i class="fa fa-refresh"></i> ${buttonLabel}</button></li>`,
   );
 
   $("body").append($dialogHtml);
@@ -121,12 +174,12 @@ function checkAndMigrateAllNodes() {
     const entry = getNodeRegistryEntry(node);
     if (entry) {
       console.log(
-        `Smart Home Helper: Checking node ${node.z} - ${node.name || node.id} of type ${node.type} for migration...`
+        `Smart Home Helper: Checking node ${node.z} - ${node.name || node.id} of type ${node.type} for migration...`,
       );
       const migrated = entry.node.Migration.checkAndMigrate(node);
       if (migrated) {
         console.log(
-          `Smart Home Helper: Migrated node ${node.z} - ${node.name || node.id} of type ${node.type}.`
+          `Smart Home Helper: Migrated node ${node.z} - ${node.name || node.id} of type ${node.type}.`,
         );
         migratedCount++;
       }
@@ -135,11 +188,11 @@ function checkAndMigrateAllNodes() {
     return true;
   };
 
-  RED.nodes.eachNode(checkAndMigrate as (n: object) => boolean);
+  RED.nodes.eachNode(checkAndMigrate as any);
 
   const resultMessage = i18n("common.migration.result").replace(
     "{count}",
-    migratedCount.toString()
+    migratedCount.toString(),
   );
   RED.notify(resultMessage);
   console.log(resultMessage);

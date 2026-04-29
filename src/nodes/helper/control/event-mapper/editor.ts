@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -17,6 +18,14 @@ import {
 } from "./types";
 
 import EventMapperNode from "./";
+
+export const EventMapperEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.event-mapper",
+  inputMode: "matcher-topic",
+  fieldKeys: ["event", "mapped", "ignoreUnknownEvents"],
+  inputKeys: ["event"],
+  outputKeys: ["event"],
+};
 
 const eventMatcherList = new MatchJoinEditableList({
   targets: Object.values(EventMapperTarget),
@@ -45,11 +54,11 @@ class EventMapperRuleEditableList extends NodeEditorFormEditableList<EventMapper
   }
 
   private eventAutocomplete(
-    val: string
+    val: string,
   ): Promise<NodeEditorFormBuilderAutocompleteMatch[]> {
     const matches: NodeEditorFormBuilderAutocompleteMatch[] = [];
     autocompleteEvents.forEach((v) => {
-      let i = v.toLowerCase().indexOf(val.toLowerCase());
+      const i = v.toLowerCase().indexOf(val.toLowerCase());
       if (i > -1) {
         matches.push({
           value: v,
@@ -98,7 +107,7 @@ const EventMapperEditorNode: EditorNodeDef<EventMapperEditorNodeProperties> = {
       $("#event-mapper-options"),
       {
         translatePrefix: "helper.event-mapper",
-      }
+      },
     );
 
     eventMapperOptionsBuilder.createCheckboxInput({

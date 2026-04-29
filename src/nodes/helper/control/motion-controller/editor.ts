@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -12,6 +13,14 @@ import {
   MotionControllerNodeOptionsDefaults,
   MotionControllerTarget,
 } from "./types";
+
+export const MotionControllerEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.motion-controller",
+  inputMode: "matcher-topic",
+  fieldKeys: ["timer", "onlyDarkness", "nightmodeEnabled"],
+  inputKeys: ["motion", "darkness", "night", "manualControl", "command"],
+  outputKeys: ["action", "status"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(MotionControllerTarget),
@@ -42,7 +51,7 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
       this.onCommand = i18n("helper.light-controller.default.onCommand");
       this.offCommand = i18n("helper.light-controller.default.offCommand");
       this.nightmodeCommand = i18n(
-        "helper.light-controller.default.nightmodeCommand"
+        "helper.light-controller.default.nightmodeCommand",
       );
     },
     oneditprepare: function () {
@@ -56,7 +65,7 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
         $("#motion-controller-options"),
         {
           translatePrefix: "helper.motion-controller",
-        }
+        },
       );
 
       motionControllerOptionsBuilder.createTimeInput({
@@ -78,13 +87,13 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
         .on("change", function () {
           inputMatcherList.showHideTarget(
             $(this).is(":checked"),
-            MotionControllerTarget.darkness
+            MotionControllerTarget.darkness,
           );
         });
 
       inputMatcherList.showHideTarget(
         this.onlyDarkness,
-        MotionControllerTarget.darkness
+        MotionControllerTarget.darkness,
       );
 
       const nightmodeEnabledCheckbox =
@@ -97,7 +106,7 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
 
       inputMatcherList.showHideTarget(
         this.nightmodeEnabled,
-        MotionControllerTarget.night
+        MotionControllerTarget.night,
       );
 
       motionControllerOptionsBuilder.line();
@@ -133,7 +142,7 @@ const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProper
         const nightmodeEnabled = $(this).is(":checked");
         inputMatcherList.removeTarget(
           nightmodeEnabled,
-          MotionControllerTarget.night
+          MotionControllerTarget.night,
         );
         nightmodeCommandRow.toggle(nightmodeEnabled);
       });

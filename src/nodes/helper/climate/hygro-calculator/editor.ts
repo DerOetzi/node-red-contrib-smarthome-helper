@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../../types";
 import HygroCalculatorNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
@@ -11,6 +12,14 @@ import {
   HygroCalculatorNodeOptionsDefaults,
   HygroCalculatorTarget,
 } from "./types";
+
+export const HygroCalculatorEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.hygro-calculator",
+  inputMode: "matcher-topic",
+  fieldKeys: [],
+  inputKeys: ["temperature", "humidity"],
+  outputKeys: ["dewPoint", "absoluteHumidity"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(HygroCalculatorTarget),

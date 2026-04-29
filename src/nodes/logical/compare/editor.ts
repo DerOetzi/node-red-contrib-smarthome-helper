@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import {
   createEditorDefaults,
   i18n,
@@ -14,6 +15,14 @@ import {
   NotApplicableCompareFunction,
 } from "./types";
 
+export const CompareEditorMetadata: EditorMetadata = {
+  localePrefix: "logical.compare",
+  inputMode: "msg-property",
+  fieldKeys: ["property", "operation", "compare"],
+  inputKeys: [],
+  outputKeys: [],
+};
+
 const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
   category: CompareNode.NodeCategoryLabel,
   color: CompareNode.NodeColor,
@@ -25,7 +34,7 @@ const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
   // Migration support for older versions of the switch node.
   label: function () {
     const operation = i18n(
-      "logical.compare.field.operation.options." + this.operation
+      "logical.compare.field.operation.options." + this.operation,
     );
     let label: string = operation;
 
@@ -48,7 +57,7 @@ const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
 
     const compareOptionsBuilder = new NodeEditorFormBuilder(
       $("#logical-compare-options"),
-      { translatePrefix: "logical.compare" }
+      { translatePrefix: "logical.compare" },
     );
 
     compareOptionsBuilder.createTypedInput({
@@ -88,7 +97,7 @@ const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
 
     valueInput.on("change", function () {
       valueInputRow.toggle(
-        (operationSelect.val() as string) in ApplicableCompareFunction
+        (operationSelect.val() as string) in ApplicableCompareFunction,
       );
     });
   },

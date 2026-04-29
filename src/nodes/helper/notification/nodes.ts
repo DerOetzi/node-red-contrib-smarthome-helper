@@ -1,14 +1,24 @@
 import { NodeRegistryEntry } from "../../types";
 import MoistureAlertNode from "./moisture-alert";
-import MoistureAlertEditorNode from "./moisture-alert/editor";
+import MoistureAlertEditorNode, {
+  MoistureAlertEditorMetadata,
+} from "./moisture-alert/editor";
 import NotifyDispatcherNode from "./notify-dispatcher";
-import NotifyDispatcherEditorNode from "./notify-dispatcher/editor";
+import NotifyDispatcherEditorNode, {
+  NotifyDispatcherEditorMetadata,
+} from "./notify-dispatcher/editor";
 import WasteReminderNode from "./waste-reminder";
-import WasteReminderEditorNode from "./waste-reminder/editor";
+import WasteReminderEditorNode, {
+  WasteReminderEditorMetadata,
+} from "./waste-reminder/editor";
 import WhitegoodReminderNode from "./whitegood-reminder";
-import WhitegoodReminderEditorNode from "./whitegood-reminder/editor";
+import WhitegoodReminderEditorNode, {
+  WhitegoodReminderEditorMetadata,
+} from "./whitegood-reminder/editor";
 import WindowReminderNode from "./window-reminder";
-import WindowReminderEditorNode from "./window-reminder/editor";
+import WindowReminderEditorNode, {
+  WindowReminderEditorMetadata,
+} from "./window-reminder/editor";
 
 export const HelperNotificationNodesRegistry: {
   [key: string]: NodeRegistryEntry;
@@ -16,21 +26,26 @@ export const HelperNotificationNodesRegistry: {
   [MoistureAlertNode.NodeTypeName]: {
     node: MoistureAlertNode,
     editor: MoistureAlertEditorNode,
+    metadata: MoistureAlertEditorMetadata,
   },
   [NotifyDispatcherNode.NodeTypeName]: {
     node: NotifyDispatcherNode,
     editor: NotifyDispatcherEditorNode,
+    metadata: NotifyDispatcherEditorMetadata,
   },
   [WasteReminderNode.NodeTypeName]: {
     node: WasteReminderNode,
     editor: WasteReminderEditorNode,
+    metadata: WasteReminderEditorMetadata,
   },
   [WhitegoodReminderNode.NodeTypeName]: {
     node: WhitegoodReminderNode,
     editor: WhitegoodReminderEditorNode,
+    metadata: WhitegoodReminderEditorMetadata,
   },
   [WindowReminderNode.NodeTypeName]: {
     node: WindowReminderNode,
     editor: WindowReminderEditorNode,
+    metadata: WindowReminderEditorMetadata,
   },
 };

@@ -1,9 +1,9 @@
 {
-  "name": "Window reminder",
-  "description": "This node can remind you if a window is opened for a long time. It can also notify you if nobody is at home.",
+  "name": "Fenstererinnerung",
+  "description": "Dieser Node erinnert, wenn ein Fenster lange offen ist. Er kann auch benachrichtigen, wenn niemand zu Hause ist.",
   "field": {
     "interval": {
-      "label": "Interval ({{row}})",
+      "label": "Intervall ({{row}})",
       "description": "Erinnerungsintervall-Konfiguration"
     }
   },

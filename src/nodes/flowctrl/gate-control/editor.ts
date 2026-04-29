@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   NodeEditorFormBuilder,
@@ -9,6 +10,14 @@ import {
   GateControlNodeOptions,
   GateControlNodeOptionsDefaults,
 } from "./types";
+
+export const GateControlEditorMetadata: EditorMetadata = {
+  localePrefix: "flowctrl.gate-control",
+  inputMode: "msg-property",
+  fieldKeys: ["delay", "gateCommand", "pauseTime"],
+  inputKeys: [],
+  outputKeys: [],
+};
 
 const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
   category: GateControlNode.NodeCategoryLabel,
@@ -35,7 +44,7 @@ const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
 
     const gateControlOptionsBuilder = new NodeEditorFormBuilder(
       $("#gate-control-options"),
-      { translatePrefix: "flowctrl.gate-control" }
+      { translatePrefix: "flowctrl.gate-control" },
     );
 
     gateControlOptionsBuilder.createNumberInput({

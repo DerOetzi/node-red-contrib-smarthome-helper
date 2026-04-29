@@ -1,5 +1,6 @@
 import { EditorNodeDef } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
+import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -14,6 +15,14 @@ import {
   WindowReminderNodeOptionsDefaults,
   WindowReminderTarget,
 } from "./types";
+
+export const WindowReminderEditorMetadata: EditorMetadata = {
+  localePrefix: "helper.window-reminder",
+  inputMode: "matcher-topic",
+  fieldKeys: ["interval"],
+  inputKeys: ["window", "presence", "command", "intervalSelect"],
+  outputKeys: ["notification"],
+};
 
 const inputMatcherList = new MatchJoinEditableList({
   targets: Object.values(WindowReminderTarget),
@@ -64,12 +73,12 @@ const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties
 
       inputMatcherList.showHideTarget(
         this.intervals.length > 0,
-        WindowReminderTarget.command
+        WindowReminderTarget.command,
       );
 
       inputMatcherList.showHideTarget(
         this.intervals.length > 1,
-        WindowReminderTarget.intervalSelect
+        WindowReminderTarget.intervalSelect,
       );
 
       intervalsList.initialize("window-reminder-intervals", this.intervals, {
@@ -81,11 +90,11 @@ const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties
 
         inputMatcherList.removeTarget(
           intervalsCount > 0,
-          WindowReminderTarget.command
+          WindowReminderTarget.command,
         );
         inputMatcherList.removeTarget(
           intervalsCount > 1,
-          WindowReminderTarget.intervalSelect
+          WindowReminderTarget.intervalSelect,
         );
       });
     },

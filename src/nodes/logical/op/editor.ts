@@ -1,4 +1,5 @@
 import { EditorNodeDef } from "node-red";
+import { EditorMetadata } from "../../types";
 import {
   createEditorDefaults,
   i18n,
@@ -13,6 +14,14 @@ import {
   LogicalOpNodeOptionsDefaults,
 } from "./types";
 
+export const LogicalOpEditorMetadata: EditorMetadata = {
+  localePrefix: "logical.op",
+  inputMode: "msg-property",
+  fieldKeys: ["operation", "minMsgCount"],
+  inputKeys: [],
+  outputKeys: [],
+};
+
 const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
   category: LogicalOpNode.NodeCategoryLabel,
   color: LogicalOpNode.NodeColor,
@@ -22,7 +31,9 @@ const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
     LogicalOpEditorNodeProperties
   >(LogicalOpNodeOptionsDefaults),
   label: function () {
-    const logicalOp = i18n("logical.op.field.operation.options." + this.operation);
+    const logicalOp = i18n(
+      "logical.op.field.operation.options." + this.operation,
+    );
     let label: string = logicalOp;
 
     if (this.name) {
@@ -44,7 +55,7 @@ const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
 
     const logicalOpOptionsBuilder = new NodeEditorFormBuilder(
       $("#logical-op-options"),
-      { translatePrefix: "logical.op" }
+      { translatePrefix: "logical.op" },
     );
 
     const operationSelect = logicalOpOptionsBuilder.createSelectInput({
