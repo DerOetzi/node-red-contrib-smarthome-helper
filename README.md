@@ -1,143 +1,187 @@
-# node-red-contrib-smarthome-helper
+# @deroetzi/node-red-contrib-smarthome-helper
 
-`node-red-contrib-smarthome-helper` is a Node-RED module designed to provide utility functions and tools that simplify the development of smart home automations. It includes helper functions to manage device states, handle complex calculations, and facilitate communication between nodes in a Node-RED flow.
+A collection of Node-RED nodes for smart home automations, focused on reusable logic, robust control, and maintainable flows.
 
-## Features
+## Overview
 
-- Provides helper functions to support smart home automation.
-- Facilitates the integration of complex logic into Node-RED flows.
-- Built with reusability and simplicity in mind.
+This package provides multiple node groups:
+
+- Flow control nodes for gate, match, and status behavior
+- Helper nodes for climate, lighting, notifications, and event mapping
+- Logical nodes for comparisons and boolean operations
+- Operator nodes for arithmetic calculations
+
+In addition, the project generates Node-RED help text at runtime from editor definitions and existing locale files.
 
 ## Installation
 
-To install the module, run the following command in your Node-RED user directory (typically `~/.node-red`):
+Install in your Node-RED user directory (typically `~/.node-red`):
 
-```sh
-npm install node-red-contrib-smarthome-helper
+```bash
+npm install @deroetzi/node-red-contrib-smarthome-helper
 ```
 
-After installation, restart Node-RED to load the new helper functions.
+Then restart Node-RED.
 
-## Available Nodes
+Requirements:
 
-### Automation Gate
+- Node.js >= 20
+- Node-RED >= 2 (tested in this package with Node-RED 4)
 
-The **Automation Gate** node is used to control the flow of messages based on specified conditions. It acts as a gate that opens or closes depending on the defined automation logic. This allows users to create flows that only pass messages when certain criteria are met, such as time of day, device state, or other environmental conditions.
+## Included Nodes
 
-**Features:**
+### FlowCtrl
 
-- Configurable conditions to control message flow.
-- Useful for creating more complex automation logic where actions depend on multiple factors.
+- `automation-gate`: Gate for automation flow and replay scenarios
+- `base`: Shared base for debounce, topic evaluation, and status reporting
+- `gate-control`: Controls gates via commands (for example start, stop, pause)
+- `match-join`: Matching/joining of multiple input messages
+- `status`: Creates and distributes status information
 
-**Example Use Case:**
+### Helper Climate
 
-- Use the Automation Gate to allow motion sensor events to trigger a light only during nighttime hours.
+- `dehumidifier-controller`: Control logic for dehumidification
+- `heating-controller`: Heating logic with modes and additional conditions
+- `hygro-calculator`: Calculates dew point and absolute humidity
 
-### Control Gate
+### Helper Control
 
-The **Control Gate** node provides a mechanism to enable or disable the flow of messages manually or based on an external trigger. It can be used to create manual overrides or to temporarily pause parts of an automation flow.
+- `event-mapper`: Maps events to target values/actions
+- `motion-controller`: Motion-based switching logic
 
-**Features:**
+### Helper Light
 
-- Manual control to enable or disable the flow of messages.
-- External input can be used to dynamically change the state of the gate.
+- `light-controller`: Light control (switch, RGB, color temperature)
 
-**Example Use Case:**
+### Helper Notification
 
-- Use the Control Gate to temporarily disable an automation, such as preventing notifications during certain times (e.g., when guests are over).
+- `moisture-alert`: Alerts based on moisture thresholds
+- `notify-dispatcher`: Distribution to broadcast and person-specific channels
+- `waste-reminder`: Reminders for waste collection events
+- `whitegood-reminder`: Reminders for household appliances
+- `window-reminder`: Window-related reminder logic
 
-## Usage
+### Logical
 
-1. Open Node-RED.
-2. Use the provided nodes (`Automation Gate` and `Control Gate`) to enhance your smart home automations.
-3. Configure the nodes to interact with your smart devices effectively.
+- `compare`: Comparison operators
+- `hysteresis-switch`: Switching with hysteresis
+- `op`: Boolean operations
+- `switch`: Conditional routing/switching
+- `toggle`: Toggle logic
 
-## Example Usage
+### Operator
 
-Here is an example of how you might use the provided nodes to manage a smart lighting system:
+- `arithmetic`: Arithmetic operations on message values
 
-1. Add an **Automation Gate** to ensure lights only turn on when motion is detected and it is nighttime.
-2. Use a **Control Gate** to manually disable the lighting automation during specific situations, such as when you are hosting guests.
+## Runtime Node Help
 
-## Development
+Help text in the Node-RED UI is generated dynamically when the editor loads.
 
-### Node Help Text Generation
+Core idea:
 
-This repository automatically generates Node-RED help text **at runtime** by introspecting the node's editor definition. Help text is generated dynamically when the Node-RED editor loads, using the same i18n system as the node's `label` and `outputLabels` functions.
+1. During registration in `src/editor.ts`, help injection is triggered for each node.
+2. The help logic in `src/nodes/flowctrl/base/help.ts` combines:
+   - Editor definition (`defaults`, `outputLabels`, `oneditprepare`)
+   - Editor metadata (`EditorMetadata`)
+   - i18n entries from locale files
+3. The result is a language-aware, consistent help block including description, parameters, inputs, and outputs.
 
-**How It Works:**
+Important:
 
-1. When nodes are registered in `src/editor.ts`, the system calls `injectNodeHelp()` for each node with its editor definition
-2. Help is generated by the `generateNodeHelp()` function which:
-   - Calls the node's `outputLabels()` function to discover actual outputs
-   - Calls `oneditprepare()` in a mock context to discover form fields and inputs
-   - Extracts field information from the node's `defaults` definition
-   - For match-join based nodes, discovers inputs from editable list targets
-   - Uses i18n to fetch localized descriptions for discovered elements
-3. Help text displays in the user's configured Node-RED language
+- Metadata is exported directly in each node's `editor.ts`.
+- Registry files only consume these exports.
+- No separate manual help HTML is required per node.
 
-**Implementation Details:**
+## Localization
 
-The help generator introspects the node's editor definition:
-- **Outputs**: Calls `outputLabels(index)` for each output to get the actual label
-- **Inputs**: Discovers inputs by:
-  - Checking common input properties in locale files
-  - For match-join based nodes, checking editable list target patterns
-- **Fields**: Discovers fields by:
-  - Executing `oneditprepare()` in a mock jQuery context
-  - Extracting field keys from the node's `defaults` definition
-  - Fetching field labels and descriptions via i18n
-- **Descriptions**: Uses i18n calls like `i18n("nodePrefix.output.key.description")`
+Translations are located in `src/nodes/**/locales/*.json` and `src/locales/**`.
 
-**Locale File Structure:**
-
-No special help sections needed! The system uses your existing locale data:
+Typical structure per node:
 
 ```json
 {
-    "name": "Node Name",
-    "description": "Brief description of what the node does",
-    "input": {
-        "propertyName": {
-            "name": "Property Name",
-            "description": "Description of this input property"
-        }
-    },
-    "output": {
-        "resultProperty": {
-            "name": "Result",
-            "description": "Description of this output property"
-        }
-    },
-    "field": {
-        "fieldName": {
-            "label": "Field Label",
-            "description": "Description of what this field configures"
-        }
+  "name": "Node Name",
+  "description": "Short description",
+  "input": {
+    "exampleInput": {
+      "name": "Input Name",
+      "description": "Description"
     }
+  },
+  "output": {
+    "exampleOutput": {
+      "name": "Output Name",
+      "description": "Description"
+    }
+  },
+  "field": {
+    "exampleField": {
+      "label": "Field label",
+      "description": "Description"
+    }
+  }
 }
 ```
 
-**Benefits:**
-- ✅ Help text automatically in user's language (German, English, etc.)
-- ✅ Introspects actual node definition (calls `outputLabels`, etc.)
-- ✅ Uses existing locale data (no duplication)
-- ✅ Updates immediately when user changes language
-- ✅ Consistent with Node-RED's i18n system
+## Development
 
-See existing nodes for examples: `automation-gate`, `arithmetic`, `compare`, or `status`.
+### Setup
+
+```bash
+npm install
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+The build (Gulp) generates, among other artifacts:
+
+- `dist/index.js` for Node-RED runtime
+- `dist/index.html` for editor assets
+- `dist/locales/**` from merged translations
+- `examples/*.json` from the devcontainer flow source
+
+### Linting
+
+```bash
+npm run lint
+npm run lint_fix
+```
+
+### Watch Mode
+
+```bash
+npx gulp watch
+```
+
+Notes:
+
+- `src/version.ts` and files in `dist/` are generated and should not be edited manually.
+- Always register new nodes through the appropriate registry so runtime and editor registration stay in sync.
+
+## Examples
+
+The `examples/` directory contains ready-to-use example flows:
+
+- `flowctrl.json`
+- `helper_climate.json`
+- `helper_lights.json`
+- `helper_notification.json`
+- `logical.json`
+- `operators.json`
 
 ## Contributing
 
-Feel free to contribute by opening issues or creating pull requests. Contributions are always welcome to make this project even better.
+Issues and pull requests are welcome. For larger changes, a short alignment upfront is recommended.
 
 ## License
 
-This project is licensed under the MIT License.
+MIT
 
 ## Links
 
-- [Node-RED](https://nodered.org/)
-- [GitHub Repository](https://github.com/DerOetzi/node-red-contrib-smarthome-helper)
-
-For more information and documentation, please visit the [GitHub repository](https://github.com/DerOetzi/node-red-contrib-smarthome-helper).
+- Node-RED: https://nodered.org/
+- Repository: https://github.com/DerOetzi/node-red-contrib-smarthome-helper
