@@ -160,7 +160,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
           this.blocked = false;
           this.handleActiveCondition();
         },
-        convertToMilliseconds(this.config.pause, this.config.pauseUnit)
+        convertToMilliseconds(this.config.pause, this.config.pauseUnit),
       );
     }
   }
@@ -200,7 +200,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
       if (!this.blocked || ignoreBlocked) {
         const messageFlowHeatmode = new NodeMessageFlow(
           { topic: "heatmode", payload: heatmode },
-          0
+          0,
         );
         this.debounce(messageFlowHeatmode);
       } else {
@@ -217,7 +217,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
       const messageFlowTemperature = new NodeMessageFlow(
         { topic: "target_temperature", payload: targetTemperature },
-        1
+        1,
       );
       this.debounce(messageFlowTemperature);
     }

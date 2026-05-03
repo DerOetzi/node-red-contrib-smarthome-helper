@@ -1182,7 +1182,7 @@
     "version": "0.27.0",
     "topic": "topic",
     "topicType": "msg",
-    "filterUniquePayload": false,
+    "filterUniquePayload": true,
     "newMsg": false,
     "outputs": 1,
     "inputs": 1,
@@ -1213,7 +1213,7 @@
         "target": "test"
       }
     ],
-    "discardNotMatched": true,
+    "discardNotMatched": false,
     "join": true,
     "minMsgCount": "2",
     "x": 340,

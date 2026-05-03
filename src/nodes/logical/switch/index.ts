@@ -24,7 +24,7 @@ export default class SwitchNode<
     RED: NodeAPI,
     node: Node,
     config: T,
-    defaultConfig: U = SwitchNodeOptionsDefaults as U
+    defaultConfig: U = SwitchNodeOptionsDefaults as U,
   ) {
     super(RED, node, config, defaultConfig);
   }
@@ -85,9 +85,10 @@ export default class SwitchNode<
       configValue,
       configType,
       this.node,
-      messageFlow.originalMsg
+      messageFlow.originalMsg,
     );
 
+    messageFlow.filterUniquePayload = result;
     messageFlow.updateAdditionalAttribute("result", result);
 
     if (this.config.target === "payload") {

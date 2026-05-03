@@ -107,12 +107,10 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
   };
 
 export interface HeatingControllerNodeDef
-  extends MatchJoinNodeDef,
-    HeatingControllerNodeOptions {}
+  extends MatchJoinNodeDef, HeatingControllerNodeOptions {}
 
 export interface HeatingControllerEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    HeatingControllerNodeOptions {}
+  extends MatchJoinEditorNodeProperties, HeatingControllerNodeOptions {}
 
 export interface HeatingControllerNodeMessage extends NodeMessage {
   command?: HeatingControllerCommand;

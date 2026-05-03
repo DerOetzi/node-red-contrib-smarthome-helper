@@ -56,5 +56,4 @@ export const MatchJoinNodeOptionsDefaults: MatchJoinNodeOptions = {
 export interface MatchJoinNodeDef extends BaseNodeDef, MatchJoinNodeOptions {}
 
 export interface MatchJoinEditorNodeProperties
-  extends BaseEditorNodeProperties,
-    MatchJoinNodeOptions {}
+  extends BaseEditorNodeProperties, MatchJoinNodeOptions {}

@@ -21,7 +21,7 @@ export class LogicalOperation {
   }
 
   public static or(payloads: boolean[]): boolean {
-    return payloads.some((value: boolean) => value === true);
+    return payloads.includes(true);
   }
 
   public static not(payloads: boolean[]): boolean {
@@ -85,11 +85,11 @@ export default class LogicalOpNode extends SwitchNode<
         const payloads = Object.values(this.messages);
         messageFlow.updateAdditionalAttribute(
           "input",
-          cloneDeep(this.messages)
+          cloneDeep(this.messages),
         );
         messageFlow.payload = LogicalOperation.func(
           this.config.operation,
-          payloads
+          payloads,
         );
       } else {
         this.nodeStatus = "waiting";

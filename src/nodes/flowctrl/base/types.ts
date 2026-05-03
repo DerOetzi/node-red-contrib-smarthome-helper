@@ -83,7 +83,8 @@ const BaseNodeDebounceOptionsDefaults: BaseNodeDebounceOptions = {
 };
 
 export interface BaseNodeOptions
-  extends BaseNodeCommonOptions,
+  extends
+    BaseNodeCommonOptions,
     BaseNodeStatusOptions,
     BaseNodeDebounceOptions {}
 
@@ -98,8 +99,7 @@ export interface BaseNodeDef extends NodeDef, BaseNodeOptions {
 }
 
 export interface BaseEditorNodeProperties
-  extends EditorNodeProperties,
-    BaseNodeOptions {
+  extends EditorNodeProperties, BaseNodeOptions {
   name: string;
   migrated: boolean;
 }
@@ -110,6 +110,8 @@ export class NodeMessageFlow {
   private _topic?: string;
   private _payload?: any;
 
+  private _filterUniquePayload?: any;
+
   protected additionalAttributes: Record<string, any> = {};
 
   constructor(
@@ -117,10 +119,12 @@ export class NodeMessageFlow {
     public output: number,
     public send?: NodeSendFunction,
     topic?: string,
-    payload?: any
+    payload?: any,
+    filterUniquePayload?: any,
   ) {
     this.topic = topic ?? msg.topic;
     this.payload = payload ?? msg.payload;
+    this._filterUniquePayload = filterUniquePayload;
     this._originalMessage = cloneDeep<NodeMessage>(msg);
   }
 
@@ -185,6 +189,14 @@ export class NodeMessageFlow {
     return cloneDeep<NodeMessage>(this._originalMessage);
   }
 
+  public get filterUniquePayload(): any {
+    return cloneDeep<any>(this._filterUniquePayload);
+  }
+
+  public set filterUniquePayload(filterUniquePayload: any) {
+    this._filterUniquePayload = cloneDeep<any>(filterUniquePayload);
+  }
+
   public get originalTopic(): string | undefined {
     return this._originalMessage.topic;
   }
@@ -207,10 +219,11 @@ export class NodeMessageFlow {
     const messageFlow = new NodeMessageFlow(
       this.originalMsg,
       this.output,
-      this.send
+      this.send,
     );
     messageFlow.topic = this.topic;
     messageFlow.payload = this.payload;
+    messageFlow.filterUniquePayload = this.filterUniquePayload;
     messageFlow.additionalAttributes = cloneDeep(this.additionalAttributes);
     return messageFlow;
   }
@@ -257,15 +270,13 @@ export interface NodeEditorFormBuilderInputParams {
   translateLabelPrefix?: string;
 }
 
-export interface NodeEditorFormBuilderNumberInputParams
-  extends NodeEditorFormBuilderInputParams {
+export interface NodeEditorFormBuilderNumberInputParams extends NodeEditorFormBuilderInputParams {
   min?: number;
   max?: number;
   step?: number;
 }
 
-export interface NodeEditorFormBuilderTypedInputParams
-  extends NodeEditorFormBuilderInputParams {
+export interface NodeEditorFormBuilderTypedInputParams extends NodeEditorFormBuilderInputParams {
   idType: string;
   valueType: string;
   types?: (EditorWidgetTypedInputType | EditorWidgetTypedInputTypeDefinition)[];
@@ -278,13 +289,11 @@ export interface NodeEditorFormBuilderAutocompleteMatch {
   i: number;
 }
 
-export interface NodeEditorFormBuilderAutocompleteInputParams
-  extends NodeEditorFormBuilderInputParams {
+export interface NodeEditorFormBuilderAutocompleteInputParams extends NodeEditorFormBuilderInputParams {
   search: (term: string) => Promise<NodeEditorFormBuilderAutocompleteMatch[]>;
 }
 
-export interface NodeEditorFormBuilderTimeInputParams
-  extends NodeEditorFormBuilderInputParams {
+export interface NodeEditorFormBuilderTimeInputParams extends NodeEditorFormBuilderInputParams {
   idType: string;
   valueType?: TimeIntervalUnit;
 }
@@ -294,8 +303,7 @@ export interface NodeEditorFormBuilderSelectOption {
   label: string;
 }
 
-export interface NodeEditorFormBuilderSelectParams
-  extends NodeEditorFormBuilderInputParams {
+export interface NodeEditorFormBuilderSelectParams extends NodeEditorFormBuilderInputParams {
   options: (string | NodeEditorFormBuilderSelectOption)[];
 }
 

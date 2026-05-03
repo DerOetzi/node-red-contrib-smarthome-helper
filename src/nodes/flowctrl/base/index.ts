@@ -65,7 +65,7 @@ export default class BaseNode<
     protected readonly RED: NodeAPI,
     protected readonly node: Node,
     config: T,
-    defaultConfig: U = BaseNodeOptionsDefaults as U
+    defaultConfig: U = BaseNodeOptionsDefaults as U,
   ) {
     this.config = {
       ...defaultConfig,
@@ -88,7 +88,7 @@ export default class BaseNode<
   public registerStatusListener(statusNode: StatusNode): boolean {
     const shouldRegister = statusNode.shouldRegister(
       this.config.z,
-      this.config.g
+      this.config.g,
     );
 
     if (shouldRegister) {
@@ -126,7 +126,7 @@ export default class BaseNode<
   protected onInput(
     msg: NodeMessageInFlow,
     send: NodeSendFunction,
-    done: NodeDoneFunction
+    done: NodeDoneFunction,
   ) {
     const messageFlow = new NodeMessageFlow(msg, 0, send);
 
@@ -186,8 +186,8 @@ export default class BaseNode<
           },
           convertToMilliseconds(
             this.config.debounceTime,
-            this.config.debounceUnit
-          )
+            this.config.debounceUnit,
+          ),
         );
       }
     } else {
@@ -219,7 +219,7 @@ export default class BaseNode<
 
   protected cloneMessage(
     msg: NodeMessage,
-    deleteMsgId: boolean = true
+    deleteMsgId: boolean = true,
   ): NodeMessage {
     const clonedMsg = cloneDeep<NodeMessage>(msg);
 
@@ -238,7 +238,7 @@ export default class BaseNode<
       this.config.topic,
       this.config.topicType,
       this.node,
-      tempMsg
+      tempMsg,
     );
 
     messageFlow.topic = topicValue;
@@ -252,12 +252,19 @@ export default class BaseNode<
     if (this.config.filterUniquePayload ?? false) {
       const compareKey = this.config.filterkey ?? topicValue ?? "default";
 
-      if (this.filterPayload(this.lastSentPayloads, msg, compareKey)) {
+      let compareValue: any;
+      if (messageFlow.filterUniquePayload === undefined) {
+        compareValue = msg.payload;
+      } else {
+        compareValue = messageFlow.filterUniquePayload;
+      }
+
+      if (this.filterPayload(this.lastSentPayloads, compareKey, compareValue)) {
         this.sendMsgToOutput(msg, messageFlow);
         this.lastSentPayloads[compareKey] =
-          typeof msg.payload === "object" && msg.payload !== null
-            ? cloneDeep<any>(msg.payload)
-            : msg.payload;
+          typeof compareValue === "object" && compareValue !== null
+            ? cloneDeep<any>(compareValue)
+            : compareValue;
       }
     } else {
       this.sendMsgToOutput(msg, messageFlow);
@@ -266,20 +273,20 @@ export default class BaseNode<
 
   private filterPayload(
     lastSentPayloads: Record<string, any>,
-    msg: NodeMessage,
-    compareKey: string
+    compareKey: string,
+    compareValue: any,
   ) {
-    if (typeof msg.payload === "object" && msg.payload !== null) {
-      return !isEqual(lastSentPayloads[compareKey], msg.payload);
+    if (typeof compareValue === "object" && compareValue !== null) {
+      return !isEqual(lastSentPayloads[compareKey], compareValue);
     }
 
-    return lastSentPayloads[compareKey] !== msg.payload;
+    return lastSentPayloads[compareKey] !== compareValue;
   }
 
   protected sendMsgToOutput(msg: NodeMessage, messageFlow: NodeMessageFlow) {
     msg = messageFlow.addAttributes(msg);
 
-    let msgs = Array(this.config.outputs ?? 1).fill(null);
+    const msgs = new Array(this.config.outputs ?? 1).fill(null);
     msgs[messageFlow.output] = msg;
 
     const send: NodeSendFunction =
@@ -308,7 +315,7 @@ export default class BaseNode<
   protected viewNodeStatus(
     status: NodeStatus,
     color?: NodeStatusFill,
-    text?: string
+    text?: string,
   ) {
     this.node.status({
       fill: color ?? this.statusColor(status),
