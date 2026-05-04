@@ -23,6 +23,7 @@ export enum HeatingControllerCommand {
 
 export enum HeatingControllerTarget {
   activeCondition = "activeCondition",
+  comfortCondition = "comfortCondition",
   comfortTemperature = "comfortTemperature",
   ecoTemperatureOffset = "ecoTemperatureOffset",
   pvBoost = "pvBoost",
@@ -36,6 +37,7 @@ export interface HeatingControllerNodeOptions extends MatchJoinNodeOptions {
   pause: number;
   pauseUnit: TimeIntervalUnit;
   defaultActive: boolean;
+  defaultComfort: boolean;
   boostEnabled: boolean;
   boostTemperatureOffset: number;
   frostProtectionTemperature: number;
@@ -56,7 +58,7 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     matchers: [
       {
         ...MatcherRowDefaults,
-        target: HeatingControllerTarget.activeCondition,
+        target: HeatingControllerTarget.comfortCondition,
         targetType: "str",
       },
       {
@@ -94,7 +96,8 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     reactivateEnabled: true,
     pause: 1,
     pauseUnit: TimeIntervalUnit.h,
-    defaultActive: false,
+    defaultActive: true,
+    defaultComfort: false,
     boostEnabled: false,
     boostTemperatureOffset: 5,
     frostProtectionTemperature: 8,

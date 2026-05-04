@@ -8,7 +8,7 @@ import {
 
 export default class HeatingControllerMigration extends MatchJoinMigration<HeatingControllerEditorNodeProperties> {
   protected _migrationSteps(
-    node: EditorNodeInstance<HeatingControllerEditorNodeProperties>
+    node: EditorNodeInstance<HeatingControllerEditorNodeProperties>,
   ): EditorNodeInstance<HeatingControllerEditorNodeProperties> {
     if (this.checkMigrationStepRequired(node, "0.21.4")) {
       node.join = false;
@@ -35,11 +35,23 @@ export default class HeatingControllerMigration extends MatchJoinMigration<Heati
       node.migrated = true;
     }
 
+    if (this.checkMigrationStepRequired(node, "1.0.3")) {
+      node.defaultComfort = node.defaultActive;
+      node.defaultActive = true;
+      for (const matcher of node.matchers) {
+        if (matcher.target === HeatingControllerTarget.activeCondition) {
+          matcher.target = HeatingControllerTarget.comfortCondition;
+        }
+      }
+
+      node.migrated = true;
+    }
+
     return super._migrationSteps(node);
   }
 
   private migrateMatcherTargets(
-    node: EditorNodeInstance<HeatingControllerEditorNodeProperties>
+    node: EditorNodeInstance<HeatingControllerEditorNodeProperties>,
   ): EditorNodeInstance<HeatingControllerEditorNodeProperties> {
     node.matchers = node.matchers.map((matcher: MatcherRow) => {
       if (matcher.target === "manual_control") {
@@ -53,7 +65,7 @@ export default class HeatingControllerMigration extends MatchJoinMigration<Heati
   }
 
   private migrateStatusDelay(
-    node: EditorNodeInstance<HeatingControllerEditorNodeProperties>
+    node: EditorNodeInstance<HeatingControllerEditorNodeProperties>,
   ): EditorNodeInstance<HeatingControllerEditorNodeProperties> {
     if (node.statusDelay) {
       delete node.statusDelay;

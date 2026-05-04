@@ -81,8 +81,8 @@ export default class StatusNode extends MatchJoinNode<
             topic: statusReport.statusItem,
             payload: statusReport.status,
           },
-          0
-        )
+          0,
+        ),
       );
 
       if (statusReport.statusTextItem) {
@@ -92,8 +92,8 @@ export default class StatusNode extends MatchJoinNode<
               topic: statusReport.statusTextItem,
               payload: statusReport.statusText,
             },
-            1
-          )
+            1,
+          ),
         );
       }
     } else {
@@ -107,7 +107,7 @@ export default class StatusNode extends MatchJoinNode<
 
   protected statusTextFormatter(status: NodeStatus): string {
     return this.RED._(
-      `flowctrl.status.state.${status ? "active" : "inactive"}`
+      `flowctrl.status.state.${status ? "active" : "inactive"}`,
     );
   }
 }

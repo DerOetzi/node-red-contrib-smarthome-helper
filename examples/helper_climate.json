@@ -12,7 +12,7 @@
     "type": "helper-heating-controller",
     "z": "c16b0ae576a8ea46",
     "name": "",
-    "version": "0.27.1",
+    "version": "1.0.3",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -37,7 +37,7 @@
         "operation": "eq",
         "compare": "schedule_room",
         "compareType": "str",
-        "target": "activeCondition"
+        "target": "comfortCondition"
       },
       {
         "targetType": "str",
@@ -46,7 +46,7 @@
         "operation": "eq",
         "compare": "presence",
         "compareType": "str",
-        "target": "activeCondition"
+        "target": "comfortCondition"
       },
       {
         "targetType": "str",
@@ -100,7 +100,8 @@
     "reactivateEnabled": true,
     "pause": "10",
     "pauseUnit": "s",
-    "defaultActive": false,
+    "defaultActive": true,
+    "defaultComfort": false,
     "boostEnabled": true,
     "boostTemperatureOffset": 5,
     "frostProtectionTemperature": 8,
@@ -673,7 +674,7 @@
     "type": "helper-heating-controller",
     "z": "c16b0ae576a8ea46",
     "name": "",
-    "version": "0.27.1",
+    "version": "1.0.3",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -744,6 +745,15 @@
         "compare": "pv_boost",
         "compareType": "str",
         "target": "pvBoost"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "system_running",
+        "compareType": "str",
+        "target": "activeCondition"
       }
     ],
     "join": false,
@@ -752,7 +762,8 @@
     "reactivateEnabled": false,
     "pause": 1,
     "pauseUnit": "h",
-    "defaultActive": true,
+    "defaultActive": false,
+    "defaultComfort": true,
     "boostEnabled": true,
     "boostTemperatureOffset": 5,
     "frostProtectionTemperature": 8,
@@ -940,7 +951,7 @@
     "statusVal": "payload",
     "statusType": "auto",
     "x": 940,
-    "y": 1300,
+    "y": 1320,
     "wires": []
   },
   {
@@ -1391,7 +1402,7 @@
     "discardNotMatched": true,
     "minMsgCount": 1,
     "x": 440,
-    "y": 1820,
+    "y": 1860,
     "wires": [
       [
         "820da6225e40cde3"
@@ -1423,7 +1434,7 @@
     "payload": "21",
     "payloadType": "num",
     "x": 180,
-    "y": 1660,
+    "y": 1700,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1452,7 +1463,7 @@
     "payload": "5",
     "payloadType": "num",
     "x": 170,
-    "y": 1700,
+    "y": 1740,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1481,7 +1492,7 @@
     "payload": "0",
     "payloadType": "num",
     "x": 170,
-    "y": 1740,
+    "y": 1780,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1510,7 +1521,7 @@
     "payload": "-10",
     "payloadType": "num",
     "x": 180,
-    "y": 1780,
+    "y": 1820,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1539,7 +1550,7 @@
     "payload": "40",
     "payloadType": "num",
     "x": 170,
-    "y": 1860,
+    "y": 1900,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1568,7 +1579,7 @@
     "payload": "95",
     "payloadType": "num",
     "x": 170,
-    "y": 1980,
+    "y": 2020,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1597,7 +1608,7 @@
     "payload": "70",
     "payloadType": "num",
     "x": 170,
-    "y": 1940,
+    "y": 1980,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1626,7 +1637,7 @@
     "payload": "60",
     "payloadType": "num",
     "x": 170,
-    "y": 1900,
+    "y": 1940,
     "wires": [
       [
         "b7467ce00d276104"
@@ -1647,7 +1658,7 @@
     "statusVal": "payload",
     "statusType": "auto",
     "x": 690,
-    "y": 1780,
+    "y": 1820,
     "wires": []
   },
   {
@@ -1664,7 +1675,65 @@
     "statusVal": "payload",
     "statusType": "auto",
     "x": 660,
-    "y": 1840,
+    "y": 1880,
     "wires": []
+  },
+  {
+    "id": "99d8f419e6a1b165",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "system_running",
+    "payload": "true",
+    "payloadType": "bool",
+    "x": 290,
+    "y": 1580,
+    "wires": [
+      [
+        "17b52eb0b0876c80"
+      ]
+    ]
+  },
+  {
+    "id": "189748f0f59f3876",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "system_running",
+    "payload": "false",
+    "payloadType": "bool",
+    "x": 280,
+    "y": 1620,
+    "wires": [
+      [
+        "17b52eb0b0876c80"
+      ]
+    ]
   }
 ]

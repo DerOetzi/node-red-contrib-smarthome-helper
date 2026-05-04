@@ -21,9 +21,10 @@ export const HeatingControllerEditorMetadata: EditorMetadata = {
   inputMode: "matcher-topic",
   fieldKeys: [
     "target",
+    "defaultActive",
     "reactivateEnabled",
     "pause",
-    "defaultActive",
+    "defaultComfort",
     "boostEnabled",
     "boostTemperatureOffset",
     "frostProtectionTemperature",
@@ -105,6 +106,13 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
         },
       );
 
+      heatingControllerOptionsBuilder.createCheckboxInput({
+        id: "node-input-defaultActive",
+        label: "defaultActive",
+        value: this.defaultActive,
+        icon: "toggle-on",
+      });
+
       const reactivateEnabled =
         heatingControllerOptionsBuilder.createCheckboxInput({
           id: "node-input-reactivateEnabled",
@@ -130,9 +138,9 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
       });
 
       heatingControllerOptionsBuilder.createCheckboxInput({
-        id: "node-input-defaultActive",
-        label: "defaultActive",
-        value: this.defaultActive,
+        id: "node-input-defaultComfort",
+        label: "defaultComfort",
+        value: this.defaultComfort,
         icon: "toggle-on",
       });
 

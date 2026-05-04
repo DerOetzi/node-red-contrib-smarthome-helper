@@ -7,6 +7,10 @@
             "label": "Parameter",
             "description": "Input parameter for heating control"
         },
+        "defaultActive": {
+            "label": "Default active",
+            "description": "Whether the controller is active by default"
+        },
         "reactivateEnabled": {
             "label": "Re-enable",
             "description": "Enables automatic reactivation after manual control"
@@ -15,9 +19,9 @@
             "label": "Pause",
             "description": "Pause time before reactivation"
         },
-        "defaultActive": {
-            "label": "Default active",
-            "description": "Default active state"
+        "defaultComfort": {
+            "label": "Default comfort",
+            "description": "Default comfort state"
         },
         "boostEnabled": {
             "label": "Boost enabled",
@@ -63,7 +67,11 @@
     "input": {
         "activeCondition": {
             "name": "Active condition",
-            "description": "Input for activation condition"
+            "description": "Conditions for controller activation"
+        },
+        "comfortCondition": {
+            "name": "Comfort condition",
+            "description": "Conditions for comfort mode activation"
         },
         "comfortTemperature": {
             "name": "Comfort temperature",
@@ -113,6 +121,7 @@
         }
     },
     "state": {
+        "inactive": "Inactive",
         "automationOn": "Automated",
         "automationOff": "Manual"
     }

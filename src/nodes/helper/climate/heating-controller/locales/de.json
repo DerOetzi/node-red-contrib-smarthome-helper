@@ -19,6 +19,10 @@
             "label": "Standard aktiv",
             "description": "Standardmäßig aktiver Zustand"
         },
+        "defaultComfort": {
+            "label": "Standard Komfort",
+            "description": "Standardmäßig Komfortzustand"
+        },
         "boostEnabled": {
             "label": "Boost aktiviert",
             "description": "Aktiviert den Boost-Modus"
@@ -64,6 +68,10 @@
         "activeCondition": {
             "name": "Bedingung aktiv",
             "description": "Eingabe für Aktivierungsbedingung"
+        },
+        "comfortCondition": {
+            "name": "Komfortbedingung",
+            "description": "Eingabe für Komfortbedingung"
         },
         "comfortTemperature": {
             "name": "Komforttemperatur",
@@ -113,6 +121,7 @@
         }
     },
     "state": {
+        "inactive": "Inaktiv",
         "automationOn": "Automatisch",
         "automationOff": "Manuell"
     }

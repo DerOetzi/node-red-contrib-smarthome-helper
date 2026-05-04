@@ -26,9 +26,11 @@ export default class HeatingControllerNode extends MatchJoinNode<
   protected static readonly _migration: Migration<any> =
     new HeatingControllerMigration();
 
+  private active: boolean = false;
+
   private timer: NodeJS.Timeout | null = null;
 
-  private activeConditions: Record<string, boolean> = {};
+  private comfortConditions: Record<string, boolean> = {};
   private windowsStates: Record<string, boolean> = {};
 
   private lastHeatmode: string = "";
@@ -45,13 +47,14 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
   private initialize() {
     this.blocked = false;
-    this.activeConditions["__default__"] = this.config.defaultActive;
-    this.handleActiveCondition();
+    this.active = this.config.defaultActive;
+    this.comfortConditions["__default__"] = this.config.defaultComfort;
+    this.handleComfortCondition();
   }
 
   protected onClose(): void {
     super.onClose();
-    this.activeConditions = {};
+    this.comfortConditions = {};
     this.windowsStates = {};
   }
 
@@ -60,12 +63,19 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
     switch (topic) {
       case HeatingControllerTarget.activeCondition:
-        if (this.activeConditions.hasOwnProperty("__default__")) {
-          delete this.activeConditions["__default__"];
+        this.active = messageFlow.payloadAsBoolean(true);
+        if (this.active) {
+          this.blocked = false;
         }
-        this.activeConditions[messageFlow.originalTopic ?? "active"] =
+        this.handleComfortCondition();
+        break;
+      case HeatingControllerTarget.comfortCondition:
+        if (this.comfortConditions.hasOwnProperty("__default__")) {
+          delete this.comfortConditions["__default__"];
+        }
+        this.comfortConditions[messageFlow.originalTopic ?? "comfort"] =
           messageFlow.payload as boolean;
-        this.handleActiveCondition();
+        this.handleComfortCondition();
         break;
       case HeatingControllerTarget.comfortTemperature:
         this.comfortTemperature = messageFlow.payload as number;
@@ -97,8 +107,8 @@ export default class HeatingControllerNode extends MatchJoinNode<
     }
   }
 
-  private handleActiveCondition() {
-    if (!this.blocked) {
+  private handleComfortCondition(ignoreBlocked: boolean = false): void {
+    if (!this.blocked || ignoreBlocked) {
       if (this.isComfort()) {
         this.sendAction(this.config.comfortCommand);
       } else {
@@ -108,7 +118,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
   }
 
   private isComfort(): boolean {
-    return LogicalOperation.and(Object.values(this.activeConditions));
+    return LogicalOperation.and(Object.values(this.comfortConditions));
   }
 
   private handleManualControl(msg: any) {
@@ -139,7 +149,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
       }
       this.sendAction(heatmode);
     } else {
-      this.handleActiveCondition();
+      this.handleComfortCondition();
     }
   }
 
@@ -158,7 +168,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
         () => {
           this.clearTimer();
           this.blocked = false;
-          this.handleActiveCondition();
+          this.handleComfortCondition();
         },
         convertToMilliseconds(this.config.pause, this.config.pauseUnit),
       );
@@ -183,7 +193,7 @@ export default class HeatingControllerNode extends MatchJoinNode<
       ha_action = "switch.turn_on";
     } else {
       this.blocked = false;
-      this.handleActiveCondition();
+      this.handleComfortCondition();
       ha_action = "switch.turn_off";
     }
 
@@ -196,6 +206,10 @@ export default class HeatingControllerNode extends MatchJoinNode<
   }
 
   private sendAction(heatmode: string, ignoreBlocked: boolean = false) {
+    if (!this.active) {
+      return;
+    }
+
     if (heatmode) {
       if (!this.blocked || ignoreBlocked) {
         const messageFlowHeatmode = new NodeMessageFlow(
@@ -234,7 +248,9 @@ export default class HeatingControllerNode extends MatchJoinNode<
   protected statusColor(status: any): NodeStatusFill {
     let color: NodeStatusFill = "green";
 
-    if (status === null) {
+    if (!this.active) {
+      color = "red";
+    } else if (status === null) {
       color = "grey";
     } else if (this.blocked) {
       color = "red";
@@ -245,6 +261,11 @@ export default class HeatingControllerNode extends MatchJoinNode<
 
   protected statusTextFormatter(status: any): string {
     let text = "";
+
+    if (!this.active) {
+      return this.RED._("helper.heating-controller.state.inactive");
+    }
+
     if (status === null) {
       text = "Unknown";
     } else if (this.blocked) {
