@@ -69,7 +69,7 @@ const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
   },
   inputs: ArithmeticNodeOptionsDefaults.inputs,
   outputs: ArithmeticNodeOptionsDefaults.outputs,
-  outputLabels: function (index: number) {
+  outputLabels: function () {
     return i18nOutputLabel("operator.arithmetic", "result");
   },
   oneditprepare: function () {

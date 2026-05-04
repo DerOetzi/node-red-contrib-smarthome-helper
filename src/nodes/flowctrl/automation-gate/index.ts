@@ -87,7 +87,7 @@ export default class AutomationGateNode extends BaseNode<
 
   protected sendMsgToOutput(
     msg: NodeMessage,
-    messageFlow: NodeMessageFlow
+    messageFlow: NodeMessageFlow,
   ): void {
     if (this.config.setAutomationInProgress && messageFlow.output === 0) {
       this.setAutomationInProgress();
@@ -149,7 +149,11 @@ export default class AutomationGateNode extends BaseNode<
 
     for (const topic in this.lastMessages) {
       if (this.lastMessages.hasOwnProperty(topic)) {
-        this.debounce(this.lastMessages[topic].clone());
+        const messageFlow = this.lastMessages[topic].clone();
+        if (send) {
+          messageFlow.send = send;
+        }
+        this.debounce(messageFlow);
       }
     }
   }

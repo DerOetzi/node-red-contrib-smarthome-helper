@@ -324,7 +324,7 @@ export class NodeEditorFormBuilder {
   }
 }
 
-export class NodeEditorFormEditableList<T> {
+export abstract class NodeEditorFormEditableList<T> {
   protected listContainer?: JQuery;
   protected rowBuilder?: NodeEditorFormBuilder;
   protected headerPrefix?: string;
@@ -377,9 +377,7 @@ export class NodeEditorFormEditableList<T> {
     this.listContainer?.trigger("change");
   }
 
-  protected addItem(data: T, idx?: number): void {
-    throw new Error("Not implemented");
-  }
+  protected abstract addItem(data: T, idx?: number): void;
 
   public values(defaults?: Partial<T>): T[] {
     return Array.from(this.listContainer!.editableList("items")).map((item) => {

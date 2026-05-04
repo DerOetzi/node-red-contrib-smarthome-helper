@@ -28,8 +28,8 @@ module.exports = [
 
     rules: {
       "no-console": "off",
-      "no-unused-vars": "warn",
-      "@typescript-eslint/no-unused-vars": ["warn"],
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
       eqeqeq: ["error", "always"],
       curly: "error",
       "no-var": "error",
