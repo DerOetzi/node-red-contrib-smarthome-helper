@@ -48,9 +48,31 @@ export const HeatingControllerEditorMetadata: EditorMetadata = {
   outputKeys: ["heatmode", "temperature", "window", "status"],
 };
 
-const inputMatcherList = new MatchJoinEditableList({
-  targets: Object.values(HeatingControllerTarget),
+const controlMatcherList = new MatchJoinEditableList({
+  targets: [
+    HeatingControllerTarget.activeCondition,
+    HeatingControllerTarget.comfortCondition,
+    HeatingControllerTarget.manualControl,
+    HeatingControllerTarget.command,
+    HeatingControllerTarget.windowOpen,
+  ],
   translatePrefix: "helper.heating-controller",
+  headerPrefix: "helper.heating-controller",
+});
+
+const temperatureMatcherList = new MatchJoinEditableList({
+  targets: [
+    HeatingControllerTarget.comfortTemperature,
+    HeatingControllerTarget.ecoTemperatureOffset,
+  ],
+  translatePrefix: "helper.heating-controller",
+  headerPrefix: "helper.heating-controller",
+});
+
+const boostMatcherList = new MatchJoinEditableList({
+  targets: [HeatingControllerTarget.pvBoost],
+  translatePrefix: "helper.heating-controller",
+  headerPrefix: "helper.heating-controller",
 });
 
 const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProperties> =
@@ -95,7 +117,17 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
     oneditprepare: function () {
       BaseEditorNode.oneditprepare!.call(this);
 
-      inputMatcherList.initialize("matcher-rows", this.matchers, {
+      controlMatcherList.initialize("matcher-rows-control", this.matchers, {
+        translatePrefix: "flowctrl.match-join",
+      });
+
+      temperatureMatcherList.initialize(
+        "matcher-rows-temperature",
+        this.matchers,
+        { translatePrefix: "flowctrl.match-join" },
+      );
+
+      boostMatcherList.initialize("matcher-rows-boost", this.matchers, {
         translatePrefix: "flowctrl.match-join",
       });
 
@@ -172,7 +204,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
           icon: "sun-o",
         });
 
-      inputMatcherList.showHideTarget(
+      boostMatcherList.showHideTarget(
         this.pvBoostEnabled,
         HeatingControllerTarget.pvBoost,
       );
@@ -193,7 +225,7 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
       pvBoostEnabledCheckbox.on("change", function () {
         const isChecked = $(this).is(":checked");
         pvBoostTemperatureOffsetRow.toggle(isChecked);
-        inputMatcherList.removeTarget(
+        boostMatcherList.removeTarget(
           isChecked,
           HeatingControllerTarget.pvBoost,
         );
@@ -248,7 +280,11 @@ const HeatingControllerEditorNode: EditorNodeDef<HeatingControllerEditorNodeProp
       });
     },
     oneditsave: function () {
-      this.matchers = inputMatcherList.values();
+      this.matchers = [
+        ...controlMatcherList.values(),
+        ...temperatureMatcherList.values(),
+        ...boostMatcherList.values(),
+      ];
     },
   };
 

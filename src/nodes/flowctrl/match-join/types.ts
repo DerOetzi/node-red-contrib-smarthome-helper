@@ -12,6 +12,7 @@ import {
 export interface MatchFixedTargets {
   targets: string[];
   translatePrefix: string;
+  headerPrefix?: string;
 }
 
 export interface MatcherRow {

@@ -1,7 +1,9 @@
 {
     "name": "Heating Controller",
     "description": "Intelligent control for heating systems with comfort and eco modes",
-    "matcher-rows": "Input parameters",
+    "matcher-rows-control": "Control inputs",
+    "matcher-rows-temperature": "Temperature inputs",
+    "matcher-rows-boost": "Boost inputs",
     "field": {
         "target": {
             "label": "Parameter",

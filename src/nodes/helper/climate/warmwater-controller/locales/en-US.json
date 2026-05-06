@@ -1,0 +1,25 @@
+{
+  "name": "Warm Water Controller",
+  "description": "Intelligent control for warm water systems with advanced control of warm water circulation",
+  "matcher-rows-control": "Control inputs",
+  "field": {
+    "target": {
+      "label": "Parameter",
+      "description": "Input parameter for warm water control"
+    },
+    "defaultActive": {
+      "label": "Default active",
+      "description": "Whether the controller is active by default"
+    }
+  },
+  "input": {
+    "activeCondition": {
+      "label": "Active condition",
+      "description": "Condition to determine when the controller is active"
+    }
+  },
+  "output": {},
+  "state": {
+    "inactive": "Inactive"
+  }
+}

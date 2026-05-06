@@ -1,7 +1,9 @@
 {
     "name": "Heizungssteuerung",
     "description": "Intelligente Steuerung für Heizsysteme mit Komfort- und Eco-Modi",
-    "matcher-rows": "Eingabeparameter",
+    "matcher-rows-control": "Steuereingaben",
+    "matcher-rows-temperature": "Temperatureingaben",
+    "matcher-rows-boost": "Boost-Eingaben",
     "field": {
         "target": {
             "label": "Parameter",
