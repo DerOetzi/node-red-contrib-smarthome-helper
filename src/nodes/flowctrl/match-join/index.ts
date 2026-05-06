@@ -26,7 +26,7 @@ export default class MatchJoinNode<
     RED: NodeAPI,
     node: Node,
     config: T,
-    defaultConfig: U = MatchJoinNodeOptionsDefaults as U
+    defaultConfig: U = MatchJoinNodeOptionsDefaults as U,
   ) {
     super(RED, node, config, defaultConfig);
   }
@@ -40,19 +40,19 @@ export default class MatchJoinNode<
     const matcher = this.config.matchers.find((matcher) => {
       const propertyValue = this.RED.util.getMessageProperty(
         messageFlow.originalMsg,
-        matcher.property
+        matcher.property,
       );
       const compareValue = this.RED.util.evaluateNodeProperty(
         matcher.compare,
         matcher.compareType,
         this.node,
-        messageFlow.originalMsg
+        messageFlow.originalMsg,
       );
 
       const result = CompareOperation.func(
         matcher.operation,
         propertyValue,
-        compareValue
+        compareValue,
       );
 
       return result;
@@ -64,7 +64,7 @@ export default class MatchJoinNode<
           matcher.target,
           matcher.targetType,
           this.node,
-          messageFlow.originalMsg
+          messageFlow.originalMsg,
         );
       }
 

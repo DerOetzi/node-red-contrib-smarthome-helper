@@ -6,6 +6,9 @@ import BaseEditorNode, {
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../base/editor";
+import {
+  NodeEditorFormBuilderParams,
+} from "../base/types";
 import MatchJoinNode from "./";
 import {
   MatcherRow,
@@ -33,8 +36,22 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
   constructor(private readonly fixedTargets?: MatchFixedTargets) {
     super();
     if (this.fixedTargets) {
-      this.headerPrefix = "flowctrl.match-join.fixedTargets";
+      this.headerPrefix = this.fixedTargets.headerPrefix
+        ? this.fixedTargets.headerPrefix
+        : "flowctrl.match-join.fixedTargets";
     }
+  }
+
+  public initialize(
+    id: string,
+    items: MatcherRow[],
+    rowBuilderParams: NodeEditorFormBuilderParams,
+  ): this {
+    if (this.fixedTargets) {
+      const allowed = new Set(this.fixedTargets.targets);
+      items = items.filter((item) => allowed.has(item.target));
+    }
+    return super.initialize(id, items, rowBuilderParams);
   }
 
   protected addItem(data: MatcherRow): void {
@@ -126,7 +143,19 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
       .find('.target option[value="' + option + '"]')
       .toggle(showHideTarget);
 
+    this.syncListVisibility();
+
     return this;
+  }
+
+  private syncListVisibility(): void {
+    if (!this.fixedTargets) return;
+
+    const allHidden = this.fixedTargets.targets.every(
+      (target) => (this.listContainer?.data("showHide_" + target) ?? true) === false,
+    );
+
+    this.toggle(!allHidden);
   }
 
   public removeTarget(keep: boolean, option: string): this {
