@@ -7,7 +7,7 @@ export default class MatchJoinMigration<
   T extends MatchJoinEditorNodeProperties = MatchJoinEditorNodeProperties,
 > extends Migration<T> {
   protected _migrationSteps(
-    node: EditorNodeInstance<T>
+    node: EditorNodeInstance<T>,
   ): EditorNodeInstance<T> {
     if (this.checkMigrationStepRequired(node, "0.21.2")) {
       node = this.migrateMatchersOperation(node);
@@ -18,7 +18,7 @@ export default class MatchJoinMigration<
   }
 
   protected migrateMatchersOperation(
-    node: EditorNodeInstance<T>
+    node: EditorNodeInstance<T>,
   ): EditorNodeInstance<T> {
     node.matchers = node.matchers.map((matcher: MatcherRow) => {
       if (matcher.operator) {

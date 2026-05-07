@@ -15,6 +15,7 @@ import {
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
 } from "./types";
+import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
 
 export const HeatingControllerEditorMetadata: EditorMetadata = {
   localePrefix: "helper.heating-controller",
@@ -50,10 +51,10 @@ export const HeatingControllerEditorMetadata: EditorMetadata = {
 
 const controlMatcherList = new MatchJoinEditableList({
   targets: [
-    HeatingControllerTarget.activeCondition,
+    ActiveControllerTarget.activeCondition,
     HeatingControllerTarget.comfortCondition,
-    HeatingControllerTarget.manualControl,
-    HeatingControllerTarget.command,
+    ActiveControllerTarget.manualControl,
+    ActiveControllerTarget.command,
     HeatingControllerTarget.windowOpen,
   ],
   translatePrefix: "helper.heating-controller",

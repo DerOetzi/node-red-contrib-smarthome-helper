@@ -1,12 +1,13 @@
 import { EditorNodeInstance } from "node-red";
-import MatchJoinMigration from "../../../flowctrl/match-join/migration";
 import { MatcherRow } from "../../../flowctrl/match-join/types";
 import {
   HeatingControllerEditorNodeProperties,
   HeatingControllerTarget,
 } from "./types";
+import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
+import ActiveControllerMigration from "../../../flowctrl/active-controller/migration";
 
-export default class HeatingControllerMigration extends MatchJoinMigration<HeatingControllerEditorNodeProperties> {
+export default class HeatingControllerMigration extends ActiveControllerMigration<HeatingControllerEditorNodeProperties> {
   protected _migrationSteps(
     node: EditorNodeInstance<HeatingControllerEditorNodeProperties>,
   ): EditorNodeInstance<HeatingControllerEditorNodeProperties> {
@@ -39,7 +40,7 @@ export default class HeatingControllerMigration extends MatchJoinMigration<Heati
       node.defaultComfort = node.defaultActive;
       node.defaultActive = true;
       for (const matcher of node.matchers) {
-        if (matcher.target === HeatingControllerTarget.activeCondition) {
+        if (matcher.target === ActiveControllerTarget.activeCondition) {
           matcher.target = HeatingControllerTarget.comfortCondition;
         }
       }
@@ -55,7 +56,7 @@ export default class HeatingControllerMigration extends MatchJoinMigration<Heati
   ): EditorNodeInstance<HeatingControllerEditorNodeProperties> {
     node.matchers = node.matchers.map((matcher: MatcherRow) => {
       if (matcher.target === "manual_control") {
-        matcher.target = HeatingControllerTarget.manualControl;
+        matcher.target = ActiveControllerTarget.manualControl;
       }
 
       return matcher;

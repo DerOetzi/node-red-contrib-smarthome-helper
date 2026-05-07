@@ -7,10 +7,10 @@ import HygroCalculatorNode from "./hygro-calculator";
 import HygroCalculatorEditorNode, {
   HygroCalculatorEditorMetadata,
 } from "./hygro-calculator/editor";
-import WarmWaterControllerNode from "./warmwater-controller";
-import WarmWaterControllerEditorNode, {
-  WarmWaterControllerEditorMetadata,
-} from "./warmwater-controller/editor";
+import WarmWaterPVControllerNode from "./warmwater-pv-controller";
+import WarmWaterPVControllerEditorNode, {
+  WarmWaterPVControllerEditorMetadata,
+} from "./warmwater-pv-controller/editor";
 
 export const HelperClimateNodesRegistry: { [key: string]: NodeRegistryEntry } =
   {
@@ -24,9 +24,9 @@ export const HelperClimateNodesRegistry: { [key: string]: NodeRegistryEntry } =
       editor: HygroCalculatorEditorNode,
       metadata: HygroCalculatorEditorMetadata,
     },
-    [WarmWaterControllerNode.NodeTypeName]: {
-      node: WarmWaterControllerNode,
-      editor: WarmWaterControllerEditorNode,
-      metadata: WarmWaterControllerEditorMetadata,
+    [WarmWaterPVControllerNode.NodeTypeName]: {
+      node: WarmWaterPVControllerNode,
+      editor: WarmWaterPVControllerEditorNode,
+      metadata: WarmWaterPVControllerEditorMetadata,
     },
   };

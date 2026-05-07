@@ -1,12 +1,12 @@
-import { NodeMessage } from "node-red";
-import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
-  MatcherRowDefaults,
-  MatchJoinEditorNodeProperties,
-  MatchJoinNodeDef,
-  MatchJoinNodeOptions,
-} from "../../../flowctrl/match-join/types";
+  ActiveControllerEditorNodeProperties,
+  ActiveControllerNodeDef,
+  ActiveControllerNodeOptions,
+  ActiveControllerNodeOptionsDefaults,
+  ActiveControllerTarget,
+  ActiveControllerNodeMessage,
+} from "../../../flowctrl/active-controller/types";
+import { MatcherRowDefaults } from "../../../flowctrl/match-join/types";
 import { NotApplicableCompareFunction } from "../../../logical/compare/types";
 
 export enum HeatMode {
@@ -16,27 +16,15 @@ export enum HeatMode {
   frostProtection = "frost protection",
 }
 
-export enum HeatingControllerCommand {
-  block = "block",
-  unblock = "unblock",
-}
-
 export enum HeatingControllerTarget {
-  activeCondition = "activeCondition",
   comfortCondition = "comfortCondition",
   comfortTemperature = "comfortTemperature",
   ecoTemperatureOffset = "ecoTemperatureOffset",
   pvBoost = "pvBoost",
   windowOpen = "windowOpen",
-  manualControl = "manualControl",
-  command = "command",
 }
 
-export interface HeatingControllerNodeOptions extends MatchJoinNodeOptions {
-  reactivateEnabled: boolean;
-  pause: number;
-  pauseUnit: TimeIntervalUnit;
-  defaultActive: boolean;
+export interface HeatingControllerNodeOptions extends ActiveControllerNodeOptions {
   defaultComfort: boolean;
   boostEnabled: boolean;
   boostTemperatureOffset: number;
@@ -54,7 +42,7 @@ export interface HeatingControllerNodeOptions extends MatchJoinNodeOptions {
 
 export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions =
   {
-    ...BaseNodeOptionsDefaults,
+    ...ActiveControllerNodeOptionsDefaults,
     matchers: [
       {
         ...MatcherRowDefaults,
@@ -78,14 +66,14 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
       },
       {
         ...MatcherRowDefaults,
-        target: HeatingControllerTarget.manualControl,
+        target: ActiveControllerTarget.manualControl,
         targetType: "str",
       },
       {
         ...MatcherRowDefaults,
         property: "command",
         operation: NotApplicableCompareFunction.notEmpty,
-        target: HeatingControllerTarget.command,
+        target: ActiveControllerTarget.command,
         targetType: "str",
       },
     ],
@@ -93,10 +81,6 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     discardNotMatched: true,
     minMsgCount: 1,
     outputs: 3,
-    reactivateEnabled: true,
-    pause: 1,
-    pauseUnit: TimeIntervalUnit.h,
-    defaultActive: true,
     defaultComfort: false,
     boostEnabled: false,
     boostTemperatureOffset: 5,
@@ -110,12 +94,11 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
   };
 
 export interface HeatingControllerNodeDef
-  extends MatchJoinNodeDef, HeatingControllerNodeOptions {}
+  extends ActiveControllerNodeDef, HeatingControllerNodeOptions {}
 
 export interface HeatingControllerEditorNodeProperties
-  extends MatchJoinEditorNodeProperties, HeatingControllerNodeOptions {}
+  extends ActiveControllerEditorNodeProperties, HeatingControllerNodeOptions {}
 
-export interface HeatingControllerNodeMessage extends NodeMessage {
-  command?: HeatingControllerCommand;
+export interface HeatingControllerNodeMessage extends ActiveControllerNodeMessage {
   heatmode?: HeatMode;
 }

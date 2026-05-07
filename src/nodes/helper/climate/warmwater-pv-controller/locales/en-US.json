@@ -1,0 +1,127 @@
+{
+  "name": "Warm Water PV Controller",
+  "description": "Intelligent control for warm water systems with PV surplus detection and circulation management",
+  "matcher-rows-general": "General",
+  "matcher-rows-pv-boost": "PV Surplus",
+  "section": {
+    "surplusCondition1": "Surplus condition 1 – Immediate",
+    "surplusCondition2": "Surplus condition 2 – Stable over time"
+  },
+  "field": {
+    "target": {
+      "label": "Parameter",
+      "description": "Input parameter for warm water control"
+    },
+    "defaultActive": {
+      "label": "Default active",
+      "description": "Whether the controller is active by default"
+    },
+    "reactivateEnabled": {
+      "label": "Auto-reactivate",
+      "description": "Enables automatic reactivation after a block pause"
+    },
+    "pause": {
+      "label": "Pause duration",
+      "description": "Wait time before automatic reactivation"
+    },
+    "gridLowerThreshold": {
+      "label": "Minimum feed-in (W)",
+      "description": "Minimum grid feed-in in watts for this condition. Surplus mode activates immediately once reached (e.g. 3000 W)"
+    },
+    "gridUpperThreshold": {
+      "label": "Minimum feed-in (W)",
+      "description": "Minimum grid feed-in in watts for this condition. Must be held stable over the stabilisation time (e.g. 5000 W)"
+    },
+    "gridStabilizeTime": {
+      "label": "Stabilisation time",
+      "description": "How long the minimum feed-in must be held continuously before surplus mode activates (e.g. 15 min)"
+    },
+    "batterySOCEnabled": {
+      "label": "Consider home battery",
+      "description": "Consider home battery state of charge as a condition for surplus mode. Disable if no home battery is installed."
+    },
+    "batterySOCThreshold": {
+      "label": "Battery state of charge threshold (%)",
+      "description": "Minimum home battery state of charge in percent required for surplus mode (e.g. 90 %)"
+    },
+    "outsideTempLowerThreshold": {
+      "label": "Outside temperature from (°C)",
+      "description": "Condition 2 becomes eligible above this outside temperature. Surplus mode activates only once the minimum feed-in has also been stable for the stabilisation time (e.g. 12 °C)"
+    },
+    "outsideTempUpperThreshold": {
+      "label": "Outside temperature from (°C)",
+      "description": "Above this outside temperature, surplus mode activates immediately once the minimum feed-in is reached — no stabilisation time required (e.g. 20 °C)"
+    },
+    "currentTempEnabled": {
+      "label": "Consider current tank temperature",
+      "description": "Only activate surplus mode when the tank has already reached a minimum temperature. Prevents unwanted effects when the temperature gap to the setpoint is too large."
+    },
+    "currentTempThreshold": {
+      "label": "Minimum current temperature (°C)",
+      "description": "The tank must be at or above this temperature before surplus mode activates."
+    },
+    "surplusValue": {
+      "label": "Surplus mode value",
+      "description": "Output value when surplus mode is active (type: bool, string, or msg attribute)"
+    },
+    "normalValue": {
+      "label": "Normal mode value",
+      "description": "Output value when normal operation mode is active (type: bool, string, or msg attribute)"
+    },
+    "surplusTemperature": {
+      "label": "Surplus target temperature (°C)",
+      "description": "Target water temperature in surplus mode"
+    },
+    "normalTemperature": {
+      "label": "Normal target temperature (°C)",
+      "description": "Target water temperature in normal operation mode"
+    }
+  },
+  "input": {
+    "command": {
+      "name": "Command",
+      "description": "Block/unblock command for the controller"
+    },
+    "activeCondition": {
+      "name": "Active condition",
+      "description": "Condition to determine when the controller is active"
+    },
+    "manualControl": {
+      "name": "Manual control",
+      "description": "Manual override: true forces surplus mode, false forces normal mode. Blocks automatic control until the reactivate timer fires."
+    },
+    "gridDelivery": {
+      "name": "Grid delivery (W)",
+      "description": "Current grid feed-in power in watts"
+    },
+    "batterySOC": {
+      "name": "Battery state of charge (%)",
+      "description": "Current home battery state of charge in percent"
+    },
+    "outsideTemperature": {
+      "name": "Outside temperature (°C)",
+      "description": "Current outside temperature in degrees Celsius"
+    },
+    "currentWaterTemperature": {
+      "name": "Current temperature (°C)",
+      "description": "Current actual temperature of the warm water tank in degrees Celsius"
+    }
+  },
+  "output": {
+    "operationMode": {
+      "name": "Operation mode",
+      "description": "Current operation mode: surplus or normal"
+    },
+    "targetTemperature": {
+      "name": "Target temperature",
+      "description": "Target water temperature based on current operation mode"
+    }
+  },
+  "status": {
+    "inactive": "Inactive",
+    "blocked": "Blocked",
+    "unknown": "Unknown",
+    "surplus": "Surplus",
+    "normal": "Normal operation"
+  }
+}

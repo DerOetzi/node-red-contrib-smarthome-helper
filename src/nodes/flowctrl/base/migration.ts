@@ -13,7 +13,7 @@ export default class Migration<
 > {
   public check(
     node: EditorNodeInstance<T>,
-    forceNewestVersion: boolean = false
+    forceNewestVersion: boolean = false,
   ): boolean {
     node.migrated = false;
 
@@ -33,7 +33,7 @@ export default class Migration<
 
   public checkAndMigrate(
     node: EditorNodeInstance<T>,
-    forceNewestVersion: boolean = false
+    forceNewestVersion: boolean = false,
   ): boolean {
     node.migrated = false;
 
@@ -47,7 +47,7 @@ export default class Migration<
   }
 
   protected _migrationSteps(
-    node: EditorNodeInstance<T>
+    node: EditorNodeInstance<T>,
   ): EditorNodeInstance<T> {
     if (this.checkMigrationStepRequired(node, INITIAL_VERSION)) {
       node.migrated = true;
@@ -64,7 +64,7 @@ export default class Migration<
 
   protected checkMigrationStepRequired(
     node: EditorNodeInstance<T>,
-    compareVersion: string
+    compareVersion: string,
   ): boolean {
     if (!node.version) {
       return true;

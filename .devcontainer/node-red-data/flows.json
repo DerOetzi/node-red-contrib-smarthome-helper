@@ -556,6 +556,148 @@
         "h": 242
     },
     {
+        "id": "df1d30e94fa679dc",
+        "type": "group",
+        "z": "c16b0ae576a8ea46",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "2ee35a20030c34b2",
+            "08467aa9270b32cc",
+            "5de713372864d334",
+            "9058491fd0d4694a",
+            "d16060fa54ec1a98",
+            "f129a2cd81f4ef49",
+            "fe4e0c646d288e4f",
+            "389d45ec3acc891e",
+            "5fefc09e55dd0c17",
+            "3ba12dfc100b7697",
+            "c172755f33dbd131",
+            "23cc7dbf8407c5d7",
+            "a2646ca7f70cf3a1",
+            "ca1bb0916040c1c2",
+            "e3e87388c7d0f93b",
+            "49b1d175efc49625",
+            "912bc76f8770c3f6",
+            "7aa42656b2c01125",
+            "f8c09063e0e83426",
+            "da11ff1382147ae8",
+            "f9379e759c76585d",
+            "17b52eb0b0876c80",
+            "fc6f7d7f5fb81370",
+            "7b3e095ee4844ecd",
+            "548b1ddd805175a4",
+            "9a9428086baeccec",
+            "ac3801281720b6e5",
+            "c01bcd13b0c4a02e",
+            "525b35426b632c6f",
+            "8f0845b95e54d7b0",
+            "6be429142e2c899d",
+            "103e0dd3829cd5c3",
+            "a67682af526446c2",
+            "3e157b3668ce322f",
+            "265cef0c27eaef9d",
+            "111971fe4224f271",
+            "66fd0c59f182b4ba",
+            "5e21bd5e7cef5778",
+            "3c6ae3e6a32d8b94",
+            "4ad943d779d23d47",
+            "8409053b1e77fea5",
+            "6a18ea2d2104e087",
+            "819fcaaa4b04964a",
+            "99d8f419e6a1b165",
+            "189748f0f59f3876"
+        ],
+        "x": 54,
+        "y": 39,
+        "w": 1072,
+        "h": 1622
+    },
+    {
+        "id": "ac38f4d90e8f3c16",
+        "type": "group",
+        "z": "c16b0ae576a8ea46",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "b7467ce00d276104",
+            "c360956337f7ba2c",
+            "4d9aa1f84123ed10",
+            "131bc4ad246ad43f",
+            "5a3db991a53d62ad",
+            "e51fafc12a5f3ae6",
+            "92696df967e3b9d4",
+            "91c13362fd55cfe3",
+            "58e14273fcfa7c42",
+            "820da6225e40cde3",
+            "ee67191944b26ba5"
+        ],
+        "x": 54,
+        "y": 1699,
+        "w": 772,
+        "h": 402
+    },
+    {
+        "id": "a043bae1603803a8",
+        "type": "group",
+        "z": "c16b0ae576a8ea46",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "39c0cb52f511d9cb",
+            "8f68d9d9b0341314",
+            "a5534ea92b26fa8a",
+            "dc30543fe5a6e743",
+            "849e63f8101ac616",
+            "f8fd0ba84a167fe4",
+            "82ed4a92c8c8050e",
+            "ed40ef171cc2784d",
+            "638b34fa78135933",
+            "1a3ed13a32e97cc3",
+            "1667baf165d33764",
+            "3e7d80fdfed27360",
+            "6f4c76ff8b24f98b",
+            "098d2f129a31e399",
+            "698e3b36a45c17ff",
+            "134eee52db9fa0d4",
+            "af211849b3a47ed1",
+            "640ca4b8601ee8d9",
+            "224ecde331ce692e",
+            "dfce0b5ecdc4c1dd",
+            "3d74c3035df4a6f8",
+            "f1f2f416b598694b",
+            "0e8bba51a55db446",
+            "6426fae9480469a7",
+            "737ec218a5dca330",
+            "37d16a3b73a0cc16"
+        ],
+        "x": 54,
+        "y": 2139,
+        "w": 892,
+        "h": 1162
+    },
+    {
         "id": "8bec7e68c72547f8",
         "type": "flowctrl-base",
         "z": "296701fb4cce3477",
@@ -6513,6 +6655,7 @@
         "id": "2ee35a20030c34b2",
         "type": "helper-heating-controller",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "version": "1.0.3",
         "topic": "topic",
@@ -6596,13 +6739,13 @@
                 "target": "command"
             }
         ],
-        "join": false,
         "discardNotMatched": true,
+        "join": false,
         "minMsgCount": 1,
+        "defaultActive": true,
         "reactivateEnabled": true,
         "pause": "10",
         "pauseUnit": "s",
-        "defaultActive": true,
         "defaultComfort": false,
         "boostEnabled": true,
         "boostTemperatureOffset": 5,
@@ -6631,6 +6774,7 @@
         "id": "08467aa9270b32cc",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6660,6 +6804,7 @@
         "id": "5de713372864d334",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6689,6 +6834,7 @@
         "id": "9058491fd0d4694a",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6718,6 +6864,7 @@
         "id": "d16060fa54ec1a98",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6747,6 +6894,7 @@
         "id": "f129a2cd81f4ef49",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6776,6 +6924,7 @@
         "id": "fe4e0c646d288e4f",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6805,6 +6954,7 @@
         "id": "389d45ec3acc891e",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6834,6 +6984,7 @@
         "id": "5fefc09e55dd0c17",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6863,6 +7014,7 @@
         "id": "3ba12dfc100b7697",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "ha_heatmode_select",
         "active": false,
         "tosidebar": true,
@@ -6880,6 +7032,7 @@
         "id": "c172755f33dbd131",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "ha_setpoint_temperature",
         "active": false,
         "tosidebar": true,
@@ -6897,6 +7050,7 @@
         "id": "23cc7dbf8407c5d7",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "window_open",
         "active": false,
         "tosidebar": true,
@@ -6914,6 +7068,7 @@
         "id": "a2646ca7f70cf3a1",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6943,6 +7098,7 @@
         "id": "ca1bb0916040c1c2",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -6972,6 +7128,7 @@
         "id": "e3e87388c7d0f93b",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7001,6 +7158,7 @@
         "id": "49b1d175efc49625",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7030,6 +7188,7 @@
         "id": "912bc76f8770c3f6",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7059,6 +7218,7 @@
         "id": "7aa42656b2c01125",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7088,6 +7248,7 @@
         "id": "f8c09063e0e83426",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7117,6 +7278,7 @@
         "id": "da11ff1382147ae8",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7146,6 +7308,7 @@
         "id": "f9379e759c76585d",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7175,6 +7338,7 @@
         "id": "17b52eb0b0876c80",
         "type": "helper-heating-controller",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "version": "1.0.3",
         "topic": "topic",
@@ -7258,13 +7422,13 @@
                 "target": "activeCondition"
             }
         ],
-        "join": false,
         "discardNotMatched": true,
+        "join": false,
         "minMsgCount": 1,
+        "defaultActive": false,
         "reactivateEnabled": false,
         "pause": 1,
         "pauseUnit": "h",
-        "defaultActive": false,
         "defaultComfort": true,
         "boostEnabled": true,
         "boostTemperatureOffset": 5,
@@ -7276,7 +7440,7 @@
         "pvBoostEnabled": true,
         "pvBoostTemperatureOffset": 1,
         "x": 650,
-        "y": 1280,
+        "y": 1240,
         "wires": [
             [
                 "ac3801281720b6e5"
@@ -7293,6 +7457,7 @@
         "id": "fc6f7d7f5fb81370",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7322,6 +7487,7 @@
         "id": "7b3e095ee4844ecd",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7351,6 +7517,7 @@
         "id": "548b1ddd805175a4",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7380,6 +7547,7 @@
         "id": "9a9428086baeccec",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7409,6 +7577,7 @@
         "id": "ac3801281720b6e5",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "ha_heatmode_select",
         "active": false,
         "tosidebar": true,
@@ -7426,6 +7595,7 @@
         "id": "c01bcd13b0c4a02e",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "ha_setpoint_temperature",
         "active": false,
         "tosidebar": true,
@@ -7443,6 +7613,7 @@
         "id": "525b35426b632c6f",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "window_open",
         "active": false,
         "tosidebar": true,
@@ -7460,6 +7631,7 @@
         "id": "8f0845b95e54d7b0",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7489,6 +7661,7 @@
         "id": "6be429142e2c899d",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7518,6 +7691,7 @@
         "id": "103e0dd3829cd5c3",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7547,6 +7721,7 @@
         "id": "a67682af526446c2",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7576,6 +7751,7 @@
         "id": "3e157b3668ce322f",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7605,6 +7781,7 @@
         "id": "265cef0c27eaef9d",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7634,6 +7811,7 @@
         "id": "111971fe4224f271",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7663,6 +7841,7 @@
         "id": "66fd0c59f182b4ba",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7692,6 +7871,7 @@
         "id": "5e21bd5e7cef5778",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7721,6 +7901,7 @@
         "id": "3c6ae3e6a32d8b94",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7750,6 +7931,7 @@
         "id": "4ad943d779d23d47",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -7779,6 +7961,7 @@
         "id": "8409053b1e77fea5",
         "type": "flowctrl-status",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "version": "0.28.0",
         "topic": "topic",
@@ -7828,6 +8011,7 @@
         "id": "6a18ea2d2104e087",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "Heizungssteuerung",
         "active": false,
         "tosidebar": true,
@@ -7845,6 +8029,7 @@
         "id": "819fcaaa4b04964a",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "Heizungssteuerung",
         "active": false,
         "tosidebar": true,
@@ -7862,6 +8047,7 @@
         "id": "b7467ce00d276104",
         "type": "helper-hygro-calculator",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "version": "0.37.0",
         "topic": "topic",
@@ -7904,7 +8090,7 @@
         "discardNotMatched": true,
         "minMsgCount": 1,
         "x": 440,
-        "y": 1860,
+        "y": 1900,
         "wires": [
             [
                 "820da6225e40cde3"
@@ -7918,6 +8104,7 @@
         "id": "c360956337f7ba2c",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -7936,7 +8123,7 @@
         "payload": "21",
         "payloadType": "num",
         "x": 180,
-        "y": 1700,
+        "y": 1740,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -7947,6 +8134,7 @@
         "id": "4d9aa1f84123ed10",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -7965,7 +8153,7 @@
         "payload": "5",
         "payloadType": "num",
         "x": 170,
-        "y": 1740,
+        "y": 1780,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -7976,6 +8164,7 @@
         "id": "131bc4ad246ad43f",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -7994,7 +8183,7 @@
         "payload": "0",
         "payloadType": "num",
         "x": 170,
-        "y": 1780,
+        "y": 1820,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -8005,6 +8194,7 @@
         "id": "5a3db991a53d62ad",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -8023,7 +8213,7 @@
         "payload": "-10",
         "payloadType": "num",
         "x": 180,
-        "y": 1820,
+        "y": 1860,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -8034,6 +8224,7 @@
         "id": "e51fafc12a5f3ae6",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -8052,7 +8243,7 @@
         "payload": "40",
         "payloadType": "num",
         "x": 170,
-        "y": 1900,
+        "y": 1940,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -8063,6 +8254,7 @@
         "id": "92696df967e3b9d4",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -8081,7 +8273,7 @@
         "payload": "95",
         "payloadType": "num",
         "x": 170,
-        "y": 2020,
+        "y": 2060,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -8092,6 +8284,7 @@
         "id": "91c13362fd55cfe3",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -8110,7 +8303,7 @@
         "payload": "70",
         "payloadType": "num",
         "x": 170,
-        "y": 1980,
+        "y": 2020,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -8121,6 +8314,7 @@
         "id": "58e14273fcfa7c42",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "",
         "props": [
             {
@@ -8139,7 +8333,7 @@
         "payload": "60",
         "payloadType": "num",
         "x": 170,
-        "y": 1940,
+        "y": 1980,
         "wires": [
             [
                 "b7467ce00d276104"
@@ -8150,6 +8344,7 @@
         "id": "820da6225e40cde3",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "absoluteHumidity",
         "active": true,
         "tosidebar": true,
@@ -8160,13 +8355,14 @@
         "statusVal": "payload",
         "statusType": "auto",
         "x": 690,
-        "y": 1820,
+        "y": 1860,
         "wires": []
     },
     {
         "id": "ee67191944b26ba5",
         "type": "debug",
         "z": "c16b0ae576a8ea46",
+        "g": "ac38f4d90e8f3c16",
         "name": "DewPoint",
         "active": true,
         "tosidebar": true,
@@ -8177,13 +8373,14 @@
         "statusVal": "payload",
         "statusType": "auto",
         "x": 660,
-        "y": 1880,
+        "y": 1920,
         "wires": []
     },
     {
         "id": "99d8f419e6a1b165",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -8213,6 +8410,7 @@
         "id": "189748f0f59f3876",
         "type": "inject",
         "z": "c16b0ae576a8ea46",
+        "g": "df1d30e94fa679dc",
         "name": "",
         "props": [
             {
@@ -8235,6 +8433,845 @@
         "wires": [
             [
                 "17b52eb0b0876c80"
+            ]
+        ]
+    },
+    {
+        "id": "39c0cb52f511d9cb",
+        "type": "helper-warmwater-pv-controller",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "version": "1.0.3",
+        "topic": "topic",
+        "topicType": "msg",
+        "filterUniquePayload": false,
+        "newMsg": false,
+        "outputs": 2,
+        "inputs": 1,
+        "statusReportingEnabled": true,
+        "statusItem": "warmwaterStatus",
+        "statusTextItem": "warmwaterStatusText",
+        "debounce": false,
+        "debounceTopic": false,
+        "debounceShowStatus": false,
+        "debounceTime": "5",
+        "debounceUnit": "s",
+        "debounceLeading": false,
+        "debounceTrailing": true,
+        "matchers": [
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "active_condition",
+                "compareType": "str",
+                "target": "activeCondition"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "manual_control",
+                "compareType": "str",
+                "target": "manualControl"
+            },
+            {
+                "targetType": "str",
+                "property": "command",
+                "propertyType": "msg",
+                "operation": "notEmpty",
+                "compare": "",
+                "compareType": "str",
+                "target": "command"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "grid_delivery",
+                "compareType": "str",
+                "target": "gridDelivery"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "battery_soc",
+                "compareType": "str",
+                "target": "batterySOC"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "outside_temp",
+                "compareType": "str",
+                "target": "outsideTemperature"
+            }
+        ],
+        "discardNotMatched": true,
+        "join": false,
+        "minMsgCount": 1,
+        "defaultActive": true,
+        "reactivateEnabled": true,
+        "pause": "10",
+        "pauseUnit": "s",
+        "gridLowerThreshold": 3000,
+        "gridUpperThreshold": 5000,
+        "gridStabilizeTime": 15,
+        "gridStabilizeUnit": "s",
+        "batterySOCEnabled": true,
+        "batterySOCThreshold": 90,
+        "outsideTempLowerThreshold": 12,
+        "outsideTempUpperThreshold": 24,
+        "currentTempEnabled": true,
+        "currentTempThreshold": 48,
+        "surplusValue": "true",
+        "surplusValueType": "bool",
+        "normalValue": "false",
+        "normalValueType": "bool",
+        "surplusTemperature": 53,
+        "normalTemperature": 48,
+        "x": 560,
+        "y": 2720,
+        "wires": [
+            [
+                "8f68d9d9b0341314"
+            ],
+            [
+                "a5534ea92b26fa8a"
+            ]
+        ]
+    },
+    {
+        "id": "8f68d9d9b0341314",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "operationMode",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "msg",
+        "x": 800,
+        "y": 2680,
+        "wires": []
+    },
+    {
+        "id": "a5534ea92b26fa8a",
+        "type": "debug",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "targetTemperature",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "payload",
+        "statusType": "msg",
+        "x": 810,
+        "y": 2740,
+        "wires": []
+    },
+    {
+        "id": "dc30543fe5a6e743",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "active_condition",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 200,
+        "y": 2180,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "849e63f8101ac616",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "active_condition",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 200,
+        "y": 2220,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "f8fd0ba84a167fe4",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "manual_control",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 200,
+        "y": 2280,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "82ed4a92c8c8050e",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "manual_control",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 200,
+        "y": 2320,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "ed40ef171cc2784d",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "command: unblock",
+        "props": [
+            {
+                "p": "command",
+                "v": "unblock",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "unblock_button",
+        "x": 200,
+        "y": 2380,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "638b34fa78135933",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "grid_delivery",
+        "payload": "2999",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2460,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "1a3ed13a32e97cc3",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "grid_delivery",
+        "payload": "3000",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2500,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "1667baf165d33764",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "grid_delivery",
+        "payload": "4000",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2540,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "3e7d80fdfed27360",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "grid_delivery",
+        "payload": "5000",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2580,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "6f4c76ff8b24f98b",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "grid_delivery",
+        "payload": "6000",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2620,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "098d2f129a31e399",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "grid_delivery",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2660,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "698e3b36a45c17ff",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "battery_soc",
+        "payload": "89",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2740,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "134eee52db9fa0d4",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "battery_soc",
+        "payload": "90",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2780,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "af211849b3a47ed1",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "battery_soc",
+        "payload": "95",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2820,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "640ca4b8601ee8d9",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "outside_temp",
+        "payload": "11",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2900,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "224ecde331ce692e",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "outside_temp",
+        "payload": "12",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2940,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "dfce0b5ecdc4c1dd",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "outside_temp",
+        "payload": "20",
+        "payloadType": "num",
+        "x": 200,
+        "y": 2980,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "3d74c3035df4a6f8",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "outside_temp",
+        "payload": "24",
+        "payloadType": "num",
+        "x": 200,
+        "y": 3020,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "f1f2f416b598694b",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "outside_temp",
+        "payload": "28",
+        "payloadType": "num",
+        "x": 200,
+        "y": 3060,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "0e8bba51a55db446",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "water_temp",
+        "payload": "47",
+        "payloadType": "num",
+        "x": 200,
+        "y": 3140,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "6426fae9480469a7",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "water_temp",
+        "payload": "48",
+        "payloadType": "num",
+        "x": 200,
+        "y": 3180,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "737ec218a5dca330",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "water_temp",
+        "payload": "52",
+        "payloadType": "num",
+        "x": 200,
+        "y": 3220,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
+            ]
+        ]
+    },
+    {
+        "id": "37d16a3b73a0cc16",
+        "type": "inject",
+        "z": "c16b0ae576a8ea46",
+        "g": "a043bae1603803a8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "water_temp",
+        "payload": "60",
+        "payloadType": "num",
+        "x": 200,
+        "y": 3260,
+        "wires": [
+            [
+                "39c0cb52f511d9cb"
             ]
         ]
     },

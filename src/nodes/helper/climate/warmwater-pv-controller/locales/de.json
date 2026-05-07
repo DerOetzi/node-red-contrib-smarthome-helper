@@ -1,0 +1,127 @@
+{
+  "name": "Warmwasser PV Controller",
+  "description": "Intelligente Steuerung für Warmwassersysteme mit PV-Überschusserkennung und Zirkulationssteuerung",
+  "matcher-rows-general": "Allgemein",
+  "matcher-rows-pv-boost": "PV-Überschuss",
+  "section": {
+    "surplusCondition1": "Überschuss-Bedingung 1 – Sofort aktiv",
+    "surplusCondition2": "Überschuss-Bedingung 2 – Stabil über Zeit"
+  },
+  "field": {
+    "target": {
+      "label": "Parameter",
+      "description": "Eingangsparameter für die Warmwassersteuerung"
+    },
+    "reactivateEnabled": {
+      "label": "Automatisch reaktivieren",
+      "description": "Aktiviert automatisches Reaktivieren nach einer Block-Pause"
+    },
+    "pause": {
+      "label": "Pausenzeit",
+      "description": "Wartezeit bis zur automatischen Reaktivierung"
+    },
+    "defaultActive": {
+      "label": "Standard aktiv",
+      "description": "Ob der Controller standardmäßig aktiv ist"
+    },
+    "gridLowerThreshold": {
+      "label": "Mindest-Einspeisung (W)",
+      "description": "Mindest-Einspeisung in Watt, damit diese Bedingung erfüllt ist. Der Überschussmodus wird sofort aktiviert (z. B. 3000 W)"
+    },
+    "gridUpperThreshold": {
+      "label": "Mindest-Einspeisung (W)",
+      "description": "Mindest-Einspeisung in Watt, damit diese Bedingung erfüllt ist. Die Einspeisung muss über die Stabilisierungszeit gehalten werden (z. B. 5000 W)"
+    },
+    "gridStabilizeTime": {
+      "label": "Stabilisierungszeit",
+      "description": "Wie lange die Mindest-Einspeisung kontinuierlich anliegen muss, bevor der Überschussmodus aktiviert wird (z. B. 15 min)"
+    },
+    "batterySOCEnabled": {
+      "label": "Hausakku berücksichtigen",
+      "description": "Hausakku als Bedingung für den Überschussbetrieb berücksichtigen. Deaktivieren wenn kein Heimspeicher vorhanden ist."
+    },
+    "batterySOCThreshold": {
+      "label": "Hausakku Mindest-Ladestand (%)",
+      "description": "Mindest-Ladestand des Hausakkus in Prozent für Überschussbetrieb (z. B. 90 %)"
+    },
+    "outsideTempLowerThreshold": {
+      "label": "Außentemperatur ab (°C)",
+      "description": "Ab dieser Außentemperatur ist Bedingung 2 grundsätzlich möglich. Erst wenn zusätzlich die Mindest-Einspeisung über die Stabilisierungszeit stabil anliegt, wird der Überschussmodus aktiviert (z. B. 12 °C)"
+    },
+    "outsideTempUpperThreshold": {
+      "label": "Außentemperatur ab (°C)",
+      "description": "Ab dieser Außentemperatur wird der Überschussmodus sofort aktiviert, sobald die Mindest-Einspeisung erreicht ist – ohne Stabilisierungszeit (z. B. 20 °C)"
+    },
+    "currentTempEnabled": {
+      "label": "Ist-Temperatur berücksichtigen",
+      "description": "Überschussbetrieb nur aktivieren, wenn der Speicher bereits eine Mindesttemperatur erreicht hat. Verhindert unerwünschte Effekte bei zu großem Temperaturabstand zum Sollwert."
+    },
+    "currentTempThreshold": {
+      "label": "Mindest-Ist-Temperatur (°C)",
+      "description": "Der Speicher muss mindestens diese Temperatur haben, bevor der Überschussbetrieb aktiviert wird."
+    },
+    "surplusValue": {
+      "label": "Überschuss-Wert",
+      "description": "Ausgabewert im Überschussbetrieb (Typ: bool, String oder msg-Attribut)"
+    },
+    "normalValue": {
+      "label": "Normalbetrieb-Wert",
+      "description": "Ausgabewert im Normalbetrieb (Typ: bool, String oder msg-Attribut)"
+    },
+    "surplusTemperature": {
+      "label": "Soll-Temperatur Überschuss (°C)",
+      "description": "Ziel-Wassertemperatur im Überschussbetrieb"
+    },
+    "normalTemperature": {
+      "label": "Soll-Temperatur Normalbetrieb (°C)",
+      "description": "Ziel-Wassertemperatur im Normalbetrieb"
+    }
+  },
+  "input": {
+    "command": {
+      "name": "Befehl",
+      "description": "Block/Unblock-Befehl für den Controller"
+    },
+    "activeCondition": {
+      "name": "Aktivierungsbedingung",
+      "description": "Bedingung die bestimmt, wann der Controller aktiv ist"
+    },
+    "manualControl": {
+      "name": "Manuelle Steuerung",
+      "description": "Manuelle Übersteuerung: true erzwingt Überschussbetrieb, false erzwingt Normalbetrieb. Blockiert die automatische Steuerung bis der Reaktivierungs-Timer abläuft."
+    },
+    "gridDelivery": {
+      "name": "Einspeisung (W)",
+      "description": "Aktuelle Einspeisung ins Netz in Watt"
+    },
+    "batterySOC": {
+      "name": "Hausakku Ladestand (%)",
+      "description": "Aktueller Ladestand des Hausakkus in Prozent"
+    },
+    "outsideTemperature": {
+      "name": "Außentemperatur (°C)",
+      "description": "Aktuelle Außentemperatur in Grad Celsius"
+    },
+    "currentWaterTemperature": {
+      "name": "Ist-Temperatur (°C)",
+      "description": "Aktuelle Ist-Temperatur des Warmwasserspeichers in Grad Celsius"
+    }
+  },
+  "output": {
+    "operationMode": {
+      "name": "Betriebsart",
+      "description": "Aktuelle Betriebsart: Überschuss oder Normalbetrieb"
+    },
+    "targetTemperature": {
+      "name": "Soll-Temperatur",
+      "description": "Ziel-Wassertemperatur basierend auf aktueller Betriebsart"
+    }
+  },
+  "status": {
+    "inactive": "Inaktiv",
+    "blocked": "Blockiert",
+    "unknown": "Unbekannt",
+    "surplus": "Überschuss",
+    "normal": "Normalbetrieb"
+  }
+}

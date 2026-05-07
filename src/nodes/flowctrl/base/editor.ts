@@ -107,6 +107,15 @@ export class NodeEditorFormBuilder {
     return $("<hr/>").appendTo(this.container);
   }
 
+  public subHeader(key: string): JQuery {
+    const text = i18n(`${this.params.translatePrefix}.section.${key}`);
+    return $("<div/>", { class: "form-row" })
+      .append(
+        $("<label/>", { style: "font-weight: bold; width: 100%;" }).text(text),
+      )
+      .appendTo(this.container);
+  }
+
   public createTimeInput(params: NodeEditorFormBuilderTimeInputParams): JQuery {
     return this.createTypedInput({
       ...params,
