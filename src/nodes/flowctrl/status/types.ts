@@ -1,10 +1,8 @@
 import {
   ActiveControllerNodeOptions,
   ActiveControllerNodeOptionsDefaults,
-  ActiveControllerTarget,
 } from "../active-controller/types";
 import { BaseEditorNodeProperties, BaseNodeDef } from "../base/types";
-import { MatcherRowDefaults } from "../match-join/types";
 
 export enum StatusNodeScope {
   global = "global",
@@ -21,16 +19,6 @@ export interface StatusNodeOptions extends ActiveControllerNodeOptions {
 
 export const StatusNodeOptionsDefaults: StatusNodeOptions = {
   ...ActiveControllerNodeOptionsDefaults,
-  matchers: [
-    {
-      ...MatcherRowDefaults,
-      target: ActiveControllerTarget.activeCondition,
-      targetType: "str",
-    },
-  ],
-  join: false,
-  discardNotMatched: true,
-  minMsgCount: 1,
   statusReportingEnabled: false,
   filterUniquePayload: true,
   scope: StatusNodeScope.flow,

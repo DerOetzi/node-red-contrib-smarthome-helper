@@ -97,12 +97,10 @@ export const LightControllerNodeOptionsDefaults: LightControllerNodeOptions = {
 };
 
 export interface LightControllerNodeDef
-  extends MatchJoinNodeDef,
-    LightControllerNodeOptions {}
+  extends MatchJoinNodeDef, LightControllerNodeOptions {}
 
 export interface LightControllerEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    LightControllerNodeOptions {}
+  extends MatchJoinEditorNodeProperties, LightControllerNodeOptions {}
 
 export class LightControllerNodeMessageFlow extends NodeMessageFlow {
   public get lightbulbs(): string[] | undefined {
@@ -160,18 +158,18 @@ export class LightControllerNodeMessageFlow extends NodeMessageFlow {
   }
 
   public static clone(
-    messageFlow: NodeMessageFlow
+    messageFlow: NodeMessageFlow,
   ): LightControllerNodeMessageFlow {
     const clonedMessageFlow = new LightControllerNodeMessageFlow(
       messageFlow.originalMsg,
       messageFlow.output,
-      messageFlow.send
+      messageFlow.send,
     );
     clonedMessageFlow.topic = messageFlow.topic;
     clonedMessageFlow.payload = messageFlow.payload;
 
     clonedMessageFlow.additionalAttributes = cloneDeep(
-      (messageFlow as LightControllerNodeMessageFlow).additionalAttributes
+      (messageFlow as LightControllerNodeMessageFlow).additionalAttributes,
     );
 
     return clonedMessageFlow;
@@ -181,7 +179,7 @@ export class LightControllerNodeMessageFlow extends NodeMessageFlow {
     const clone = new LightControllerNodeMessageFlow(
       this.originalMsg,
       this.output,
-      this.send
+      this.send,
     );
     clone.topic = this.topic;
     clone.payload = this.payload;

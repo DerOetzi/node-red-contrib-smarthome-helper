@@ -6739,8 +6739,8 @@
                 "target": "command"
             }
         ],
-        "discardNotMatched": true,
         "join": false,
+        "discardNotMatched": true,
         "minMsgCount": 1,
         "defaultActive": true,
         "reactivateEnabled": true,
@@ -7422,8 +7422,8 @@
                 "target": "activeCondition"
             }
         ],
-        "discardNotMatched": true,
         "join": false,
+        "discardNotMatched": true,
         "minMsgCount": 1,
         "defaultActive": false,
         "reactivateEnabled": false,
@@ -7991,8 +7991,8 @@
                 "target": "activeCondition"
             }
         ],
-        "discardNotMatched": true,
         "join": false,
+        "discardNotMatched": true,
         "minMsgCount": 1,
         "defaultActive": true,
         "scope": "group",
@@ -8445,18 +8445,18 @@
         "version": "1.0.3",
         "topic": "topic",
         "topicType": "msg",
-        "filterUniquePayload": false,
+        "filterUniquePayload": true,
         "newMsg": false,
         "outputs": 2,
         "inputs": 1,
         "statusReportingEnabled": true,
         "statusItem": "warmwaterStatus",
         "statusTextItem": "warmwaterStatusText",
-        "debounce": false,
-        "debounceTopic": false,
+        "debounce": true,
+        "debounceTopic": true,
         "debounceShowStatus": false,
-        "debounceTime": "5",
-        "debounceUnit": "s",
+        "debounceTime": "500",
+        "debounceUnit": "ms",
         "debounceLeading": false,
         "debounceTrailing": true,
         "matchers": [
@@ -8513,10 +8513,19 @@
                 "compare": "outside_temp",
                 "compareType": "str",
                 "target": "outsideTemperature"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "water_temp",
+                "compareType": "str",
+                "target": "currentWaterTemperature"
             }
         ],
-        "discardNotMatched": true,
         "join": false,
+        "discardNotMatched": true,
         "minMsgCount": 1,
         "defaultActive": true,
         "reactivateEnabled": true,

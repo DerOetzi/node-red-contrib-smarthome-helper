@@ -1,11 +1,12 @@
 import { NodeMessage } from "node-red";
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
 import {
+  MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
   MatchJoinNodeOptions,
-  MatchJoinNodeOptionsDefaults,
 } from "../match-join/types";
+import { BaseNodeOptionsDefaults } from "../base/types";
 
 export enum ActiveControllerCommand {
   block = "block",
@@ -27,7 +28,17 @@ export interface ActiveControllerNodeOptions extends MatchJoinNodeOptions {
 
 export const ActiveControllerNodeOptionsDefaults: ActiveControllerNodeOptions =
   {
-    ...MatchJoinNodeOptionsDefaults,
+    ...BaseNodeOptionsDefaults,
+    matchers: [
+      {
+        ...MatcherRowDefaults,
+        target: ActiveControllerTarget.activeCondition,
+        targetType: "str",
+      },
+    ],
+    join: false,
+    discardNotMatched: true,
+    minMsgCount: 1,
     defaultActive: true,
     reactivateEnabled: true,
     pause: 1,

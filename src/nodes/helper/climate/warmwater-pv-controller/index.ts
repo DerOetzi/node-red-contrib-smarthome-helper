@@ -34,6 +34,7 @@ export default class WarmWaterPVControllerNode extends ActiveControllerNode<
 
   constructor(RED: NodeAPI, node: Node, config: WarmWaterPVControllerNodeDef) {
     super(RED, node, config, WarmWaterPVControllerNodeOptionsDefaults);
+    this.evaluateAndSend();
   }
 
   protected onClose(): void {
