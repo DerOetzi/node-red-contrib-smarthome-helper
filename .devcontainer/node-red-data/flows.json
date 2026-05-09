@@ -1868,7 +1868,7 @@
         "z": "296701fb4cce3477",
         "g": "d88986ae6ac12564",
         "name": "",
-        "version": "0.28.0",
+        "version": "1.1.0",
         "topic": "topic",
         "topicType": "msg",
         "filterUniquePayload": true,
@@ -1897,8 +1897,8 @@
             }
         ],
         "join": false,
+        "defaultActive": false,
         "scope": "global",
-        "initialActive": true,
         "x": 1010,
         "y": 80,
         "wires": [
@@ -7963,7 +7963,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "df1d30e94fa679dc",
         "name": "",
-        "version": "0.28.0",
+        "version": "1.1.0",
         "topic": "topic",
         "topicType": "msg",
         "filterUniquePayload": true,
@@ -7991,11 +7991,11 @@
                 "target": "activeCondition"
             }
         ],
-        "join": false,
         "discardNotMatched": true,
+        "join": false,
         "minMsgCount": 1,
+        "defaultActive": true,
         "scope": "group",
-        "initialActive": true,
         "x": 610,
         "y": 140,
         "wires": [

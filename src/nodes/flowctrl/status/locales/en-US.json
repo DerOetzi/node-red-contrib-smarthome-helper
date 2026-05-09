@@ -11,8 +11,8 @@
                 "group": "Group"
             }
         },
-        "initialActive": {
-            "label": "Initial active",
+        "defaultActive": {
+            "label": "Default active",
             "description": "Starts the node in active state"
         }
     },

@@ -146,7 +146,7 @@
     ],
     "x": 54,
     "y": 2139,
-    "w": 882,
+    "w": 892,
     "h": 1162
   },
   {
@@ -1489,11 +1489,10 @@
         "target": "activeCondition"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "scope": "group",
-    "initialActive": true,
     "x": 610,
     "y": 140,
     "wires": [
@@ -1953,8 +1952,8 @@
     "debounce": false,
     "debounceTopic": false,
     "debounceShowStatus": false,
-    "debounceTime": 100,
-    "debounceUnit": "ms",
+    "debounceTime": "5",
+    "debounceUnit": "s",
     "debounceLeading": false,
     "debounceTrailing": true,
     "matchers": [
@@ -2011,15 +2010,6 @@
         "compare": "outside_temp",
         "compareType": "str",
         "target": "outsideTemperature"
-      },
-      {
-        "targetType": "str",
-        "property": "topic",
-        "propertyType": "msg",
-        "operation": "eq",
-        "compare": "water_temp",
-        "compareType": "str",
-        "target": "currentWaterTemperature"
       }
     ],
     "discardNotMatched": true,
@@ -2046,7 +2036,7 @@
     "surplusTemperature": 53,
     "normalTemperature": 48,
     "x": 560,
-    "y": 2740,
+    "y": 2720,
     "wires": [
       [
         "8f68d9d9b0341314"
@@ -2071,7 +2061,7 @@
     "statusVal": "payload",
     "statusType": "msg",
     "x": 800,
-    "y": 2720,
+    "y": 2680,
     "wires": []
   },
   {
@@ -2080,7 +2070,7 @@
     "z": "c16b0ae576a8ea46",
     "g": "a043bae1603803a8",
     "name": "targetTemperature",
-    "active": true,
+    "active": false,
     "tosidebar": true,
     "console": false,
     "tostatus": true,
@@ -2088,8 +2078,8 @@
     "targetType": "full",
     "statusVal": "payload",
     "statusType": "msg",
-    "x": 800,
-    "y": 2800,
+    "x": 810,
+    "y": 2740,
     "wires": []
   },
   {

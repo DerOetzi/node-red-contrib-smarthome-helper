@@ -11,8 +11,8 @@
                 "group": "Gruppe"
             }
         },
-        "initialActive": {
-            "label": "Initial aktiv",
+        "defaultActive": {
+            "label": "Standardmäßig aktiv",
             "description": "Startet den Knoten im aktiven Zustand"
         }
     },

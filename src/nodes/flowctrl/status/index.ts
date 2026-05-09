@@ -6,19 +6,19 @@ import {
   NodeMessageFlow,
   NodeStatus,
 } from "../base/types";
-import MatchJoinNode from "../match-join";
 import { StatusNodesConnector } from "./connector";
 import {
   StatusNodeDef,
   StatusNodeOptions,
   StatusNodeOptionsDefaults,
   StatusNodeScope,
-  StatusNodeTarget,
 } from "./types";
 import Migration from "../base/migration";
 import StatusNodeMigration from "./migration";
+import ActiveControllerNode from "../active-controller";
+import { ActiveControllerTarget } from "../active-controller/types";
 
-export default class StatusNode extends MatchJoinNode<
+export default class StatusNode extends ActiveControllerNode<
   StatusNodeDef,
   StatusNodeOptions
 > {
@@ -31,7 +31,7 @@ export default class StatusNode extends MatchJoinNode<
 
   constructor(RED: NodeAPI, node: Node, config: StatusNodeDef) {
     super(RED, node, config, StatusNodeOptionsDefaults);
-    this.nodeStatus = this.config.initialActive;
+    this.nodeStatus = this.config.defaultActive;
   }
 
   public register(statusNodesConnector: StatusNodesConnector): void {
@@ -56,21 +56,29 @@ export default class StatusNode extends MatchJoinNode<
   protected matched(messageFlow: NodeMessageFlow): void {
     const topic = messageFlow.topic;
 
-    if (topic === StatusNodeTarget.activeCondition) {
+    if (topic === ActiveControllerTarget.activeCondition) {
       if (typeof messageFlow.payload !== "boolean") {
         this.node.error("Invalid payload for active condition");
         return;
       }
-
-      this.nodeStatus = messageFlow.payload;
-
-      if (this.nodeStatus) {
-        this.inactiveQueue.forEach((statusReport) => {
-          this.handleStatusReport(statusReport);
-        });
-        this.inactiveQueue.clear();
-      }
+      this.handleActivateTarget(messageFlow);
     }
+  }
+
+  protected onReactivate(): void {
+    this.nodeStatus = this.active;
+    this.inactiveQueue.forEach((statusReport) => {
+      this.handleStatusReport(statusReport);
+    });
+    this.inactiveQueue.clear();
+  }
+
+  protected onCommand(_message: NodeMessageFlow): void {
+    // Do nothing
+  }
+
+  protected onManualControl(_manual: any): void {
+    // Do nothing
   }
 
   public handleStatusReport(statusReport: BaseNodeStatus): void {
@@ -105,9 +113,9 @@ export default class StatusNode extends MatchJoinNode<
     //Do nothing
   }
 
-  protected statusTextFormatter(status: NodeStatus): string {
+  protected statusTextFormatter(_status: NodeStatus): string {
     return this.RED._(
-      `flowctrl.status.state.${status ? "active" : "inactive"}`,
+      `flowctrl.status.state.${this.active ? "active" : "inactive"}`,
     );
   }
 }

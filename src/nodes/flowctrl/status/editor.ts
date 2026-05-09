@@ -13,8 +13,8 @@ import {
   StatusNodeOptions,
   StatusNodeOptionsDefaults,
   StatusNodeScope,
-  StatusNodeTarget,
 } from "./types";
+import { ActiveControllerTarget } from "../active-controller/types";
 
 export const StatusEditorMetadata: EditorMetadata = {
   localePrefix: "flowctrl.status",
@@ -25,7 +25,7 @@ export const StatusEditorMetadata: EditorMetadata = {
 };
 
 const inputMatcherList = new MatchJoinEditableList({
-  targets: Object.values(StatusNodeTarget),
+  targets: [ActiveControllerTarget.activeCondition],
   translatePrefix: "flowctrl.status",
 });
 
@@ -67,9 +67,9 @@ const StatusEditorNode: EditorNodeDef<StatusEditorNodeProperties> = {
     });
 
     statusNodeOptionsBuilder.createCheckboxInput({
-      id: "node-input-initialActive",
-      label: "initialActive",
-      value: this.initialActive,
+      id: "node-input-defaultActive",
+      label: "defaultActive",
+      value: this.defaultActive,
       icon: "toggle-on",
     });
   },

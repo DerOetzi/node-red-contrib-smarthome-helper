@@ -1,13 +1,10 @@
 import {
-  BaseEditorNodeProperties,
-  BaseNodeDef,
-  BaseNodeOptionsDefaults,
-} from "../base/types";
-import { MatcherRowDefaults, MatchJoinNodeOptions } from "../match-join/types";
-
-export enum StatusNodeTarget {
-  activeCondition = "activeCondition",
-}
+  ActiveControllerNodeOptions,
+  ActiveControllerNodeOptionsDefaults,
+  ActiveControllerTarget,
+} from "../active-controller/types";
+import { BaseEditorNodeProperties, BaseNodeDef } from "../base/types";
+import { MatcherRowDefaults } from "../match-join/types";
 
 export enum StatusNodeScope {
   global = "global",
@@ -15,17 +12,19 @@ export enum StatusNodeScope {
   group = "group",
 }
 
-export interface StatusNodeOptions extends MatchJoinNodeOptions {
+export interface StatusNodeOptions extends ActiveControllerNodeOptions {
   scope: StatusNodeScope;
-  initialActive: boolean;
+
+  //deprecated 1.1.0
+  initialActive?: boolean;
 }
 
 export const StatusNodeOptionsDefaults: StatusNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...ActiveControllerNodeOptionsDefaults,
   matchers: [
     {
       ...MatcherRowDefaults,
-      target: StatusNodeTarget.activeCondition,
+      target: ActiveControllerTarget.activeCondition,
       targetType: "str",
     },
   ],
@@ -35,12 +34,10 @@ export const StatusNodeOptionsDefaults: StatusNodeOptions = {
   statusReportingEnabled: false,
   filterUniquePayload: true,
   scope: StatusNodeScope.flow,
-  initialActive: false,
   outputs: 2,
 };
 
 export interface StatusNodeDef extends BaseNodeDef, StatusNodeOptions {}
 
 export interface StatusEditorNodeProperties
-  extends BaseEditorNodeProperties,
-    StatusNodeOptions {}
+  extends BaseEditorNodeProperties, StatusNodeOptions {}
