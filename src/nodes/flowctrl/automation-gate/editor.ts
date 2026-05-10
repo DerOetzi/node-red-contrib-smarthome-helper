@@ -1,5 +1,6 @@
 import { EditorNodeDef } from "node-red";
 import BaseEditorNode, {
+  BaseEditorTemplate,
   createEditorDefaults,
   i18n,
   i18nFieldDefault,
@@ -12,7 +13,13 @@ import {
   AutomationGateNodeOptions,
   AutomationGateNodeOptionsDefaults,
 } from "./types";
-import { EditorMetadata } from "../../types";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
+
+export const AutomationGateEditorTemplate: EditorTemplateElement[] = [
+  { tag: "div", id: "automation-gate-options" },
+  "hr",
+  ...BaseEditorTemplate,
+];
 
 export const AutomationGateEditorMetadata: EditorMetadata = {
   localePrefix: "flowctrl.automation-gate",
@@ -27,6 +34,7 @@ export const AutomationGateEditorMetadata: EditorMetadata = {
   ],
   inputKeys: ["gate", "pause"],
   outputKeys: ["message"],
+  template: AutomationGateEditorTemplate,
 };
 
 const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties> =

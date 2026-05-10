@@ -1,20 +1,32 @@
 import { EditorNodeDef } from "node-red";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata } from "../../../types";
+import WarmWaterPVControllerNode from ".";
+import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
+import BaseEditorNode, {
+  createEditorDefaults,
+  i18n,
+  NodeEditorFormBuilder,
+} from "../../../flowctrl/base/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import WarmWaterPVControllerMigration from "./migration";
 import {
   WarmWaterPVControllerEditorNodeProperties,
   WarmWaterPVControllerNodeOptions,
   WarmWaterPVControllerNodeOptionsDefaults,
   WarmWaterPVControllerTarget,
 } from "./types";
-import WarmWaterPVControllerNode from ".";
-import BaseEditorNode, {
-  createEditorDefaults,
-  i18n,
-  NodeEditorFormBuilder,
-} from "../../../flowctrl/base/editor";
-import WarmWaterPVControllerMigration from "./migration";
-import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
+
+export const WarmWaterPVControllerEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows-general" },
+  "hr",
+  { tag: "ol", id: "matcher-rows-pv-boost" },
+  "hr",
+  { tag: "div", id: "warmwater-pv-controller-options" },
+  ...InputEditorTemplate,
+];
 
 export const WarmWaterPVControllerEditorMetadata: EditorMetadata = {
   localePrefix: "helper.warmwater-pv-controller",
@@ -49,6 +61,7 @@ export const WarmWaterPVControllerEditorMetadata: EditorMetadata = {
     "currentWaterTemperature",
   ],
   outputKeys: ["operationMode", "targetTemperature"],
+  template: WarmWaterPVControllerEditorTemplate,
 };
 
 const generalMatcherList = new MatchJoinEditableList({

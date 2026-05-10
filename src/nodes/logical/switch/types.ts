@@ -42,8 +42,7 @@ export const SwitchNodeOptionsDefaults: SwitchNodeOptions = {
 export interface SwitchNodeDef extends BaseNodeDef, SwitchNodeOptions {}
 
 export interface SwitchEditorNodeProperties
-  extends BaseEditorNodeProperties,
-    SwitchNodeOptions {}
+  extends BaseEditorNodeProperties, SwitchNodeOptions {}
 
 export const LogicalOpCategory: NodeCategory = {
   label: "Smarthome Operators",

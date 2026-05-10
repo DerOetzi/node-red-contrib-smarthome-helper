@@ -1,11 +1,14 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import WasteReminderNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import {
   WasteReminderEditorNodeProperties,
   WasteReminderNodeOptions,
@@ -13,12 +16,19 @@ import {
   WasteReminderTarget,
 } from "./types";
 
+export const WasteReminderEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  { tag: "div", id: "waste-reminder-options" },
+  ...InputEditorTemplate,
+];
+
 export const WasteReminderEditorMetadata: EditorMetadata = {
   localePrefix: "helper.waste-reminder",
   inputMode: "matcher-topic",
   fieldKeys: [],
   inputKeys: ["types", "remaining"],
   outputKeys: ["notification"],
+  template: WasteReminderEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

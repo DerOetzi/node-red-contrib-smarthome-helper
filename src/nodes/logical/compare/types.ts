@@ -52,8 +52,7 @@ export const CompareNodeOptionsDefaults: CompareNodeOptions = {
 export interface CompareNodeDef extends SwitchNodeDef, CompareNodeOptions {}
 
 export interface CompareEditorNodeProperties
-  extends SwitchEditorNodeProperties,
-    CompareNodeOptions {}
+  extends SwitchEditorNodeProperties, CompareNodeOptions {}
 
 export interface Comparator {
   func: (propertyValue: any, compareValue?: any) => boolean;

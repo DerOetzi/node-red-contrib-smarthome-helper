@@ -1,5 +1,5 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
+import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -7,7 +7,11 @@ import BaseEditorNode, {
   i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import HeatingControllerNode from "./";
 import {
   HeatingControllerEditorNodeProperties,
@@ -15,7 +19,17 @@ import {
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
 } from "./types";
-import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
+
+export const HeatingControllerEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows-control" },
+  "hr",
+  { tag: "ol", id: "matcher-rows-temperature" },
+  "hr",
+  { tag: "ol", id: "matcher-rows-boost" },
+  "hr",
+  { tag: "div", id: "heating-controller-options" },
+  ...InputEditorTemplate,
+];
 
 export const HeatingControllerEditorMetadata: EditorMetadata = {
   localePrefix: "helper.heating-controller",
@@ -47,6 +61,7 @@ export const HeatingControllerEditorMetadata: EditorMetadata = {
     "pvBoostTemperatureOffset",
   ],
   outputKeys: ["heatmode", "temperature", "window", "status"],
+  template: HeatingControllerEditorTemplate,
 };
 
 const controlMatcherList = new MatchJoinEditableList({

@@ -1,14 +1,16 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../types";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
 import BaseEditorNode, {
+  BaseCommonElement,
+  BaseDebounceNoTopicElement,
+  BaseEditorWithoutStatusTemplate,
+  BaseStatusElement,
   createEditorDefaults,
   i18nInputLabel,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../base/editor";
-import {
-  NodeEditorFormBuilderParams,
-} from "../base/types";
+import { NodeEditorFormBuilderParams } from "../base/types";
 import MatchJoinNode from "./";
 import {
   MatcherRow,
@@ -24,12 +26,34 @@ import {
   NotApplicableCompareFunction,
 } from "../../logical/compare/types";
 
+export const MatchJoinEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  "hr",
+  { tag: "div", id: "matcher-join-options" },
+  "hr",
+  ...BaseEditorWithoutStatusTemplate,
+];
+
+export const InputEditorWithoutStatusTemplate: EditorTemplateElement[] = [
+  "hr",
+  BaseCommonElement,
+  "hr",
+  BaseDebounceNoTopicElement,
+];
+
+export const InputEditorTemplate: EditorTemplateElement[] = [
+  ...InputEditorWithoutStatusTemplate,
+  "hr",
+  BaseStatusElement,
+];
+
 export const MatchJoinEditorMetadata: EditorMetadata = {
   localePrefix: "flowctrl.match-join",
   inputMode: "matcher-topic",
   fieldKeys: ["discardNotMatched", "join", "minMsgCount", "target"],
   inputKeys: [],
   outputKeys: [],
+  template: MatchJoinEditorTemplate,
 };
 
 export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow> {
@@ -149,10 +173,13 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
   }
 
   private syncListVisibility(): void {
-    if (!this.fixedTargets) return;
+    if (!this.fixedTargets) {
+      return;
+    }
 
     const allHidden = this.fixedTargets.targets.every(
-      (target) => (this.listContainer?.data("showHide_" + target) ?? true) === false,
+      (target) =>
+        (this.listContainer?.data("showHide_" + target) ?? true) === false,
     );
 
     this.toggle(!allHidden);

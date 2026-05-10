@@ -54,6 +54,16 @@ export const MatchJoinNodeOptionsDefaults: MatchJoinNodeOptions = {
   minMsgCount: 1,
 };
 
+export const InputNodeOptionsDefaults: MatchJoinNodeOptions = {
+  ...BaseNodeOptionsDefaults,
+  matchers: [MatcherRowDefaults],
+  discardNotMatched: true,
+  join: false,
+  minMsgCount: 1,
+  inputs: 1,
+  debounceTopic: true,
+};
+
 export interface MatchJoinNodeDef extends BaseNodeDef, MatchJoinNodeOptions {}
 
 export interface MatchJoinEditorNodeProperties

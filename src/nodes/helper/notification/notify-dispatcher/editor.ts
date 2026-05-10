@@ -1,11 +1,14 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorWithoutStatusTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import NotifyDispatcherNode from "./";
 import {
   NotifyDispatcherEditorNodeProperties,
@@ -13,6 +16,13 @@ import {
   NotifyDispatcherNodeOptionsDefaults,
   NotifyDispatcherTarget,
 } from "./types";
+
+export const NotifyDispatcherEditorTemplate: EditorTemplateElement[] = [
+  { tag: "div", id: "notify-dispatcher-options" },
+  "hr",
+  { tag: "ol", id: "matcher-rows" },
+  ...InputEditorWithoutStatusTemplate,
+];
 
 export const NotifyDispatcherEditorMetadata: EditorMetadata = {
   localePrefix: "helper.notify-dispatcher",
@@ -44,6 +54,7 @@ export const NotifyDispatcherEditorMetadata: EditorMetadata = {
     "person9",
     "person10",
   ],
+  template: NotifyDispatcherEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

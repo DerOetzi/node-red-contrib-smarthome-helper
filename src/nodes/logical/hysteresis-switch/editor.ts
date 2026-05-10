@@ -1,17 +1,23 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../types";
 import HysteresisSwitchNode from ".";
 import {
   createEditorDefaults,
   i18n,
-  NodeEditorFormBuilder,
+  NodeEditorFormBuilder
 } from "../../flowctrl/base/editor";
-import SwitchEditorNode from "../switch/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
+import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import {
   HysteresisSwitchEditorNodeProperties,
   HysteresisSwitchNodeOptions,
   HysteresisSwitchNodeOptionsDefaults,
 } from "./types";
+
+export const HysteresisSwitchEditorTemplate: EditorTemplateElement[] = [
+  { tag: "div", id: "hysteresis-switch-options" },
+  "hr",
+  ...SwitchEditorTemplate,
+];
 
 export const HysteresisSwitchEditorMetadata: EditorMetadata = {
   localePrefix: "logical.hysteresis-switch",
@@ -19,6 +25,7 @@ export const HysteresisSwitchEditorMetadata: EditorMetadata = {
   fieldKeys: ["upperThreshold", "lowerThreshold", "initialState"],
   inputKeys: [],
   outputKeys: [],
+  template: HysteresisSwitchEditorTemplate,
 };
 
 const HysteresisSwitchEditorNode: EditorNodeDef<HysteresisSwitchEditorNodeProperties> =

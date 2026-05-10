@@ -14,6 +14,11 @@ export default class MatchJoinMigration<
       node.migrated = true;
     }
 
+    if (this.checkMigrationStepRequired(node, "1.2.0")) {
+      node.debounceTopic = true;
+      node.migrated = true;
+    }
+
     return super._migrationSteps(node);
   }
 

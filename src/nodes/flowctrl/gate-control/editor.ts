@@ -1,6 +1,7 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../types";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
 import BaseEditorNode, {
+  BaseEditorWithoutStatusTemplate,
   createEditorDefaults,
   NodeEditorFormBuilder,
 } from "../base/editor";
@@ -11,12 +12,19 @@ import {
   GateControlNodeOptionsDefaults,
 } from "./types";
 
+export const GateControlEditorTemplate: EditorTemplateElement[] = [
+  { tag: "div", id: "gate-control-options" },
+  "hr",
+  ...BaseEditorWithoutStatusTemplate,
+];
+
 export const GateControlEditorMetadata: EditorMetadata = {
   localePrefix: "flowctrl.gate-control",
   inputMode: "msg-property",
   fieldKeys: ["delay", "gateCommand", "pauseTime"],
   inputKeys: [],
   outputKeys: [],
+  template: GateControlEditorTemplate,
 };
 
 const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {

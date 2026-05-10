@@ -87,11 +87,7 @@ export const WarmWaterPVControllerNodeOptionsDefaults: WarmWaterPVControllerNode
         targetType: "str",
       },
     ],
-    join: false,
-    discardNotMatched: true,
-    minMsgCount: 1,
     outputs: 2,
-    debounceTopic: true,
 
     gridLowerThreshold: 3000,
     gridUpperThreshold: 5000,

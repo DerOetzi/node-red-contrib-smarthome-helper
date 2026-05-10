@@ -1,6 +1,6 @@
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -35,7 +35,7 @@ export interface WindowReminderNodeOptions extends MatchJoinNodeOptions {
 }
 
 export const WindowReminderNodeOptionsDefaults: WindowReminderNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...InputNodeOptionsDefaults,
   matchers: [
     {
       ...MatcherRowDefaults,
@@ -48,16 +48,11 @@ export const WindowReminderNodeOptionsDefaults: WindowReminderNodeOptions = {
       targetType: "str",
     },
   ],
-  join: false,
-  minMsgCount: 1,
-  discardNotMatched: true,
   intervals: [],
 };
 
 export interface WindowReminderNodeDef
-  extends MatchJoinNodeDef,
-    WindowReminderNodeOptions {}
+  extends MatchJoinNodeDef, WindowReminderNodeOptions {}
 
 export interface WindowReminderEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    WindowReminderNodeOptions {}
+  extends MatchJoinEditorNodeProperties, WindowReminderNodeOptions {}

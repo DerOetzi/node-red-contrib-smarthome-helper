@@ -195,24 +195,6 @@
         "targetType": "str",
         "property": "topic",
         "propertyType": "msg",
-        "operation": "eq",
-        "compare": "ha_comfort_number",
-        "compareType": "str",
-        "target": "comfortTemperature"
-      },
-      {
-        "targetType": "str",
-        "property": "topic",
-        "propertyType": "msg",
-        "operation": "eq",
-        "compare": "ha_eco_offset_number",
-        "compareType": "str",
-        "target": "ecoTemperatureOffset"
-      },
-      {
-        "targetType": "str",
-        "property": "topic",
-        "propertyType": "msg",
         "operation": "startsWith",
         "compare": "window",
         "compareType": "str",
@@ -235,10 +217,28 @@
         "compare": "",
         "compareType": "str",
         "target": "command"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "ha_comfort_number",
+        "compareType": "str",
+        "target": "comfortTemperature"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "ha_eco_offset_number",
+        "compareType": "str",
+        "target": "ecoTemperatureOffset"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "defaultActive": true,
     "reactivateEnabled": true,
@@ -920,8 +920,8 @@
         "target": "activeCondition"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "defaultActive": false,
     "reactivateEnabled": false,
@@ -1461,7 +1461,7 @@
     "z": "c16b0ae576a8ea46",
     "g": "df1d30e94fa679dc",
     "name": "",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": true,
@@ -1472,7 +1472,7 @@
     "statusItem": "",
     "statusTextItem": "",
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1489,8 +1489,8 @@
         "target": "activeCondition"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "defaultActive": true,
     "scope": "group",
@@ -1547,7 +1547,7 @@
     "z": "c16b0ae576a8ea46",
     "g": "ac38f4d90e8f3c16",
     "name": "",
-    "version": "0.37.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -1558,7 +1558,7 @@
     "statusItem": "",
     "statusTextItem": "",
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1584,8 +1584,8 @@
         "target": "humidity"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "x": 440,
     "y": 1900,
@@ -2022,8 +2022,8 @@
         "target": "currentWaterTemperature"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "defaultActive": true,
     "reactivateEnabled": true,

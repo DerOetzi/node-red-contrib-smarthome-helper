@@ -1,5 +1,5 @@
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -44,7 +44,7 @@ export interface NotifyDispatcherNodeOptions extends MatchJoinNodeOptions {
 
 export const NotifyDispatcherNodeOptionsDefaults: NotifyDispatcherNodeOptions =
   {
-    ...BaseNodeOptionsDefaults,
+    ...InputNodeOptionsDefaults,
     matchers: [
       {
         ...MatcherRowDefaults,
@@ -60,17 +60,13 @@ export const NotifyDispatcherNodeOptionsDefaults: NotifyDispatcherNodeOptions =
         targetType: "str",
       },
     ],
-    join: false,
-    discardNotMatched: true,
     minMsgCount: 2,
     outputs: 2,
     persons: 1,
   };
 
 export interface NotifyDispatcherNodeDef
-  extends MatchJoinNodeDef,
-    NotifyDispatcherNodeOptions {}
+  extends MatchJoinNodeDef, NotifyDispatcherNodeOptions {}
 
 export interface NotifyDispatcherEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    NotifyDispatcherNodeOptions {}
+  extends MatchJoinEditorNodeProperties, NotifyDispatcherNodeOptions {}

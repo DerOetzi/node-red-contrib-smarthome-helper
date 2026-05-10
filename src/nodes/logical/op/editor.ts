@@ -1,11 +1,11 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../types";
 import {
   createEditorDefaults,
   i18n,
-  NodeEditorFormBuilder,
+  NodeEditorFormBuilder
 } from "../../flowctrl/base/editor";
-import SwitchEditorNode from "../switch/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
+import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import LogicalOpNode from "./";
 import {
   LogicalFunction,
@@ -14,12 +14,19 @@ import {
   LogicalOpNodeOptionsDefaults,
 } from "./types";
 
+export const LogicalOpEditorTemplate: EditorTemplateElement[] = [
+  { tag: "div", id: "logical-op-options" },
+  "hr",
+  ...SwitchEditorTemplate,
+];
+
 export const LogicalOpEditorMetadata: EditorMetadata = {
   localePrefix: "logical.op",
   inputMode: "msg-property",
   fieldKeys: ["operation", "minMsgCount"],
   inputKeys: [],
   outputKeys: [],
+  template: LogicalOpEditorTemplate,
 };
 
 const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {

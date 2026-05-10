@@ -1,11 +1,14 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import HygroCalculatorNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import {
   HygroCalculatorEditorNodeProperties,
   HygroCalculatorNodeOptions,
@@ -13,12 +16,20 @@ import {
   HygroCalculatorTarget,
 } from "./types";
 
+export const HygroCalculatorEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  "hr",
+  { tag: "div", id: "hygro-calculator-options" },
+  ...InputEditorTemplate,
+];
+
 export const HygroCalculatorEditorMetadata: EditorMetadata = {
   localePrefix: "helper.hygro-calculator",
   inputMode: "matcher-topic",
   fieldKeys: [],
   inputKeys: ["temperature", "humidity"],
   outputKeys: ["dewPoint", "absoluteHumidity"],
+  template: HygroCalculatorEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

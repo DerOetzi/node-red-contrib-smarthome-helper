@@ -16,5 +16,4 @@ export const ToggleNodeOptionsDefaults: ToggleNodeOptions = {
 export interface ToggleNodeDef extends SwitchNodeDef, ToggleNodeOptions {}
 
 export interface ToggleEditorNodeProperties
-  extends SwitchEditorNodeProperties,
-    ToggleNodeOptions {}
+  extends SwitchEditorNodeProperties, ToggleNodeOptions {}

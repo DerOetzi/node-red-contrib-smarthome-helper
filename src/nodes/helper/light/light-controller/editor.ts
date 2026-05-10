@@ -1,5 +1,4 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -8,7 +7,11 @@ import BaseEditorNode, {
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import LightControllerNode from "./";
 import {
   LightControllerEditorNodeProperties,
@@ -18,6 +21,15 @@ import {
   LightIdentifierRow,
   LightType,
 } from "./types";
+
+export const LightControllerEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  "hr",
+  { tag: "ol", id: "identifier-rows" },
+  "hr",
+  { tag: "div", id: "light-controller-options" },
+  ...InputEditorTemplate,
+];
 
 export const LightControllerEditorMetadata: EditorMetadata = {
   localePrefix: "helper.light-controller",
@@ -39,6 +51,7 @@ export const LightControllerEditorMetadata: EditorMetadata = {
   ],
   inputKeys: ["command", "colorTemperature", "hue", "saturation"],
   outputKeys: ["command"],
+  template: LightControllerEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

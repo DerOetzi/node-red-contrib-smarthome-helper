@@ -22,9 +22,7 @@ export const HysteresisSwitchNodeOptionsDefaults: HysteresisSwitchNodeOptions =
   };
 
 export interface HysteresisSwitchNodeDef
-  extends SwitchNodeDef,
-    HysteresisSwitchNodeOptions {}
+  extends SwitchNodeDef, HysteresisSwitchNodeOptions {}
 
 export interface HysteresisSwitchEditorNodeProperties
-  extends SwitchEditorNodeProperties,
-    HysteresisSwitchNodeOptions {}
+  extends SwitchEditorNodeProperties, HysteresisSwitchNodeOptions {}
