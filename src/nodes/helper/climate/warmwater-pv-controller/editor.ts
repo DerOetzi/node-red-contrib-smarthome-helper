@@ -10,7 +10,12 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../../types";
 import WarmWaterPVControllerMigration from "./migration";
 import {
   WarmWaterPVControllerEditorNodeProperties,
@@ -19,12 +24,12 @@ import {
   WarmWaterPVControllerTarget,
 } from "./types";
 
-export const WarmWaterPVControllerEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows-general" },
-  "hr",
-  { tag: "ol", id: "matcher-rows-pv-boost" },
-  "hr",
-  { tag: "div", id: "warmwater-pv-controller-options" },
+export const WarmWaterPVControllerEditorTemplate = [
+  new EditorTemplateOl("matcher-rows-general"),
+  EditorTemplateLine,
+  new EditorTemplateOl("matcher-rows-pv-boost"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("warmwater-pv-controller-options"),
   ...InputEditorTemplate,
 ];
 

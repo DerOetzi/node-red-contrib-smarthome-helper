@@ -1,6 +1,10 @@
 import { EditorNodeDef, EditorNodePropertiesDef, EditorRED } from "node-red";
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateLine,
+} from "../../types";
 import version from "../../../version";
 import BaseNode from "./";
 import { generateNodeHelp as generateNodeHelpFromDefinition } from "./help";
@@ -50,33 +54,25 @@ export function i18nFieldDefault(prefix: string, fieldKey: string): string {
   return i18n(`${prefix}.field.${fieldKey}.default`);
 }
 
-export const BaseCommonElement: EditorTemplateElement = {
-  tag: "div",
-  id: "base-common-options",
-};
-export const BaseDebounceElement: EditorTemplateElement = {
-  tag: "div",
-  id: "base-debounce-options",
-};
-export const BaseDebounceNoTopicElement: EditorTemplateElement = {
-  tag: "div",
-  id: "base-debounce-options",
-  data: { topic: "false" },
-};
-export const BaseStatusElement: EditorTemplateElement = {
-  tag: "div",
-  id: "base-status-options",
-};
+export const BaseCommonElement = new EditorTemplateDiv("base-common-options");
+export const BaseDebounceElement = new EditorTemplateDiv(
+  "base-debounce-options",
+);
+export const BaseDebounceNoTopicElement = new EditorTemplateDiv(
+  "base-debounce-options",
+  { topic: "false" },
+);
+export const BaseStatusElement = new EditorTemplateDiv("base-status-options");
 
-export const BaseEditorWithoutStatusTemplate: EditorTemplateElement[] = [
+export const BaseEditorWithoutStatusTemplate = [
   BaseCommonElement,
-  "hr",
+  EditorTemplateLine,
   BaseDebounceElement,
 ];
 
-export const BaseEditorTemplate: EditorTemplateElement[] = [
+export const BaseEditorTemplate = [
   ...BaseEditorWithoutStatusTemplate,
-  "hr",
+  EditorTemplateLine,
   BaseStatusElement,
 ];
 

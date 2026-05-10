@@ -8,7 +8,12 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../../types";
 import MotionControllerNode from "./";
 import {
   MotionControllerEditorNodeProperties,
@@ -17,10 +22,10 @@ import {
   MotionControllerTarget,
 } from "./types";
 
-export const MotionControllerEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  "hr",
-  { tag: "div", id: "motion-controller-options" },
+export const MotionControllerEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("motion-controller-options"),
   ...InputEditorTemplate,
 ];
 

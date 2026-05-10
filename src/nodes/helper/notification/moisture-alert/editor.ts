@@ -9,7 +9,11 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+} from "../../../types";
 import {
   MoistureAlertEditorNodeProperties,
   MoistureAlertNodeOptions,
@@ -17,9 +21,9 @@ import {
   MoistureAlertTarget,
 } from "./types";
 
-export const MoistureAlertEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  { tag: "div", id: "moisture-alert-options" },
+export const MoistureAlertEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  new EditorTemplateDiv("moisture-alert-options"),
   ...InputEditorTemplate,
 ];
 

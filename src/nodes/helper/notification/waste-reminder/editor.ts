@@ -8,7 +8,11 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+} from "../../../types";
 import {
   WasteReminderEditorNodeProperties,
   WasteReminderNodeOptions,
@@ -16,9 +20,9 @@ import {
   WasteReminderTarget,
 } from "./types";
 
-export const WasteReminderEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  { tag: "div", id: "waste-reminder-options" },
+export const WasteReminderEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  new EditorTemplateDiv("waste-reminder-options"),
   ...InputEditorTemplate,
 ];
 

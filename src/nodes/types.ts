@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import { EditorNodeDef, NodeMessage } from "node-red";
 
 export interface NodeCategory {
@@ -14,10 +12,46 @@ export type NodeSendFunction = (
 
 export type NodeDoneFunction = (err?: Error, msg?: NodeMessage) => void;
 
-export type EditorTemplateElement =
-  | { tag: "div"; id: string; data?: Record<string, string> }
-  | { tag: "ol"; id: string }
-  | "hr";
+export abstract class EditorTemplateElement {
+  abstract tag: string;
+
+  id?: string;
+  data?: Record<string, string>;
+
+  constructor(id?: string, data?: Record<string, string>) {
+    this.id = id;
+    this.data = data;
+  }
+
+  public getString(): string {
+    const dataAttrs = this.data
+      ? " " +
+        Object.entries(this.data)
+          .map(([k, v]) => `data-${k}="${v}"`)
+          .join(" ")
+      : "";
+    const idAttr = this.id ? ` id="${this.id}"` : "";
+    return `<${this.tag}${idAttr}${dataAttrs}></${this.tag}>`;
+  }
+}
+
+export class EditorTemplateDiv extends EditorTemplateElement {
+  tag = "div";
+}
+
+export class EditorTemplateOl extends EditorTemplateElement {
+  tag = "ol";
+}
+
+export class EditorTemplateHr extends EditorTemplateElement {
+  tag = "hr";
+
+  public getString(): string {
+    return "<hr />";
+  }
+}
+
+export const EditorTemplateLine = new EditorTemplateHr();
 
 export interface EditorMetadata {
   localePrefix: string;

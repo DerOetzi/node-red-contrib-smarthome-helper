@@ -10,7 +10,12 @@ import {
   InputEditorWithoutStatusTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../../types";
 import {
   autocompleteEvents,
   EventMapperEditorNodeProperties,
@@ -22,12 +27,12 @@ import {
 
 import EventMapperNode from "./";
 
-export const EventMapperEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  "hr",
-  { tag: "ol", id: "rule-rows" },
-  "hr",
-  { tag: "div", id: "event-mapper-options" },
+export const EventMapperEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  EditorTemplateLine,
+  new EditorTemplateOl("rule-rows"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("event-mapper-options"),
   ...InputEditorWithoutStatusTemplate,
 ];
 

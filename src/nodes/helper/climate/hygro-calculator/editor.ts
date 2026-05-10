@@ -8,7 +8,12 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../../types";
 import {
   HygroCalculatorEditorNodeProperties,
   HygroCalculatorNodeOptions,
@@ -16,10 +21,10 @@ import {
   HygroCalculatorTarget,
 } from "./types";
 
-export const HygroCalculatorEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  "hr",
-  { tag: "div", id: "hygro-calculator-options" },
+export const HygroCalculatorEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("hygro-calculator-options"),
   ...InputEditorTemplate,
 ];
 

@@ -8,7 +8,12 @@ import {
   InputEditorWithoutStatusTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../../types";
 import NotifyDispatcherNode from "./";
 import {
   NotifyDispatcherEditorNodeProperties,
@@ -17,10 +22,10 @@ import {
   NotifyDispatcherTarget,
 } from "./types";
 
-export const NotifyDispatcherEditorTemplate: EditorTemplateElement[] = [
-  { tag: "div", id: "notify-dispatcher-options" },
-  "hr",
-  { tag: "ol", id: "matcher-rows" },
+export const NotifyDispatcherEditorTemplate = [
+  new EditorTemplateDiv("notify-dispatcher-options"),
+  EditorTemplateLine,
+  new EditorTemplateOl("matcher-rows"),
   ...InputEditorWithoutStatusTemplate,
 ];
 

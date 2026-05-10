@@ -13,11 +13,15 @@ import {
   AutomationGateNodeOptions,
   AutomationGateNodeOptionsDefaults,
 } from "./types";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateLine,
+} from "../../types";
 
-export const AutomationGateEditorTemplate: EditorTemplateElement[] = [
-  { tag: "div", id: "automation-gate-options" },
-  "hr",
+export const AutomationGateEditorTemplate = [
+  new EditorTemplateDiv("automation-gate-options"),
+  EditorTemplateLine,
   ...BaseEditorTemplate,
 ];
 

@@ -11,7 +11,12 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../../types";
 import LightControllerNode from "./";
 import {
   LightControllerEditorNodeProperties,
@@ -22,12 +27,12 @@ import {
   LightType,
 } from "./types";
 
-export const LightControllerEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  "hr",
-  { tag: "ol", id: "identifier-rows" },
-  "hr",
-  { tag: "div", id: "light-controller-options" },
+export const LightControllerEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  EditorTemplateLine,
+  new EditorTemplateOl("identifier-rows"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("light-controller-options"),
   ...InputEditorTemplate,
 ];
 

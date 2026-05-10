@@ -10,7 +10,12 @@ import {
   InputEditorWithoutStatusTemplate,
   MatchJoinEditableList,
 } from "../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../types";
 import ArithmeticNode from "./";
 import {
   AdditionalValueRow,
@@ -21,11 +26,11 @@ import {
   ArithmeticTarget,
 } from "./types";
 
-export const ArithmeticEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  "hr",
-  { tag: "div", id: "arithmetic-options" },
-  { tag: "ol", id: "additional-values-rows" },
+export const ArithmeticEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("arithmetic-options"),
+  new EditorTemplateOl("additional-values-rows"),
   ...InputEditorWithoutStatusTemplate,
 ];
 

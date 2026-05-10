@@ -11,7 +11,12 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../../types";
 import HeatingControllerNode from "./";
 import {
   HeatingControllerEditorNodeProperties,
@@ -20,14 +25,14 @@ import {
   HeatingControllerTarget,
 } from "./types";
 
-export const HeatingControllerEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows-control" },
-  "hr",
-  { tag: "ol", id: "matcher-rows-temperature" },
-  "hr",
-  { tag: "ol", id: "matcher-rows-boost" },
-  "hr",
-  { tag: "div", id: "heating-controller-options" },
+export const HeatingControllerEditorTemplate = [
+  new EditorTemplateOl("matcher-rows-control"),
+  EditorTemplateLine,
+  new EditorTemplateOl("matcher-rows-temperature"),
+  EditorTemplateLine,
+  new EditorTemplateOl("matcher-rows-boost"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("heating-controller-options"),
   ...InputEditorTemplate,
 ];
 

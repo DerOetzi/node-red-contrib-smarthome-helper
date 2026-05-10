@@ -9,7 +9,11 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+} from "../../../types";
 import WindowReminderNode from "./";
 import {
   WindowReminderEditorNodeProperties,
@@ -19,10 +23,10 @@ import {
   WindowReminderTarget,
 } from "./types";
 
-export const WindowReminderEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  { tag: "div", id: "window-reminder-options" },
-  { tag: "ol", id: "window-reminder-intervals" },
+export const WindowReminderEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  new EditorTemplateDiv("window-reminder-options"),
+  new EditorTemplateOl("window-reminder-intervals"),
   ...InputEditorTemplate,
 ];
 

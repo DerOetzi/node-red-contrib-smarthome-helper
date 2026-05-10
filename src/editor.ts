@@ -41,16 +41,7 @@ function injectNodeTemplate(nodeType: string, metadata?: EditorMetadata) {
     return;
   }
 
-  const html = metadata.template
-    .map((el) => {
-      if (el === "hr") return "<hr />";
-      if (el.tag === "ol") return `<ol id="${el.id}"></ol>`;
-      const dataAttrs = el.data
-        ? " " + Object.entries(el.data).map(([k, v]) => `data-${k}="${v}"`).join(" ")
-        : "";
-      return `<div id="${el.id}"${dataAttrs}></div>`;
-    })
-    .join("\n");
+  const html = metadata.template.map((el) => el.getString()).join("\n");
 
   const script = document.createElement("script");
   script.setAttribute("type", "text/html");

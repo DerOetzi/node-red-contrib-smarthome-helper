@@ -2,9 +2,13 @@ import { EditorNodeDef } from "node-red";
 import {
   createEditorDefaults,
   i18n,
-  NodeEditorFormBuilder
+  NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateLine,
+} from "../../types";
 import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import LogicalOpNode from "./";
 import {
@@ -14,9 +18,9 @@ import {
   LogicalOpNodeOptionsDefaults,
 } from "./types";
 
-export const LogicalOpEditorTemplate: EditorTemplateElement[] = [
-  { tag: "div", id: "logical-op-options" },
-  "hr",
+export const LogicalOpEditorTemplate = [
+  new EditorTemplateDiv("logical-op-options"),
+  EditorTemplateLine,
   ...SwitchEditorTemplate,
 ];
 

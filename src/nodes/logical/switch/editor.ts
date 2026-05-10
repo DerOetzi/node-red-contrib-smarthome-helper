@@ -6,7 +6,7 @@ import BaseEditorNode, {
   i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import { EditorMetadata, EditorTemplateDiv } from "../../types";
 import SwitchNode from "./";
 import {
   DebounceFlank,
@@ -15,8 +15,8 @@ import {
   SwitchNodeOptionsDefaults,
 } from "./types";
 
-export const SwitchEditorTemplate: EditorTemplateElement[] = [
-  { tag: "div", id: "logical-switch-options" },
+export const SwitchEditorTemplate = [
+  new EditorTemplateDiv("logical-switch-options"),
   ...BaseEditorWithoutStatusTemplate,
 ];
 

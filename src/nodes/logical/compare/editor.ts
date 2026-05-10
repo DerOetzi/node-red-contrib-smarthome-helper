@@ -2,9 +2,13 @@ import { EditorNodeDef } from "node-red";
 import {
   createEditorDefaults,
   i18n,
-  NodeEditorFormBuilder
+  NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateLine,
+} from "../../types";
 import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import CompareNode from "./";
 import {
@@ -15,9 +19,9 @@ import {
   NotApplicableCompareFunction,
 } from "./types";
 
-export const CompareEditorTemplate: EditorTemplateElement[] = [
-  { tag: "div", id: "logical-compare-options" },
-  "hr",
+export const CompareEditorTemplate = [
+  new EditorTemplateDiv("logical-compare-options"),
+  EditorTemplateLine,
   ...SwitchEditorTemplate,
 ];
 

@@ -8,7 +8,11 @@ import {
   InputEditorTemplate,
   MatchJoinEditableList,
 } from "../../../flowctrl/match-join/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+} from "../../../types";
 import WhitegoodReminderNode from "./";
 import {
   WhitegoodReminderEditorNodeProperties,
@@ -17,9 +21,9 @@ import {
   WhitegoodReminderTarget,
 } from "./types";
 
-export const WhitegoodReminderEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  { tag: "div", id: "whitegood-reminder-options" },
+export const WhitegoodReminderEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  new EditorTemplateDiv("whitegood-reminder-options"),
   ...InputEditorTemplate,
 ];
 

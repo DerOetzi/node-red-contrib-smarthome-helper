@@ -1,5 +1,10 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../types";
 import BaseEditorNode, {
   BaseCommonElement,
   BaseDebounceNoTopicElement,
@@ -26,24 +31,24 @@ import {
   NotApplicableCompareFunction,
 } from "../../logical/compare/types";
 
-export const MatchJoinEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  "hr",
-  { tag: "div", id: "matcher-join-options" },
-  "hr",
+export const MatchJoinEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("matcher-join-options"),
+  EditorTemplateLine,
   ...BaseEditorWithoutStatusTemplate,
 ];
 
-export const InputEditorWithoutStatusTemplate: EditorTemplateElement[] = [
-  "hr",
+export const InputEditorWithoutStatusTemplate = [
+  EditorTemplateLine,
   BaseCommonElement,
-  "hr",
+  EditorTemplateLine,
   BaseDebounceNoTopicElement,
 ];
 
-export const InputEditorTemplate: EditorTemplateElement[] = [
+export const InputEditorTemplate = [
   ...InputEditorWithoutStatusTemplate,
-  "hr",
+  EditorTemplateLine,
   BaseStatusElement,
 ];
 

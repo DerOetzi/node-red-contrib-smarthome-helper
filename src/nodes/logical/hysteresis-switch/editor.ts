@@ -3,9 +3,13 @@ import HysteresisSwitchNode from ".";
 import {
   createEditorDefaults,
   i18n,
-  NodeEditorFormBuilder
+  NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateLine,
+} from "../../types";
 import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import {
   HysteresisSwitchEditorNodeProperties,
@@ -13,9 +17,9 @@ import {
   HysteresisSwitchNodeOptionsDefaults,
 } from "./types";
 
-export const HysteresisSwitchEditorTemplate: EditorTemplateElement[] = [
-  { tag: "div", id: "hysteresis-switch-options" },
-  "hr",
+export const HysteresisSwitchEditorTemplate = [
+  new EditorTemplateDiv("hysteresis-switch-options"),
+  EditorTemplateLine,
   ...SwitchEditorTemplate,
 ];
 

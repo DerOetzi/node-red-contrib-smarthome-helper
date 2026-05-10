@@ -1,5 +1,10 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata, EditorTemplateElement } from "../../types";
+import {
+  EditorMetadata,
+  EditorTemplateDiv,
+  EditorTemplateOl,
+  EditorTemplateLine,
+} from "../../types";
 import StatusNode from ".";
 import BaseEditorNode, {
   BaseCommonElement,
@@ -18,13 +23,13 @@ import {
 } from "./types";
 import { ActiveControllerTarget } from "../active-controller/types";
 
-export const StatusEditorTemplate: EditorTemplateElement[] = [
-  { tag: "ol", id: "matcher-rows" },
-  "hr",
-  { tag: "div", id: "status-node-options" },
-  "hr",
+export const StatusEditorTemplate = [
+  new EditorTemplateOl("matcher-rows"),
+  EditorTemplateLine,
+  new EditorTemplateDiv("status-node-options"),
+  EditorTemplateLine,
   BaseCommonElement,
-  "hr",
+  EditorTemplateLine,
   BaseDebounceNoTopicElement,
 ];
 
