@@ -1,5 +1,5 @@
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -29,23 +29,18 @@ export interface EventMapperNodeOptions extends MatchJoinNodeOptions {
 }
 
 export const EventMapperNodeOptionsDefaults: EventMapperNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...InputNodeOptionsDefaults,
   matchers: [{ ...MatcherRowDefaults, target: "event", targetType: "str" }],
-  join: false,
-  minMsgCount: 1,
-  discardNotMatched: true,
   outputs: 1,
   rules: [EventMapperRuleDefaults],
   ignoreUnknownEvents: false,
 };
 
 export interface EventMapperNodeDef
-  extends MatchJoinNodeDef,
-    EventMapperNodeOptions {}
+  extends MatchJoinNodeDef, EventMapperNodeOptions {}
 
 export interface EventMapperEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    EventMapperNodeOptions {}
+  extends MatchJoinEditorNodeProperties, EventMapperNodeOptions {}
 
 export const autocompleteEvents = [
   "toggle",

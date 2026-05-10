@@ -1,5 +1,4 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -7,7 +6,11 @@ import BaseEditorNode, {
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
 import { NodeEditorFormBuilderAutocompleteMatch } from "../../../flowctrl/base/types";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorWithoutStatusTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import {
   autocompleteEvents,
   EventMapperEditorNodeProperties,
@@ -19,12 +22,22 @@ import {
 
 import EventMapperNode from "./";
 
+export const EventMapperEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  "hr",
+  { tag: "ol", id: "rule-rows" },
+  "hr",
+  { tag: "div", id: "event-mapper-options" },
+  ...InputEditorWithoutStatusTemplate,
+];
+
 export const EventMapperEditorMetadata: EditorMetadata = {
   localePrefix: "helper.event-mapper",
   inputMode: "matcher-topic",
   fieldKeys: ["event", "mapped", "ignoreUnknownEvents"],
   inputKeys: ["event"],
   outputKeys: ["event"],
+  template: EventMapperEditorTemplate,
 };
 
 const eventMatcherList = new MatchJoinEditableList({

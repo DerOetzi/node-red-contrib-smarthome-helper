@@ -14,12 +14,18 @@ export type NodeSendFunction = (
 
 export type NodeDoneFunction = (err?: Error, msg?: NodeMessage) => void;
 
+export type EditorTemplateElement =
+  | { tag: "div"; id: string; data?: Record<string, string> }
+  | { tag: "ol"; id: string }
+  | "hr";
+
 export interface EditorMetadata {
   localePrefix: string;
   fieldKeys?: string[];
   inputKeys?: string[];
   outputKeys?: string[];
   inputMode?: "msg-property" | "matcher-topic";
+  template?: EditorTemplateElement[];
 }
 
 export interface NodeRegistryEntry {

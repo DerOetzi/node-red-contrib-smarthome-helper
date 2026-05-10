@@ -1,5 +1,5 @@
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -14,7 +14,7 @@ export enum WasteReminderTarget {
 export interface WasteReminderNodeOptions extends MatchJoinNodeOptions {}
 
 export const WasteReminderNodeOptionsDefaults: WasteReminderNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...InputNodeOptionsDefaults,
   matchers: [
     {
       ...MatcherRowDefaults,
@@ -27,15 +27,10 @@ export const WasteReminderNodeOptionsDefaults: WasteReminderNodeOptions = {
       targetType: "str",
     },
   ],
-  join: false,
-  minMsgCount: 1,
-  discardNotMatched: true,
 };
 
 export interface WasteReminderNodeDef
-  extends MatchJoinNodeDef,
-    WasteReminderNodeOptions {}
+  extends MatchJoinNodeDef, WasteReminderNodeOptions {}
 
 export interface WasteReminderEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    WasteReminderNodeOptions {}
+  extends MatchJoinEditorNodeProperties, WasteReminderNodeOptions {}

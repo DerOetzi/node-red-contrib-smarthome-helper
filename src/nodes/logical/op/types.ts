@@ -35,5 +35,4 @@ export const LogicalOpNodeOptionsDefaults: LogicalOpNodeOptions = {
 export interface LogicalOpNodeDef extends SwitchNodeDef, LogicalOpNodeOptions {}
 
 export interface LogicalOpEditorNodeProperties
-  extends SwitchEditorNodeProperties,
-    LogicalOpNodeOptions {}
+  extends SwitchEditorNodeProperties, LogicalOpNodeOptions {}

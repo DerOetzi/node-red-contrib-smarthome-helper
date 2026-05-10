@@ -1,9 +1,7 @@
 import { cloneDeep } from "../../../../helpers/object.helper";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import {
-  BaseNodeOptionsDefaults,
-  NodeMessageFlow,
-} from "../../../flowctrl/base/types";
-import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -70,7 +68,7 @@ export interface LightControllerNodeOptions extends MatchJoinNodeOptions {
 }
 
 export const LightControllerNodeOptionsDefaults: LightControllerNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...InputNodeOptionsDefaults,
   matchers: [
     {
       ...MatcherRowDefaults,
@@ -78,9 +76,6 @@ export const LightControllerNodeOptionsDefaults: LightControllerNodeOptions = {
       targetType: "str",
     },
   ],
-  join: false,
-  discardNotMatched: true,
-  minMsgCount: 1,
   identifiers: [LightIdentifierRowDefaults],
   lightbulbType: LightType.dimmable,
   homeAssistantOutput: true,

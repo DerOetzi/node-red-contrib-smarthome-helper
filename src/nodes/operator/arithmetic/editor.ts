@@ -1,5 +1,4 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
@@ -7,7 +6,11 @@ import BaseEditorNode, {
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
+import {
+  InputEditorWithoutStatusTemplate,
+  MatchJoinEditableList,
+} from "../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
 import ArithmeticNode from "./";
 import {
   AdditionalValueRow,
@@ -18,12 +21,21 @@ import {
   ArithmeticTarget,
 } from "./types";
 
+export const ArithmeticEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  "hr",
+  { tag: "div", id: "arithmetic-options" },
+  { tag: "ol", id: "additional-values-rows" },
+  ...InputEditorWithoutStatusTemplate,
+];
+
 export const ArithmeticEditorMetadata: EditorMetadata = {
   localePrefix: "operator.arithmetic",
   inputMode: "msg-property",
   fieldKeys: ["minValueCount", "operation", "precision", "additionalValue"],
   inputKeys: ["value", "minuend"],
   outputKeys: ["result"],
+  template: ArithmeticEditorTemplate,
 };
 
 const operandMatcherList = new MatchJoinEditableList({

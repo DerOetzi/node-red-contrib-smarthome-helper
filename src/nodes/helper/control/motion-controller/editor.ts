@@ -1,11 +1,14 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import MotionControllerNode from "./";
 import {
   MotionControllerEditorNodeProperties,
@@ -14,12 +17,20 @@ import {
   MotionControllerTarget,
 } from "./types";
 
+export const MotionControllerEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  "hr",
+  { tag: "div", id: "motion-controller-options" },
+  ...InputEditorTemplate,
+];
+
 export const MotionControllerEditorMetadata: EditorMetadata = {
   localePrefix: "helper.motion-controller",
   inputMode: "matcher-topic",
   fieldKeys: ["timer", "onlyDarkness", "nightmodeEnabled"],
   inputKeys: ["motion", "darkness", "night", "manualControl", "command"],
   outputKeys: ["action", "status"],
+  template: MotionControllerEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

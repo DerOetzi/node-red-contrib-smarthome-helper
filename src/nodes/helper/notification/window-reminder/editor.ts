@@ -1,12 +1,15 @@
 import { EditorNodeDef } from "node-red";
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import WindowReminderNode from "./";
 import {
   WindowReminderEditorNodeProperties,
@@ -16,12 +19,20 @@ import {
   WindowReminderTarget,
 } from "./types";
 
+export const WindowReminderEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  { tag: "div", id: "window-reminder-options" },
+  { tag: "ol", id: "window-reminder-intervals" },
+  ...InputEditorTemplate,
+];
+
 export const WindowReminderEditorMetadata: EditorMetadata = {
   localePrefix: "helper.window-reminder",
   inputMode: "matcher-topic",
   fieldKeys: ["interval"],
   inputKeys: ["window", "presence", "command", "intervalSelect"],
   outputKeys: ["notification"],
+  template: WindowReminderEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

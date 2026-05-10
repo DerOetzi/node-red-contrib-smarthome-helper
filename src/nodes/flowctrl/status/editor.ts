@@ -1,7 +1,9 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../types";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
 import StatusNode from ".";
 import BaseEditorNode, {
+  BaseCommonElement,
+  BaseDebounceNoTopicElement,
   createEditorDefaults,
   i18n,
   i18nOutputLabel,
@@ -16,12 +18,23 @@ import {
 } from "./types";
 import { ActiveControllerTarget } from "../active-controller/types";
 
+export const StatusEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  "hr",
+  { tag: "div", id: "status-node-options" },
+  "hr",
+  BaseCommonElement,
+  "hr",
+  BaseDebounceNoTopicElement,
+];
+
 export const StatusEditorMetadata: EditorMetadata = {
   localePrefix: "flowctrl.status",
   inputMode: "msg-property",
   fieldKeys: ["scope", "initialActive"],
   inputKeys: ["activeCondition"],
   outputKeys: ["status", "statusText"],
+  template: StatusEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

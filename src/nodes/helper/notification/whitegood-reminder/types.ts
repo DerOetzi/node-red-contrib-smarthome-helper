@@ -1,6 +1,6 @@
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -33,7 +33,7 @@ export interface WhitegoodReminderNodeOptions extends MatchJoinNodeOptions {
 
 export const WhitegoodReminderNodeOptionsDefaults: WhitegoodReminderNodeOptions =
   {
-    ...BaseNodeOptionsDefaults,
+    ...InputNodeOptionsDefaults,
     matchers: [
       {
         ...MatcherRowDefaults,
@@ -41,9 +41,6 @@ export const WhitegoodReminderNodeOptionsDefaults: WhitegoodReminderNodeOptions 
         targetType: "str",
       },
     ],
-    join: false,
-    minMsgCount: 1,
-    discardNotMatched: true,
     offPowerLimit: 0.1,
     standbyPowerLimit: 0.5,
     cleanupEnabled: false,
@@ -56,9 +53,7 @@ export const WhitegoodReminderNodeOptionsDefaults: WhitegoodReminderNodeOptions 
   };
 
 export interface WhitegoodReminderNodeDef
-  extends MatchJoinNodeDef,
-    WhitegoodReminderNodeOptions {}
+  extends MatchJoinNodeDef, WhitegoodReminderNodeOptions {}
 
 export interface WhitegoodReminderEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    WhitegoodReminderNodeOptions {}
+  extends MatchJoinEditorNodeProperties, WhitegoodReminderNodeOptions {}

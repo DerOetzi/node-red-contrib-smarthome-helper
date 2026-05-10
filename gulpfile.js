@@ -2,7 +2,6 @@ const ts = require("gulp-typescript");
 const tsProject = ts.createProject("tsconfig.json");
 
 // General
-const flatmap = require("gulp-flatmap");
 const lazypipe = require("lazypipe");
 const merge = require("merge-stream");
 const wrap = require("gulp-wrap");
@@ -21,9 +20,6 @@ const fs = require("fs");
 
 const jsonfile = require("jsonfile");
 
-// HTML
-const gulpHtmlmin = require("gulp-html-minifier-terser");
-
 // Scripts
 const terser = require("gulp-terser");
 
@@ -36,13 +32,9 @@ const sass = require("sass");
 const editorFilePath = "dist";
 const uiCssWrap = "<style><%= contents %></style>";
 const uiJsWrap = '<script type="text/javascript"><%= contents %></script>';
-const uiFormWrap =
-  '<script type="text/html" data-template-name="<%= data.type %>"><%= data.contents %></script>';
 
 const flowsFilePath = ".devcontainer/node-red-data/flows.json";
 const flowsOutputDir = "examples";
-
-let currentNode;
 
 // Compile sass and wrap it
 const buildSass = lazypipe()
@@ -79,13 +71,6 @@ const buildSass = lazypipe()
 // Shrink js and wrap it
 const buildJs = lazypipe().pipe(terser).pipe(wrap, uiJsWrap);
 
-const buildForm = lazypipe()
-  .pipe(gulpHtmlmin, {
-    collapseWhitespace: true,
-    minifyCSS: true,
-  })
-  .pipe(() => wrap(uiFormWrap, { type: currentNode }, { variable: "data" }));
-
 task("buildEditorFiles", () => {
   const css = src(["src/nodes/**/*.scss", "!_*.scss"]).pipe(buildSass());
 
@@ -111,17 +96,7 @@ task("buildEditorFiles", () => {
     .pipe(buffer())
     .pipe(buildJs());
 
-  const html = src(["src/nodes/**/*.html"]).pipe(
-    flatmap((stream, file) => {
-      const [, category, , node] = file.path.match(
-        /[\\/]src[\\/]nodes[\\/]([^\\/]+)[\\/]([^\\/]+[\\/])?([^\\/]+)[\\/]editor\.html/,
-      );
-      currentNode = category + "-" + node;
-      return stream.pipe(buildForm());
-    }),
-  );
-
-  return merge([css, js, html])
+  return merge([css, js])
     .pipe(
       through.obj(function (file, _, cb) {
         // Sammle den Inhalt aller Dateien
@@ -257,7 +232,6 @@ task(
 task("watch", () => {
   watch(["package.json"], series("generateVersionFile"));
   watch(["src/nodes/**/*.scss"], series("buildEditorFiles"));
-  watch(["src/nodes/**/*.html"], series("buildEditorFiles"));
   watch(["src/**/*.ts"], series("buildEditorFiles"));
 
   watch(["src/**/*.ts", "!src/**/editor.ts"], series("buildSourceFiles"));

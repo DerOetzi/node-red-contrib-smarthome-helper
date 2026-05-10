@@ -1,11 +1,12 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../types";
 import BaseEditorNode, {
+  BaseEditorWithoutStatusTemplate,
   createEditorDefaults,
   i18n,
   i18nOutputLabel,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../types";
 import SwitchNode from "./";
 import {
   DebounceFlank,
@@ -13,6 +14,11 @@ import {
   SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
 } from "./types";
+
+export const SwitchEditorTemplate: EditorTemplateElement[] = [
+  { tag: "div", id: "logical-switch-options" },
+  ...BaseEditorWithoutStatusTemplate,
+];
 
 export const SwitchEditorMetadata: EditorMetadata = {
   localePrefix: "logical.switch",
@@ -26,6 +32,7 @@ export const SwitchEditorMetadata: EditorMetadata = {
   ],
   inputKeys: [],
   outputKeys: ["true", "false", "result"],
+  template: SwitchEditorTemplate,
 };
 
 const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {

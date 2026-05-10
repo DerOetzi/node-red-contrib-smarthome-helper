@@ -1,12 +1,15 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import MoistureAlertNode from ".";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import {
   MoistureAlertEditorNodeProperties,
   MoistureAlertNodeOptions,
@@ -14,12 +17,19 @@ import {
   MoistureAlertTarget,
 } from "./types";
 
+export const MoistureAlertEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  { tag: "div", id: "moisture-alert-options" },
+  ...InputEditorTemplate,
+];
+
 export const MoistureAlertEditorMetadata: EditorMetadata = {
   localePrefix: "helper.moisture-alert",
   inputMode: "matcher-topic",
   fieldKeys: ["alertThreshold", "alertInterval"],
   inputKeys: ["moisture", "lastAlert"],
   outputKeys: ["notification", "lastAlert"],
+  template: MoistureAlertEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

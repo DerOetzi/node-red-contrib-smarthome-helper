@@ -1,11 +1,14 @@
 import { EditorNodeDef } from "node-red";
-import { EditorMetadata } from "../../../types";
 import BaseEditorNode, {
   createEditorDefaults,
   i18n,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
-import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import {
+  InputEditorTemplate,
+  MatchJoinEditableList,
+} from "../../../flowctrl/match-join/editor";
+import { EditorMetadata, EditorTemplateElement } from "../../../types";
 import WhitegoodReminderNode from "./";
 import {
   WhitegoodReminderEditorNodeProperties,
@@ -13,6 +16,12 @@ import {
   WhitegoodReminderNodeOptionsDefaults,
   WhitegoodReminderTarget,
 } from "./types";
+
+export const WhitegoodReminderEditorTemplate: EditorTemplateElement[] = [
+  { tag: "ol", id: "matcher-rows" },
+  { tag: "div", id: "whitegood-reminder-options" },
+  ...InputEditorTemplate,
+];
 
 export const WhitegoodReminderEditorMetadata: EditorMetadata = {
   localePrefix: "helper.whitegood-reminder",
@@ -28,6 +37,7 @@ export const WhitegoodReminderEditorMetadata: EditorMetadata = {
   ],
   inputKeys: ["power", "runs", "emptied"],
   outputKeys: ["notification", "runs"],
+  template: WhitegoodReminderEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

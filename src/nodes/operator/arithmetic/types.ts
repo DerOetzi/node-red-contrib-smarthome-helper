@@ -1,5 +1,5 @@
-import { BaseNodeOptionsDefaults } from "../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -34,11 +34,8 @@ export interface ArithmeticNodeOptions extends MatchJoinNodeOptions {
 }
 
 export const ArithmeticNodeOptionsDefaults: ArithmeticNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...InputNodeOptionsDefaults,
   matchers: [{ ...MatcherRowDefaults, target: "value", targetType: "str" }],
-  discardNotMatched: true,
-  join: false,
-  minMsgCount: 1,
   operation: ArithmeticFunction.add,
   minValueCount: 1,
   precision: 0,
@@ -46,9 +43,7 @@ export const ArithmeticNodeOptionsDefaults: ArithmeticNodeOptions = {
 };
 
 export interface ArithmeticNodeDef
-  extends MatchJoinNodeDef,
-    ArithmeticNodeOptions {}
+  extends MatchJoinNodeDef, ArithmeticNodeOptions {}
 
 export interface ArithmeticEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    ArithmeticNodeOptions {}
+  extends MatchJoinEditorNodeProperties, ArithmeticNodeOptions {}

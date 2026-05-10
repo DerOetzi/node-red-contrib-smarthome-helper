@@ -120,7 +120,7 @@
     "z": "50a63383c0611497",
     "g": "dec832c39e6839a0",
     "name": "",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "originalTopic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -128,7 +128,7 @@
     "outputs": 3,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -145,9 +145,9 @@
         "target": "event"
       }
     ],
+    "discardNotMatched": true,
     "join": false,
     "minMsgCount": 1,
-    "discardNotMatched": true,
     "rules": [
       {
         "event": "brightness_up_click",
@@ -333,7 +333,7 @@
     "z": "50a63383c0611497",
     "g": "695352833de771dc",
     "name": "",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -341,7 +341,7 @@
     "outputs": 1,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -367,8 +367,8 @@
         "target": "command"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "identifiers": [
       {
@@ -570,7 +570,7 @@
     "z": "50a63383c0611497",
     "g": "695352833de771dc",
     "name": "",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -578,7 +578,7 @@
     "outputs": 1,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -613,8 +613,8 @@
         "target": "colorTemperature"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "identifiers": [
       {
@@ -846,7 +846,7 @@
     "z": "50a63383c0611497",
     "g": "695352833de771dc",
     "name": "",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -854,7 +854,7 @@
     "outputs": 1,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -871,8 +871,8 @@
         "target": "command"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "identifiers": [
       {
@@ -984,15 +984,18 @@
     "z": "50a63383c0611497",
     "g": "dec832c39e6839a0",
     "name": "",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
     "newMsg": false,
     "outputs": 1,
     "inputs": 1,
+    "statusReportingEnabled": false,
+    "statusItem": "",
+    "statusTextItem": "",
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1009,8 +1012,8 @@
         "target": "command"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "identifiers": [
       {
@@ -1188,7 +1191,7 @@
     "z": "50a63383c0611497",
     "g": "695352833de771dc",
     "name": "Farbwechsel",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -1196,7 +1199,7 @@
     "outputs": 1,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1213,8 +1216,8 @@
         "target": "command"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "identifiers": [
       {
@@ -1356,7 +1359,7 @@
     "z": "50a63383c0611497",
     "g": "695352833de771dc",
     "name": "Festfarbe",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -1364,7 +1367,7 @@
     "outputs": 1,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1399,8 +1402,8 @@
         "target": "saturation"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "identifiers": [
       {
@@ -1512,7 +1515,7 @@
     "z": "50a63383c0611497",
     "g": "2366616d8806730a",
     "name": "",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "originalTopic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -1520,7 +1523,7 @@
     "outputs": 2,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1537,9 +1540,9 @@
         "target": "event"
       }
     ],
+    "discardNotMatched": true,
     "join": false,
     "minMsgCount": 1,
-    "discardNotMatched": true,
     "rules": [
       {
         "event": "brightness_up_click",
@@ -1630,7 +1633,7 @@
     "z": "50a63383c0611497",
     "g": "2366616d8806730a",
     "name": "",
-    "version": "0.27.1",
+    "version": "1.1.1",
     "topic": "motioncontrol",
     "topicType": "str",
     "filterUniquePayload": false,
@@ -1641,7 +1644,7 @@
     "statusItem": "motionStatus",
     "statusTextItem": "motionStatusText",
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1694,8 +1697,8 @@
         "target": "night"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "timer": "10",
     "timerUnit": "s",
@@ -1718,7 +1721,7 @@
     "z": "50a63383c0611497",
     "g": "2366616d8806730a",
     "name": "",
-    "version": "0.27.0",
+    "version": "1.1.1",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -1726,7 +1729,7 @@
     "outputs": 1,
     "inputs": 1,
     "debounce": false,
-    "debounceTopic": false,
+    "debounceTopic": true,
     "debounceShowStatus": false,
     "debounceTime": 100,
     "debounceUnit": "ms",
@@ -1752,8 +1755,8 @@
         "target": "command"
       }
     ],
-    "join": false,
     "discardNotMatched": true,
+    "join": false,
     "minMsgCount": 1,
     "identifiers": [
       {

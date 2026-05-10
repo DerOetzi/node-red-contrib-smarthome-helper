@@ -1,5 +1,5 @@
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -14,7 +14,7 @@ export enum HygroCalculatorTarget {
 export interface HygroCalculatorNodeOptions extends MatchJoinNodeOptions {}
 
 export const HygroCalculatorNodeOptionsDefaults: HygroCalculatorNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...InputNodeOptionsDefaults,
   matchers: [
     {
       ...MatcherRowDefaults,
@@ -27,16 +27,11 @@ export const HygroCalculatorNodeOptionsDefaults: HygroCalculatorNodeOptions = {
       targetType: "str",
     },
   ],
-  join: false,
-  discardNotMatched: true,
-  minMsgCount: 1,
   outputs: 2,
 };
 
 export interface HygroCalculatorNodeDef
-  extends MatchJoinNodeDef,
-    HygroCalculatorNodeOptions {}
+  extends MatchJoinNodeDef, HygroCalculatorNodeOptions {}
 
 export interface HygroCalculatorEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    HygroCalculatorNodeOptions {}
+  extends MatchJoinEditorNodeProperties, HygroCalculatorNodeOptions {}

@@ -1,6 +1,6 @@
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -19,7 +19,7 @@ export interface MoistureAlertNodeOptions extends MatchJoinNodeOptions {
 }
 
 export const MoistureAlertNodeOptionsDefaults: MoistureAlertNodeOptions = {
-  ...BaseNodeOptionsDefaults,
+  ...InputNodeOptionsDefaults,
   matchers: [
     {
       ...MatcherRowDefaults,
@@ -32,9 +32,6 @@ export const MoistureAlertNodeOptionsDefaults: MoistureAlertNodeOptions = {
       targetType: "str",
     },
   ],
-  join: false,
-  minMsgCount: 1,
-  discardNotMatched: true,
   outputs: 2,
   alertThreshold: 40,
   alertInterval: 24,
@@ -42,9 +39,7 @@ export const MoistureAlertNodeOptionsDefaults: MoistureAlertNodeOptions = {
 };
 
 export interface MoistureAlertNodeDef
-  extends MatchJoinNodeDef,
-    MoistureAlertNodeOptions {}
+  extends MatchJoinNodeDef, MoistureAlertNodeOptions {}
 
 export interface MoistureAlertEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    MoistureAlertNodeOptions {}
+  extends MatchJoinEditorNodeProperties, MoistureAlertNodeOptions {}

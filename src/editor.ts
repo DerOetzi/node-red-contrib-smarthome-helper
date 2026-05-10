@@ -26,9 +26,37 @@ RED.events.on("nodes:add", checkNode);
 
 // Register all nodes and inject help dynamically
 for (const [type, entry] of Object.entries(nodesRegistry)) {
+  injectNodeTemplate(type, entry.metadata);
   RED.nodes.registerType(type, entry.editor);
   // Inject help text dynamically after a short delay to ensure i18n is loaded
   setTimeout(() => injectNodeHelp(type, entry.editor, entry.metadata), 100);
+}
+
+/**
+ * Injects the editor template HTML for a node type as a <script type="text/html"> element.
+ * Must be called before RED.nodes.registerType so the template is available at registration time.
+ */
+function injectNodeTemplate(nodeType: string, metadata?: EditorMetadata) {
+  if (!metadata?.template || $(`script[data-template-name="${nodeType}"]`).length > 0) {
+    return;
+  }
+
+  const html = metadata.template
+    .map((el) => {
+      if (el === "hr") return "<hr />";
+      if (el.tag === "ol") return `<ol id="${el.id}"></ol>`;
+      const dataAttrs = el.data
+        ? " " + Object.entries(el.data).map(([k, v]) => `data-${k}="${v}"`).join(" ")
+        : "";
+      return `<div id="${el.id}"${dataAttrs}></div>`;
+    })
+    .join("\n");
+
+  const script = document.createElement("script");
+  script.setAttribute("type", "text/html");
+  script.dataset.templateName = nodeType;
+  script.innerHTML = html;
+  document.body.appendChild(script);
 }
 
 /**

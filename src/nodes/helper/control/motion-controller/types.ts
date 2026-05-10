@@ -1,8 +1,8 @@
 import { NodeMessage } from "node-red";
 
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import { BaseNodeOptionsDefaults } from "../../../flowctrl/base/types";
 import {
+  InputNodeOptionsDefaults,
   MatcherRowDefaults,
   MatchJoinEditorNodeProperties,
   MatchJoinNodeDef,
@@ -39,7 +39,7 @@ export interface MotionControllerNodeOptions extends MatchJoinNodeOptions {
 
 export const MotionControllerNodeOptionsDefaults: MotionControllerNodeOptions =
   {
-    ...BaseNodeOptionsDefaults,
+    ...InputNodeOptionsDefaults,
     matchers: [
       {
         ...MatcherRowDefaults,
@@ -59,9 +59,6 @@ export const MotionControllerNodeOptionsDefaults: MotionControllerNodeOptions =
         targetType: "str",
       },
     ],
-    join: false,
-    discardNotMatched: true,
-    minMsgCount: 1,
     timer: 30,
     timerUnit: TimeIntervalUnit.s,
     nightmodeEnabled: false,
@@ -72,12 +69,10 @@ export const MotionControllerNodeOptionsDefaults: MotionControllerNodeOptions =
   };
 
 export interface MotionControllerNodeDef
-  extends MatchJoinNodeDef,
-    MotionControllerNodeOptions {}
+  extends MatchJoinNodeDef, MotionControllerNodeOptions {}
 
 export interface MotionControllerEditorNodeProperties
-  extends MatchJoinEditorNodeProperties,
-    MotionControllerNodeOptions {}
+  extends MatchJoinEditorNodeProperties, MotionControllerNodeOptions {}
 
 export interface MotionControllerNodeMessage extends NodeMessage {
   command?: MotionControllerCommand;
