@@ -48,6 +48,11 @@ export default class HeatingControllerMigration extends ActiveControllerMigratio
       node.migrated = true;
     }
 
+    if (this.checkMigrationStepRequired(node, "1.1.1")) {
+      node.debounceTopic = true;
+      node.migrated = true;
+    }
+
     return super._migrationSteps(node);
   }
 

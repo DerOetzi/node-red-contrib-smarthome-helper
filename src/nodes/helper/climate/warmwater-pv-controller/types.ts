@@ -91,6 +91,7 @@ export const WarmWaterPVControllerNodeOptionsDefaults: WarmWaterPVControllerNode
     discardNotMatched: true,
     minMsgCount: 1,
     outputs: 2,
+    debounceTopic: true,
 
     gridLowerThreshold: 3000,
     gridUpperThreshold: 5000,

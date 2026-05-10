@@ -22,7 +22,7 @@ export default class StatusNodeMigration extends MatchJoinMigration<StatusEditor
     }
 
     if (this.checkMigrationStepRequired(node, "1.1.0")) {
-      node.defaultActive = node.initialActive ?? true;
+      node.defaultActive = node.initialActive ?? false;
       delete node.initialActive;
       node.migrated = true;
     }

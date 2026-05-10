@@ -547,12 +547,15 @@ const BaseEditorNode: EditorNodeDef<BaseEditorNodeProperties> = {
       translatePrefix: "flowctrl.base",
     });
 
-    debounceOptionsBuilder.createCheckboxInput({
-      id: "node-input-debounceTopic",
-      label: "debounceTopic",
-      value: this.debounceTopic,
-      icon: "tags",
-    });
+    debounceOptionsBuilder
+      .createCheckboxInput({
+        id: "node-input-debounceTopic",
+        label: "debounceTopic",
+        value: this.debounceTopic,
+        icon: "tags",
+      })
+      .parent()
+      .toggle(debounceOptions.data("topic") !== false);
 
     debounceOptionsBuilder.createCheckboxInput({
       id: "node-input-debounceShowStatus",

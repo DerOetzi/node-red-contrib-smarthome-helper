@@ -81,6 +81,7 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     discardNotMatched: true,
     minMsgCount: 1,
     outputs: 3,
+    debounceTopic: true,
     defaultComfort: false,
     boostEnabled: false,
     boostTemperatureOffset: 5,
