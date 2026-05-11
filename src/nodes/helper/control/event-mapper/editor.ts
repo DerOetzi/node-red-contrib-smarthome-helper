@@ -14,7 +14,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../../types";
 import {
   autocompleteEvents,
@@ -29,9 +28,7 @@ import EventMapperNode from "./";
 
 export const EventMapperEditorTemplate = [
   new EditorTemplateOl("matcher-rows"),
-  EditorTemplateLine,
   new EditorTemplateOl("rule-rows"),
-  EditorTemplateLine,
   new EditorTemplateDiv("event-mapper-options"),
   ...InputEditorWithoutStatusTemplate,
 ];

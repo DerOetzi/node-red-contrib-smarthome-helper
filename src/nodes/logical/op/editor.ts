@@ -4,11 +4,7 @@ import {
   i18n,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateLine,
-} from "../../types";
+import { EditorMetadata, EditorTemplateDiv } from "../../types";
 import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import LogicalOpNode from "./";
 import {
@@ -20,7 +16,6 @@ import {
 
 export const LogicalOpEditorTemplate = [
   new EditorTemplateDiv("logical-op-options"),
-  EditorTemplateLine,
   ...SwitchEditorTemplate,
 ];
 

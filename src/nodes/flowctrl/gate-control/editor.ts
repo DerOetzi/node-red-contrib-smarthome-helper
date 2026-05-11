@@ -1,9 +1,5 @@
 import { EditorNodeDef } from "node-red";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateLine,
-} from "../../types";
+import { EditorMetadata, EditorTemplateDiv } from "../../types";
 import BaseEditorNode, {
   BaseEditorWithoutStatusTemplate,
   createEditorDefaults,
@@ -18,7 +14,6 @@ import {
 
 export const GateControlEditorTemplate = [
   new EditorTemplateDiv("gate-control-options"),
-  EditorTemplateLine,
   ...BaseEditorWithoutStatusTemplate,
 ];
 

@@ -3,7 +3,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../types";
 import BaseEditorNode, {
   BaseCommonElement,
@@ -33,22 +32,17 @@ import {
 
 export const MatchJoinEditorTemplate = [
   new EditorTemplateOl("matcher-rows"),
-  EditorTemplateLine,
   new EditorTemplateDiv("matcher-join-options"),
-  EditorTemplateLine,
   ...BaseEditorWithoutStatusTemplate,
 ];
 
 export const InputEditorWithoutStatusTemplate = [
-  EditorTemplateLine,
   BaseCommonElement,
-  EditorTemplateLine,
   BaseDebounceNoTopicElement,
 ];
 
 export const InputEditorTemplate = [
   ...InputEditorWithoutStatusTemplate,
-  EditorTemplateLine,
   BaseStatusElement,
 ];
 

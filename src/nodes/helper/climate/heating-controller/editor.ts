@@ -15,7 +15,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../../types";
 import HeatingControllerNode from "./";
 import {
@@ -27,11 +26,8 @@ import {
 
 export const HeatingControllerEditorTemplate = [
   new EditorTemplateOl("matcher-rows-control"),
-  EditorTemplateLine,
   new EditorTemplateOl("matcher-rows-temperature"),
-  EditorTemplateLine,
   new EditorTemplateOl("matcher-rows-boost"),
-  EditorTemplateLine,
   new EditorTemplateDiv("heating-controller-options"),
   ...InputEditorTemplate,
 ];

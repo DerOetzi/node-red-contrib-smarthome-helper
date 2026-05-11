@@ -15,7 +15,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../../types";
 import LightControllerNode from "./";
 import {
@@ -29,9 +28,7 @@ import {
 
 export const LightControllerEditorTemplate = [
   new EditorTemplateOl("matcher-rows"),
-  EditorTemplateLine,
   new EditorTemplateOl("identifier-rows"),
-  EditorTemplateLine,
   new EditorTemplateDiv("light-controller-options"),
   ...InputEditorTemplate,
 ];

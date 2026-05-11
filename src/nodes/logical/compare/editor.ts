@@ -4,11 +4,7 @@ import {
   i18n,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateLine,
-} from "../../types";
+import { EditorMetadata, EditorTemplateDiv } from "../../types";
 import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import CompareNode from "./";
 import {
@@ -21,7 +17,6 @@ import {
 
 export const CompareEditorTemplate = [
   new EditorTemplateDiv("logical-compare-options"),
-  EditorTemplateLine,
   ...SwitchEditorTemplate,
 ];
 

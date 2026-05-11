@@ -14,7 +14,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../../types";
 import WarmWaterPVControllerMigration from "./migration";
 import {
@@ -26,9 +25,7 @@ import {
 
 export const WarmWaterPVControllerEditorTemplate = [
   new EditorTemplateOl("matcher-rows-general"),
-  EditorTemplateLine,
   new EditorTemplateOl("matcher-rows-pv-boost"),
-  EditorTemplateLine,
   new EditorTemplateDiv("warmwater-pv-controller-options"),
   ...InputEditorTemplate,
 ];

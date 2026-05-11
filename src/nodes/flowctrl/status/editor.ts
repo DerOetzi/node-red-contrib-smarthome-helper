@@ -3,7 +3,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../types";
 import StatusNode from ".";
 import BaseEditorNode, {
@@ -25,11 +24,8 @@ import { ActiveControllerTarget } from "../active-controller/types";
 
 export const StatusEditorTemplate = [
   new EditorTemplateOl("matcher-rows"),
-  EditorTemplateLine,
   new EditorTemplateDiv("status-node-options"),
-  EditorTemplateLine,
   BaseCommonElement,
-  EditorTemplateLine,
   BaseDebounceNoTopicElement,
 ];
 

@@ -37,11 +37,14 @@ for (const [type, entry] of Object.entries(nodesRegistry)) {
  * Must be called before RED.nodes.registerType so the template is available at registration time.
  */
 function injectNodeTemplate(nodeType: string, metadata?: EditorMetadata) {
-  if (!metadata?.template || $(`script[data-template-name="${nodeType}"]`).length > 0) {
+  if (
+    !metadata?.template ||
+    $(`script[data-template-name="${nodeType}"]`).length > 0
+  ) {
     return;
   }
 
-  const html = metadata.template.map((el) => el.getString()).join("\n");
+  const html = metadata.template.map((el) => el.getString()).join("\n<hr/>\n");
 
   const script = document.createElement("script");
   script.setAttribute("type", "text/html");

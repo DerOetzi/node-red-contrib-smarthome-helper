@@ -5,11 +5,7 @@ import {
   i18n,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateLine,
-} from "../../types";
+import { EditorMetadata, EditorTemplateDiv } from "../../types";
 import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
 import {
   HysteresisSwitchEditorNodeProperties,
@@ -19,7 +15,6 @@ import {
 
 export const HysteresisSwitchEditorTemplate = [
   new EditorTemplateDiv("hysteresis-switch-options"),
-  EditorTemplateLine,
   ...SwitchEditorTemplate,
 ];
 

@@ -43,16 +43,6 @@ export class EditorTemplateOl extends EditorTemplateElement {
   tag = "ol";
 }
 
-export class EditorTemplateHr extends EditorTemplateElement {
-  tag = "hr";
-
-  public getString(): string {
-    return "<hr />";
-  }
-}
-
-export const EditorTemplateLine = new EditorTemplateHr();
-
 export interface EditorMetadata {
   localePrefix: string;
   fieldKeys?: string[];

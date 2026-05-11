@@ -12,7 +12,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../../types";
 import NotifyDispatcherNode from "./";
 import {
@@ -24,7 +23,6 @@ import {
 
 export const NotifyDispatcherEditorTemplate = [
   new EditorTemplateDiv("notify-dispatcher-options"),
-  EditorTemplateLine,
   new EditorTemplateOl("matcher-rows"),
   ...InputEditorWithoutStatusTemplate,
 ];

@@ -1,10 +1,6 @@
 import { EditorNodeDef, EditorNodePropertiesDef, EditorRED } from "node-red";
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateLine,
-} from "../../types";
+import { EditorMetadata, EditorTemplateDiv } from "../../types";
 import version from "../../../version";
 import BaseNode from "./";
 import { generateNodeHelp as generateNodeHelpFromDefinition } from "./help";
@@ -66,13 +62,11 @@ export const BaseStatusElement = new EditorTemplateDiv("base-status-options");
 
 export const BaseEditorWithoutStatusTemplate = [
   BaseCommonElement,
-  EditorTemplateLine,
   BaseDebounceElement,
 ];
 
 export const BaseEditorTemplate = [
   ...BaseEditorWithoutStatusTemplate,
-  EditorTemplateLine,
   BaseStatusElement,
 ];
 

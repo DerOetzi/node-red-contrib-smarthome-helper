@@ -12,7 +12,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../../types";
 import MotionControllerNode from "./";
 import {
@@ -24,7 +23,6 @@ import {
 
 export const MotionControllerEditorTemplate = [
   new EditorTemplateOl("matcher-rows"),
-  EditorTemplateLine,
   new EditorTemplateDiv("motion-controller-options"),
   ...InputEditorTemplate,
 ];

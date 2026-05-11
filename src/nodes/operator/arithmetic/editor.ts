@@ -14,7 +14,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../types";
 import ArithmeticNode from "./";
 import {
@@ -28,7 +27,6 @@ import {
 
 export const ArithmeticEditorTemplate = [
   new EditorTemplateOl("matcher-rows"),
-  EditorTemplateLine,
   new EditorTemplateDiv("arithmetic-options"),
   new EditorTemplateOl("additional-values-rows"),
   ...InputEditorWithoutStatusTemplate,

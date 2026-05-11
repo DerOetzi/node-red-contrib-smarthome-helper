@@ -12,7 +12,6 @@ import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateOl,
-  EditorTemplateLine,
 } from "../../../types";
 import {
   HygroCalculatorEditorNodeProperties,
@@ -23,7 +22,6 @@ import {
 
 export const HygroCalculatorEditorTemplate = [
   new EditorTemplateOl("matcher-rows"),
-  EditorTemplateLine,
   new EditorTemplateDiv("hygro-calculator-options"),
   ...InputEditorTemplate,
 ];
