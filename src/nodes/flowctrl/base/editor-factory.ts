@@ -142,11 +142,18 @@ function fieldVisibility(
   return !!rawVal;
 }
 
-function buildFieldElement(
+function buildTranslatePrefix(fieldDef: NodeEditorFieldDefinition): {
+  translatePrefix?: string;
+} {
+  return fieldDef.translatePrefix
+    ? { translatePrefix: fieldDef.translatePrefix }
+    : {};
+}
+
+function buildStaticFieldElement(
   builder: NodeEditorFormBuilder,
   fieldDef: NodeEditorFieldDefinition,
-  node: any,
-): JQuery | null {
+): JQuery | null | undefined {
   if (fieldDef.type === "line") {
     builder.line();
     return null;
@@ -157,6 +164,88 @@ function buildFieldElement(
     }
     return null;
   }
+  return undefined;
+}
+
+function buildKeyedFieldElement(
+  builder: NodeEditorFormBuilder,
+  fieldDef: NodeEditorFieldDefinition,
+  node: any,
+  id: string,
+  value: any,
+): JQuery | null {
+  const commonProps = {
+    id,
+    label: fieldDef.key!,
+    icon: fieldDef.icon!,
+    ...buildTranslatePrefix(fieldDef),
+  };
+
+  switch (fieldDef.type) {
+    case "text":
+      return builder.createTextInput({
+        ...commonProps,
+        value,
+      });
+    case "number":
+      return builder.createNumberInput({
+        ...commonProps,
+        value,
+        min: fieldDef.min,
+        max: fieldDef.max,
+        step: fieldDef.step,
+      });
+    case "checkbox":
+      return builder.createCheckboxInput({
+        ...commonProps,
+        value,
+      });
+    case "select":
+      return builder.createSelectInput({
+        ...commonProps,
+        value: String(value ?? ""),
+        options: fieldDef.options!,
+      });
+    case "typed":
+      return builder.createTypedInput({
+        ...commonProps,
+        idType: fieldDef.idType ?? `node-input-${fieldDef.key}Type`,
+        value: String(value ?? ""),
+        valueType:
+          fieldDef.valueType ??
+          (node[`${fieldDef.key}Type`] as string) ??
+          "str",
+        types: fieldDef.types,
+      });
+    case "time":
+      return builder.createTimeInput({
+        ...commonProps,
+        idType: fieldDef.idType ?? `node-input-${fieldDef.key}Unit`,
+        value,
+        valueType: node[fieldDef.valueTypeKey ?? `${fieldDef.key}Unit`],
+      });
+    case "autocomplete":
+      return builder.createAutocompleteInput({
+        ...commonProps,
+        value: String(value ?? ""),
+        search: fieldDef.search!,
+      });
+    case "hidden":
+      return builder.createHiddenInput({ id, value });
+    default:
+      return null;
+  }
+}
+
+function buildFieldElement(
+  builder: NodeEditorFormBuilder,
+  fieldDef: NodeEditorFieldDefinition,
+  node: any,
+): JQuery | null {
+  const staticFieldElement = buildStaticFieldElement(builder, fieldDef);
+  if (staticFieldElement !== undefined) {
+    return staticFieldElement;
+  }
   if (!fieldDef.key) {
     return null;
   }
@@ -164,95 +253,7 @@ function buildFieldElement(
   const id = `node-input-${fieldDef.key}`;
   const value = node[fieldDef.key];
 
-  switch (fieldDef.type) {
-    case "text":
-      return builder.createTextInput({
-        id,
-        label: fieldDef.key,
-        value,
-        icon: fieldDef.icon!,
-        ...(fieldDef.translatePrefix
-          ? { translatePrefix: fieldDef.translatePrefix }
-          : {}),
-      });
-    case "number":
-      return builder.createNumberInput({
-        id,
-        label: fieldDef.key,
-        value,
-        icon: fieldDef.icon!,
-        min: fieldDef.min,
-        max: fieldDef.max,
-        step: fieldDef.step,
-        ...(fieldDef.translatePrefix
-          ? { translatePrefix: fieldDef.translatePrefix }
-          : {}),
-      });
-    case "checkbox":
-      return builder.createCheckboxInput({
-        id,
-        label: fieldDef.key,
-        value,
-        icon: fieldDef.icon!,
-        ...(fieldDef.translatePrefix
-          ? { translatePrefix: fieldDef.translatePrefix }
-          : {}),
-      });
-    case "select":
-      return builder.createSelectInput({
-        id,
-        label: fieldDef.key,
-        value: String(value ?? ""),
-        icon: fieldDef.icon!,
-        options: fieldDef.options!,
-        ...(fieldDef.translatePrefix
-          ? { translatePrefix: fieldDef.translatePrefix }
-          : {}),
-      });
-    case "typed":
-      return builder.createTypedInput({
-        id,
-        idType: fieldDef.idType ?? `node-input-${fieldDef.key}Type`,
-        label: fieldDef.key,
-        value: String(value ?? ""),
-        valueType:
-          fieldDef.valueType ??
-          (node[`${fieldDef.key}Type`] as string) ??
-          "str",
-        icon: fieldDef.icon!,
-        types: fieldDef.types,
-        ...(fieldDef.translatePrefix
-          ? { translatePrefix: fieldDef.translatePrefix }
-          : {}),
-      });
-    case "time":
-      return builder.createTimeInput({
-        id,
-        idType: fieldDef.idType ?? `node-input-${fieldDef.key}Unit`,
-        label: fieldDef.key,
-        value,
-        valueType: node[fieldDef.valueTypeKey ?? `${fieldDef.key}Unit`],
-        icon: fieldDef.icon!,
-        ...(fieldDef.translatePrefix
-          ? { translatePrefix: fieldDef.translatePrefix }
-          : {}),
-      });
-    case "autocomplete":
-      return builder.createAutocompleteInput({
-        id,
-        label: fieldDef.key,
-        value: String(value ?? ""),
-        icon: fieldDef.icon!,
-        search: fieldDef.search!,
-        ...(fieldDef.translatePrefix
-          ? { translatePrefix: fieldDef.translatePrefix }
-          : {}),
-      });
-    case "hidden":
-      return builder.createHiddenInput({ id, value });
-    default:
-      return null;
-  }
+  return buildKeyedFieldElement(builder, fieldDef, node, id, value);
 }
 
 function wireChangeListeners(
