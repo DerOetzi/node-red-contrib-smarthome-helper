@@ -32,7 +32,6 @@ export const HygroCalculatorEditorMetadata: EditorMetadata = {
   fieldKeys: [],
   inputKeys: ["temperature", "humidity"],
   outputKeys: ["dewPoint", "absoluteHumidity"],
-  template: HygroCalculatorEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

@@ -3,7 +3,11 @@ import { FlowCtrlNodesRegistry } from "./nodes/flowctrl/nodes";
 import { HelperNodesRegistry } from "./nodes/helper/nodes";
 import { LogicalNodesRegistry } from "./nodes/logical/nodes";
 import { OperatorNodesRegistry } from "./nodes/operator/nodes";
-import { EditorMetadata, NodeRegistryEntry } from "./nodes/types";
+import {
+  EditorMetadata,
+  EditorTemplateElement,
+  NodeRegistryEntry,
+} from "./nodes/types";
 
 import version from "./version";
 import { i18n, generateNodeHelp } from "./nodes/flowctrl/base/editor";
@@ -26,7 +30,7 @@ RED.events.on("nodes:add", checkNode);
 
 // Register all nodes and inject help dynamically
 for (const [type, entry] of Object.entries(nodesRegistry)) {
-  injectNodeTemplate(type, entry.metadata);
+  injectNodeTemplate(type, entry.template);
   RED.nodes.registerType(type, entry.editor);
   // Inject help text dynamically after a short delay to ensure i18n is loaded
   setTimeout(() => injectNodeHelp(type, entry.editor, entry.metadata), 100);
@@ -36,15 +40,15 @@ for (const [type, entry] of Object.entries(nodesRegistry)) {
  * Injects the editor template HTML for a node type as a <script type="text/html"> element.
  * Must be called before RED.nodes.registerType so the template is available at registration time.
  */
-function injectNodeTemplate(nodeType: string, metadata?: EditorMetadata) {
-  if (
-    !metadata?.template ||
-    $(`script[data-template-name="${nodeType}"]`).length > 0
-  ) {
+function injectNodeTemplate(
+  nodeType: string,
+  template?: EditorTemplateElement[],
+) {
+  if (!template || $(`script[data-template-name="${nodeType}"]`).length > 0) {
     return;
   }
 
-  const html = metadata.template.map((el) => el.getString()).join("\n<hr/>\n");
+  const html = template.map((el) => el.getString()).join("\n<hr/>\n");
 
   const script = document.createElement("script");
   script.setAttribute("type", "text/html");

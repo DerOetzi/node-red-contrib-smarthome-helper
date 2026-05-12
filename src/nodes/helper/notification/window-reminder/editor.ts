@@ -36,7 +36,6 @@ export const WindowReminderEditorMetadata: EditorMetadata = {
   fieldKeys: ["interval"],
   inputKeys: ["window", "presence", "command", "intervalSelect"],
   outputKeys: ["notification"],
-  template: WindowReminderEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

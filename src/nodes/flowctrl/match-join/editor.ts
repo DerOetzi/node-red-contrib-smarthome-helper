@@ -52,7 +52,6 @@ export const MatchJoinEditorMetadata: EditorMetadata = {
   fieldKeys: ["discardNotMatched", "join", "minMsgCount", "target"],
   inputKeys: [],
   outputKeys: [],
-  template: MatchJoinEditorTemplate,
 };
 
 export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow> {

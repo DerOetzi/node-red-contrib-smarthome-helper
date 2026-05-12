@@ -33,7 +33,6 @@ export const MotionControllerEditorMetadata: EditorMetadata = {
   fieldKeys: ["timer", "onlyDarkness", "nightmodeEnabled"],
   inputKeys: ["motion", "darkness", "night", "manualControl", "command"],
   outputKeys: ["action", "status"],
-  template: MotionControllerEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

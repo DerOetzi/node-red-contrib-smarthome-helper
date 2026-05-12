@@ -32,7 +32,6 @@ export const WasteReminderEditorMetadata: EditorMetadata = {
   fieldKeys: [],
   inputKeys: ["types", "remaining"],
   outputKeys: ["notification"],
-  template: WasteReminderEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

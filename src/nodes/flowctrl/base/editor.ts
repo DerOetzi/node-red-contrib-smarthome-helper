@@ -90,7 +90,6 @@ export const BaseEditorMetadata: EditorMetadata = {
   ],
   inputKeys: [],
   outputKeys: [],
-  template: BaseEditorTemplate,
 };
 
 /**

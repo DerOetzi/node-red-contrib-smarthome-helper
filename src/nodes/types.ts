@@ -49,11 +49,11 @@ export interface EditorMetadata {
   inputKeys?: string[];
   outputKeys?: string[];
   inputMode?: "msg-property" | "matcher-topic";
-  template?: EditorTemplateElement[];
 }
 
 export interface NodeRegistryEntry {
   node: any;
   editor: EditorNodeDef<any>;
   metadata?: EditorMetadata;
+  template?: EditorTemplateElement[];
 }

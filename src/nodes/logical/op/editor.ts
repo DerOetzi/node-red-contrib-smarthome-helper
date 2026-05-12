@@ -25,7 +25,6 @@ export const LogicalOpEditorMetadata: EditorMetadata = {
   fieldKeys: ["operation", "minMsgCount"],
   inputKeys: [],
   outputKeys: [],
-  template: LogicalOpEditorTemplate,
 };
 
 const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {

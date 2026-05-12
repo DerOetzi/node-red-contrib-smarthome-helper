@@ -63,7 +63,6 @@ export const WarmWaterPVControllerEditorMetadata: EditorMetadata = {
     "currentWaterTemperature",
   ],
   outputKeys: ["operationMode", "targetTemperature"],
-  template: WarmWaterPVControllerEditorTemplate,
 };
 
 const generalMatcherList = new MatchJoinEditableList({

@@ -38,7 +38,6 @@ export const ArithmeticEditorMetadata: EditorMetadata = {
   fieldKeys: ["minValueCount", "operation", "precision", "additionalValue"],
   inputKeys: ["value", "minuend"],
   outputKeys: ["result"],
-  template: ArithmeticEditorTemplate,
 };
 
 const operandMatcherList = new MatchJoinEditableList({

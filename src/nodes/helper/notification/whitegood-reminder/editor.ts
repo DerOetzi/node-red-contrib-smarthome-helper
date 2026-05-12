@@ -41,7 +41,6 @@ export const WhitegoodReminderEditorMetadata: EditorMetadata = {
   ],
   inputKeys: ["power", "runs", "emptied"],
   outputKeys: ["notification", "runs"],
-  template: WhitegoodReminderEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

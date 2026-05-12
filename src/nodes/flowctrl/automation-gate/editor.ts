@@ -33,7 +33,6 @@ export const AutomationGateEditorMetadata: EditorMetadata = {
   ],
   inputKeys: ["gate", "pause"],
   outputKeys: ["message"],
-  template: AutomationGateEditorTemplate,
 };
 
 const AutomationGateEditorNode: EditorNodeDef<AutomationGateEditorNodeProperties> =

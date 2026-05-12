@@ -32,7 +32,6 @@ export const SwitchEditorMetadata: EditorMetadata = {
   ],
   inputKeys: [],
   outputKeys: ["true", "false", "result"],
-  template: SwitchEditorTemplate,
 };
 
 const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {

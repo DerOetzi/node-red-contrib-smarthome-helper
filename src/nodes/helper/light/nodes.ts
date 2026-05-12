@@ -2,6 +2,7 @@ import { NodeRegistryEntry } from "../../types";
 import LightControllerNode from "./light-controller";
 import LightControllerEditorNode, {
   LightControllerEditorMetadata,
+  LightControllerEditorTemplate,
 } from "./light-controller/editor";
 
 export const HelperLightNodesRegistry: { [key: string]: NodeRegistryEntry } = {
@@ -9,5 +10,6 @@ export const HelperLightNodesRegistry: { [key: string]: NodeRegistryEntry } = {
     node: LightControllerNode,
     editor: LightControllerEditorNode,
     metadata: LightControllerEditorMetadata,
+    template: LightControllerEditorTemplate,
   },
 };

@@ -62,7 +62,6 @@ export const HeatingControllerEditorMetadata: EditorMetadata = {
     "pvBoostTemperatureOffset",
   ],
   outputKeys: ["heatmode", "temperature", "window", "status"],
-  template: HeatingControllerEditorTemplate,
 };
 
 const controlMatcherList = new MatchJoinEditableList({

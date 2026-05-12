@@ -57,7 +57,6 @@ export const NotifyDispatcherEditorMetadata: EditorMetadata = {
     "person9",
     "person10",
   ],
-  template: NotifyDispatcherEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

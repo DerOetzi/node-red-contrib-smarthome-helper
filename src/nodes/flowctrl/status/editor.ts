@@ -35,7 +35,6 @@ export const StatusEditorMetadata: EditorMetadata = {
   fieldKeys: ["scope", "initialActive"],
   inputKeys: ["activeCondition"],
   outputKeys: ["status", "statusText"],
-  template: StatusEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

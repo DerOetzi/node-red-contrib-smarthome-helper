@@ -53,7 +53,6 @@ export const LightControllerEditorMetadata: EditorMetadata = {
   ],
   inputKeys: ["command", "colorTemperature", "hue", "saturation"],
   outputKeys: ["command"],
-  template: LightControllerEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

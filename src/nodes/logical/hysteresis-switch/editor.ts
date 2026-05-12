@@ -24,7 +24,6 @@ export const HysteresisSwitchEditorMetadata: EditorMetadata = {
   fieldKeys: ["upperThreshold", "lowerThreshold", "initialState"],
   inputKeys: [],
   outputKeys: [],
-  template: HysteresisSwitchEditorTemplate,
 };
 
 const HysteresisSwitchEditorNode: EditorNodeDef<HysteresisSwitchEditorNodeProperties> =

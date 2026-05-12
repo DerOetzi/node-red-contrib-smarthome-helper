@@ -33,7 +33,6 @@ export const MoistureAlertEditorMetadata: EditorMetadata = {
   fieldKeys: ["alertThreshold", "alertInterval"],
   inputKeys: ["moisture", "lastAlert"],
   outputKeys: ["notification", "lastAlert"],
-  template: MoistureAlertEditorTemplate,
 };
 
 const inputMatcherList = new MatchJoinEditableList({

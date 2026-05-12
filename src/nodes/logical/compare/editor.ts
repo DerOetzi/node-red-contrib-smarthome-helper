@@ -26,7 +26,6 @@ export const CompareEditorMetadata: EditorMetadata = {
   fieldKeys: ["property", "operation", "compare"],
   inputKeys: [],
   outputKeys: [],
-  template: CompareEditorTemplate,
 };
 
 const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {

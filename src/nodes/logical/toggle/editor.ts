@@ -1,10 +1,7 @@
 import { EditorNodeDef } from "node-red";
-import {
-  createEditorDefaults,
-  i18n
-} from "../../flowctrl/base/editor";
+import { createEditorDefaults, i18n } from "../../flowctrl/base/editor";
 import { EditorMetadata } from "../../types";
-import SwitchNodeEditor, { SwitchEditorTemplate } from "../switch/editor";
+import SwitchNodeEditor from "../switch/editor";
 import ToggleNode from "./";
 import {
   ToggleEditorNodeProperties,
@@ -18,7 +15,6 @@ export const ToggleEditorMetadata: EditorMetadata = {
   fieldKeys: [],
   inputKeys: [],
   outputKeys: [],
-  template: SwitchEditorTemplate,
 };
 
 const ToggleEditorNode: EditorNodeDef<ToggleEditorNodeProperties> = {

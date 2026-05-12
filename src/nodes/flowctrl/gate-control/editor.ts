@@ -23,7 +23,6 @@ export const GateControlEditorMetadata: EditorMetadata = {
   fieldKeys: ["delay", "gateCommand", "pauseTime"],
   inputKeys: [],
   outputKeys: [],
-  template: GateControlEditorTemplate,
 };
 
 const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {

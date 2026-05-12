@@ -39,7 +39,6 @@ export const EventMapperEditorMetadata: EditorMetadata = {
   fieldKeys: ["event", "mapped", "ignoreUnknownEvents"],
   inputKeys: ["event"],
   outputKeys: ["event"],
-  template: EventMapperEditorTemplate,
 };
 
 const eventMatcherList = new MatchJoinEditableList({
