@@ -1,5 +1,5 @@
 import { TimeIntervalUnit } from "../../../helpers/time.helper";
-import { i18n } from "./editor-node";
+import { i18n } from "./editor-i18n";
 import {
   NodeEditorFormBuilderAutocompleteInputParams,
   NodeEditorFormBuilderHiddenInputParams,
