@@ -1,20 +1,12 @@
-import { EditorNodeDef } from "node-red";
-import BaseEditorNode, {
-  createEditorDefaults,
-  i18n,
-  i18nOutputLabel,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  NodeEditorDefinition,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
 } from "../../flowctrl/base/editor";
-import {
-  InputEditorWithoutStatusTemplate,
-  MatchJoinEditableList,
-} from "../../flowctrl/match-join/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../types";
+import { MatchJoinEditableList } from "../../flowctrl/match-join/editor";
 import ArithmeticNode from "./";
 import {
   AdditionalValueRow,
@@ -24,26 +16,6 @@ import {
   ArithmeticNodeOptionsDefaults,
   ArithmeticTarget,
 } from "./types";
-
-export const ArithmeticEditorTemplate = [
-  new EditorTemplateOl("matcher-rows"),
-  new EditorTemplateDiv("arithmetic-options"),
-  new EditorTemplateOl("additional-values-rows"),
-  ...InputEditorWithoutStatusTemplate,
-];
-
-export const ArithmeticEditorMetadata: EditorMetadata = {
-  localePrefix: "operator.arithmetic",
-  inputMode: "msg-property",
-  fieldKeys: ["minValueCount", "operation", "precision", "additionalValue"],
-  inputKeys: ["value", "minuend"],
-  outputKeys: ["result"],
-};
-
-const operandMatcherList = new MatchJoinEditableList({
-  targets: Object.values(ArithmeticTarget),
-  translatePrefix: "operator.arithmetic",
-});
 
 class AdditionalValuesEditableList extends NodeEditorFormEditableList<AdditionalValueRow> {
   protected addItem(data: AdditionalValueRow) {
@@ -59,103 +31,104 @@ class AdditionalValuesEditableList extends NodeEditorFormEditableList<Additional
   }
 }
 
+const operandMatcherList = new MatchJoinEditableList({
+  targets: Object.values(ArithmeticTarget),
+  translatePrefix: "operator.arithmetic",
+});
+
 const additionalValuesList = new AdditionalValuesEditableList();
 
-const ArithmeticEditorNode: EditorNodeDef<ArithmeticEditorNodeProperties> = {
-  category: ArithmeticNode.NodeCategoryLabel,
-  color: ArithmeticNode.NodeColor,
-  icon: "arithmetic.svg",
-  defaults: createEditorDefaults<
-    ArithmeticNodeOptions,
-    ArithmeticEditorNodeProperties
-  >(ArithmeticNodeOptionsDefaults),
-  label: function () {
-    const operator = i18n(
-      "operator.arithmetic.field.operation.options." + this.operation,
-    );
-    let label: string = operator;
+function buildArithmeticFormContent(
+  node: ArithmeticEditorNodeProperties,
+): void {
+  const builder = new NodeEditorFormBuilder($("#arithmetic-options"), {
+    translatePrefix: "operator.arithmetic",
+  });
 
-    if (this.name) {
-      label = `${this.name} (${operator})`;
-    }
+  const minValueCount = builder.createNumberInput({
+    id: "node-input-minValueCount",
+    label: "minValueCount",
+    value: node.minValueCount,
+    icon: "hashtag",
+  });
 
-    return label;
-  },
-  inputs: ArithmeticNodeOptionsDefaults.inputs,
-  outputs: ArithmeticNodeOptionsDefaults.outputs,
-  outputLabels: function () {
-    return i18nOutputLabel("operator.arithmetic", "result");
-  },
-  oneditprepare: function () {
-    BaseEditorNode.oneditprepare!.call(this);
+  const minValueCountRow = minValueCount
+    .parent()
+    .toggle(node.operation !== ArithmeticFunction.round);
 
-    operandMatcherList
-      .initialize("matcher-rows", this.matchers, {
-        translatePrefix: "flowctrl.match-join",
-      })
-      .showHideTarget(
-        this.operation === ArithmeticFunction.sub,
+  builder
+    .createSelectInput({
+      id: "node-input-operation",
+      label: "operation",
+      value: node.operation,
+      icon: "cogs",
+      options: Object.keys(ArithmeticFunction),
+    })
+    .on("change", function () {
+      const operation = $(this).val();
+      const isRound = operation === ArithmeticFunction.round;
+
+      operandMatcherList.removeTarget(
+        operation === ArithmeticFunction.sub,
         ArithmeticTarget.minuend,
       );
 
-    additionalValuesList
-      .initialize("additional-values-rows", this.additionalValues, {
-        translatePrefix: "operator.arithmetic",
-      })
-      .toggle(this.operation !== ArithmeticFunction.round);
+      minValueCountRow.toggle(!isRound);
+      if (isRound) {
+        minValueCount.val(1);
+      }
 
-    const arithmeticOptionsBuilder = new NodeEditorFormBuilder(
-      $("#arithmetic-options"),
-      { translatePrefix: "operator.arithmetic" },
-    );
-
-    const minValueCount = arithmeticOptionsBuilder.createNumberInput({
-      id: "node-input-minValueCount",
-      label: "minValueCount",
-      value: this.minValueCount,
-      icon: "hashtag",
+      additionalValuesList.toggle(!isRound);
     });
 
-    const minValueCountRow = minValueCount
-      .parent()
-      .toggle(this.operation !== ArithmeticFunction.round);
+  builder.createNumberInput({
+    id: "node-input-precision",
+    label: "precision",
+    value: node.precision,
+    icon: "dot-circle-o",
+  });
 
-    arithmeticOptionsBuilder
-      .createSelectInput({
-        id: "node-input-operation",
-        label: "operation",
-        value: this.operation,
-        icon: "cogs",
-        options: Object.keys(ArithmeticFunction),
-      })
-      .on("change", function () {
-        const operation = $(this).val();
-        const isRound = operation === ArithmeticFunction.round;
+  operandMatcherList.showHideTarget(
+    node.operation === ArithmeticFunction.sub,
+    ArithmeticTarget.minuend,
+  );
+  additionalValuesList.toggle(node.operation !== ArithmeticFunction.round);
+}
 
-        operandMatcherList.removeTarget(
-          operation === ArithmeticFunction.sub,
-          ArithmeticTarget.minuend,
-        );
-
-        minValueCountRow.toggle(!isRound);
-        if (isRound) {
-          minValueCount.val(1);
-        }
-
-        additionalValuesList.toggle(!isRound);
-      });
-
-    arithmeticOptionsBuilder.createNumberInput({
-      id: "node-input-precision",
-      label: "precision",
-      value: this.precision,
-      icon: "dot-circle-o",
-    });
-  },
-  oneditsave: function () {
-    this.matchers = operandMatcherList.values();
-    this.additionalValues = additionalValuesList.values();
+const def: NodeEditorDefinition<
+  ArithmeticNodeOptions,
+  ArithmeticEditorNodeProperties
+> = {
+  localePrefix: "operator.arithmetic",
+  nodeClass: ArithmeticNode,
+  defaults: ArithmeticNodeOptionsDefaults,
+  icon: "arithmetic.svg",
+  inputMode: "msg-property",
+  fieldKeys: ["minValueCount", "operation", "precision", "additionalValue"],
+  inputKeys: ["value", "minuend"],
+  outputKeys: ["result"],
+  labelSuffix: "operation",
+  baseTemplate: "input-without-status",
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () => operandMatcherList,
+      dataKey: "matchers",
+      rowTranslatePrefix: "flowctrl.match-join",
+    },
+    {
+      id: "additional-values-rows",
+      create: () => additionalValuesList,
+      dataKey: "additionalValues",
+      rowTranslatePrefix: "operator.arithmetic",
+    },
+  ],
+  form: {
+    id: "arithmetic-options",
+    build: buildArithmeticFormContent,
   },
 };
 
-export default ArithmeticEditorNode;
+export const ArithmeticEditorTemplate = buildEditorTemplate(def);
+export const ArithmeticEditorMetadata = buildEditorMetadata(def);
+export default buildEditorNodeDef(def);

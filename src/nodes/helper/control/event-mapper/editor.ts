@@ -1,20 +1,12 @@
-import { EditorNodeDef } from "node-red";
-import BaseEditorNode, {
-  createEditorDefaults,
-  i18n,
-  NodeEditorFormBuilder,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  NodeEditorDefinition,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
 import { NodeEditorFormBuilderAutocompleteMatch } from "../../../flowctrl/base/types";
-import {
-  InputEditorWithoutStatusTemplate,
-  MatchJoinEditableList,
-} from "../../../flowctrl/match-join/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../../types";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import {
   autocompleteEvents,
   EventMapperEditorNodeProperties,
@@ -25,21 +17,6 @@ import {
 } from "./types";
 
 import EventMapperNode from "./";
-
-export const EventMapperEditorTemplate = [
-  new EditorTemplateOl("matcher-rows"),
-  new EditorTemplateOl("rule-rows"),
-  new EditorTemplateDiv("event-mapper-options"),
-  ...InputEditorWithoutStatusTemplate,
-];
-
-export const EventMapperEditorMetadata: EditorMetadata = {
-  localePrefix: "helper.event-mapper",
-  inputMode: "matcher-topic",
-  fieldKeys: ["event", "mapped", "ignoreUnknownEvents"],
-  inputKeys: ["event"],
-  outputKeys: ["event"],
-};
 
 const eventMatcherList = new MatchJoinEditableList({
   targets: Object.values(EventMapperTarget),
@@ -90,52 +67,48 @@ class EventMapperRuleEditableList extends NodeEditorFormEditableList<EventMapper
 
 const ruleRows = new EventMapperRuleEditableList();
 
-const EventMapperEditorNode: EditorNodeDef<EventMapperEditorNodeProperties> = {
-  category: EventMapperNode.NodeCategoryLabel,
-  color: EventMapperNode.NodeColor,
+const def: NodeEditorDefinition<
+  EventMapperNodeOptions,
+  EventMapperEditorNodeProperties
+> = {
+  localePrefix: "helper.event-mapper",
+  nodeClass: EventMapperNode,
+  defaults: EventMapperNodeOptionsDefaults,
   icon: "font-awesome/fa-map-signs",
-  defaults: createEditorDefaults<
-    EventMapperNodeOptions,
-    EventMapperEditorNodeProperties
-  >(EventMapperNodeOptionsDefaults),
-  label: function () {
-    return this.name || i18n("helper.event-mapper.name");
+  inputMode: "matcher-topic",
+  inputKeys: ["event"],
+  outputKeys: [],
+  baseTemplate: "input-without-status",
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () => eventMatcherList,
+      dataKey: "matchers",
+      rowTranslatePrefix: "flowctrl.match-join",
+    },
+    {
+      id: "rule-rows",
+      create: () => ruleRows,
+      dataKey: "rules",
+      rowTranslatePrefix: "helper.event-mapper",
+    },
+  ],
+  form: {
+    id: "event-mapper-options",
+    fields: [
+      { type: "checkbox", key: "ignoreUnknownEvents", icon: "question" },
+    ],
   },
-  inputs: EventMapperNodeOptionsDefaults.inputs,
-  outputs: EventMapperNodeOptionsDefaults.outputs,
-  outputLabels: function (index: number) {
-    return this.rules[index]?.event || "event " + index;
-  },
-  oneditprepare: function () {
-    BaseEditorNode.oneditprepare!.call(this);
-
-    eventMatcherList.initialize("matcher-rows", this.matchers, {
-      translatePrefix: "flowctrl.match-join",
-    });
-
-    ruleRows.initialize("rule-rows", this.rules, {
-      translatePrefix: "helper.event-mapper",
-    });
-
-    const eventMapperOptionsBuilder = new NodeEditorFormBuilder(
-      $("#event-mapper-options"),
-      {
-        translatePrefix: "helper.event-mapper",
-      },
-    );
-
-    eventMapperOptionsBuilder.createCheckboxInput({
-      id: "node-input-ignoreUnknownEvents",
-      label: "ignoreUnknownEvents",
-      value: this.ignoreUnknownEvents,
-      icon: "question",
-    });
-  },
-  oneditsave: function () {
-    this.matchers = eventMatcherList.values();
-    this.rules = ruleRows.values();
-    this.outputs = this.rules.length;
+  hooks: {
+    outputLabels: (node, index) => {
+      return (node as any).rules?.[index]?.event || "event " + index;
+    },
+    oneditsave: (node, ctx) => {
+      (node as any).outputs = ctx.getList("rule-rows").values().length;
+    },
   },
 };
 
-export default EventMapperEditorNode;
+export const EventMapperEditorTemplate = buildEditorTemplate(def);
+export const EventMapperEditorMetadata = buildEditorMetadata(def);
+export default buildEditorNodeDef(def);

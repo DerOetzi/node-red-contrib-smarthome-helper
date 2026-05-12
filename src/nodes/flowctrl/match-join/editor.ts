@@ -1,17 +1,12 @@
-import { EditorNodeDef } from "node-red";
 import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../types";
-import BaseEditorNode, {
   BaseCommonElement,
   BaseDebounceNoTopicElement,
-  BaseEditorWithoutStatusTemplate,
   BaseStatusElement,
-  createEditorDefaults,
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
   i18nInputLabel,
-  NodeEditorFormBuilder,
+  NodeEditorDefinition,
   NodeEditorFormEditableList,
 } from "../base/editor";
 import { NodeEditorFormBuilderParams } from "../base/types";
@@ -30,12 +25,6 @@ import {
   NotApplicableCompareFunction,
 } from "../../logical/compare/types";
 
-export const MatchJoinEditorTemplate = [
-  new EditorTemplateOl("matcher-rows"),
-  new EditorTemplateDiv("matcher-join-options"),
-  ...BaseEditorWithoutStatusTemplate,
-];
-
 export const InputEditorWithoutStatusTemplate = [
   BaseCommonElement,
   BaseDebounceNoTopicElement,
@@ -45,14 +34,6 @@ export const InputEditorTemplate = [
   ...InputEditorWithoutStatusTemplate,
   BaseStatusElement,
 ];
-
-export const MatchJoinEditorMetadata: EditorMetadata = {
-  localePrefix: "flowctrl.match-join",
-  inputMode: "matcher-topic",
-  fieldKeys: ["discardNotMatched", "join", "minMsgCount", "target"],
-  inputKeys: [],
-  outputKeys: [],
-};
 
 export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow> {
   constructor(private readonly fixedTargets?: MatchFixedTargets) {
@@ -199,67 +180,45 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
   }
 }
 
-const matchers = new MatchJoinEditableList();
-
-const MatchJoinEditorNode: EditorNodeDef<MatchJoinEditorNodeProperties> = {
-  category: MatchJoinNode.NodeCategoryLabel,
-  color: MatchJoinNode.NodeColor,
+const def: NodeEditorDefinition<
+  MatchJoinNodeOptions,
+  MatchJoinEditorNodeProperties
+> = {
+  localePrefix: "flowctrl.match-join",
+  nodeClass: MatchJoinNode,
+  defaults: MatchJoinNodeOptionsDefaults,
   icon: "join.svg",
-  defaults: createEditorDefaults<
-    MatchJoinNodeOptions,
-    MatchJoinEditorNodeProperties
-  >(MatchJoinNodeOptionsDefaults),
-  label: function () {
-    const label = this.join ? "join" : "match";
-    return this.name ? `${this.name} (${label})` : label;
-  },
-  inputs: MatchJoinNodeOptionsDefaults.inputs,
-  outputs: MatchJoinNodeOptionsDefaults.outputs,
-  oneditprepare: function () {
-    BaseEditorNode.oneditprepare!.call(this);
-
-    matchers.initialize("matcher-rows", this.matchers, {
-      translatePrefix: "flowctrl.match-join",
-    });
-
-    const matchJoinOptionsBuilder = new NodeEditorFormBuilder(
-      $("#matcher-join-options"),
+  inputMode: "matcher-topic",
+  baseTemplate: "without-status",
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () => new MatchJoinEditableList(),
+      dataKey: "matchers",
+      rowTranslatePrefix: "flowctrl.match-join",
+    },
+  ],
+  form: {
+    id: "matcher-join-options",
+    fields: [
+      { type: "checkbox", key: "discardNotMatched", icon: "stop-circle-o" },
+      { type: "checkbox", key: "join", icon: "compress" },
       {
-        translatePrefix: "flowctrl.match-join",
-      },
-    );
-
-    matchJoinOptionsBuilder.createCheckboxInput({
-      id: "node-input-discardNotMatched",
-      label: "discardNotMatched",
-      value: this.discardNotMatched,
-      icon: "stop-circle-o",
-    });
-
-    const joinCheckbox = matchJoinOptionsBuilder.createCheckboxInput({
-      id: "node-input-join",
-      label: "join",
-      value: this.join,
-      icon: "compress",
-    });
-
-    const minMsgCountInputRow = matchJoinOptionsBuilder
-      .createNumberInput({
-        id: "node-input-minMsgCount",
-        label: "minMsgCount",
-        value: this.minMsgCount,
+        type: "number",
+        key: "minMsgCount",
         icon: "hashtag",
-      })
-      .parent()
-      .toggle(this.join);
-
-    joinCheckbox.on("change", function () {
-      minMsgCountInputRow.toggle($(this).is(":checked"));
-    });
+        dependsOn: "join",
+      },
+    ],
   },
-  oneditsave: function () {
-    this.matchers = matchers.values();
+  hooks: {
+    label: (node) => {
+      const label = node.join ? "join" : "match";
+      return node.name ? `${node.name} (${label})` : label;
+    },
   },
 };
 
-export default MatchJoinEditorNode;
+export const MatchJoinEditorTemplate = buildEditorTemplate(def);
+export const MatchJoinEditorMetadata = buildEditorMetadata(def);
+export default buildEditorNodeDef(def);

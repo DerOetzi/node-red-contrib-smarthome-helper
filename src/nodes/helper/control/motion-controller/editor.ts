@@ -1,18 +1,11 @@
-import { EditorNodeDef } from "node-red";
-import BaseEditorNode, {
-  createEditorDefaults,
-  i18n,
-  NodeEditorFormBuilder,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  i18nFieldDefault,
+  NodeEditorDefinition,
 } from "../../../flowctrl/base/editor";
-import {
-  InputEditorTemplate,
-  MatchJoinEditableList,
-} from "../../../flowctrl/match-join/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../../types";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import MotionControllerNode from "./";
 import {
   MotionControllerEditorNodeProperties,
@@ -21,148 +14,89 @@ import {
   MotionControllerTarget,
 } from "./types";
 
-export const MotionControllerEditorTemplate = [
-  new EditorTemplateOl("matcher-rows"),
-  new EditorTemplateDiv("motion-controller-options"),
-  ...InputEditorTemplate,
-];
-
-export const MotionControllerEditorMetadata: EditorMetadata = {
+const def: NodeEditorDefinition<
+  MotionControllerNodeOptions,
+  MotionControllerEditorNodeProperties
+> = {
   localePrefix: "helper.motion-controller",
+  nodeClass: MotionControllerNode,
+  defaults: MotionControllerNodeOptionsDefaults,
+  icon: "font-awesome/fa-male",
   inputMode: "matcher-topic",
-  fieldKeys: ["timer", "onlyDarkness", "nightmodeEnabled"],
   inputKeys: ["motion", "darkness", "night", "manualControl", "command"],
   outputKeys: ["action", "status"],
-};
-
-const inputMatcherList = new MatchJoinEditableList({
-  targets: Object.values(MotionControllerTarget),
-  translatePrefix: "helper.motion-controller",
-});
-
-const MotionControllerEditorNode: EditorNodeDef<MotionControllerEditorNodeProperties> =
-  {
-    category: MotionControllerNode.NodeCategoryLabel,
-    color: MotionControllerNode.NodeColor,
-    icon: "font-awesome/fa-male",
-    defaults: createEditorDefaults<
-      MotionControllerNodeOptions,
-      MotionControllerEditorNodeProperties
-    >(MotionControllerNodeOptionsDefaults),
-    label: function () {
-      return this.name?.trim()
-        ? this.name.trim()
-        : i18n("helper.motion-controller.name");
-    },
-    inputs: MotionControllerNodeOptionsDefaults.inputs,
-    outputs: MotionControllerNodeOptionsDefaults.outputs,
-    outputLabels: function (index: number) {
-      const outputs = ["action"];
-      return i18n(`helper.motion-controller.output.${outputs[index]}`);
-    },
-    onadd: function () {
-      this.onCommand = i18n("helper.light-controller.default.onCommand");
-      this.offCommand = i18n("helper.light-controller.default.offCommand");
-      this.nightmodeCommand = i18n(
-        "helper.light-controller.default.nightmodeCommand",
-      );
-    },
-    oneditprepare: function () {
-      BaseEditorNode.oneditprepare!.call(this);
-
-      inputMatcherList.initialize("matcher-rows", this.matchers, {
-        translatePrefix: "flowctrl.match-join",
-      });
-
-      const motionControllerOptionsBuilder = new NodeEditorFormBuilder(
-        $("#motion-controller-options"),
-        {
+  baseTemplate: "input-only",
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () =>
+        new MatchJoinEditableList({
+          targets: Object.values(MotionControllerTarget),
           translatePrefix: "helper.motion-controller",
+        }),
+      dataKey: "matchers",
+      rowTranslatePrefix: "flowctrl.match-join",
+    },
+  ],
+  form: {
+    id: "motion-controller-options",
+    fields: [
+      { type: "time", key: "timer", icon: "clock-o" },
+      {
+        type: "checkbox",
+        key: "onlyDarkness",
+        icon: "lightbulb-o",
+        showsListTarget: {
+          listId: "matcher-rows",
+          target: MotionControllerTarget.darkness,
         },
-      );
-
-      motionControllerOptionsBuilder.createTimeInput({
-        id: "node-input-timer",
-        idType: "timerUnit",
-        label: "timer",
-        value: this.timer,
-        valueType: this.timerUnit,
-        icon: "clock-o",
-      });
-
-      motionControllerOptionsBuilder
-        .createCheckboxInput({
-          id: "node-input-onlyDarkness",
-          label: "onlyDarkness",
-          value: this.onlyDarkness,
-          icon: "lightbulb-o",
-        })
-        .on("change", function () {
-          inputMatcherList.showHideTarget(
-            $(this).is(":checked"),
-            MotionControllerTarget.darkness,
-          );
-        });
-
-      inputMatcherList.showHideTarget(
-        this.onlyDarkness,
-        MotionControllerTarget.darkness,
-      );
-
-      const nightmodeEnabledCheckbox =
-        motionControllerOptionsBuilder.createCheckboxInput({
-          id: "node-input-nightmodeEnabled",
-          label: "nightmodeEnabled",
-          value: this.nightmodeEnabled,
-          icon: "moon-o",
-        });
-
-      inputMatcherList.showHideTarget(
-        this.nightmodeEnabled,
-        MotionControllerTarget.night,
-      );
-
-      motionControllerOptionsBuilder.line();
-
-      motionControllerOptionsBuilder.createTextInput({
-        id: "node-input-onCommand",
-        label: "onCommand",
-        value: this.onCommand,
+      },
+      {
+        type: "checkbox",
+        key: "nightmodeEnabled",
+        icon: "moon-o",
+        showsListTarget: {
+          listId: "matcher-rows",
+          target: MotionControllerTarget.night,
+        },
+      },
+      { type: "line" },
+      {
+        type: "text",
+        key: "onCommand",
         icon: "play",
         translatePrefix: "helper.light-controller",
-      });
-
-      motionControllerOptionsBuilder.createTextInput({
-        id: "node-input-offCommand",
-        label: "offCommand",
-        value: this.offCommand,
+      },
+      {
+        type: "text",
+        key: "offCommand",
         icon: "stop",
         translatePrefix: "helper.light-controller",
-      });
-
-      const nightmodeCommandRow = motionControllerOptionsBuilder
-        .createTextInput({
-          id: "node-input-nightmodeCommand",
-          label: "nightmodeCommand",
-          value: this.nightmodeCommand,
-          icon: "moon-o",
-          translatePrefix: "helper.light-controller",
-        })
-        .parent()
-        .toggle(this.nightmodeEnabled);
-
-      nightmodeEnabledCheckbox.on("change", function () {
-        const nightmodeEnabled = $(this).is(":checked");
-        inputMatcherList.removeTarget(
-          nightmodeEnabled,
-          MotionControllerTarget.night,
-        );
-        nightmodeCommandRow.toggle(nightmodeEnabled);
-      });
+      },
+      {
+        type: "text",
+        key: "nightmodeCommand",
+        icon: "moon-o",
+        translatePrefix: "helper.light-controller",
+        dependsOn: "nightmodeEnabled",
+      },
+    ],
+  },
+  hooks: {
+    onadd: (node) => {
+      node.onCommand = i18nFieldDefault("helper.light-controller", "onCommand");
+      node.offCommand = i18nFieldDefault(
+        "helper.light-controller",
+        "offCommand",
+      );
+      node.nightmodeCommand = i18nFieldDefault(
+        "helper.light-controller",
+        "nightmodeCommand",
+      );
     },
-    oneditsave: function () {
-      this.matchers = inputMatcherList.values();
-    },
-  };
+  },
+};
 
-export default MotionControllerEditorNode;
+export const MotionControllerEditorTemplate = buildEditorTemplate(def);
+export const MotionControllerEditorMetadata = buildEditorMetadata(def);
+export default buildEditorNodeDef(def);

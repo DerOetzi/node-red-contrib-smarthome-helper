@@ -1,21 +1,12 @@
-import { EditorNodeDef } from "node-red";
+import type { EditorNodeDef } from "node-red";
 import {
   EditorMetadata,
   EditorTemplateDiv,
   EditorTemplateElement,
   EditorTemplateOl,
 } from "../../types";
-import {
-  BaseEditorNodeProperties,
-  BaseNodeOptions,
-  NodeEditorBaseTemplate,
-  NodeEditorExtraForm,
-  NodeEditorFieldDefinition,
-  NodeEditorListDefinition,
-  NodeEditorListInstance,
-} from "./types";
 import { NodeEditorFormBuilder } from "./editor-builder";
-import {
+import BaseEditorNode, {
   BaseEditorTemplate,
   BaseEditorWithoutStatusTemplate,
   InputEditorTemplate,
@@ -25,7 +16,15 @@ import {
   i18nFieldDefault,
   i18nOutputLabel,
 } from "./editor-node";
-import BaseEditorNode from "./editor-node";
+import {
+  BaseEditorNodeProperties,
+  BaseNodeOptions,
+  NodeEditorBaseTemplate,
+  NodeEditorExtraForm,
+  NodeEditorFieldDefinition,
+  NodeEditorListDefinition,
+  NodeEditorListInstance,
+} from "./types";
 
 // ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -48,6 +47,7 @@ export interface NodeEditorHooks<TProps extends BaseEditorNodeProperties> {
     node: EditorNodeInstance<TProps>,
     ctx: EditorSaveContext,
   ) => void;
+  onadd?: (node: EditorNodeInstance<TProps>) => void;
   label?: (node: EditorNodeInstance<TProps>) => string | undefined;
   outputLabels?: (
     node: EditorNodeInstance<TProps>,
@@ -72,7 +72,7 @@ export interface NodeEditorDefinition<
   lists?: NodeEditorListDefinition[];
   form?: {
     id: string;
-    fields: NodeEditorFieldDefinition[];
+    fields?: NodeEditorFieldDefinition[];
     build?: (node: any) => void;
   };
   extraForms?: NodeEditorExtraForm[];
@@ -116,7 +116,7 @@ export function buildEditorMetadata(
 ): EditorMetadata {
   const derivedFieldKeys =
     def.form?.fields
-      .filter((f) => !!f.key && f.type !== "line" && f.type !== "subheader")
+      ?.filter((f) => !!f.key && f.type !== "line" && f.type !== "subheader")
       .map((f) => f.key!) ?? [];
   return {
     localePrefix: def.localePrefix,
@@ -171,6 +171,9 @@ function buildFieldElement(
         label: fieldDef.key,
         value,
         icon: fieldDef.icon!,
+        ...(fieldDef.translatePrefix
+          ? { translatePrefix: fieldDef.translatePrefix }
+          : {}),
       });
     case "number":
       return builder.createNumberInput({
@@ -181,6 +184,9 @@ function buildFieldElement(
         min: fieldDef.min,
         max: fieldDef.max,
         step: fieldDef.step,
+        ...(fieldDef.translatePrefix
+          ? { translatePrefix: fieldDef.translatePrefix }
+          : {}),
       });
     case "checkbox":
       return builder.createCheckboxInput({
@@ -188,6 +194,9 @@ function buildFieldElement(
         label: fieldDef.key,
         value,
         icon: fieldDef.icon!,
+        ...(fieldDef.translatePrefix
+          ? { translatePrefix: fieldDef.translatePrefix }
+          : {}),
       });
     case "select":
       return builder.createSelectInput({
@@ -196,6 +205,9 @@ function buildFieldElement(
         value: String(value ?? ""),
         icon: fieldDef.icon!,
         options: fieldDef.options!,
+        ...(fieldDef.translatePrefix
+          ? { translatePrefix: fieldDef.translatePrefix }
+          : {}),
       });
     case "typed":
       return builder.createTypedInput({
@@ -209,6 +221,9 @@ function buildFieldElement(
           "str",
         icon: fieldDef.icon!,
         types: fieldDef.types,
+        ...(fieldDef.translatePrefix
+          ? { translatePrefix: fieldDef.translatePrefix }
+          : {}),
       });
     case "time":
       return builder.createTimeInput({
@@ -218,6 +233,9 @@ function buildFieldElement(
         value,
         valueType: node[fieldDef.valueTypeKey ?? `${fieldDef.key}Unit`],
         icon: fieldDef.icon!,
+        ...(fieldDef.translatePrefix
+          ? { translatePrefix: fieldDef.translatePrefix }
+          : {}),
       });
     case "autocomplete":
       return builder.createAutocompleteInput({
@@ -226,6 +244,9 @@ function buildFieldElement(
         value: String(value ?? ""),
         icon: fieldDef.icon!,
         search: fieldDef.search!,
+        ...(fieldDef.translatePrefix
+          ? { translatePrefix: fieldDef.translatePrefix }
+          : {}),
       });
     case "hidden":
       return builder.createHiddenInput({ id, value });
@@ -269,7 +290,8 @@ function wireChangeListeners(
     const listTarget = fieldByKey.get(controllerKey)?.showsListTarget;
 
     controllerElem.on("change", function () {
-      const rawVal = $(this).val();
+      const isCheckbox = (controllerElem as JQuery).attr("type") === "checkbox";
+      const rawVal = isCheckbox ? $(this).is(":checked") : $(this).val();
       deps.forEach((depKey) => {
         const depField = fieldByKey.get(depKey);
         if (depField) {
@@ -303,13 +325,16 @@ function initializeLists(
 
 function applyFormFields(
   formId: string,
-  fields: NodeEditorFieldDefinition[],
+  fields: NodeEditorFieldDefinition[] | undefined,
   localePrefix: string,
   node: any,
   fieldElements: Map<string, JQuery>,
   fieldRowElements: Map<string, JQuery>,
   listInstances: Map<string, NodeEditorListInstance<any>>,
 ): void {
+  if (!fields || fields.length === 0) {
+    return;
+  }
   const builder = new NodeEditorFormBuilder($(`#${formId}`), {
     translatePrefix: localePrefix,
   });
@@ -352,7 +377,9 @@ export function buildEditorNodeDef<
   const fieldElements = new Map<string, JQuery>();
   const fieldRowElements = new Map<string, JQuery>();
 
-  const hasOnadd = !!def.form?.fields.some((f) => f.i18nDefault && f.key);
+  const hasOnadd =
+    !!def.form?.fields?.some((f) => f.i18nDefault && f.key) ||
+    !!def.hooks?.onadd;
 
   return {
     category: def.nodeClass.NodeCategoryLabel,
@@ -380,7 +407,7 @@ export function buildEditorNodeDef<
       return mainLabel ? `${mainLabel} (${suffix})` : suffix;
     },
 
-    ...(def.outputKeys?.length
+    ...(def.outputKeys?.length || def.hooks?.outputLabels
       ? {
           outputLabels: function (index: number) {
             if (def.hooks?.outputLabels) {
@@ -399,14 +426,15 @@ export function buildEditorNodeDef<
     ...(hasOnadd
       ? {
           onadd: function () {
-            def
-              .form!.fields.filter((f) => f.i18nDefault && f.key)
+            def.form?.fields
+              ?.filter((f) => f.i18nDefault && f.key)
               .forEach((f) => {
                 (this as any)[f.key!] = i18nFieldDefault(
                   def.localePrefix,
                   f.key!,
                 );
               });
+            def.hooks?.onadd?.(this);
           },
         }
       : {}),

@@ -345,6 +345,7 @@ export interface NodeEditorFieldDefinition {
   dependsOnValues?: string[];
   showsListTarget?: { listId: string; target: string };
   i18nDefault?: boolean;
+  translatePrefix?: string;
 }
 
 export type NodeEditorBaseTemplate =
