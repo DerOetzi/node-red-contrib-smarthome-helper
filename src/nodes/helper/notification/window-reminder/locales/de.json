@@ -25,6 +25,12 @@
       "description": "Ausgewählter Intervallindex"
     }
   },
+  "output": {
+    "notification": {
+      "name": "Benachrichtigung",
+      "description": "Benachrichtigungsausgabe"
+    }
+  },
   "window-reminder-intervals": "Intervalle",
   "notification": {
     "title": "Fenstererinnerung",

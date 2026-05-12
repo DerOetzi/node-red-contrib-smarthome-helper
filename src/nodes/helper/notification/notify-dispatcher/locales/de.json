@@ -52,5 +52,51 @@
             "name": "Anwesenheit 10. Person",
             "description": "Anwesenheitsstatus der zehnten Person"
         }
+    },
+    "output": {
+        "broadcast": {
+            "name": "Broadcast",
+            "description": "Nachricht wird an alle gesendet"
+        },
+        "person1": {
+            "name": "Person 1",
+            "description": "Nachricht für die 1. Person"
+        },
+        "person2": {
+            "name": "Person 2",
+            "description": "Nachricht für die 2. Person"
+        },
+        "person3": {
+            "name": "Person 3",
+            "description": "Nachricht für die 3. Person"
+        },
+        "person4": {
+            "name": "Person 4",
+            "description": "Nachricht für die 4. Person"
+        },
+        "person5": {
+            "name": "Person 5",
+            "description": "Nachricht für die 5. Person"
+        },
+        "person6": {
+            "name": "Person 6",
+            "description": "Nachricht für die 6. Person"
+        },
+        "person7": {
+            "name": "Person 7",
+            "description": "Nachricht für die 7. Person"
+        },
+        "person8": {
+            "name": "Person 8",
+            "description": "Nachricht für die 8. Person"
+        },
+        "person9": {
+            "name": "Person 9",
+            "description": "Nachricht für die 9. Person"
+        },
+        "person10": {
+            "name": "Person 10",
+            "description": "Nachricht für die 10. Person"
+        }
     }
 }

@@ -1,27 +1,121 @@
-import { EditorNodeDef } from "node-red";
-import BaseEditorNode, {
-  BaseEditorWithoutStatusTemplate,
-  createEditorDefaults,
-  i18n,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
   i18nOutputLabel,
+  NodeEditorDefinition,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateDiv } from "../../types";
+import { EditorNodeInstance } from "node-red";
+import { EditorMetadata } from "../../types";
 import SwitchNode from "./";
 import {
   DebounceFlank,
   SwitchEditorNodeProperties,
-  SwitchNodeOptions,
   SwitchNodeOptionsDefaults,
 } from "./types";
 
-export const SwitchEditorTemplate = [
-  new EditorTemplateDiv("logical-switch-options"),
-  ...BaseEditorWithoutStatusTemplate,
-];
+export function buildSwitchFormContent(node: SwitchEditorNodeProperties): void {
+  const builder = new NodeEditorFormBuilder($("#logical-switch-options"), {
+    translatePrefix: "logical.switch",
+  });
 
-export const SwitchEditorMetadata: EditorMetadata = {
+  builder.createTypedInput({
+    id: "node-input-target",
+    idType: "node-input-targetType",
+    label: "target",
+    value: node.target,
+    valueType: node.targetType,
+    types: ["msg"],
+    icon: "envelope-o",
+  });
+
+  builder.createTypedInput({
+    id: "node-input-trueValue",
+    idType: "node-input-trueType",
+    label: "trueValue",
+    value: node.trueValue,
+    valueType: node.trueType,
+    types: [
+      "bool",
+      "msg",
+      "str",
+      "num",
+      { value: "__stop__", label: "stop", hasValue: false },
+    ],
+    icon: "check",
+  });
+
+  builder.createTypedInput({
+    id: "node-input-falseValue",
+    idType: "node-input-falseType",
+    label: "falseValue",
+    value: node.falseValue,
+    valueType: node.falseType,
+    types: [
+      "bool",
+      "msg",
+      "str",
+      "num",
+      { value: "__stop__", label: "stop", hasValue: false },
+    ],
+    icon: "times",
+  });
+
+  const outputsInput = builder.createHiddenInput({
+    id: "node-input-outputs",
+    value: node.outputs,
+  });
+
+  builder
+    .createCheckboxInput({
+      id: "node-input-seperatedOutputs",
+      label: "seperatedOutputs",
+      value: node.seperatedOutputs,
+      icon: "exit",
+    })
+    .on("change", function () {
+      outputsInput.val($(this).is(":checked") ? 2 : 1);
+    });
+
+  const debounceFlankRow = builder
+    .createSelectInput({
+      id: "node-input-debounceFlank",
+      label: "debounceFlank",
+      value: node.debounceFlank,
+      options: Object.values(DebounceFlank),
+      icon: "exchange",
+    })
+    .parent()
+    .toggle(node.debounce ?? false);
+
+  $("#node-input-debounce").on("change", function () {
+    debounceFlankRow.toggle($(this).is(":checked"));
+  });
+}
+
+export function buildSwitchOutputLabels(
+  node: { seperatedOutputs: boolean },
+  index: number,
+): string | undefined {
+  if (node.seperatedOutputs) {
+    return index === 0
+      ? i18nOutputLabel("logical.switch", "true")
+      : i18nOutputLabel("logical.switch", "false");
+  } else if (index === 0) {
+    return i18nOutputLabel("logical.switch", "result");
+  }
+  return undefined;
+}
+
+const SwitchEditorDefinition: NodeEditorDefinition<
+  typeof SwitchNodeOptionsDefaults,
+  SwitchEditorNodeProperties
+> = {
   localePrefix: "logical.switch",
+  nodeClass: SwitchNode,
+  defaults: SwitchNodeOptionsDefaults,
+  icon: "switch.svg",
   inputMode: "msg-property",
   fieldKeys: [
     "target",
@@ -30,114 +124,25 @@ export const SwitchEditorMetadata: EditorMetadata = {
     "seperatedOutputs",
     "debounceFlank",
   ],
-  inputKeys: [],
   outputKeys: ["true", "false", "result"],
-};
-
-const SwitchEditorNode: EditorNodeDef<SwitchEditorNodeProperties> = {
-  category: SwitchNode.NodeCategoryLabel,
-  color: SwitchNode.NodeColor,
-  icon: "switch.svg",
-  defaults: createEditorDefaults<SwitchNodeOptions, SwitchEditorNodeProperties>(
-    SwitchNodeOptionsDefaults,
-  ),
-  label: function () {
-    return this.name?.trim() ? this.name.trim() : i18n("logical.switch.name");
+  form: {
+    id: "logical-switch-options",
+    fields: [],
+    build: buildSwitchFormContent,
   },
-  inputs: SwitchNodeOptionsDefaults.inputs,
-  outputs: SwitchNodeOptionsDefaults.outputs,
-  outputLabels: function (index) {
-    if (this.seperatedOutputs) {
-      return index === 0
-        ? i18nOutputLabel("logical.switch", "true")
-        : i18nOutputLabel("logical.switch", "false");
-    } else if (index === 0) {
-      return i18nOutputLabel("logical.switch", "result");
-    }
-  },
-  oneditprepare: function () {
-    BaseEditorNode.oneditprepare!.call(this);
-
-    const switchOptionsBuilder = new NodeEditorFormBuilder(
-      $("#logical-switch-options"),
-      {
-        translatePrefix: "logical.switch",
-      },
-    );
-
-    switchOptionsBuilder.createTypedInput({
-      id: "node-input-target",
-      idType: "node-input-targetType",
-      label: "target",
-      value: this.target,
-      valueType: this.targetType,
-      types: ["msg"],
-      icon: "envelope-o",
-    });
-
-    switchOptionsBuilder.createTypedInput({
-      id: "node-input-trueValue",
-      idType: "node-input-trueType",
-      label: "trueValue",
-      value: this.trueValue,
-      valueType: this.trueType,
-      types: [
-        "bool",
-        "msg",
-        "str",
-        "num",
-        { value: "__stop__", label: "stop", hasValue: false },
-      ],
-      icon: "check",
-    });
-
-    switchOptionsBuilder.createTypedInput({
-      id: "node-input-falseValue",
-      idType: "node-input-falseType",
-      label: "falseValue",
-      value: this.falseValue,
-      valueType: this.falseType,
-      types: [
-        "bool",
-        "msg",
-        "str",
-        "num",
-        { value: "__stop__", label: "stop", hasValue: false },
-      ],
-      icon: "times",
-    });
-
-    const outputsHidden = switchOptionsBuilder.createHiddenInput({
-      id: "node-input-outputs",
-      value: this.outputs,
-    });
-
-    switchOptionsBuilder
-      .createCheckboxInput({
-        id: "node-input-seperatedOutputs",
-        label: "seperatedOutputs",
-        value: this.seperatedOutputs,
-        icon: "exit",
-      })
-      .on("change", function () {
-        outputsHidden.val($(this).is(":checked") ? 2 : 1);
-      });
-
-    const debounceFlankRow = switchOptionsBuilder
-      .createSelectInput({
-        id: "node-input-debounceFlank",
-        label: "debounceFlank",
-        value: this.debounceFlank,
-        options: Object.values(DebounceFlank),
-        icon: "exchange",
-      })
-      .parent()
-      .toggle(this.debounce);
-
-    $("#node-input-debounce").on("change", function () {
-      debounceFlankRow.toggle($(this).is(":checked"));
-    });
+  baseTemplate: "without-status",
+  hooks: {
+    outputLabels(
+      node: EditorNodeInstance<SwitchEditorNodeProperties>,
+      index: number,
+    ) {
+      return buildSwitchOutputLabels(node, index);
+    },
   },
 };
 
-export default SwitchEditorNode;
+export const SwitchEditorTemplate = buildEditorTemplate(SwitchEditorDefinition);
+export const SwitchEditorMetadata: EditorMetadata = buildEditorMetadata(
+  SwitchEditorDefinition,
+);
+export default buildEditorNodeDef(SwitchEditorDefinition);

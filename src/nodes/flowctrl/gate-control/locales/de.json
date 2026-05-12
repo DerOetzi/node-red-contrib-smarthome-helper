@@ -21,5 +21,15 @@
             "label": "Pausenzeit",
             "description": "Dauer der Pause"
         }
+    },
+    "output": {
+        "delayed": {
+            "name": "Verzögerte Nachricht",
+            "description": "Weitergeleitete Nachricht nach Verzögerung"
+        },
+        "command": {
+            "name": "Gate-Befehl",
+            "description": "Steuerbefehl an das Automation Gate"
+        }
     }
 }

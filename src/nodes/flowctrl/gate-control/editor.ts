@@ -1,9 +1,8 @@
-import { EditorNodeDef } from "node-red";
-import { EditorMetadata, EditorTemplateDiv } from "../../types";
-import BaseEditorNode, {
-  BaseEditorWithoutStatusTemplate,
-  createEditorDefaults,
-  NodeEditorFormBuilder,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  NodeEditorDefinition,
 } from "../base/editor";
 import GateControlNode from "./";
 import {
@@ -12,78 +11,48 @@ import {
   GateControlNodeOptionsDefaults,
 } from "./types";
 
-export const GateControlEditorTemplate = [
-  new EditorTemplateDiv("gate-control-options"),
-  ...BaseEditorWithoutStatusTemplate,
-];
-
-export const GateControlEditorMetadata: EditorMetadata = {
+const GateControlDef: NodeEditorDefinition<
+  GateControlNodeOptions,
+  GateControlEditorNodeProperties
+> = {
   localePrefix: "flowctrl.gate-control",
-  inputMode: "msg-property",
-  fieldKeys: ["delay", "gateCommand", "pauseTime"],
-  inputKeys: [],
-  outputKeys: [],
-};
-
-const GateControlEditorNode: EditorNodeDef<GateControlEditorNodeProperties> = {
-  category: GateControlNode.NodeCategoryLabel,
-  color: GateControlNode.NodeColor,
+  nodeClass: GateControlNode,
   icon: "font-awesome/fa-key",
-  defaults: createEditorDefaults<
-    GateControlNodeOptions,
-    GateControlEditorNodeProperties
-  >(GateControlNodeOptionsDefaults),
-  label: function () {
-    let label = this.name?.trim() ? this.name.trim() : this.gateCommand;
-
-    if (this.gateCommand === "pause") {
-      label += " (" + this.pauseTime + " " + this.pauseUnit + ")";
-    }
-
-    return label;
-  },
-  inputs: GateControlNodeOptionsDefaults.inputs,
-  outputs: GateControlNodeOptionsDefaults.outputs,
-  outputLabels: ["Delayed Message Output", "Gate Command Output"],
-  oneditprepare: function () {
-    BaseEditorNode.oneditprepare!.call(this);
-
-    const gateControlOptionsBuilder = new NodeEditorFormBuilder(
-      $("#gate-control-options"),
-      { translatePrefix: "flowctrl.gate-control" },
-    );
-
-    gateControlOptionsBuilder.createNumberInput({
-      id: "node-input-delay",
-      label: "delay",
-      value: this.delay,
-      icon: "clock-o",
-    });
-
-    const gateCommandSelect = gateControlOptionsBuilder.createSelectInput({
-      id: "node-input-gateCommand",
-      label: "gateCommand",
-      value: this.gateCommand,
-      options: ["start", "stop", "pause", "replay", "resetFilter"],
-      icon: "comment",
-    });
-
-    const gatePauseTimeRow = gateControlOptionsBuilder
-      .createTimeInput({
-        id: "node-input-pauseTime",
-        idType: "node-input-pauseUnit",
-        label: "pauseTime",
-        value: this.pauseTime!,
-        valueType: this.pauseUnit!,
+  defaults: GateControlNodeOptionsDefaults,
+  inputMode: "msg-property",
+  outputKeys: ["delayed", "command"],
+  baseTemplate: "without-status",
+  form: {
+    id: "gate-control-options",
+    fields: [
+      { type: "number", key: "delay", icon: "clock-o" },
+      {
+        type: "select",
+        key: "gateCommand",
+        icon: "comment",
+        options: ["start", "stop", "pause", "replay", "resetFilter"],
+      },
+      {
+        type: "time",
+        key: "pauseTime",
         icon: "hourglass-half",
-      })
-      .parent()
-      .toggle(this.gateCommand === "pause");
-
-    gateCommandSelect.on("change", function () {
-      gatePauseTimeRow.toggle($(this).val() === "pause");
-    });
+        dependsOn: "gateCommand",
+        dependsOnValue: "pause",
+      },
+    ],
+  },
+  hooks: {
+    label: (node) => {
+      let label = node.name?.trim() ? node.name.trim() : node.gateCommand;
+      if (node.gateCommand === "pause") {
+        label += " (" + node.pauseTime + " " + node.pauseUnit + ")";
+      }
+      return label;
+    },
   },
 };
 
-export default GateControlEditorNode;
+export const GateControlEditorTemplate = buildEditorTemplate(GateControlDef);
+export const GateControlEditorMetadata = buildEditorMetadata(GateControlDef);
+
+export default buildEditorNodeDef(GateControlDef);

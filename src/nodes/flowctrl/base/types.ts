@@ -229,7 +229,7 @@ export class NodeMessageFlow {
   }
 
   public newMessage(): NodeMessage {
-    return { topic: this.topic, payload: this.payload } as NodeMessage;
+    return { topic: this.topic, payload: this.payload };
   }
 
   public message(): NodeMessage {
@@ -310,4 +310,66 @@ export interface NodeEditorFormBuilderSelectParams extends NodeEditorFormBuilder
 export interface NodeEditorFormBuilderHiddenInputParams {
   id: string;
   value: string | number | boolean;
+}
+
+// ── Declarative editor definition types ──────────────────────────────────────
+
+export type NodeEditorFieldType =
+  | "text"
+  | "number"
+  | "checkbox"
+  | "select"
+  | "typed"
+  | "time"
+  | "autocomplete"
+  | "hidden"
+  | "line"
+  | "subheader";
+
+export interface NodeEditorFieldDefinition {
+  type: NodeEditorFieldType;
+  key?: string;
+  icon?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  options?: (string | NodeEditorFormBuilderSelectOption)[];
+  idType?: string;
+  valueType?: string;
+  valueTypeKey?: string;
+  types?: (EditorWidgetTypedInputType | EditorWidgetTypedInputTypeDefinition)[];
+  search?: (term: string) => Promise<NodeEditorFormBuilderAutocompleteMatch[]>;
+  section?: string;
+  dependsOn?: string;
+  dependsOnValue?: string;
+  dependsOnValues?: string[];
+  showsListTarget?: { listId: string; target: string };
+  i18nDefault?: boolean;
+}
+
+export type NodeEditorBaseTemplate =
+  | "full"
+  | "without-status"
+  | "input-only"
+  | "input-without-status"
+  | "none";
+
+export interface NodeEditorListInstance<T = any> {
+  initialize(id: string, items: T[], params: NodeEditorFormBuilderParams): this;
+  values(defaults?: Partial<T>): T[];
+  toggle(toggle: boolean): this;
+  showHideTarget?(showHideTarget: boolean, option: string): this;
+  removeTarget?(keep: boolean, option: string): this;
+}
+
+export interface NodeEditorListDefinition<T = any> {
+  id: string;
+  create: () => NodeEditorListInstance<T>;
+  dataKey: string;
+  rowTranslatePrefix?: string;
+}
+
+export interface NodeEditorExtraForm {
+  id: string;
+  build?: (node: any) => void;
 }

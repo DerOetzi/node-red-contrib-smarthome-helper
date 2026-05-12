@@ -30,5 +30,19 @@
             "label": "Mit",
             "description": "Wert für den Vergleich"
         }
+    },
+    "output": {
+        "true": {
+            "name": "Wahr",
+            "description": "Ausgang für wahre Werte"
+        },
+        "false": {
+            "name": "Falsch",
+            "description": "Ausgang für falsche Werte"
+        },
+        "result": {
+            "name": "Boolsches Ergebnis",
+            "description": "Kombinierter Ausgang mit boolschem Ergebnis"
+        }
     }
 }

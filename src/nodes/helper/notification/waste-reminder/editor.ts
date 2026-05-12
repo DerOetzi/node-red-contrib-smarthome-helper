@@ -1,73 +1,46 @@
-import { EditorNodeDef } from "node-red";
-import WasteReminderNode from ".";
-import BaseEditorNode, {
-  createEditorDefaults,
-  i18n,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  NodeEditorDefinition,
 } from "../../../flowctrl/base/editor";
-import {
-  InputEditorTemplate,
-  MatchJoinEditableList,
-} from "../../../flowctrl/match-join/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../../types";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
+import WasteReminderNode from ".";
 import {
   WasteReminderEditorNodeProperties,
-  WasteReminderNodeOptions,
   WasteReminderNodeOptionsDefaults,
   WasteReminderTarget,
 } from "./types";
 
-export const WasteReminderEditorTemplate = [
-  new EditorTemplateOl("matcher-rows"),
-  new EditorTemplateDiv("waste-reminder-options"),
-  ...InputEditorTemplate,
-];
-
-export const WasteReminderEditorMetadata: EditorMetadata = {
+const WasteReminderEditorDefinition: NodeEditorDefinition<
+  typeof WasteReminderNodeOptionsDefaults,
+  WasteReminderEditorNodeProperties
+> = {
   localePrefix: "helper.waste-reminder",
+  nodeClass: WasteReminderNode,
+  defaults: WasteReminderNodeOptionsDefaults,
+  icon: "font-awesome/fa-recycle",
   inputMode: "matcher-topic",
-  fieldKeys: [],
   inputKeys: ["types", "remaining"],
   outputKeys: ["notification"],
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () =>
+        new MatchJoinEditableList({
+          targets: Object.values(WasteReminderTarget),
+          translatePrefix: "helper.waste-reminder",
+        }),
+      dataKey: "matchers",
+    },
+  ],
+  baseTemplate: "input-only",
 };
 
-const inputMatcherList = new MatchJoinEditableList({
-  targets: Object.values(WasteReminderTarget),
-  translatePrefix: "helper.waste-reminder",
-});
-
-const WasteReminderEditorNode: EditorNodeDef<WasteReminderEditorNodeProperties> =
-  {
-    category: WasteReminderNode.NodeCategoryLabel,
-    color: WasteReminderNode.NodeColor,
-    icon: "font-awesome/fa-recycle",
-    defaults: createEditorDefaults<
-      WasteReminderNodeOptions,
-      WasteReminderEditorNodeProperties
-    >(WasteReminderNodeOptionsDefaults),
-    label: function () {
-      return this.name?.trim()
-        ? this.name.trim()
-        : i18n("helper.waste-reminder.name");
-    },
-    inputs: WasteReminderNodeOptionsDefaults.inputs,
-    outputs: WasteReminderNodeOptionsDefaults.outputs,
-    outputLabels: function (_: number) {
-      return i18n("helper.waste-reminder.output.notification");
-    },
-    oneditprepare: function () {
-      BaseEditorNode.oneditprepare!.call(this);
-
-      inputMatcherList.initialize("matcher-rows", this.matchers, {
-        translatePrefix: "flowctrl.match-join",
-      });
-    },
-    oneditsave: function () {
-      this.matchers = inputMatcherList.values();
-    },
-  };
-
-export default WasteReminderEditorNode;
+export const WasteReminderEditorTemplate = buildEditorTemplate(
+  WasteReminderEditorDefinition,
+);
+export const WasteReminderEditorMetadata = buildEditorMetadata(
+  WasteReminderEditorDefinition,
+);
+export default buildEditorNodeDef(WasteReminderEditorDefinition);

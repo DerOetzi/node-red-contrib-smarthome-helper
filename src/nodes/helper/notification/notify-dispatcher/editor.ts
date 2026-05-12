@@ -1,36 +1,26 @@
-import { EditorNodeDef } from "node-red";
-import BaseEditorNode, {
-  createEditorDefaults,
-  i18n,
-  NodeEditorFormBuilder,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  NodeEditorDefinition,
 } from "../../../flowctrl/base/editor";
-import {
-  InputEditorWithoutStatusTemplate,
-  MatchJoinEditableList,
-} from "../../../flowctrl/match-join/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../../types";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import NotifyDispatcherNode from "./";
 import {
   NotifyDispatcherEditorNodeProperties,
-  NotifyDispatcherNodeOptions,
   NotifyDispatcherNodeOptionsDefaults,
   NotifyDispatcherTarget,
 } from "./types";
 
-export const NotifyDispatcherEditorTemplate = [
-  new EditorTemplateDiv("notify-dispatcher-options"),
-  new EditorTemplateOl("matcher-rows"),
-  ...InputEditorWithoutStatusTemplate,
-];
-
-export const NotifyDispatcherEditorMetadata: EditorMetadata = {
+const NotifyDispatcherEditorDefinition: NodeEditorDefinition<
+  typeof NotifyDispatcherNodeOptionsDefaults,
+  NotifyDispatcherEditorNodeProperties
+> = {
   localePrefix: "helper.notify-dispatcher",
+  nodeClass: NotifyDispatcherNode,
+  defaults: NotifyDispatcherNodeOptionsDefaults,
+  icon: "font-awesome/fa-bell",
   inputMode: "matcher-topic",
-  fieldKeys: ["persons"],
   inputKeys: [
     "message",
     "person1",
@@ -57,76 +47,51 @@ export const NotifyDispatcherEditorMetadata: EditorMetadata = {
     "person9",
     "person10",
   ],
-};
-
-const inputMatcherList = new MatchJoinEditableList({
-  targets: Object.values(NotifyDispatcherTarget),
-  translatePrefix: "helper.notify-dispatcher",
-});
-
-const NotifyDispatcherEditorNode: EditorNodeDef<NotifyDispatcherEditorNodeProperties> =
-  {
-    category: NotifyDispatcherNode.NodeCategoryLabel,
-    color: NotifyDispatcherNode.NodeColor,
-    icon: "font-awesome/fa-bell",
-    defaults: createEditorDefaults<
-      NotifyDispatcherNodeOptions,
-      NotifyDispatcherEditorNodeProperties
-    >(NotifyDispatcherNodeOptionsDefaults),
-    label: function () {
-      return this.name?.trim()
-        ? this.name.trim()
-        : i18n("helper.notify-dispatcher.name");
-    },
-    inputs: NotifyDispatcherNodeOptionsDefaults.inputs,
-    outputs: NotifyDispatcherNodeOptionsDefaults.outputs,
-    outputLabels: (index: number) => {
-      return index === 0 ? "broadcast" : "person " + index;
-    },
-    oneditprepare: function () {
-      BaseEditorNode.oneditprepare!.call(this);
-
-      inputMatcherList.initialize("matcher-rows", this.matchers, {
-        translatePrefix: "flowctrl.match-join",
-      });
-
-      const notifyDispatcherOptionsBuilder = new NodeEditorFormBuilder(
-        $("#notify-dispatcher-options"),
-        {
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () =>
+        new MatchJoinEditableList({
+          targets: Object.values(NotifyDispatcherTarget),
           translatePrefix: "helper.notify-dispatcher",
-        },
-      );
+        }),
+      dataKey: "matchers",
+    },
+  ],
+  form: {
+    id: "notify-dispatcher-options",
+    fields: [
+      { type: "hidden", key: "outputs" },
+      { type: "number", key: "persons", icon: "hashtag", min: 0, max: 10 },
+    ],
+  },
+  baseTemplate: "input-without-status",
+  hooks: {
+    oneditprepare(node, ctx) {
+      const matcherList = ctx.getList("matcher-rows");
 
       for (let i = 1; i <= 10; i++) {
-        inputMatcherList.showHideTarget(i <= this.persons, `person${i}`);
+        matcherList.showHideTarget?.(i <= node.persons, `person${i}`);
       }
 
-      const outputsHidden = notifyDispatcherOptionsBuilder.createHiddenInput({
-        id: "node-input-outputs",
-        value: this.outputs,
+      ctx.getField("persons").on("change", function () {
+        const persons = Number.parseInt($(this).val() as string, 10);
+        for (let i = 1; i <= 10; i++) {
+          matcherList.removeTarget?.(i <= persons, `person${i}`);
+        }
+        ctx.getField("outputs").val(persons + 1);
       });
-
-      notifyDispatcherOptionsBuilder
-        .createNumberInput({
-          id: "node-input-persons",
-          label: "persons",
-          value: this.persons,
-          icon: "hashtag",
-          min: 0,
-          max: 10,
-        })
-        .on("change", function () {
-          const persons = Number.parseInt($(this).val() as string, 10);
-          for (let i = 1; i <= 10; i++) {
-            inputMatcherList.removeTarget(i <= persons, `person${i}`);
-          }
-
-          outputsHidden.val(persons + 1);
-        });
     },
-    oneditsave: function () {
-      this.matchers = inputMatcherList.values();
+    outputLabels(_node, index) {
+      return index === 0 ? "broadcast" : `person ${index}`;
     },
-  };
+  },
+};
 
-export default NotifyDispatcherEditorNode;
+export const NotifyDispatcherEditorTemplate = buildEditorTemplate(
+  NotifyDispatcherEditorDefinition,
+);
+export const NotifyDispatcherEditorMetadata = buildEditorMetadata(
+  NotifyDispatcherEditorDefinition,
+);
+export default buildEditorNodeDef(NotifyDispatcherEditorDefinition);

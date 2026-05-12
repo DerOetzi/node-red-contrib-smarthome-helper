@@ -1,47 +1,19 @@
-import { EditorNodeDef } from "node-red";
-import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import BaseEditorNode, {
-  createEditorDefaults,
-  i18n,
+import {
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  NodeEditorDefinition,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
-import {
-  InputEditorTemplate,
-  MatchJoinEditableList,
-} from "../../../flowctrl/match-join/editor";
-import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../../types";
+import { TimeIntervalUnit } from "../../../../helpers/time.helper";
+import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import WindowReminderNode from "./";
 import {
   WindowReminderEditorNodeProperties,
   WindowReminderIntervalRow,
-  WindowReminderNodeOptions,
   WindowReminderNodeOptionsDefaults,
   WindowReminderTarget,
 } from "./types";
-
-export const WindowReminderEditorTemplate = [
-  new EditorTemplateOl("matcher-rows"),
-  new EditorTemplateDiv("window-reminder-options"),
-  new EditorTemplateOl("window-reminder-intervals"),
-  ...InputEditorTemplate,
-];
-
-export const WindowReminderEditorMetadata: EditorMetadata = {
-  localePrefix: "helper.window-reminder",
-  inputMode: "matcher-topic",
-  fieldKeys: ["interval"],
-  inputKeys: ["window", "presence", "command", "intervalSelect"],
-  outputKeys: ["notification"],
-};
-
-const inputMatcherList = new MatchJoinEditableList({
-  targets: Object.values(WindowReminderTarget),
-  translatePrefix: "helper.window-reminder",
-});
 
 class IntervalsEditableList extends NodeEditorFormEditableList<WindowReminderIntervalRow> {
   protected addItem(data: WindowReminderIntervalRow, idx?: number): void {
@@ -57,65 +29,65 @@ class IntervalsEditableList extends NodeEditorFormEditableList<WindowReminderInt
   }
 }
 
-const intervalsList = new IntervalsEditableList();
-
-const WindowReminderEditorNode: EditorNodeDef<WindowReminderEditorNodeProperties> =
-  {
-    category: WindowReminderNode.NodeCategoryLabel,
-    color: WindowReminderNode.NodeColor,
-    icon: "font-awesome/fa-window-restore",
-    defaults: createEditorDefaults<
-      WindowReminderNodeOptions,
-      WindowReminderEditorNodeProperties
-    >(WindowReminderNodeOptionsDefaults),
-    label: function () {
-      return this.name?.trim()
-        ? this.name.trim()
-        : i18n("helper.window-reminder.name");
+const WindowReminderEditorDefinition: NodeEditorDefinition<
+  typeof WindowReminderNodeOptionsDefaults,
+  WindowReminderEditorNodeProperties
+> = {
+  localePrefix: "helper.window-reminder",
+  nodeClass: WindowReminderNode,
+  defaults: WindowReminderNodeOptionsDefaults,
+  icon: "font-awesome/fa-window-restore",
+  inputMode: "matcher-topic",
+  inputKeys: ["window", "presence", "command", "intervalSelect"],
+  outputKeys: ["notification"],
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () =>
+        new MatchJoinEditableList({
+          targets: Object.values(WindowReminderTarget),
+          translatePrefix: "helper.window-reminder",
+        }),
+      dataKey: "matchers",
     },
-    inputs: WindowReminderNodeOptionsDefaults.inputs,
-    outputs: WindowReminderNodeOptionsDefaults.outputs,
-    outputLabels: (_: number) => {
-      return i18n("helper.window-reminder.output.notification");
+    {
+      id: "window-reminder-intervals",
+      create: () => new IntervalsEditableList(),
+      dataKey: "intervals",
+      rowTranslatePrefix: "helper.window-reminder",
     },
-    oneditprepare: function () {
-      BaseEditorNode.oneditprepare!.call(this);
+  ],
+  baseTemplate: "input-only",
+  hooks: {
+    oneditprepare(node, ctx) {
+      const matcherList = ctx.getList("matcher-rows");
+      const intervalsList = ctx.getList("window-reminder-intervals");
 
-      inputMatcherList.initialize("matcher-rows", this.matchers, {
-        translatePrefix: "flowctrl.match-join",
-      });
-
-      inputMatcherList.showHideTarget(
-        this.intervals.length > 0,
+      matcherList.showHideTarget?.(
+        node.intervals.length > 0,
         WindowReminderTarget.command,
       );
-
-      inputMatcherList.showHideTarget(
-        this.intervals.length > 1,
+      matcherList.showHideTarget?.(
+        node.intervals.length > 1,
         WindowReminderTarget.intervalSelect,
       );
 
-      intervalsList.initialize("window-reminder-intervals", this.intervals, {
-        translatePrefix: "helper.window-reminder",
-      });
-
       $("#window-reminder-intervals").on("change" as any, () => {
-        const intervalsCount = intervalsList.values().length;
-
-        inputMatcherList.removeTarget(
-          intervalsCount > 0,
-          WindowReminderTarget.command,
-        );
-        inputMatcherList.removeTarget(
-          intervalsCount > 1,
+        const count = intervalsList.values().length;
+        matcherList.removeTarget?.(count > 0, WindowReminderTarget.command);
+        matcherList.removeTarget?.(
+          count > 1,
           WindowReminderTarget.intervalSelect,
         );
       });
     },
-    oneditsave: function () {
-      this.matchers = inputMatcherList.values();
-      this.intervals = intervalsList.values();
-    },
-  };
+  },
+};
 
-export default WindowReminderEditorNode;
+export const WindowReminderEditorTemplate = buildEditorTemplate(
+  WindowReminderEditorDefinition,
+);
+export const WindowReminderEditorMetadata = buildEditorMetadata(
+  WindowReminderEditorDefinition,
+);
+export default buildEditorNodeDef(WindowReminderEditorDefinition);

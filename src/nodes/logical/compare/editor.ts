@@ -1,111 +1,87 @@
-import { EditorNodeDef } from "node-red";
 import {
-  createEditorDefaults,
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
   i18n,
-  NodeEditorFormBuilder,
+  NodeEditorDefinition,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateDiv } from "../../types";
-import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
+import { EditorNodeInstance } from "node-red";
+import { EditorMetadata } from "../../types";
+import {
+  buildSwitchFormContent,
+  buildSwitchOutputLabels,
+} from "../switch/editor";
 import CompareNode from "./";
 import {
   ApplicableCompareFunction,
   CompareEditorNodeProperties,
-  CompareNodeOptions,
   CompareNodeOptionsDefaults,
   NotApplicableCompareFunction,
 } from "./types";
 
-export const CompareEditorTemplate = [
-  new EditorTemplateDiv("logical-compare-options"),
-  ...SwitchEditorTemplate,
-];
-
-export const CompareEditorMetadata: EditorMetadata = {
+const CompareEditorDefinition: NodeEditorDefinition<
+  typeof CompareNodeOptionsDefaults,
+  CompareEditorNodeProperties
+> = {
   localePrefix: "logical.compare",
+  nodeClass: CompareNode,
+  defaults: CompareNodeOptionsDefaults,
+  icon: "font-awesome/fa-search",
   inputMode: "msg-property",
   fieldKeys: ["property", "operation", "compare"],
-  inputKeys: [],
   outputKeys: [],
-};
-
-const CompareEditorNode: EditorNodeDef<CompareEditorNodeProperties> = {
-  category: CompareNode.NodeCategoryLabel,
-  color: CompareNode.NodeColor,
-  icon: "font-awesome/fa-search",
-  defaults: createEditorDefaults<
-    CompareNodeOptions,
-    CompareEditorNodeProperties
-  >(CompareNodeOptionsDefaults),
-  // Migration support for older versions of the switch node.
-  label: function () {
-    const operation = i18n(
-      "logical.compare.field.operation.options." + this.operation,
-    );
-    let label: string = operation;
-
-    if (this.name) {
-      label = `${this.name} (${operation})`;
-    }
-
-    return label;
+  form: {
+    id: "logical-compare-options",
+    fields: [
+      {
+        type: "typed",
+        key: "property",
+        idType: "node-input-propertyType",
+        icon: "envelope-o",
+        types: ["msg"],
+      },
+      {
+        type: "select",
+        key: "operation",
+        icon: "search",
+        options: [
+          ...Object.keys(ApplicableCompareFunction),
+          ...Object.keys(NotApplicableCompareFunction),
+        ],
+      },
+      {
+        type: "typed",
+        key: "compare",
+        idType: "node-input-compareType",
+        icon: "search",
+        types: ["str", "num", "bool", "msg"],
+        dependsOn: "operation",
+        dependsOnValues: Object.keys(ApplicableCompareFunction),
+      },
+    ],
   },
-  inputs: CompareNodeOptionsDefaults.inputs,
-  outputs: CompareNodeOptionsDefaults.outputs,
-  outputLabels: function (index) {
-    if (typeof SwitchEditorNode.outputLabels === "function") {
-      return SwitchEditorNode.outputLabels.call(this, index);
-    }
-    return undefined;
-  },
-  oneditprepare: function () {
-    SwitchEditorNode.oneditprepare!.call(this);
-
-    const compareOptionsBuilder = new NodeEditorFormBuilder(
-      $("#logical-compare-options"),
-      { translatePrefix: "logical.compare" },
-    );
-
-    compareOptionsBuilder.createTypedInput({
-      id: "node-input-property",
-      idType: "node-input-propertyType",
-      label: "property",
-      value: this.property,
-      valueType: this.propertyType,
-      types: ["msg"],
-      icon: "envelope-o",
-    });
-
-    const operationSelect = compareOptionsBuilder.createSelectInput({
-      id: "node-input-operation",
-      label: "operation",
-      value: this.operation,
-      icon: "search",
-      options: [
-        ...Object.keys(ApplicableCompareFunction),
-        ...Object.keys(NotApplicableCompareFunction),
-      ],
-    });
-
-    const valueInput = compareOptionsBuilder.createTypedInput({
-      id: "node-input-compare",
-      idType: "node-input-compareType",
-      label: "compare",
-      value: this.compare,
-      valueType: this.compareType,
-      types: ["str", "num", "bool", "msg"],
-      icon: "search",
-    });
-
-    const valueInputRow = valueInput
-      .parent()
-      .toggle(this.operation in ApplicableCompareFunction);
-
-    valueInput.on("change", function () {
-      valueInputRow.toggle(
-        (operationSelect.val() as string) in ApplicableCompareFunction,
+  extraForms: [{ id: "logical-switch-options", build: buildSwitchFormContent }],
+  baseTemplate: "without-status",
+  hooks: {
+    label(node: EditorNodeInstance<CompareEditorNodeProperties>) {
+      const operation = i18n(
+        "logical.compare.field.operation.options." + node.operation,
       );
-    });
+      return node.name ? `${node.name} (${operation})` : operation;
+    },
+    outputLabels(
+      node: EditorNodeInstance<CompareEditorNodeProperties>,
+      index: number,
+    ) {
+      return buildSwitchOutputLabels(node, index);
+    },
   },
 };
 
-export default CompareEditorNode;
+export const CompareEditorTemplate = buildEditorTemplate(
+  CompareEditorDefinition,
+);
+export const CompareEditorMetadata: EditorMetadata = buildEditorMetadata(
+  CompareEditorDefinition,
+);
+export default buildEditorNodeDef(CompareEditorDefinition);

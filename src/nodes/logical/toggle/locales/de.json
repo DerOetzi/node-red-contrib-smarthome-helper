@@ -1,4 +1,18 @@
 {
     "name": "Toggle",
-    "description": "Schaltet zwischen zwei Zuständen um"
+    "description": "Schaltet zwischen zwei Zuständen um",
+    "output": {
+        "true": {
+            "name": "Wahr",
+            "description": "Ausgang für wahre Werte"
+        },
+        "false": {
+            "name": "Falsch",
+            "description": "Ausgang für falsche Werte"
+        },
+        "result": {
+            "name": "Boolsches Ergebnis",
+            "description": "Kombinierter Ausgang mit boolschem Ergebnis"
+        }
+    }
 }

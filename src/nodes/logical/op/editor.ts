@@ -1,96 +1,76 @@
-import { EditorNodeDef } from "node-red";
 import {
-  createEditorDefaults,
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
   i18n,
-  NodeEditorFormBuilder,
+  NodeEditorDefinition,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateDiv } from "../../types";
-import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
+import { EditorNodeInstance } from "node-red";
+import { EditorMetadata } from "../../types";
+import {
+  buildSwitchFormContent,
+  buildSwitchOutputLabels,
+} from "../switch/editor";
 import LogicalOpNode from "./";
 import {
   LogicalFunction,
   LogicalOpEditorNodeProperties,
-  LogicalOpNodeOptions,
   LogicalOpNodeOptionsDefaults,
 } from "./types";
 
-export const LogicalOpEditorTemplate = [
-  new EditorTemplateDiv("logical-op-options"),
-  ...SwitchEditorTemplate,
-];
-
-export const LogicalOpEditorMetadata: EditorMetadata = {
+const LogicalOpEditorDefinition: NodeEditorDefinition<
+  typeof LogicalOpNodeOptionsDefaults,
+  LogicalOpEditorNodeProperties
+> = {
   localePrefix: "logical.op",
+  nodeClass: LogicalOpNode,
+  defaults: LogicalOpNodeOptionsDefaults,
+  icon: "font-awesome/fa-some-lightbulb-o",
   inputMode: "msg-property",
   fieldKeys: ["operation", "minMsgCount"],
-  inputKeys: [],
   outputKeys: [],
-};
-
-const LogicalOpEditorNode: EditorNodeDef<LogicalOpEditorNodeProperties> = {
-  category: LogicalOpNode.NodeCategoryLabel,
-  color: LogicalOpNode.NodeColor,
-  icon: "font-awesome/fa-some-lightbulb-o",
-  defaults: createEditorDefaults<
-    LogicalOpNodeOptions,
-    LogicalOpEditorNodeProperties
-  >(LogicalOpNodeOptionsDefaults),
-  label: function () {
-    const logicalOp = i18n(
-      "logical.op.field.operation.options." + this.operation,
-    );
-    let label: string = logicalOp;
-
-    if (this.name) {
-      label = `${this.name} (${logicalOp})`;
-    }
-
-    return label;
+  form: {
+    id: "logical-op-options",
+    fields: [
+      {
+        type: "select",
+        key: "operation",
+        icon: "cogs",
+        options: Object.keys(LogicalFunction),
+      },
+      {
+        type: "number",
+        key: "minMsgCount",
+        icon: "hashtag",
+        dependsOn: "operation",
+        dependsOnValues: Object.keys(LogicalFunction).filter(
+          (k) => k !== "not",
+        ),
+      },
+    ],
   },
-  inputs: LogicalOpNodeOptionsDefaults.inputs,
-  outputs: LogicalOpNodeOptionsDefaults.outputs,
-  outputLabels: function (index) {
-    if (typeof SwitchEditorNode.outputLabels === "function") {
-      return SwitchEditorNode.outputLabels.call(this, index);
-    }
-    return undefined;
-  },
-  oneditprepare: function () {
-    SwitchEditorNode.oneditprepare!.call(this);
-
-    const logicalOpOptionsBuilder = new NodeEditorFormBuilder(
-      $("#logical-op-options"),
-      { translatePrefix: "logical.op" },
-    );
-
-    const operationSelect = logicalOpOptionsBuilder.createSelectInput({
-      id: "node-input-operation",
-      label: "operation",
-      value: this.operation,
-      icon: "cogs",
-      options: Object.keys(LogicalFunction),
-    });
-
-    const minMsgCount = logicalOpOptionsBuilder.createNumberInput({
-      id: "node-input-minMsgCount",
-      label: "minMsgCount",
-      value: this.minMsgCount,
-      icon: "hashtag",
-    });
-
-    const minMsgCountRow = minMsgCount
-      .parent()
-      .toggle(this.operation !== "not");
-
-    operationSelect.on("change", function () {
-      const isNot = ($(this).val() as string) === "not";
-
-      minMsgCountRow.toggle(!isNot);
-      if (isNot) {
-        minMsgCount.val(1);
-      }
-    });
+  extraForms: [{ id: "logical-switch-options", build: buildSwitchFormContent }],
+  baseTemplate: "without-status",
+  hooks: {
+    label(node: EditorNodeInstance<LogicalOpEditorNodeProperties>) {
+      const logicalOp = i18n(
+        "logical.op.field.operation.options." + node.operation,
+      );
+      return node.name ? `${node.name} (${logicalOp})` : logicalOp;
+    },
+    outputLabels(
+      node: EditorNodeInstance<LogicalOpEditorNodeProperties>,
+      index: number,
+    ) {
+      return buildSwitchOutputLabels(node, index);
+    },
   },
 };
 
-export default LogicalOpEditorNode;
+export const LogicalOpEditorTemplate = buildEditorTemplate(
+  LogicalOpEditorDefinition,
+);
+export const LogicalOpEditorMetadata: EditorMetadata = buildEditorMetadata(
+  LogicalOpEditorDefinition,
+);
+export default buildEditorNodeDef(LogicalOpEditorDefinition);

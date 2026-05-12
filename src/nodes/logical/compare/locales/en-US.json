@@ -30,5 +30,19 @@
             "label": "With",
             "description": "Value for comparison"
         }
+    },
+    "output": {
+        "true": {
+            "name": "True",
+            "description": "Output for true values"
+        },
+        "false": {
+            "name": "False",
+            "description": "Output for false values"
+        },
+        "result": {
+            "name": "Logical result",
+            "description": "Combined output with boolean result"
+        }
     }
 }

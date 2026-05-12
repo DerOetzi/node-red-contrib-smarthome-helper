@@ -14,5 +14,19 @@
       "label": "Initial State",
       "description": "State at startup"
     }
+  },
+  "output": {
+    "true": {
+      "name": "True",
+      "description": "Output for true values"
+    },
+    "false": {
+      "name": "False",
+      "description": "Output for false values"
+    },
+    "result": {
+      "name": "Logical result",
+      "description": "Combined output with boolean result"
+    }
   }
 }

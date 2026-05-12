@@ -52,5 +52,51 @@
             "name": "Presence 10th person",
             "description": "Presence status of tenth person"
         }
+    },
+    "output": {
+        "broadcast": {
+            "name": "Broadcast",
+            "description": "Message dispatched to all"
+        },
+        "person1": {
+            "name": "Person 1",
+            "description": "Message for 1st person"
+        },
+        "person2": {
+            "name": "Person 2",
+            "description": "Message for 2nd person"
+        },
+        "person3": {
+            "name": "Person 3",
+            "description": "Message for 3rd person"
+        },
+        "person4": {
+            "name": "Person 4",
+            "description": "Message for 4th person"
+        },
+        "person5": {
+            "name": "Person 5",
+            "description": "Message for 5th person"
+        },
+        "person6": {
+            "name": "Person 6",
+            "description": "Message for 6th person"
+        },
+        "person7": {
+            "name": "Person 7",
+            "description": "Message for 7th person"
+        },
+        "person8": {
+            "name": "Person 8",
+            "description": "Message for 8th person"
+        },
+        "person9": {
+            "name": "Person 9",
+            "description": "Message for 9th person"
+        },
+        "person10": {
+            "name": "Person 10",
+            "description": "Message for 10th person"
+        }
     }
 }

@@ -1,85 +1,65 @@
-import { EditorNodeDef } from "node-red";
-import HysteresisSwitchNode from ".";
 import {
-  createEditorDefaults,
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
   i18n,
-  NodeEditorFormBuilder,
+  NodeEditorDefinition,
 } from "../../flowctrl/base/editor";
-import { EditorMetadata, EditorTemplateDiv } from "../../types";
-import SwitchEditorNode, { SwitchEditorTemplate } from "../switch/editor";
+import { EditorNodeInstance } from "node-red";
+import HysteresisSwitchNode from ".";
+import { EditorMetadata } from "../../types";
+import { buildSwitchFormContent } from "../switch/editor";
 import {
   HysteresisSwitchEditorNodeProperties,
-  HysteresisSwitchNodeOptions,
   HysteresisSwitchNodeOptionsDefaults,
 } from "./types";
 
-export const HysteresisSwitchEditorTemplate = [
-  new EditorTemplateDiv("hysteresis-switch-options"),
-  ...SwitchEditorTemplate,
-];
-
-export const HysteresisSwitchEditorMetadata: EditorMetadata = {
+const HysteresisSwitchEditorDefinition: NodeEditorDefinition<
+  typeof HysteresisSwitchNodeOptionsDefaults,
+  HysteresisSwitchEditorNodeProperties
+> = {
   localePrefix: "logical.hysteresis-switch",
+  nodeClass: HysteresisSwitchNode,
+  defaults: HysteresisSwitchNodeOptionsDefaults,
+  icon: "font-awesome/fa-toggle-on",
   inputMode: "msg-property",
   fieldKeys: ["upperThreshold", "lowerThreshold", "initialState"],
-  inputKeys: [],
   outputKeys: [],
-};
-
-const HysteresisSwitchEditorNode: EditorNodeDef<HysteresisSwitchEditorNodeProperties> =
-  {
-    category: HysteresisSwitchNode.NodeCategoryLabel,
-    color: HysteresisSwitchNode.NodeColor,
-    icon: "font-awesome/fa-toggle-on",
-    defaults: createEditorDefaults<
-      HysteresisSwitchNodeOptions,
-      HysteresisSwitchEditorNodeProperties
-    >(HysteresisSwitchNodeOptionsDefaults),
-    // Migration support for older versions of the switch node.
-    label: function () {
-      let name = i18n("logical.hysteresis-switch.name");
-      if (this.name) {
-        name = `${this.name} (${name})`;
-      }
-      return name;
-    },
-    inputs: HysteresisSwitchNodeOptionsDefaults.inputs,
-    outputs: HysteresisSwitchNodeOptionsDefaults.outputs,
-    oneditprepare: function () {
-      SwitchEditorNode.oneditprepare!.call(this);
-
-      const hysteresisSwitchOptionsBuilder = new NodeEditorFormBuilder(
-        $("#hysteresis-switch-options"),
-        { translatePrefix: "logical.hysteresis-switch" },
-      );
-
-      hysteresisSwitchOptionsBuilder.createNumberInput({
-        id: "node-input-lowerThreshold",
-        label: "lowerThreshold",
-        value: this.lowerThreshold,
+  form: {
+    id: "hysteresis-switch-options",
+    fields: [
+      {
+        type: "number",
+        key: "lowerThreshold",
         icon: "arrow-down",
         min: -Infinity,
         max: Infinity,
         step: 0.1,
-      });
-
-      hysteresisSwitchOptionsBuilder.createNumberInput({
-        id: "node-input-upperThreshold",
-        label: "upperThreshold",
-        value: this.upperThreshold,
+      },
+      {
+        type: "number",
+        key: "upperThreshold",
         icon: "arrow-up",
         min: -Infinity,
         max: Infinity,
         step: 0.1,
-      });
-
-      hysteresisSwitchOptionsBuilder.createCheckboxInput({
-        id: "node-input-initialState",
-        label: "initialState",
-        value: this.initialState,
-        icon: "toggle-on",
-      });
+      },
+      { type: "checkbox", key: "initialState", icon: "toggle-on" },
+    ],
+  },
+  extraForms: [{ id: "logical-switch-options", build: buildSwitchFormContent }],
+  baseTemplate: "without-status",
+  hooks: {
+    label(node: EditorNodeInstance<HysteresisSwitchEditorNodeProperties>) {
+      const baseName = i18n("logical.hysteresis-switch.name");
+      return node.name ? `${node.name} (${baseName})` : baseName;
     },
-  };
+  },
+};
 
-export default HysteresisSwitchEditorNode;
+export const HysteresisSwitchEditorTemplate = buildEditorTemplate(
+  HysteresisSwitchEditorDefinition,
+);
+export const HysteresisSwitchEditorMetadata: EditorMetadata =
+  buildEditorMetadata(HysteresisSwitchEditorDefinition);
+export default buildEditorNodeDef(HysteresisSwitchEditorDefinition);

@@ -20,7 +20,10 @@ import SwitchEditorNode, {
   SwitchEditorTemplate,
 } from "./switch/editor";
 import ToogleNode from "./toggle";
-import ToggleEditorNode, { ToggleEditorMetadata } from "./toggle/editor";
+import ToggleEditorNode, {
+  ToggleEditorMetadata,
+  ToggleEditorTemplate,
+} from "./toggle/editor";
 
 export const LogicalNodesRegistry: { [key: string]: NodeRegistryEntry } = {
   [CompareNode.NodeTypeName]: {
@@ -51,6 +54,6 @@ export const LogicalNodesRegistry: { [key: string]: NodeRegistryEntry } = {
     node: ToogleNode,
     editor: ToggleEditorNode,
     metadata: ToggleEditorMetadata,
-    template: SwitchEditorTemplate,
+    template: ToggleEditorTemplate,
   },
 };

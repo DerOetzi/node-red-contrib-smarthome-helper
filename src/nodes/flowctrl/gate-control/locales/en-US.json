@@ -21,5 +21,15 @@
             "label": "Pause time",
             "description": "Duration of the pause"
         }
+    },
+    "output": {
+        "delayed": {
+            "name": "Delayed Message",
+            "description": "Forwarded message after delay"
+        },
+        "command": {
+            "name": "Gate Command",
+            "description": "Control command sent to the Automation Gate"
+        }
     }
 }

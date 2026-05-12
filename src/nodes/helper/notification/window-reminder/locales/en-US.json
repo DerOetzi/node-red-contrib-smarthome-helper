@@ -25,6 +25,12 @@
       "description": "Selected interval index"
     }
   },
+  "output": {
+    "notification": {
+      "name": "Notification",
+      "description": "Notification output"
+    }
+  },
   "window-reminder-intervals": "Intervals",
   "notification": {
     "title": "Window reminder",

@@ -1,19 +1,11 @@
-import { EditorNodeDef } from "node-red";
 import {
-  EditorMetadata,
-  EditorTemplateDiv,
-  EditorTemplateOl,
-} from "../../types";
-import StatusNode from ".";
-import BaseEditorNode, {
-  BaseCommonElement,
-  BaseDebounceNoTopicElement,
-  createEditorDefaults,
-  i18n,
-  i18nOutputLabel,
-  NodeEditorFormBuilder,
+  buildEditorMetadata,
+  buildEditorNodeDef,
+  buildEditorTemplate,
+  NodeEditorDefinition,
 } from "../base/editor";
 import { MatchJoinEditableList } from "../match-join/editor";
+import StatusNode from ".";
 import {
   StatusEditorNodeProperties,
   StatusNodeOptions,
@@ -22,73 +14,44 @@ import {
 } from "./types";
 import { ActiveControllerTarget } from "../active-controller/types";
 
-export const StatusEditorTemplate = [
-  new EditorTemplateOl("matcher-rows"),
-  new EditorTemplateDiv("status-node-options"),
-  BaseCommonElement,
-  BaseDebounceNoTopicElement,
-];
-
-export const StatusEditorMetadata: EditorMetadata = {
+const StatusDef: NodeEditorDefinition<
+  StatusNodeOptions,
+  StatusEditorNodeProperties
+> = {
   localePrefix: "flowctrl.status",
+  nodeClass: StatusNode,
+  icon: "font-awesome/fa-key",
+  defaults: StatusNodeOptionsDefaults,
   inputMode: "msg-property",
-  fieldKeys: ["scope", "initialActive"],
   inputKeys: ["activeCondition"],
   outputKeys: ["status", "statusText"],
-};
-
-const inputMatcherList = new MatchJoinEditableList({
-  targets: [ActiveControllerTarget.activeCondition],
-  translatePrefix: "flowctrl.status",
-});
-
-const StatusEditorNode: EditorNodeDef<StatusEditorNodeProperties> = {
-  category: StatusNode.NodeCategoryLabel,
-  color: StatusNode.NodeColor,
-  icon: "font-awesome/fa-key",
-  defaults: createEditorDefaults<StatusNodeOptions, StatusEditorNodeProperties>(
-    StatusNodeOptionsDefaults,
-  ),
-  label: function () {
-    return this.name?.trim() ? this.name.trim() : i18n("flowctrl.status.name");
-  },
-  inputs: StatusNodeOptionsDefaults.inputs,
-  outputs: StatusNodeOptionsDefaults.outputs,
-  outputLabels: function (index: number) {
-    const outputs = ["status", "statusText"];
-
-    return i18nOutputLabel("flowctrl.status", outputs[index]);
-  },
-  oneditprepare: function () {
-    BaseEditorNode.oneditprepare!.call(this);
-
-    inputMatcherList.initialize("matcher-rows", this.matchers, {
-      translatePrefix: "flowctrl.match-join",
-    });
-
-    const statusNodeOptionsBuilder = new NodeEditorFormBuilder(
-      $("#status-node-options"),
-      { translatePrefix: "flowctrl.status" },
-    );
-
-    statusNodeOptionsBuilder.createSelectInput({
-      id: "node-input-scope",
-      label: "scope",
-      options: Object.values(StatusNodeScope),
-      value: this.scope,
-      icon: "sitemap",
-    });
-
-    statusNodeOptionsBuilder.createCheckboxInput({
-      id: "node-input-defaultActive",
-      label: "defaultActive",
-      value: this.defaultActive,
-      icon: "toggle-on",
-    });
-  },
-  oneditsave: function () {
-    this.matchers = inputMatcherList.values();
+  baseTemplate: "input-without-status",
+  lists: [
+    {
+      id: "matcher-rows",
+      create: () =>
+        new MatchJoinEditableList({
+          targets: [ActiveControllerTarget.activeCondition],
+          translatePrefix: "flowctrl.status",
+        }),
+      dataKey: "matchers",
+    },
+  ],
+  form: {
+    id: "status-node-options",
+    fields: [
+      {
+        type: "select",
+        key: "scope",
+        icon: "sitemap",
+        options: Object.values(StatusNodeScope),
+      },
+      { type: "checkbox", key: "defaultActive", icon: "toggle-on" },
+    ],
   },
 };
 
-export default StatusEditorNode;
+export const StatusEditorTemplate = buildEditorTemplate(StatusDef);
+export const StatusEditorMetadata = buildEditorMetadata(StatusDef);
+
+export default buildEditorNodeDef(StatusDef);

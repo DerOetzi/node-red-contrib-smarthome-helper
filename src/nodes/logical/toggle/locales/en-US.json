@@ -1,4 +1,18 @@
 {
     "name": "Toggle",
-    "description": "Toggles between two states"
+    "description": "Toggles between two states",
+    "output": {
+        "true": {
+            "name": "True",
+            "description": "Output for true values"
+        },
+        "false": {
+            "name": "False",
+            "description": "Output for false values"
+        },
+        "result": {
+            "name": "Logical result",
+            "description": "Combined output with boolean result"
+        }
+    }
 }
