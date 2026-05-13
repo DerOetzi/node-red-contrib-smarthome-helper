@@ -1,7 +1,4 @@
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   i18nFieldDefault,
   NodeEditorDefinition,
   NodeEditorFormBuilder,
@@ -227,7 +224,7 @@ function buildLightControllerFormContent(
   });
 }
 
-const def: NodeEditorDefinition<
+export const LightControllerEditorDef: NodeEditorDefinition<
   LightControllerNodeOptions,
   LightControllerEditorNodeProperties
 > = {
@@ -288,6 +285,3 @@ const def: NodeEditorDefinition<
   },
 };
 
-export const LightControllerEditorTemplate = buildEditorTemplate(def);
-export const LightControllerEditorMetadata = buildEditorMetadata(def);
-export default buildEditorNodeDef(def);

@@ -1,7 +1,4 @@
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   i18nFieldDefault,
   NodeEditorDefinition,
 } from "../../../flowctrl/base/editor";
@@ -14,7 +11,7 @@ import {
   MotionControllerTarget,
 } from "./types";
 
-const def: NodeEditorDefinition<
+export const MotionControllerEditorDef: NodeEditorDefinition<
   MotionControllerNodeOptions,
   MotionControllerEditorNodeProperties
 > = {
@@ -96,7 +93,3 @@ const def: NodeEditorDefinition<
     },
   },
 };
-
-export const MotionControllerEditorTemplate = buildEditorTemplate(def);
-export const MotionControllerEditorMetadata = buildEditorMetadata(def);
-export default buildEditorNodeDef(def);

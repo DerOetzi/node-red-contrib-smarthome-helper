@@ -1,12 +1,5 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  i18n,
-  NodeEditorDefinition,
-} from "../../flowctrl/base/editor";
+import { i18n, NodeEditorDefinition } from "../../flowctrl/base/editor";
 import { EditorNodeInstance } from "node-red";
-import { EditorMetadata } from "../../types";
 import {
   buildSwitchFormContent,
   buildSwitchOutputLabels,
@@ -19,7 +12,7 @@ import {
   NotApplicableCompareFunction,
 } from "./types";
 
-const CompareEditorDefinition: NodeEditorDefinition<
+export const CompareEditorDef: NodeEditorDefinition<
   typeof CompareNodeOptionsDefaults,
   CompareEditorNodeProperties
 > = {
@@ -77,11 +70,3 @@ const CompareEditorDefinition: NodeEditorDefinition<
     },
   },
 };
-
-export const CompareEditorTemplate = buildEditorTemplate(
-  CompareEditorDefinition,
-);
-export const CompareEditorMetadata: EditorMetadata = buildEditorMetadata(
-  CompareEditorDefinition,
-);
-export default buildEditorNodeDef(CompareEditorDefinition);

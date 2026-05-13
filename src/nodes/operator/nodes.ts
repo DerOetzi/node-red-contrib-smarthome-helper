@@ -1,15 +1,6 @@
-import { NodeRegistryEntry } from "../types";
-import ArithmeticNode from "./arithmetic";
-import ArithmeticEditorNode, {
-  ArithmeticEditorMetadata,
-  ArithmeticEditorTemplate,
-} from "./arithmetic/editor";
+import { NodeEditorDefinition } from "../flowctrl/base/editor";
+import { ArithmeticEditorDef } from "./arithmetic/editor";
 
-export const OperatorNodesRegistry: { [key: string]: NodeRegistryEntry } = {
-  [ArithmeticNode.NodeTypeName]: {
-    node: ArithmeticNode,
-    editor: ArithmeticEditorNode,
-    metadata: ArithmeticEditorMetadata,
-    template: ArithmeticEditorTemplate,
-  },
-};
+export const OperatorDefs: NodeEditorDefinition<any, any>[] = [
+  ArithmeticEditorDef,
+];

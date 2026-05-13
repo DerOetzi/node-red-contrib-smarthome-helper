@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../base/editor";
+import { NodeEditorDefinition } from "../base/editor";
 import { MatchJoinEditableList } from "../match-join/editor";
 import StatusNode from ".";
 import {
@@ -14,7 +9,7 @@ import {
 } from "./types";
 import { ActiveControllerTarget } from "../active-controller/types";
 
-const StatusDef: NodeEditorDefinition<
+export const StatusEditorDef: NodeEditorDefinition<
   StatusNodeOptions,
   StatusEditorNodeProperties
 > = {
@@ -50,8 +45,3 @@ const StatusDef: NodeEditorDefinition<
     ],
   },
 };
-
-export const StatusEditorTemplate = buildEditorTemplate(StatusDef);
-export const StatusEditorMetadata = buildEditorMetadata(StatusDef);
-
-export default buildEditorNodeDef(StatusDef);

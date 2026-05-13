@@ -1,20 +1,13 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  i18n,
-  NodeEditorDefinition,
-} from "../../flowctrl/base/editor";
+import { i18n, NodeEditorDefinition } from "../../flowctrl/base/editor";
 import { EditorNodeInstance } from "node-red";
 import HysteresisSwitchNode from ".";
-import { EditorMetadata } from "../../types";
 import { buildSwitchFormContent } from "../switch/editor";
 import {
   HysteresisSwitchEditorNodeProperties,
   HysteresisSwitchNodeOptionsDefaults,
 } from "./types";
 
-const HysteresisSwitchEditorDefinition: NodeEditorDefinition<
+export const HysteresisSwitchEditorDef: NodeEditorDefinition<
   typeof HysteresisSwitchNodeOptionsDefaults,
   HysteresisSwitchEditorNodeProperties
 > = {
@@ -56,10 +49,3 @@ const HysteresisSwitchEditorDefinition: NodeEditorDefinition<
     },
   },
 };
-
-export const HysteresisSwitchEditorTemplate = buildEditorTemplate(
-  HysteresisSwitchEditorDefinition,
-);
-export const HysteresisSwitchEditorMetadata: EditorMetadata =
-  buildEditorMetadata(HysteresisSwitchEditorDefinition);
-export default buildEditorNodeDef(HysteresisSwitchEditorDefinition);

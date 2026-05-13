@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../../../flowctrl/base/editor";
+import { NodeEditorDefinition } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import WhitegoodReminderNode from "./";
 import {
@@ -12,7 +7,7 @@ import {
   WhitegoodReminderTarget,
 } from "./types";
 
-const WhitegoodReminderEditorDefinition: NodeEditorDefinition<
+export const WhitegoodReminderEditorDef: NodeEditorDefinition<
   typeof WhitegoodReminderNodeOptionsDefaults,
   WhitegoodReminderEditorNodeProperties
 > = {
@@ -76,11 +71,3 @@ const WhitegoodReminderEditorDefinition: NodeEditorDefinition<
   },
   baseTemplate: "input-only",
 };
-
-export const WhitegoodReminderEditorTemplate = buildEditorTemplate(
-  WhitegoodReminderEditorDefinition,
-);
-export const WhitegoodReminderEditorMetadata = buildEditorMetadata(
-  WhitegoodReminderEditorDefinition,
-);
-export default buildEditorNodeDef(WhitegoodReminderEditorDefinition);

@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../base/editor";
+import { NodeEditorDefinition } from "../base/editor";
 import GateControlNode from "./";
 import {
   GateControlEditorNodeProperties,
@@ -11,7 +6,7 @@ import {
   GateControlNodeOptionsDefaults,
 } from "./types";
 
-const GateControlDef: NodeEditorDefinition<
+export const GateControlEditorDef: NodeEditorDefinition<
   GateControlNodeOptions,
   GateControlEditorNodeProperties
 > = {
@@ -51,8 +46,3 @@ const GateControlDef: NodeEditorDefinition<
     },
   },
 };
-
-export const GateControlEditorTemplate = buildEditorTemplate(GateControlDef);
-export const GateControlEditorMetadata = buildEditorMetadata(GateControlDef);
-
-export default buildEditorNodeDef(GateControlDef);

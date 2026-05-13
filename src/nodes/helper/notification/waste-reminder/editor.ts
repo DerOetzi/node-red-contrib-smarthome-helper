@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../../../flowctrl/base/editor";
+import { NodeEditorDefinition } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import WasteReminderNode from ".";
 import {
@@ -12,7 +7,7 @@ import {
   WasteReminderTarget,
 } from "./types";
 
-const WasteReminderEditorDefinition: NodeEditorDefinition<
+export const WasteReminderEditorDef: NodeEditorDefinition<
   typeof WasteReminderNodeOptionsDefaults,
   WasteReminderEditorNodeProperties
 > = {
@@ -36,11 +31,3 @@ const WasteReminderEditorDefinition: NodeEditorDefinition<
   ],
   baseTemplate: "input-only",
 };
-
-export const WasteReminderEditorTemplate = buildEditorTemplate(
-  WasteReminderEditorDefinition,
-);
-export const WasteReminderEditorMetadata = buildEditorMetadata(
-  WasteReminderEditorDefinition,
-);
-export default buildEditorNodeDef(WasteReminderEditorDefinition);

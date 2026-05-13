@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../../../flowctrl/base/editor";
+import { NodeEditorDefinition } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import HygroCalculatorNode from ".";
 import {
@@ -12,7 +7,7 @@ import {
   HygroCalculatorTarget,
 } from "./types";
 
-const HygroCalculatorEditorDefinition: NodeEditorDefinition<
+export const HygroCalculatorEditorDef: NodeEditorDefinition<
   typeof HygroCalculatorNodeOptionsDefaults,
   HygroCalculatorEditorNodeProperties
 > = {
@@ -36,11 +31,3 @@ const HygroCalculatorEditorDefinition: NodeEditorDefinition<
   ],
   baseTemplate: "input-only",
 };
-
-export const HygroCalculatorEditorTemplate = buildEditorTemplate(
-  HygroCalculatorEditorDefinition,
-);
-export const HygroCalculatorEditorMetadata = buildEditorMetadata(
-  HygroCalculatorEditorDefinition,
-);
-export default buildEditorNodeDef(HygroCalculatorEditorDefinition);

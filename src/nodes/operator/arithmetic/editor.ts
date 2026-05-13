@@ -1,7 +1,4 @@
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   NodeEditorDefinition,
   NodeEditorFormBuilder,
   NodeEditorFormEditableList,
@@ -95,7 +92,7 @@ function buildArithmeticFormContent(
   additionalValuesList.toggle(node.operation !== ArithmeticFunction.round);
 }
 
-const def: NodeEditorDefinition<
+export const ArithmeticEditorDef: NodeEditorDefinition<
   ArithmeticNodeOptions,
   ArithmeticEditorNodeProperties
 > = {
@@ -128,7 +125,3 @@ const def: NodeEditorDefinition<
     build: buildArithmeticFormContent,
   },
 };
-
-export const ArithmeticEditorTemplate = buildEditorTemplate(def);
-export const ArithmeticEditorMetadata = buildEditorMetadata(def);
-export default buildEditorNodeDef(def);

@@ -1,8 +1,5 @@
 import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   i18nFieldDefault,
   NodeEditorDefinition,
   NodeEditorFormBuilder,
@@ -186,7 +183,7 @@ function buildHeatingControllerFormContent(
   });
 }
 
-const def: NodeEditorDefinition<
+export const HeatingControllerEditorDef: NodeEditorDefinition<
   HeatingControllerNodeOptions,
   HeatingControllerEditorNodeProperties
 > = {
@@ -268,7 +265,3 @@ const def: NodeEditorDefinition<
     },
   },
 };
-
-export const HeatingControllerEditorTemplate = buildEditorTemplate(def);
-export const HeatingControllerEditorMetadata = buildEditorMetadata(def);
-export default buildEditorNodeDef(def);

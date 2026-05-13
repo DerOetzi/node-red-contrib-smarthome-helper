@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../../../flowctrl/base/editor";
+import { NodeEditorDefinition } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import MoistureAlertNode from ".";
 import {
@@ -12,7 +7,7 @@ import {
   MoistureAlertTarget,
 } from "./types";
 
-const MoistureAlertEditorDefinition: NodeEditorDefinition<
+export const MoistureAlertEditorDef: NodeEditorDefinition<
   typeof MoistureAlertNodeOptionsDefaults,
   MoistureAlertEditorNodeProperties
 > = {
@@ -43,11 +38,3 @@ const MoistureAlertEditorDefinition: NodeEditorDefinition<
   },
   baseTemplate: "input-only",
 };
-
-export const MoistureAlertEditorTemplate = buildEditorTemplate(
-  MoistureAlertEditorDefinition,
-);
-export const MoistureAlertEditorMetadata = buildEditorMetadata(
-  MoistureAlertEditorDefinition,
-);
-export default buildEditorNodeDef(MoistureAlertEditorDefinition);

@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../base/editor";
+import { NodeEditorDefinition } from "../base/editor";
 import AutomationGateNode from "./";
 import {
   AutomationGateEditorNodeProperties,
@@ -11,7 +6,7 @@ import {
   AutomationGateNodeOptionsDefaults,
 } from "./types";
 
-const AutomationGateDef: NodeEditorDefinition<
+export const AutomationGateEditorDef: NodeEditorDefinition<
   AutomationGateNodeOptions,
   AutomationGateEditorNodeProperties
 > = {
@@ -42,10 +37,3 @@ const AutomationGateDef: NodeEditorDefinition<
     ],
   },
 };
-
-export const AutomationGateEditorTemplate =
-  buildEditorTemplate(AutomationGateDef);
-export const AutomationGateEditorMetadata =
-  buildEditorMetadata(AutomationGateDef);
-
-export default buildEditorNodeDef(AutomationGateDef);

@@ -1,4 +1,4 @@
-import { EditorNodeDef, NodeMessage } from "node-red";
+import { NodeMessage } from "node-red";
 
 export interface NodeCategory {
   label: string;
@@ -49,11 +49,4 @@ export interface EditorMetadata {
   inputKeys?: string[];
   outputKeys?: string[];
   inputMode?: "msg-property" | "matcher-topic";
-}
-
-export interface NodeRegistryEntry {
-  node: any;
-  editor: EditorNodeDef<any>;
-  metadata?: EditorMetadata;
-  template?: EditorTemplateElement[];
 }

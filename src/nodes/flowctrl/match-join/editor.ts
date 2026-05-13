@@ -2,9 +2,6 @@ import {
   BaseCommonElement,
   BaseDebounceNoTopicElement,
   BaseStatusElement,
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   i18nInputLabel,
   NodeEditorDefinition,
   NodeEditorFormEditableList,
@@ -180,7 +177,7 @@ export class MatchJoinEditableList extends NodeEditorFormEditableList<MatcherRow
   }
 }
 
-const def: NodeEditorDefinition<
+export const MatchJoinEditorDef: NodeEditorDefinition<
   MatchJoinNodeOptions,
   MatchJoinEditorNodeProperties
 > = {
@@ -218,7 +215,3 @@ const def: NodeEditorDefinition<
     },
   },
 };
-
-export const MatchJoinEditorTemplate = buildEditorTemplate(def);
-export const MatchJoinEditorMetadata = buildEditorMetadata(def);
-export default buildEditorNodeDef(def);

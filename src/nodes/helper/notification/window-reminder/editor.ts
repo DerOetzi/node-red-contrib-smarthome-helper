@@ -1,7 +1,4 @@
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   NodeEditorDefinition,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
@@ -29,7 +26,7 @@ class IntervalsEditableList extends NodeEditorFormEditableList<WindowReminderInt
   }
 }
 
-const WindowReminderEditorDefinition: NodeEditorDefinition<
+export const WindowReminderEditorDef: NodeEditorDefinition<
   typeof WindowReminderNodeOptionsDefaults,
   WindowReminderEditorNodeProperties
 > = {
@@ -83,11 +80,3 @@ const WindowReminderEditorDefinition: NodeEditorDefinition<
     },
   },
 };
-
-export const WindowReminderEditorTemplate = buildEditorTemplate(
-  WindowReminderEditorDefinition,
-);
-export const WindowReminderEditorMetadata = buildEditorMetadata(
-  WindowReminderEditorDefinition,
-);
-export default buildEditorNodeDef(WindowReminderEditorDefinition);

@@ -1,12 +1,5 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  i18n,
-  NodeEditorDefinition,
-} from "../../flowctrl/base/editor";
+import { i18n, NodeEditorDefinition } from "../../flowctrl/base/editor";
 import { EditorNodeInstance } from "node-red";
-import { EditorMetadata } from "../../types";
 import {
   buildSwitchFormContent,
   buildSwitchOutputLabels,
@@ -14,7 +7,7 @@ import {
 import ToggleNode from "./";
 import { ToggleEditorNodeProperties, ToggleNodeOptionsDefaults } from "./types";
 
-const ToggleEditorDefinition: NodeEditorDefinition<
+export const ToggleEditorDef: NodeEditorDefinition<
   typeof ToggleNodeOptionsDefaults,
   ToggleEditorNodeProperties
 > = {
@@ -43,9 +36,3 @@ const ToggleEditorDefinition: NodeEditorDefinition<
     },
   },
 };
-
-export const ToggleEditorTemplate = buildEditorTemplate(ToggleEditorDefinition);
-export const ToggleEditorMetadata: EditorMetadata = buildEditorMetadata(
-  ToggleEditorDefinition,
-);
-export default buildEditorNodeDef(ToggleEditorDefinition);

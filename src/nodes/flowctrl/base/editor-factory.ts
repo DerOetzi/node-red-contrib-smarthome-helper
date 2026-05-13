@@ -60,7 +60,15 @@ export interface NodeEditorDefinition<
   TProps extends BaseEditorNodeProperties = BaseEditorNodeProperties,
 > {
   localePrefix: string;
-  nodeClass: { NodeCategoryLabel: string; NodeColor: string };
+  nodeClass: {
+    NodeTypeName: string;
+    NodeCategoryLabel: string;
+    NodeColor: string;
+    Migration: {
+      checkAndMigrate: (node: any) => boolean;
+      check: (node: any) => boolean;
+    };
+  };
   defaults: TOptions;
   icon: string;
   inputMode?: "msg-property" | "matcher-topic";
@@ -291,7 +299,7 @@ function wireChangeListeners(
     const listTarget = fieldByKey.get(controllerKey)?.showsListTarget;
 
     controllerElem.on("change", function () {
-      const isCheckbox = (controllerElem as JQuery).attr("type") === "checkbox";
+      const isCheckbox = controllerElem.attr("type") === "checkbox";
       const rawVal = isCheckbox ? $(this).is(":checked") : $(this).val();
       deps.forEach((depKey) => {
         const depField = fieldByKey.get(depKey);

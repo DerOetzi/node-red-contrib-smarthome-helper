@@ -1,13 +1,9 @@
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   i18nOutputLabel,
   NodeEditorDefinition,
   NodeEditorFormBuilder,
 } from "../../flowctrl/base/editor";
 import { EditorNodeInstance } from "node-red";
-import { EditorMetadata } from "../../types";
 import SwitchNode from "./";
 import {
   DebounceFlank,
@@ -108,7 +104,7 @@ export function buildSwitchOutputLabels(
   return undefined;
 }
 
-const SwitchEditorDefinition: NodeEditorDefinition<
+export const SwitchEditorDef: NodeEditorDefinition<
   typeof SwitchNodeOptionsDefaults,
   SwitchEditorNodeProperties
 > = {
@@ -140,9 +136,3 @@ const SwitchEditorDefinition: NodeEditorDefinition<
     },
   },
 };
-
-export const SwitchEditorTemplate = buildEditorTemplate(SwitchEditorDefinition);
-export const SwitchEditorMetadata: EditorMetadata = buildEditorMetadata(
-  SwitchEditorDefinition,
-);
-export default buildEditorNodeDef(SwitchEditorDefinition);

@@ -1,12 +1,5 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  i18n,
-  NodeEditorDefinition,
-} from "../../flowctrl/base/editor";
+import { i18n, NodeEditorDefinition } from "../../flowctrl/base/editor";
 import { EditorNodeInstance } from "node-red";
-import { EditorMetadata } from "../../types";
 import {
   buildSwitchFormContent,
   buildSwitchOutputLabels,
@@ -18,7 +11,7 @@ import {
   LogicalOpNodeOptionsDefaults,
 } from "./types";
 
-const LogicalOpEditorDefinition: NodeEditorDefinition<
+export const LogicalOpEditorDef: NodeEditorDefinition<
   typeof LogicalOpNodeOptionsDefaults,
   LogicalOpEditorNodeProperties
 > = {
@@ -66,11 +59,3 @@ const LogicalOpEditorDefinition: NodeEditorDefinition<
     },
   },
 };
-
-export const LogicalOpEditorTemplate = buildEditorTemplate(
-  LogicalOpEditorDefinition,
-);
-export const LogicalOpEditorMetadata: EditorMetadata = buildEditorMetadata(
-  LogicalOpEditorDefinition,
-);
-export default buildEditorNodeDef(LogicalOpEditorDefinition);

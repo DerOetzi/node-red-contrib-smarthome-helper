@@ -1,9 +1,4 @@
-import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
-  NodeEditorDefinition,
-} from "../../../flowctrl/base/editor";
+import { NodeEditorDefinition } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import NotifyDispatcherNode from "./";
 import {
@@ -12,7 +7,7 @@ import {
   NotifyDispatcherTarget,
 } from "./types";
 
-const NotifyDispatcherEditorDefinition: NodeEditorDefinition<
+export const NotifyDispatcherEditorDef: NodeEditorDefinition<
   typeof NotifyDispatcherNodeOptionsDefaults,
   NotifyDispatcherEditorNodeProperties
 > = {
@@ -87,11 +82,3 @@ const NotifyDispatcherEditorDefinition: NodeEditorDefinition<
     },
   },
 };
-
-export const NotifyDispatcherEditorTemplate = buildEditorTemplate(
-  NotifyDispatcherEditorDefinition,
-);
-export const NotifyDispatcherEditorMetadata = buildEditorMetadata(
-  NotifyDispatcherEditorDefinition,
-);
-export default buildEditorNodeDef(NotifyDispatcherEditorDefinition);

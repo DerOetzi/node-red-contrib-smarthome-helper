@@ -1,7 +1,4 @@
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   NodeEditorDefinition,
   NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
@@ -67,7 +64,7 @@ class EventMapperRuleEditableList extends NodeEditorFormEditableList<EventMapper
 
 const ruleRows = new EventMapperRuleEditableList();
 
-const def: NodeEditorDefinition<
+export const EventMapperEditorDef: NodeEditorDefinition<
   EventMapperNodeOptions,
   EventMapperEditorNodeProperties
 > = {
@@ -108,7 +105,3 @@ const def: NodeEditorDefinition<
     },
   },
 };
-
-export const EventMapperEditorTemplate = buildEditorTemplate(def);
-export const EventMapperEditorMetadata = buildEditorMetadata(def);
-export default buildEditorNodeDef(def);

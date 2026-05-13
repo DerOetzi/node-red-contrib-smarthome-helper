@@ -1,25 +1,34 @@
 import { EditorNodeInstance, EditorRED } from "node-red";
-import { FlowCtrlNodesRegistry } from "./nodes/flowctrl/nodes";
-import { HelperNodesRegistry } from "./nodes/helper/nodes";
-import { LogicalNodesRegistry } from "./nodes/logical/nodes";
-import { OperatorNodesRegistry } from "./nodes/operator/nodes";
 import {
-  EditorMetadata,
-  EditorTemplateElement,
-  NodeRegistryEntry,
-} from "./nodes/types";
+  FlowCtrlDefs,
+  FlowCtrlBaseNode,
+  FlowCtrlBaseEditorNode,
+  FlowCtrlBaseEditorTemplate,
+  FlowCtrlBaseEditorMetadata,
+} from "./nodes/flowctrl/nodes";
+import { HelperDefs } from "./nodes/helper/nodes";
+import { LogicalDefs } from "./nodes/logical/nodes";
+import { OperatorDefs } from "./nodes/operator/nodes";
+import { EditorMetadata, EditorTemplateElement } from "./nodes/types";
 
 import version from "./version";
-import { i18n, generateNodeHelp } from "./nodes/flowctrl/base/editor";
+import {
+  i18n,
+  generateNodeHelp,
+  buildEditorTemplate,
+  buildEditorNodeDef,
+  buildEditorMetadata,
+  NodeEditorDefinition,
+} from "./nodes/flowctrl/base/editor";
 
 declare const RED: EditorRED;
 
-const nodesRegistry: { [key: string]: NodeRegistryEntry } = {
-  ...FlowCtrlNodesRegistry,
-  ...HelperNodesRegistry,
-  ...LogicalNodesRegistry,
-  ...OperatorNodesRegistry,
-};
+const allDefs: NodeEditorDefinition[] = [
+  ...FlowCtrlDefs,
+  ...HelperDefs,
+  ...LogicalDefs,
+  ...OperatorDefs,
+];
 
 console.log("Smart Home Helper - version:", version || "unknown");
 
@@ -28,12 +37,30 @@ const $migrationButton = createMigrationElements();
 RED.events.on("editor:open", checkAndMigrateNode);
 RED.events.on("nodes:add", checkNode);
 
-// Register all nodes and inject help dynamically
-for (const [type, entry] of Object.entries(nodesRegistry)) {
-  injectNodeTemplate(type, entry.template);
-  RED.nodes.registerType(type, entry.editor);
+// Register BaseNode specially (not covered by NodeEditorDefinition pattern)
+injectNodeTemplate(FlowCtrlBaseNode.NodeTypeName, FlowCtrlBaseEditorTemplate);
+RED.nodes.registerType(FlowCtrlBaseNode.NodeTypeName, FlowCtrlBaseEditorNode);
+setTimeout(
+  () =>
+    injectNodeHelp(
+      FlowCtrlBaseNode.NodeTypeName,
+      FlowCtrlBaseEditorNode,
+      FlowCtrlBaseEditorMetadata,
+    ),
+  100,
+);
+
+// Register all nodes centrally from their NodeEditorDefinition
+for (const def of allDefs) {
+  const type = def.nodeClass.NodeTypeName;
+  const template = buildEditorTemplate(def);
+  const editorDef = buildEditorNodeDef(def);
+  const metadata = buildEditorMetadata(def);
+
+  injectNodeTemplate(type, template);
+  RED.nodes.registerType(type, editorDef);
   // Inject help text dynamically after a short delay to ensure i18n is loaded
-  setTimeout(() => injectNodeHelp(type, entry.editor, entry.metadata), 100);
+  setTimeout(() => injectNodeHelp(type, editorDef, metadata), 100);
 }
 
 /**
@@ -112,18 +139,18 @@ function checkAndMigrateNode() {
       ? (selection.nodes[0] as EditorNodeInstance<any>)
       : null;
 
-  const entry = getNodeRegistryEntry(node);
+  const def = findDefForNode(node);
 
-  if (entry) {
-    entry.node.Migration.checkAndMigrate(node);
+  if (def) {
+    def.nodeClass.Migration.checkAndMigrate(node);
   }
 }
 
 function checkNode(node: EditorNodeInstance<any>) {
-  const entry = getNodeRegistryEntry(node);
+  const def = findDefForNode(node);
 
-  if (entry) {
-    const migrationNeeded = entry.node.Migration.check(node);
+  if (def) {
+    const migrationNeeded = def.nodeClass.Migration.check(node);
     if (migrationNeeded) {
       console.log(
         `Smart Home Helper: Node ${node.z} - ${node.name || node.id} of type ${node.type} requires migration. Please open and re-save the node to apply the migration.`,
@@ -133,13 +160,13 @@ function checkNode(node: EditorNodeInstance<any>) {
   }
 }
 
-function getNodeRegistryEntry(
+function findDefForNode(
   node: EditorNodeInstance<any> | null,
-): NodeRegistryEntry | null {
+): NodeEditorDefinition | null {
   if (!node) {
     return null;
   }
-  return nodesRegistry[node.type] || null;
+  return allDefs.find((d) => d.nodeClass.NodeTypeName === node.type) ?? null;
 }
 
 function createMigrationElements() {
@@ -197,12 +224,12 @@ function checkAndMigrateAllNodes() {
   let migratedCount = 0;
 
   const checkAndMigrate = (node: EditorNodeInstance<any>) => {
-    const entry = getNodeRegistryEntry(node);
-    if (entry) {
+    const def = findDefForNode(node);
+    if (def) {
       console.log(
         `Smart Home Helper: Checking node ${node.z} - ${node.name || node.id} of type ${node.type} for migration...`,
       );
-      const migrated = entry.node.Migration.checkAndMigrate(node);
+      const migrated = def.nodeClass.Migration.checkAndMigrate(node);
       if (migrated) {
         console.log(
           `Smart Home Helper: Migrated node ${node.z} - ${node.name || node.id} of type ${node.type}.`,

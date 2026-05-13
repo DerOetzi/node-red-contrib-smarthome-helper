@@ -1,9 +1,6 @@
 import WarmWaterPVControllerNode from ".";
 import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
 import {
-  buildEditorMetadata,
-  buildEditorNodeDef,
-  buildEditorTemplate,
   NodeEditorDefinition,
   NodeEditorFormBuilder,
 } from "../../../flowctrl/base/editor";
@@ -231,7 +228,7 @@ function buildWarmWaterPVControllerFormContent(
   );
 }
 
-const def: NodeEditorDefinition<
+export const WarmWaterPVControllerEditorDef: NodeEditorDefinition<
   WarmWaterPVControllerNodeOptions,
   WarmWaterPVControllerEditorNodeProperties
 > = {
@@ -295,7 +292,3 @@ const def: NodeEditorDefinition<
     },
   },
 };
-
-export const WarmWaterPVControllerEditorTemplate = buildEditorTemplate(def);
-export const WarmWaterPVControllerEditorMetadata = buildEditorMetadata(def);
-export default buildEditorNodeDef(def);

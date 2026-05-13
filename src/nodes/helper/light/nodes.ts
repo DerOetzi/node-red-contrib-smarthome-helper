@@ -1,15 +1,6 @@
-import { NodeRegistryEntry } from "../../types";
-import LightControllerNode from "./light-controller";
-import LightControllerEditorNode, {
-  LightControllerEditorMetadata,
-  LightControllerEditorTemplate,
-} from "./light-controller/editor";
+import { NodeEditorDefinition } from "../../flowctrl/base/editor";
+import { LightControllerEditorDef } from "./light-controller/editor";
 
-export const HelperLightNodesRegistry: { [key: string]: NodeRegistryEntry } = {
-  [LightControllerNode.NodeTypeName]: {
-    node: LightControllerNode,
-    editor: LightControllerEditorNode,
-    metadata: LightControllerEditorMetadata,
-    template: LightControllerEditorTemplate,
-  },
-};
+export const HelperLightDefs: NodeEditorDefinition<any, any>[] = [
+  LightControllerEditorDef,
+];

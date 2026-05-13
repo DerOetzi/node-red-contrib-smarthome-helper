@@ -1,11 +1,12 @@
-import { HelperClimateNodesRegistry } from "./climate/nodes";
-import { HelperControlNodesRegistry } from "./control/nodes";
-import { HelperLightNodesRegistry } from "./light/nodes";
-import { HelperNotificationNodesRegistry } from "./notification/nodes";
+import { HelperClimateDefs } from "./climate/nodes";
+import { HelperControlDefs } from "./control/nodes";
+import { HelperLightDefs } from "./light/nodes";
+import { HelperNotificationDefs } from "./notification/nodes";
+import { NodeEditorDefinition } from "../flowctrl/base/editor";
 
-export const HelperNodesRegistry = {
-  ...HelperClimateNodesRegistry,
-  ...HelperControlNodesRegistry,
-  ...HelperLightNodesRegistry,
-  ...HelperNotificationNodesRegistry,
-};
+export const HelperDefs: NodeEditorDefinition[] = [
+  ...HelperClimateDefs,
+  ...HelperControlDefs,
+  ...HelperLightDefs,
+  ...HelperNotificationDefs,
+];
