@@ -1,12 +1,14 @@
 import { EditorNodeInstance } from "node-red";
 import { MatcherRow } from "../../../flowctrl/match-join/types";
 import {
-  HeatingControllerControllerMode,
   HeatingControllerEditorNodeProperties,
+  HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
 } from "./types";
 import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
 import ActiveControllerMigration from "../../../flowctrl/active-controller/migration";
+
+const Defaults = HeatingControllerNodeOptionsDefaults;
 
 export default class HeatingControllerMigration extends ActiveControllerMigration<HeatingControllerEditorNodeProperties> {
   protected _migrationSteps(
@@ -20,20 +22,20 @@ export default class HeatingControllerMigration extends ActiveControllerMigratio
     }
 
     if (this.checkMigrationStepRequired(node, "0.25.0")) {
-      node.defaultActive = false;
-      node.reactivateEnabled = true;
+      node.defaultActive = Defaults.defaultActive;
+      node.reactivateEnabled = Defaults.reactivateEnabled;
       node.migrated = true;
     }
 
     if (this.checkMigrationStepRequired(node, "0.26.0")) {
-      node.boostEnabled = true;
-      node.pvBoostEnabled = false;
-      node.pvBoostTemperatureOffset = 1;
+      node.boostEnabled = Defaults.boostEnabled;
+      node.pvBoostEnabled = Defaults.pvBoostEnabled;
+      node.pvBoostTemperatureOffset = Defaults.pvBoostTemperatureOffset;
       node.migrated = true;
     }
 
     if (this.checkMigrationStepRequired(node, "0.27.1")) {
-      node.outputs = 3;
+      node.outputs = Defaults.outputs;
       node.migrated = true;
     }
 
@@ -54,16 +56,23 @@ export default class HeatingControllerMigration extends ActiveControllerMigratio
       node.migrated = true;
     }
 
-    if (this.checkMigrationStepRequired(node, "1.2.2")) {
-      node.controllerMode = HeatingControllerControllerMode.static;
-      node.mpcStepMinutes = 5;
-      node.mpcHorizonSteps = 6;
-      node.mpcThermalGain = 0.06;
-      node.mpcLossCoeff = 0.01;
-      node.mpcChangePenalty = 0.05;
-      node.minTargetTemperature = 5;
-      node.maxTargetTemperature = 30;
-      node.targetTemperatureStep = 1;
+    if (this.checkMigrationStepRequired(node, "1.2.3")) {
+      node.controllerMode = Defaults.controllerMode;
+      node.mpcStepMinutes = Defaults.mpcStepMinutes;
+      node.mpcHorizonSteps = Defaults.mpcHorizonSteps;
+      node.mpcThermalGain = Defaults.mpcThermalGain;
+      node.mpcLossCoeff = Defaults.mpcLossCoeff;
+      node.mpcChangePenalty = Defaults.mpcChangePenalty;
+      node.minTargetTemperature = Defaults.minTargetTemperature;
+      node.maxTargetTemperature = Defaults.maxTargetTemperature;
+      node.targetTemperatureStep = Defaults.targetTemperatureStep;
+      node.mpcDemandHysteresisPct = Defaults.mpcDemandHysteresisPct;
+      node.mpcHoldTimeSeconds = Defaults.mpcHoldTimeSeconds;
+      node.mpcMaxDemandStepPct = Defaults.mpcMaxDemandStepPct;
+      node.mpcReferenceFlowTemperature = Defaults.mpcReferenceFlowTemperature;
+      node.mpcMinFlowFactor = Defaults.mpcMinFlowFactor;
+      node.mpcMaxFlowFactor = Defaults.mpcMaxFlowFactor;
+      node.trvs = Defaults.trvs;
       node.migrated = true;
     }
 

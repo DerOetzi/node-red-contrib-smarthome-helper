@@ -3,6 +3,7 @@ import {
   i18nFieldDefault,
   NodeEditorDefinition,
   NodeEditorFormBuilder,
+  NodeEditorFormEditableList,
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import HeatingControllerNode from "./";
@@ -12,7 +13,29 @@ import {
   HeatingControllerNodeOptions,
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
+  TRV_MAX_COUNT,
+  TrvRow,
 } from "./types";
+
+class TrvListEditableList extends NodeEditorFormEditableList<TrvRow> {
+  protected addItem(data: TrvRow) {
+    this.rowBuilder!.createTextInput({
+      id: "name",
+      label: "trvName",
+      value: data.name ?? "",
+      icon: "tag",
+    });
+    this.rowBuilder!.createNumberInput({
+      id: "powerFactor",
+      label: "trvPowerFactor",
+      value: data.powerFactor ?? 1,
+      icon: "tachometer",
+      min: 0.1,
+      max: 3,
+      step: 0.1,
+    });
+  }
+}
 
 const controlMatcherList = new MatchJoinEditableList({
   targets: [
@@ -30,9 +53,12 @@ const temperatureMatcherList = new MatchJoinEditableList({
   targets: [
     HeatingControllerTarget.comfortTemperature,
     HeatingControllerTarget.ecoTemperatureOffset,
-    HeatingControllerTarget.trvTemperature,
+    HeatingControllerTarget.trv1,
+    HeatingControllerTarget.trv2,
+    HeatingControllerTarget.trv3,
     HeatingControllerTarget.additionalTemperatureSensor,
     HeatingControllerTarget.outdoorTemperature,
+    HeatingControllerTarget.flowTemperature,
   ],
   translatePrefix: "helper.heating-controller",
   headerPrefix: "helper.heating-controller",
@@ -295,6 +321,84 @@ function buildHeatingControllerFormContent(
     .parent()
     .toggle(isMpc);
 
+  const mpcDemandHysteresisPctRow = builder
+    .createNumberInput({
+      id: "node-input-mpcDemandHysteresisPct",
+      label: "mpcDemandHysteresisPct",
+      value: node.mpcDemandHysteresisPct,
+      icon: "adjust",
+      min: 0,
+      max: 30,
+      step: 1,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcHoldTimeSecondsRow = builder
+    .createNumberInput({
+      id: "node-input-mpcHoldTimeSeconds",
+      label: "mpcHoldTimeSeconds",
+      value: node.mpcHoldTimeSeconds,
+      icon: "clock-o",
+      min: 0,
+      max: 3600,
+      step: 30,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcMaxDemandStepPctRow = builder
+    .createNumberInput({
+      id: "node-input-mpcMaxDemandStepPct",
+      label: "mpcMaxDemandStepPct",
+      value: node.mpcMaxDemandStepPct,
+      icon: "arrows-v",
+      min: 5,
+      max: 100,
+      step: 5,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcReferenceFlowTemperatureRow = builder
+    .createNumberInput({
+      id: "node-input-mpcReferenceFlowTemperature",
+      label: "mpcReferenceFlowTemperature",
+      value: node.mpcReferenceFlowTemperature,
+      icon: "tint",
+      min: 20,
+      max: 90,
+      step: 5,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcMinFlowFactorRow = builder
+    .createNumberInput({
+      id: "node-input-mpcMinFlowFactor",
+      label: "mpcMinFlowFactor",
+      value: node.mpcMinFlowFactor,
+      icon: "minus",
+      min: 0.1,
+      max: 1,
+      step: 0.1,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcMaxFlowFactorRow = builder
+    .createNumberInput({
+      id: "node-input-mpcMaxFlowFactor",
+      label: "mpcMaxFlowFactor",
+      value: node.mpcMaxFlowFactor,
+      icon: "plus",
+      min: 1,
+      max: 3,
+      step: 0.1,
+    })
+    .parent()
+    .toggle(isMpc);
+
   controllerModeSelect.on("change", function () {
     const mpcSelected = $(this).val() === HeatingControllerControllerMode.mpc;
     mpcStepMinutesRow.toggle(mpcSelected);
@@ -302,6 +406,12 @@ function buildHeatingControllerFormContent(
     mpcThermalGainRow.toggle(mpcSelected);
     mpcLossCoeffRow.toggle(mpcSelected);
     mpcChangePenaltyRow.toggle(mpcSelected);
+    mpcDemandHysteresisPctRow.toggle(mpcSelected);
+    mpcHoldTimeSecondsRow.toggle(mpcSelected);
+    mpcMaxDemandStepPctRow.toggle(mpcSelected);
+    mpcReferenceFlowTemperatureRow.toggle(mpcSelected);
+    mpcMinFlowFactorRow.toggle(mpcSelected);
+    mpcMaxFlowFactorRow.toggle(mpcSelected);
     minTargetTemperatureRow.toggle(mpcSelected);
     maxTargetTemperatureRow.toggle(mpcSelected);
     targetTemperatureStepRow.toggle(mpcSelected);
@@ -338,6 +448,12 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "mpcThermalGain",
     "mpcLossCoeff",
     "mpcChangePenalty",
+    "mpcDemandHysteresisPct",
+    "mpcHoldTimeSeconds",
+    "mpcMaxDemandStepPct",
+    "mpcReferenceFlowTemperature",
+    "mpcMinFlowFactor",
+    "mpcMaxFlowFactor",
     "minTargetTemperature",
     "maxTargetTemperature",
     "targetTemperatureStep",
@@ -351,9 +467,12 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "command",
     "pvBoost",
     "pvBoostTemperatureOffset",
-    "trvTemperature",
+    "trv1",
+    "trv2",
+    "trv3",
     "additionalTemperatureSensor",
     "outdoorTemperature",
+    "flowTemperature",
   ],
   outputKeys: ["heatmode", "temperature", "window"],
   baseTemplate: "input-only",
@@ -375,6 +494,12 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
       create: () => boostMatcherList,
       dataKey: "matchers",
       rowTranslatePrefix: "flowctrl.match-join",
+    },
+    {
+      id: "trv-rows",
+      create: () => new TrvListEditableList(),
+      dataKey: "trvs",
+      rowTranslatePrefix: "helper.heating-controller",
     },
   ],
   form: {
@@ -399,6 +524,54 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
         "helper.heating-controller",
         "frostProtectionCommand",
       );
+    },
+    oneditprepare(node, ctx) {
+      const matcherList = ctx.getList("matcher-rows-temperature");
+      const trvListCtx = ctx.getList("trv-rows");
+
+      function updateMatcherVisibilityForTrvCount() {
+        const trvCount = trvListCtx.values().length;
+        for (let i = 1; i <= TRV_MAX_COUNT; i++) {
+          matcherList.removeTarget?.(i <= trvCount, `trv${i}`);
+        }
+      }
+
+      for (let i = 1; i <= TRV_MAX_COUNT; i++) {
+        matcherList.showHideTarget?.(i <= node.trvs.length, `trv${i}`);
+      }
+
+      $("#trv-rows").on("change", () => updateMatcherVisibilityForTrvCount());
+    },
+    oneditsave(node, ctx) {
+      const trvListCtx = ctx.getList("trv-rows");
+      const trvs = trvListCtx.values() as Array<{
+        name: string;
+        powerFactor: number;
+      }>;
+
+      const namedTrvs = trvs
+        .filter((t) => t.name && t.name.trim().length > 0)
+        .map((t) => ({ ...t, name: t.name.trim() }));
+
+      const names = namedTrvs.map((t) => t.name);
+      const unique = new Set(names);
+      if (unique.size < names.length) {
+        const seen = new Set<string>();
+        node.trvs = namedTrvs.filter((t) => {
+          if (seen.has(t.name)) {
+            return false;
+          }
+          seen.add(t.name);
+          return true;
+        });
+      } else {
+        node.trvs = namedTrvs;
+      }
+
+      node.trvs = node.trvs.map((t) => ({
+        ...t,
+        powerFactor: Math.max(0.1, Math.min(3, t.powerFactor ?? 1)),
+      }));
     },
   },
 };

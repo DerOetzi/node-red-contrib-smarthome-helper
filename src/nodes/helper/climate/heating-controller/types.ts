@@ -21,42 +21,66 @@ export enum HeatingControllerControllerMode {
   mpc = "mpc",
 }
 
+export const TRV_MAX_COUNT = 3;
+
+export interface TrvRow {
+  name: string;
+  powerFactor: number;
+}
+
+export const TrvRowDefaults: TrvRow = {
+  name: "",
+  powerFactor: 1,
+};
+
 export enum HeatingControllerTarget {
   comfortCondition = "comfortCondition",
   comfortTemperature = "comfortTemperature",
   ecoTemperatureOffset = "ecoTemperatureOffset",
   pvBoost = "pvBoost",
   windowOpen = "windowOpen",
-  trvTemperature = "trvTemperature",
+  trv1 = "trv1",
+  trv2 = "trv2",
+  trv3 = "trv3",
   additionalTemperatureSensor = "additionalTemperatureSensor",
   outdoorTemperature = "outdoorTemperature",
+  flowTemperature = "flowTemperature",
 }
 
-export type MpcInput = {
+export type RoomMpcInput = {
   targetTempC: number;
   roomTempC: number;
-  referenceTrvTempC?: number;
   outdoorTempC?: number;
-  windowOpen: boolean;
-  heatingAllowed: boolean;
+  flowTempC?: number;
   nowTs: number;
 };
 
-export type MpcParams = {
+export type RoomMpcParams = {
   stepMinutes: number;
   horizonSteps: number;
   thermalGain: number;
   lossCoeff: number;
   changePenalty: number;
-  minTargetTemperature: number;
-  maxTargetTemperature: number;
-  targetTemperatureStep: number;
+  demandHysteresisPct: number;
+  holdTimeSeconds: number;
+  maxDemandStepPct: number;
+  referenceFlowTemperature: number;
+  minFlowFactor: number;
+  maxFlowFactor: number;
 };
 
-export type MpcState = {
+export type RoomMpcState = {
   lastPercent?: number;
   lastUpdateTs?: number;
-  lastTargetTemperature?: number;
+  lastBaseTargetTemperature?: number;
+  lastRoomTemperature?: number;
+  lastCost?: number;
+  lastFlowFactor?: number;
+  lastTrvTargets?: Record<string, number>;
+
+  lastRawDemandPct?: number;
+
+  lastStabilizedDemandPct?: number;
 };
 
 export interface HeatingControllerNodeOptions extends ActiveControllerNodeOptions {
@@ -77,9 +101,16 @@ export interface HeatingControllerNodeOptions extends ActiveControllerNodeOption
   mpcThermalGain: number;
   mpcLossCoeff: number;
   mpcChangePenalty: number;
+  mpcDemandHysteresisPct: number;
+  mpcHoldTimeSeconds: number;
+  mpcMaxDemandStepPct: number;
+  mpcReferenceFlowTemperature: number;
+  mpcMinFlowFactor: number;
+  mpcMaxFlowFactor: number;
   minTargetTemperature: number;
   maxTargetTemperature: number;
   targetTemperatureStep: number;
+  trvs: TrvRow[];
 
   // deprecated 0.21.4
   statusDelay?: number;
@@ -140,9 +171,16 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     mpcThermalGain: 0.06,
     mpcLossCoeff: 0.01,
     mpcChangePenalty: 0.05,
+    mpcDemandHysteresisPct: 5,
+    mpcHoldTimeSeconds: 300,
+    mpcMaxDemandStepPct: 20,
+    mpcReferenceFlowTemperature: 50,
+    mpcMinFlowFactor: 0.5,
+    mpcMaxFlowFactor: 1.5,
     minTargetTemperature: 5,
     maxTargetTemperature: 30,
     targetTemperatureStep: 1,
+    trvs: [],
   };
 
 export interface HeatingControllerNodeDef

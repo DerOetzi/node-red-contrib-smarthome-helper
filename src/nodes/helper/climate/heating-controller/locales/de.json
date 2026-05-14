@@ -4,6 +4,7 @@
     "matcher-rows-control": "Steuereingaben",
     "matcher-rows-temperature": "Temperatureingaben",
     "matcher-rows-boost": "Boost-Eingaben",
+    "trv-rows": "TRVs (Heizkörperthermostate)",
     "field": {
         "target": {
             "label": "Parameter",
@@ -93,6 +94,30 @@
             "label": "MPC Änderungsstrafe",
             "description": "Strafe für Sollwertsprünge (Glättung)"
         },
+        "mpcDemandHysteresisPct": {
+            "label": "MPC Hysterese (%)",
+            "description": "Mindestabweichung für Anforderungsänderung (verhindert Flattern)"
+        },
+        "mpcHoldTimeSeconds": {
+            "label": "MPC Haltezeit (Sekunden)",
+            "description": "Mindestzeit zwischen Anforderungsaktualisierungen"
+        },
+        "mpcMaxDemandStepPct": {
+            "label": "MPC Max. Änderung pro Zyklus (%)",
+            "description": "Maximale Anforderungsänderung pro Zyklus (Ratenbegrenzer)"
+        },
+        "mpcReferenceFlowTemperature": {
+            "label": "Referenz-Vorlauftemperatur (°C)",
+            "description": "Referenz-Vorlauftemperatur zur Normierung der Heizleistung"
+        },
+        "mpcMinFlowFactor": {
+            "label": "Min. Vorlauf-Faktor",
+            "description": "Minimaler Heizleistungsfaktor bei niedriger Vorlauftemperatur"
+        },
+        "mpcMaxFlowFactor": {
+            "label": "Max. Vorlauf-Faktor",
+            "description": "Maximaler Heizleistungsfaktor bei hoher Vorlauftemperatur"
+        },
         "minTargetTemperature": {
             "label": "Min. Zieltemperatur",
             "description": "Minimale TRV-Zieltemperatur"
@@ -100,6 +125,14 @@
         "maxTargetTemperature": {
             "label": "Max. Zieltemperatur",
             "description": "Maximale TRV-Zieltemperatur"
+        },
+        "trvName": {
+            "label": "TRV-Name",
+            "description": "Bezeichner, der als Ausgabe-Topic-Präfix für diesen TRV verwendet wird"
+        },
+        "trvPowerFactor": {
+            "label": "Leistungsfaktor",
+            "description": "Relative Heizleistung dieses TRV (1,0 = Referenz, >1 stärker, <1 schwächer)"
         },
         "targetTemperatureStep": {
             "label": "Temperaturstufe",
@@ -143,10 +176,9 @@
             "name": "PV Boost Temperatur-Offset",
             "description": "Dynamischer PV Temperatur-Offset"
         },
-        "trvTemperature": {
-            "name": "TRV-Temperatur",
-            "description": "Aktuelle Temperatur eines Heizkörperthermostats"
-        },
+        "trv1": { "name": "TRV 1 Temperatur", "description": "Temperatur gemessen durch TRV 1" },
+        "trv2": { "name": "TRV 2 Temperatur", "description": "Temperatur gemessen durch TRV 2" },
+        "trv3": { "name": "TRV 3 Temperatur", "description": "Temperatur gemessen durch TRV 3" },
         "additionalTemperatureSensor": {
             "name": "Raumtemperatursensor",
             "description": "Externer Raumtemperatursensor (führende Größe für MPC)"
@@ -154,6 +186,10 @@
         "outdoorTemperature": {
             "name": "Außentemperatur",
             "description": "Außentemperatur für verbesserte Wärmeverlustschätzung"
+        },
+        "flowTemperature": {
+            "name": "Vorlauftemperatur",
+            "description": "Vorlauftemperatur des Heizkreises zur Heizleistungsschätzung"
         }
     },
     "output": {
@@ -178,6 +214,7 @@
         "inactive": "Inaktiv",
         "automationOn": "Automatisch",
         "automationOff": "Manuell",
+        "windowOpen": "Fenster offen - Frostschutz",
         "room": "Raum"
     }
 }

@@ -4,6 +4,7 @@
     "matcher-rows-control": "Control inputs",
     "matcher-rows-temperature": "Temperature inputs",
     "matcher-rows-boost": "Boost inputs",
+    "trv-rows": "TRVs (Thermostatic Radiator Valves)",
     "field": {
         "target": {
             "label": "Parameter",
@@ -93,6 +94,30 @@
             "label": "MPC change penalty",
             "description": "Penalty for demand changes (smoothing)"
         },
+        "mpcDemandHysteresisPct": {
+            "label": "MPC demand hysteresis (%)",
+            "description": "Minimum demand change to accept new value (prevents flapping)"
+        },
+        "mpcHoldTimeSeconds": {
+            "label": "MPC hold time (seconds)",
+            "description": "Minimum time between demand updates"
+        },
+        "mpcMaxDemandStepPct": {
+            "label": "MPC max demand step (%)",
+            "description": "Maximum demand change per cycle (rate limiter)"
+        },
+        "mpcReferenceFlowTemperature": {
+            "label": "Reference flow temperature (°C)",
+            "description": "Reference flow temperature for heating power normalization"
+        },
+        "mpcMinFlowFactor": {
+            "label": "Min flow factor",
+            "description": "Minimum heating power factor when flow temperature is low"
+        },
+        "mpcMaxFlowFactor": {
+            "label": "Max flow factor",
+            "description": "Maximum heating power factor when flow temperature is high"
+        },
         "minTargetTemperature": {
             "label": "Min target temperature",
             "description": "Minimum TRV target temperature"
@@ -100,6 +125,14 @@
         "maxTargetTemperature": {
             "label": "Max target temperature",
             "description": "Maximum TRV target temperature"
+        },
+        "trvName": {
+            "label": "TRV name",
+            "description": "Identifier used as the output topic prefix for this TRV"
+        },
+        "trvPowerFactor": {
+            "label": "Power factor",
+            "description": "Relative heating power of this TRV (1.0 = reference, >1 stronger, <1 weaker)"
         },
         "targetTemperatureStep": {
             "label": "Temperature step",
@@ -143,10 +176,9 @@
             "name": "PV Boost temperature offset",
             "description": "Dynamic PV temperature offset"
         },
-        "trvTemperature": {
-            "name": "TRV temperature",
-            "description": "Current temperature measured by a thermostatic radiator valve"
-        },
+        "trv1": { "name": "TRV 1 temperature", "description": "Temperature measured by TRV 1" },
+        "trv2": { "name": "TRV 2 temperature", "description": "Temperature measured by TRV 2" },
+        "trv3": { "name": "TRV 3 temperature", "description": "Temperature measured by TRV 3" },
         "additionalTemperatureSensor": {
             "name": "Room temperature sensor",
             "description": "External room temperature sensor (leading source for MPC)"
@@ -154,6 +186,10 @@
         "outdoorTemperature": {
             "name": "Outdoor temperature",
             "description": "Outdoor temperature for improved thermal loss estimation"
+        },
+        "flowTemperature": {
+            "name": "Flow temperature",
+            "description": "Heating circuit flow temperature for heating power estimation"
         }
     },
     "output": {
@@ -178,6 +214,7 @@
         "inactive": "Inactive",
         "automationOn": "Automated",
         "automationOff": "Manual",
+        "windowOpen": "Window open - Frost protection",
         "room": "Room"
     }
 }
