@@ -38,3 +38,11 @@ applyTo: "src/**"
 
 - The build output in `dist/` is generated, not authored. `gulpfile.js` generates `src/version.ts`, compiles runtime TypeScript, bundles editor assets into `dist/index.html`, copies icons, merges locales, and regenerates examples. Do not hand-edit `dist/` or `src/version.ts`; rerun the build instead.
 - TypeScript is strict and the project favors absolute imports rooted at `src` where configured. Keep changes small and consistent with the existing node-family structure instead of introducing parallel abstractions.
+
+## Devcontainer
+
+- All builds (`npm run build`, `npm run lint`, `tsc`) must be run **inside the devcontainer**, not on the host system.
+- The devcontainer container name is `node-red-contrib-smarthome-helper_devcontainer-dev-container-1`.
+- The workspace path inside the container is `/workspace` (not `/workspaces/...`).
+- Commands must be executed as user `node` (uid 1000), **not** as root. Use: `docker exec -u node <container> bash -c "cd /workspace && <command>"`
+- Example: `docker exec -u node node-red-contrib-smarthome-helper_devcontainer-dev-container-1 bash -c "cd /workspace && npm run build"`

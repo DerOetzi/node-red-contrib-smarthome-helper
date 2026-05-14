@@ -64,6 +64,46 @@
         "pvBoostTemperatureOffset": {
             "label": "PV Boost Temperatur-Offset",
             "description": "Temperaturerhöhung bei PV-Überschuss"
+        },
+        "controllerMode": {
+            "label": "Reglermodus",
+            "description": "Statisch: fester Sollwert. MPC: modellprädiktive Regelung.",
+            "options": {
+                "static": "Statisch",
+                "mpc": "MPC"
+            }
+        },
+        "mpcStepMinutes": {
+            "label": "MPC Schrittweite (Minuten)",
+            "description": "Simulationsschrittweite in Minuten"
+        },
+        "mpcHorizonSteps": {
+            "label": "MPC Horizont (Schritte)",
+            "description": "Anzahl der Simulationsschritte im Prädiktionshorizont"
+        },
+        "mpcThermalGain": {
+            "label": "MPC Wärmegewinn",
+            "description": "Temperaturanstieg je Schritt bei voller Heizleistung"
+        },
+        "mpcLossCoeff": {
+            "label": "MPC Verlustkoeffizient",
+            "description": "Wärmeverlust je Schritt"
+        },
+        "mpcChangePenalty": {
+            "label": "MPC Änderungsstrafe",
+            "description": "Strafe für Sollwertsprünge (Glättung)"
+        },
+        "minTargetTemperature": {
+            "label": "Min. Zieltemperatur",
+            "description": "Minimale TRV-Zieltemperatur"
+        },
+        "maxTargetTemperature": {
+            "label": "Max. Zieltemperatur",
+            "description": "Maximale TRV-Zieltemperatur"
+        },
+        "targetTemperatureStep": {
+            "label": "Temperaturstufe",
+            "description": "Rundungsstufe für die TRV-Zieltemperatur"
         }
     },
     "input": {
@@ -102,6 +142,18 @@
         "pvBoostTemperatureOffset": {
             "name": "PV Boost Temperatur-Offset",
             "description": "Dynamischer PV Temperatur-Offset"
+        },
+        "trvTemperature": {
+            "name": "TRV-Temperatur",
+            "description": "Aktuelle Temperatur eines Heizkörperthermostats"
+        },
+        "additionalTemperatureSensor": {
+            "name": "Raumtemperatursensor",
+            "description": "Externer Raumtemperatursensor (führende Größe für MPC)"
+        },
+        "outdoorTemperature": {
+            "name": "Außentemperatur",
+            "description": "Außentemperatur für verbesserte Wärmeverlustschätzung"
         }
     },
     "output": {
@@ -125,6 +177,7 @@
     "state": {
         "inactive": "Inaktiv",
         "automationOn": "Automatisch",
-        "automationOff": "Manuell"
+        "automationOff": "Manuell",
+        "room": "Raum"
     }
 }

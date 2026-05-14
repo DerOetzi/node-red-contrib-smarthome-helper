@@ -64,6 +64,46 @@
         "pvBoostTemperatureOffset": {
             "label": "PV Boost temperature offset",
             "description": "Temperature increase with PV surplus"
+        },
+        "controllerMode": {
+            "label": "Controller mode",
+            "description": "Static: fixed setpoint. MPC: model-predictive control.",
+            "options": {
+                "static": "Static",
+                "mpc": "MPC"
+            }
+        },
+        "mpcStepMinutes": {
+            "label": "MPC step (minutes)",
+            "description": "Simulation step width in minutes"
+        },
+        "mpcHorizonSteps": {
+            "label": "MPC horizon (steps)",
+            "description": "Number of simulation steps in the prediction horizon"
+        },
+        "mpcThermalGain": {
+            "label": "MPC thermal gain",
+            "description": "Temperature rise per step at full demand"
+        },
+        "mpcLossCoeff": {
+            "label": "MPC loss coefficient",
+            "description": "Thermal loss per step"
+        },
+        "mpcChangePenalty": {
+            "label": "MPC change penalty",
+            "description": "Penalty for demand changes (smoothing)"
+        },
+        "minTargetTemperature": {
+            "label": "Min target temperature",
+            "description": "Minimum TRV target temperature"
+        },
+        "maxTargetTemperature": {
+            "label": "Max target temperature",
+            "description": "Maximum TRV target temperature"
+        },
+        "targetTemperatureStep": {
+            "label": "Temperature step",
+            "description": "Rounding step for TRV target temperature"
         }
     },
     "input": {
@@ -102,6 +142,18 @@
         "pvBoostTemperatureOffset": {
             "name": "PV Boost temperature offset",
             "description": "Dynamic PV temperature offset"
+        },
+        "trvTemperature": {
+            "name": "TRV temperature",
+            "description": "Current temperature measured by a thermostatic radiator valve"
+        },
+        "additionalTemperatureSensor": {
+            "name": "Room temperature sensor",
+            "description": "External room temperature sensor (leading source for MPC)"
+        },
+        "outdoorTemperature": {
+            "name": "Outdoor temperature",
+            "description": "Outdoor temperature for improved thermal loss estimation"
         }
     },
     "output": {
@@ -125,6 +177,7 @@
     "state": {
         "inactive": "Inactive",
         "automationOn": "Automated",
-        "automationOff": "Manual"
+        "automationOff": "Manual",
+        "room": "Room"
     }
 }

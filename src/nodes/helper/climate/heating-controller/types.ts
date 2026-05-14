@@ -16,13 +16,48 @@ export enum HeatMode {
   frostProtection = "frost protection",
 }
 
+export enum HeatingControllerControllerMode {
+  static = "static",
+  mpc = "mpc",
+}
+
 export enum HeatingControllerTarget {
   comfortCondition = "comfortCondition",
   comfortTemperature = "comfortTemperature",
   ecoTemperatureOffset = "ecoTemperatureOffset",
   pvBoost = "pvBoost",
   windowOpen = "windowOpen",
+  trvTemperature = "trvTemperature",
+  additionalTemperatureSensor = "additionalTemperatureSensor",
+  outdoorTemperature = "outdoorTemperature",
 }
+
+export type MpcInput = {
+  targetTempC: number;
+  roomTempC: number;
+  referenceTrvTempC?: number;
+  outdoorTempC?: number;
+  windowOpen: boolean;
+  heatingAllowed: boolean;
+  nowTs: number;
+};
+
+export type MpcParams = {
+  stepMinutes: number;
+  horizonSteps: number;
+  thermalGain: number;
+  lossCoeff: number;
+  changePenalty: number;
+  minTargetTemperature: number;
+  maxTargetTemperature: number;
+  targetTemperatureStep: number;
+};
+
+export type MpcState = {
+  lastPercent?: number;
+  lastUpdateTs?: number;
+  lastTargetTemperature?: number;
+};
 
 export interface HeatingControllerNodeOptions extends ActiveControllerNodeOptions {
   defaultComfort: boolean;
@@ -35,6 +70,16 @@ export interface HeatingControllerNodeOptions extends ActiveControllerNodeOption
   frostProtectionCommand: string;
   pvBoostEnabled: boolean;
   pvBoostTemperatureOffset: number;
+
+  controllerMode: HeatingControllerControllerMode;
+  mpcStepMinutes: number;
+  mpcHorizonSteps: number;
+  mpcThermalGain: number;
+  mpcLossCoeff: number;
+  mpcChangePenalty: number;
+  minTargetTemperature: number;
+  maxTargetTemperature: number;
+  targetTemperatureStep: number;
 
   // deprecated 0.21.4
   statusDelay?: number;
@@ -88,6 +133,16 @@ export const HeatingControllerNodeOptionsDefaults: HeatingControllerNodeOptions 
     frostProtectionCommand: "",
     pvBoostEnabled: false,
     pvBoostTemperatureOffset: 1,
+
+    controllerMode: HeatingControllerControllerMode.static,
+    mpcStepMinutes: 5,
+    mpcHorizonSteps: 6,
+    mpcThermalGain: 0.06,
+    mpcLossCoeff: 0.01,
+    mpcChangePenalty: 0.05,
+    minTargetTemperature: 5,
+    maxTargetTemperature: 30,
+    targetTemperatureStep: 1,
   };
 
 export interface HeatingControllerNodeDef

@@ -7,6 +7,7 @@ import {
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import HeatingControllerNode from "./";
 import {
+  HeatingControllerControllerMode,
   HeatingControllerEditorNodeProperties,
   HeatingControllerNodeOptions,
   HeatingControllerNodeOptionsDefaults,
@@ -29,6 +30,9 @@ const temperatureMatcherList = new MatchJoinEditableList({
   targets: [
     HeatingControllerTarget.comfortTemperature,
     HeatingControllerTarget.ecoTemperatureOffset,
+    HeatingControllerTarget.trvTemperature,
+    HeatingControllerTarget.additionalTemperatureSensor,
+    HeatingControllerTarget.outdoorTemperature,
   ],
   translatePrefix: "helper.heating-controller",
   headerPrefix: "helper.heating-controller",
@@ -181,6 +185,127 @@ function buildHeatingControllerFormContent(
     value: node.frostProtectionCommand,
     icon: "snowflake-o",
   });
+
+  builder.line();
+
+  const isMpc = node.controllerMode === HeatingControllerControllerMode.mpc;
+
+  const controllerModeSelect = builder.createSelectInput({
+    id: "node-input-controllerMode",
+    label: "controllerMode",
+    value: node.controllerMode,
+    icon: "cog",
+    options: [
+      HeatingControllerControllerMode.static,
+      HeatingControllerControllerMode.mpc,
+    ],
+  });
+
+  const mpcStepMinutesRow = builder
+    .createNumberInput({
+      id: "node-input-mpcStepMinutes",
+      label: "mpcStepMinutes",
+      value: node.mpcStepMinutes,
+      icon: "clock-o",
+      min: 1,
+      max: 60,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcHorizonStepsRow = builder
+    .createNumberInput({
+      id: "node-input-mpcHorizonSteps",
+      label: "mpcHorizonSteps",
+      value: node.mpcHorizonSteps,
+      icon: "forward",
+      min: 1,
+      max: 24,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcThermalGainRow = builder
+    .createNumberInput({
+      id: "node-input-mpcThermalGain",
+      label: "mpcThermalGain",
+      value: node.mpcThermalGain,
+      icon: "fire",
+      step: 0.01,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcLossCoeffRow = builder
+    .createNumberInput({
+      id: "node-input-mpcLossCoeff",
+      label: "mpcLossCoeff",
+      value: node.mpcLossCoeff,
+      icon: "minus-circle",
+      step: 0.001,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcChangePenaltyRow = builder
+    .createNumberInput({
+      id: "node-input-mpcChangePenalty",
+      label: "mpcChangePenalty",
+      value: node.mpcChangePenalty,
+      icon: "balance-scale",
+      step: 0.01,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const minTargetTemperatureRow = builder
+    .createNumberInput({
+      id: "node-input-minTargetTemperature",
+      label: "minTargetTemperature",
+      value: node.minTargetTemperature,
+      icon: "thermometer-empty",
+      min: 0,
+      max: 15,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const maxTargetTemperatureRow = builder
+    .createNumberInput({
+      id: "node-input-maxTargetTemperature",
+      label: "maxTargetTemperature",
+      value: node.maxTargetTemperature,
+      icon: "thermometer-full",
+      min: 15,
+      max: 35,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const targetTemperatureStepRow = builder
+    .createNumberInput({
+      id: "node-input-targetTemperatureStep",
+      label: "targetTemperatureStep",
+      value: node.targetTemperatureStep,
+      icon: "step-forward",
+      min: 0.5,
+      max: 2,
+      step: 0.5,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  controllerModeSelect.on("change", function () {
+    const mpcSelected = $(this).val() === HeatingControllerControllerMode.mpc;
+    mpcStepMinutesRow.toggle(mpcSelected);
+    mpcHorizonStepsRow.toggle(mpcSelected);
+    mpcThermalGainRow.toggle(mpcSelected);
+    mpcLossCoeffRow.toggle(mpcSelected);
+    mpcChangePenaltyRow.toggle(mpcSelected);
+    minTargetTemperatureRow.toggle(mpcSelected);
+    maxTargetTemperatureRow.toggle(mpcSelected);
+    targetTemperatureStepRow.toggle(mpcSelected);
+  });
 }
 
 export const HeatingControllerEditorDef: NodeEditorDefinition<
@@ -207,6 +332,15 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "frostProtectionCommand",
     "pvBoostEnabled",
     "pvBoostTemperatureOffset",
+    "controllerMode",
+    "mpcStepMinutes",
+    "mpcHorizonSteps",
+    "mpcThermalGain",
+    "mpcLossCoeff",
+    "mpcChangePenalty",
+    "minTargetTemperature",
+    "maxTargetTemperature",
+    "targetTemperatureStep",
   ],
   inputKeys: [
     "activeCondition",
@@ -217,6 +351,9 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "command",
     "pvBoost",
     "pvBoostTemperatureOffset",
+    "trvTemperature",
+    "additionalTemperatureSensor",
+    "outdoorTemperature",
   ],
   outputKeys: ["heatmode", "temperature", "window"],
   baseTemplate: "input-only",

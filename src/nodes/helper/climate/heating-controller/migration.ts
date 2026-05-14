@@ -1,6 +1,7 @@
 import { EditorNodeInstance } from "node-red";
 import { MatcherRow } from "../../../flowctrl/match-join/types";
 import {
+  HeatingControllerControllerMode,
   HeatingControllerEditorNodeProperties,
   HeatingControllerTarget,
 } from "./types";
@@ -50,6 +51,19 @@ export default class HeatingControllerMigration extends ActiveControllerMigratio
 
     if (this.checkMigrationStepRequired(node, "1.1.1")) {
       node.debounceTopic = true;
+      node.migrated = true;
+    }
+
+    if (this.checkMigrationStepRequired(node, "1.2.2")) {
+      node.controllerMode = HeatingControllerControllerMode.static;
+      node.mpcStepMinutes = 5;
+      node.mpcHorizonSteps = 6;
+      node.mpcThermalGain = 0.06;
+      node.mpcLossCoeff = 0.01;
+      node.mpcChangePenalty = 0.05;
+      node.minTargetTemperature = 5;
+      node.maxTargetTemperature = 30;
+      node.targetTemperatureStep = 1;
       node.migrated = true;
     }
 
