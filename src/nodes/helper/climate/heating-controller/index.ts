@@ -14,9 +14,11 @@ import {
   HeatingControllerTarget,
   HeatMode,
 } from "./types";
-import { normalizeTemperatureStep, RoomMpcController } from "./mpc-controller";
 import Migration from "../../../flowctrl/base/migration";
 import HeatingControllerMigration from "./migration";
+import { RoomMPCController } from "./mpc";
+import { TrvIndex } from "./mpc/types";
+import { TRV_MAX_COUNT } from "./mpc/const";
 
 export default class HeatingControllerNode extends ActiveControllerNode<
   HeatingControllerNodeDef,
@@ -41,10 +43,11 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     return this.active && !this.blocked && !this.windowOpenState;
   }
 
-  private readonly mpcController = new RoomMpcController();
+  private readonly mpcController: RoomMPCController;
 
   constructor(RED: NodeAPI, node: Node, config: HeatingControllerNodeDef) {
     super(RED, node, config, HeatingControllerNodeOptionsDefaults);
+    this.mpcController = new RoomMPCController(config);
     this.initialize();
   }
 
@@ -64,7 +67,6 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     this.activeHeatmode = this.config.defaultComfort
       ? this.config.comfortCommand
       : this.config.ecoCommand;
-    this.mpcController.reset();
   }
 
   protected matched(messageFlow: NodeMessageFlow): void {
@@ -146,16 +148,15 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     this.sendAction(this.activeHeatmode);
   }
 
-  private handleTrvTarget(topic: string, messageFlow: NodeMessageFlow): void {
-    const trvIndex = this.trvTargetToIndex(topic);
-    const trvConfig =
-      trvIndex >= 0 && trvIndex < this.config.trvs.length
-        ? this.config.trvs[trvIndex]
-        : undefined;
-    const trvName =
-      trvConfig?.name && trvConfig.name.length > 0 ? trvConfig.name : topic;
+  private handleTrvTarget(target: string, messageFlow: NodeMessageFlow): void {
+    const indexMap: Record<string, TrvIndex> = {
+      [HeatingControllerTarget.trv2]: 1,
+      [HeatingControllerTarget.trv3]: 2,
+    };
+    const index: TrvIndex = indexMap[target] ?? 0;
+
     this.handleNumberUpdate(messageFlow, (value) =>
-      this.mpcController.setTrvTemperature(trvName, value),
+      this.mpcController.setTrvTemperature(index, value),
     );
   }
 
@@ -253,17 +254,9 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     if (!this.active) {
       return;
     }
+
     if (this.windowOpenState) {
-      const frostMode = this.config.frostProtectionCommand;
-      if (frostMode) {
-        this.debounce(
-          new NodeMessageFlow({ topic: "heatmode", payload: frostMode }, 0),
-        );
-      }
-      const frostTemp = this.roundTemperatureToStep(
-        this.config.frostProtectionTemperature,
-      );
-      this.sendTemperatureForAllTrvs(this.getTrvIds(), frostTemp);
+      this.activateFrostProtection();
       return;
     }
 
@@ -278,18 +271,36 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     }
 
     const effectiveMode = this.activeHeatmode || heatmode;
-    const baseTargetTemperature = this.determineBaseSetpoint(effectiveMode);
+    const baseTargetTemperature =
+      this.determineBaseTargetTemperature(effectiveMode);
+
     if (baseTargetTemperature < 0) {
       return;
     }
 
+    let targetTemperature = baseTargetTemperature;
+    if (this.config.pvBoostEnabled && this.pvBoost) {
+      targetTemperature += Number(this.config.pvBoostTemperatureOffset);
+    }
+
     if (this.config.controllerMode === HeatingControllerControllerMode.mpc) {
-      this.sendMpcTemperatureOutputs(baseTargetTemperature);
-    } else {
-      let targetTemperature = baseTargetTemperature;
-      if (this.config.pvBoostEnabled && this.pvBoost) {
-        targetTemperature += Number(this.config.pvBoostTemperatureOffset);
+      const mpcResult = this.mpcController.compute(targetTemperature);
+      if (mpcResult === null) {
+        this.sendTemperatureForAllTrvs(targetTemperature);
+      } else {
+        mpcResult.trvTargets.forEach((trvTarget, index) => {
+          this.debounce(
+            new NodeMessageFlow(
+              {
+                topic: this.config.trvs[index]?.name ?? `trv${index + 1}`,
+                payload: trvTarget,
+              },
+              1,
+            ),
+          );
+        });
       }
+    } else {
       this.debounce(
         new NodeMessageFlow(
           { topic: "target_temperature", payload: targetTemperature },
@@ -299,89 +310,20 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     }
   }
 
-  private sendMpcTemperatureOutputs(baseTargetTemperature: number): void {
-    const trvIds = this.getTrvIds();
-
-    const result = this.mpcController.compute(
-      baseTargetTemperature,
-      this.config,
-      trvIds,
+  private activateFrostProtection() {
+    const frostMode = this.config.frostProtectionCommand;
+    if (frostMode) {
+      this.debounce(
+        new NodeMessageFlow({ topic: "heatmode", payload: frostMode }, 0),
+      );
+    }
+    const frostTemp = this.roundTemperatureToStep(
+      this.config.frostProtectionTemperature,
     );
-
-    if (result === null) {
-      const fallbackTemp = this.roundTemperatureToStep(baseTargetTemperature);
-      this.sendTemperatureForAllTrvs(trvIds, fallbackTemp);
-      return;
-    }
-
-    if (trvIds.length === 0) {
-      this.debounce(
-        new NodeMessageFlow(
-          {
-            topic: "target_temperature",
-            payload: result.trvTargets[RoomMpcController.DEFAULT_TRV_KEY],
-          },
-          1,
-        ),
-      );
-    } else {
-      for (const trvId of trvIds) {
-        this.debounce(
-          new NodeMessageFlow(
-            {
-              topic: trvId + "/target_temperature",
-              payload: result.trvTargets[trvId],
-              trv: trvId,
-            },
-            1,
-          ),
-        );
-      }
-    }
+    this.sendTemperatureForAllTrvs(frostTemp);
   }
 
-  private sendTemperatureForAllTrvs(
-    trvIds: string[],
-    temperature: number,
-  ): void {
-    if (trvIds.length === 0) {
-      this.debounce(
-        new NodeMessageFlow(
-          { topic: "target_temperature", payload: temperature },
-          1,
-        ),
-      );
-    } else {
-      for (const trvId of trvIds) {
-        this.debounce(
-          new NodeMessageFlow(
-            {
-              topic: trvId + "/target_temperature",
-              payload: temperature,
-              trv: trvId,
-            },
-            1,
-          ),
-        );
-      }
-    }
-  }
-
-  private trvTargetToIndex(target: string): number {
-    const match = /^trv(\d+)$/.exec(target);
-    return match ? Number.parseInt(match[1], 10) - 1 : -1;
-  }
-
-  private getTrvIds(): string[] {
-    return this.config.trvs.filter((t) => t.name.length > 0).map((t) => t.name);
-  }
-
-  private roundTemperatureToStep(temp: number): number {
-    const step = normalizeTemperatureStep(this.config.targetTemperatureStep);
-    return Math.round(temp / step) * step;
-  }
-
-  private determineBaseSetpoint(
+  private determineBaseTargetTemperature(
     heatmode: string = this.activeHeatmode,
   ): number {
     switch (heatmode) {
@@ -396,6 +338,30 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       default:
         return -1;
     }
+  }
+
+  sendTemperatureForAllTrvs(temperature: number) {
+    const topics: string[] = [];
+    if (this.config.trvs.length === 0) {
+      topics.push("target_temperature");
+    } else {
+      for (
+        let i = 0;
+        i < Math.min(this.config.trvs.length, TRV_MAX_COUNT);
+        i++
+      ) {
+        topics.push(`${this.config.trvs[i].name}`);
+      }
+    }
+
+    topics.forEach((topic) => {
+      this.debounce(new NodeMessageFlow({ topic, payload: temperature }, 1));
+    });
+  }
+
+  roundTemperatureToStep(temperature: number) {
+    const step = this.config.targetTemperatureStep;
+    return Math.round(temperature / step) * step;
   }
 
   protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {
@@ -440,22 +406,23 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     const displayMode = this.windowOpenState
       ? this.config.frostProtectionCommand
       : this.activeHeatmode;
-    const baseTargetTemperature = this.determineBaseSetpoint(displayMode);
+    const baseTargetTemperature =
+      this.determineBaseTargetTemperature(displayMode);
 
     if (baseTargetTemperature >= 0) {
-      text += " - " + displayMode;
-      text += " (" + baseTargetTemperature + " °C";
+      const effectiveTargetTemperature =
+        !this.windowOpenState && this.config.pvBoostEnabled && this.pvBoost
+          ? baseTargetTemperature + Number(this.config.pvBoostTemperatureOffset)
+          : baseTargetTemperature;
 
-      if (
-        !this.windowOpenState &&
-        this.config.controllerMode === HeatingControllerControllerMode.static &&
-        this.config.pvBoostEnabled &&
-        this.pvBoost
-      ) {
+      text += " - " + displayMode;
+      text += " (" + effectiveTargetTemperature + " °C";
+
+      if (!this.windowOpenState && this.config.pvBoostEnabled && this.pvBoost) {
         text += " +☀️";
       }
 
-      const roomTemperature = this.mpcController.estimateRoomTemperature();
+      const roomTemperature = this.mpcController.getRoomTemperature();
       if (roomTemperature !== null) {
         text +=
           " / " +

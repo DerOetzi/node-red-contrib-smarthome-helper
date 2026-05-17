@@ -7,14 +7,14 @@ import {
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import HeatingControllerNode from "./";
+import { TRV_MAX_COUNT } from "./mpc/const";
+import { RoomTemperatureStrategy, TrvRow } from "./mpc/types";
 import {
   HeatingControllerControllerMode,
   HeatingControllerEditorNodeProperties,
   HeatingControllerNodeOptions,
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
-  TRV_MAX_COUNT,
-  TrvRow,
 } from "./types";
 
 class TrvListEditableList extends NodeEditorFormEditableList<TrvRow> {
@@ -26,13 +26,13 @@ class TrvListEditableList extends NodeEditorFormEditableList<TrvRow> {
       icon: "tag",
     });
     this.rowBuilder!.createNumberInput({
-      id: "powerFactor",
-      label: "trvPowerFactor",
-      value: data.powerFactor ?? 1,
+      id: "radiatorPowerW",
+      label: "trvRadiatorPowerW",
+      value: data.radiatorPowerW ?? 1000,
       icon: "tachometer",
-      min: 0.1,
-      max: 3,
-      step: 0.1,
+      min: 100,
+      max: 5000,
+      step: 50,
     });
   }
 }
@@ -227,59 +227,157 @@ function buildHeatingControllerFormContent(
     ],
   });
 
-  const mpcStepMinutesRow = builder
+  const designIndoorTemperatureCRow = builder
     .createNumberInput({
-      id: "node-input-mpcStepMinutes",
-      label: "mpcStepMinutes",
-      value: node.mpcStepMinutes,
-      icon: "clock-o",
-      min: 1,
-      max: 60,
+      id: "node-input-designIndoorTemperatureC",
+      label: "designIndoorTemperatureC",
+      value: node.designIndoorTemperatureC,
+      icon: "home",
+      min: 10,
+      max: 30,
+      step: 0.5,
     })
     .parent()
     .toggle(isMpc);
 
-  const mpcHorizonStepsRow = builder
+  const designOutdoorTemperatureCRow = builder
     .createNumberInput({
-      id: "node-input-mpcHorizonSteps",
-      label: "mpcHorizonSteps",
-      value: node.mpcHorizonSteps,
-      icon: "forward",
-      min: 1,
-      max: 24,
+      id: "node-input-designOutdoorTemperatureC",
+      label: "designOutdoorTemperatureC",
+      value: node.designOutdoorTemperatureC,
+      icon: "snowflake-o",
+      min: -30,
+      max: 20,
+      step: 0.5,
     })
     .parent()
     .toggle(isMpc);
 
-  const mpcThermalGainRow = builder
+  const roomHeatLoadWRow = builder
     .createNumberInput({
-      id: "node-input-mpcThermalGain",
-      label: "mpcThermalGain",
-      value: node.mpcThermalGain,
+      id: "node-input-roomHeatLoadW",
+      label: "roomHeatLoadW",
+      value: node.roomHeatLoadW,
       icon: "fire",
-      step: 0.01,
+      min: 100,
+      max: 10000,
+      step: 50,
     })
     .parent()
     .toggle(isMpc);
 
-  const mpcLossCoeffRow = builder
+  const roomVolumeM3Row = builder
     .createNumberInput({
-      id: "node-input-mpcLossCoeff",
-      label: "mpcLossCoeff",
-      value: node.mpcLossCoeff,
+      id: "node-input-roomVolumeM3",
+      label: "roomVolumeM3",
+      value: node.roomVolumeM3,
+      icon: "cube",
+      min: 5,
+      max: 500,
+      step: 0.1,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const airChangeRateRow = builder
+    .createNumberInput({
+      id: "node-input-airChangeRate",
+      label: "airChangeRate",
+      value: node.airChangeRate,
+      icon: "exchange",
+      min: 0,
+      max: 10,
+      step: 0.1,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const transmissionHeatLossExternalWRow = builder
+    .createNumberInput({
+      id: "node-input-transmissionHeatLossExternalW",
+      label: "transmissionHeatLossExternalW",
+      value: node.transmissionHeatLossExternalW,
       icon: "minus-circle",
-      step: 0.001,
+      min: 0,
+      max: 10000,
+      step: 50,
     })
     .parent()
     .toggle(isMpc);
 
-  const mpcChangePenaltyRow = builder
+  const ventilationHeatLossWRow = builder
     .createNumberInput({
-      id: "node-input-mpcChangePenalty",
-      label: "mpcChangePenalty",
-      value: node.mpcChangePenalty,
-      icon: "balance-scale",
-      step: 0.01,
+      id: "node-input-ventilationHeatLossW",
+      label: "ventilationHeatLossW",
+      value: node.ventilationHeatLossW,
+      icon: "sign-out",
+      min: 0,
+      max: 10000,
+      step: 10,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcReferenceFlowTemperatureRow = builder
+    .createNumberInput({
+      id: "node-input-mpcReferenceFlowTemperature",
+      label: "mpcReferenceFlowTemperature",
+      value: node.mpcReferenceFlowTemperature,
+      icon: "tint",
+      min: 20,
+      max: 90,
+      step: 5,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcDemandHysteresisPctRow = builder
+    .createNumberInput({
+      id: "node-input-mpcDemandHysteresisPct",
+      label: "mpcDemandHysteresisPct",
+      value: node.mpcDemandHysteresisPct,
+      icon: "adjust",
+      min: 0,
+      max: 30,
+      step: 1,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcHoldTimeRow = builder
+    .createTimeInput({
+      id: "node-input-mpcHoldTime",
+      idType: "node-input-mpcHoldTimeUnit",
+      label: "mpcHoldTime",
+      value: node.mpcHoldTime,
+      valueType: node.mpcHoldTimeUnit,
+      icon: "clock-o",
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcHoldOverrideDemandPctRow = builder
+    .createNumberInput({
+      id: "node-input-mpcHoldOverrideDemandPct",
+      label: "mpcHoldOverrideDemandPct",
+      value: node.mpcHoldOverrideDemandPct,
+      icon: "bolt",
+      min: 0,
+      max: 100,
+      step: 5,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcMaxDemandStepPctRow = builder
+    .createNumberInput({
+      id: "node-input-mpcMaxDemandStepPct",
+      label: "mpcMaxDemandStepPct",
+      value: node.mpcMaxDemandStepPct,
+      icon: "arrows-v",
+      min: 5,
+      max: 100,
+      step: 5,
     })
     .parent()
     .toggle(isMpc);
@@ -321,100 +419,54 @@ function buildHeatingControllerFormContent(
     .parent()
     .toggle(isMpc);
 
-  const mpcDemandHysteresisPctRow = builder
-    .createNumberInput({
-      id: "node-input-mpcDemandHysteresisPct",
-      label: "mpcDemandHysteresisPct",
-      value: node.mpcDemandHysteresisPct,
-      icon: "adjust",
-      min: 0,
-      max: 30,
-      step: 1,
+  builder.line();
+
+  const roomTemperatureStrategyRow = builder
+    .createSelectInput({
+      id: "node-input-roomTemperatureStrategy",
+      label: "roomTemperatureStrategy",
+      value: node.roomTemperatureStrategy,
+      icon: "thermometer-half",
+      options: [
+        RoomTemperatureStrategy.external,
+        RoomTemperatureStrategy.average_trv,
+        RoomTemperatureStrategy.median_trv,
+      ],
     })
     .parent()
     .toggle(isMpc);
 
-  const mpcHoldTimeSecondsRow = builder
-    .createNumberInput({
-      id: "node-input-mpcHoldTimeSeconds",
-      label: "mpcHoldTimeSeconds",
-      value: node.mpcHoldTimeSeconds,
+  const maxSensorAgeRow = builder
+    .createTimeInput({
+      id: "node-input-maxSensorAge",
+      idType: "node-input-maxSensorAgeUnit",
+      label: "maxSensorAge",
+      value: node.maxSensorAge,
+      valueType: node.maxSensorAgeUnit,
       icon: "clock-o",
-      min: 0,
-      max: 3600,
-      step: 30,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const mpcMaxDemandStepPctRow = builder
-    .createNumberInput({
-      id: "node-input-mpcMaxDemandStepPct",
-      label: "mpcMaxDemandStepPct",
-      value: node.mpcMaxDemandStepPct,
-      icon: "arrows-v",
-      min: 5,
-      max: 100,
-      step: 5,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const mpcReferenceFlowTemperatureRow = builder
-    .createNumberInput({
-      id: "node-input-mpcReferenceFlowTemperature",
-      label: "mpcReferenceFlowTemperature",
-      value: node.mpcReferenceFlowTemperature,
-      icon: "tint",
-      min: 20,
-      max: 90,
-      step: 5,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const mpcMinFlowFactorRow = builder
-    .createNumberInput({
-      id: "node-input-mpcMinFlowFactor",
-      label: "mpcMinFlowFactor",
-      value: node.mpcMinFlowFactor,
-      icon: "minus",
-      min: 0.1,
-      max: 1,
-      step: 0.1,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const mpcMaxFlowFactorRow = builder
-    .createNumberInput({
-      id: "node-input-mpcMaxFlowFactor",
-      label: "mpcMaxFlowFactor",
-      value: node.mpcMaxFlowFactor,
-      icon: "plus",
-      min: 1,
-      max: 3,
-      step: 0.1,
     })
     .parent()
     .toggle(isMpc);
 
   controllerModeSelect.on("change", function () {
     const mpcSelected = $(this).val() === HeatingControllerControllerMode.mpc;
-    mpcStepMinutesRow.toggle(mpcSelected);
-    mpcHorizonStepsRow.toggle(mpcSelected);
-    mpcThermalGainRow.toggle(mpcSelected);
-    mpcLossCoeffRow.toggle(mpcSelected);
-    mpcChangePenaltyRow.toggle(mpcSelected);
-    mpcDemandHysteresisPctRow.toggle(mpcSelected);
-    mpcHoldTimeSecondsRow.toggle(mpcSelected);
-    mpcMaxDemandStepPctRow.toggle(mpcSelected);
+    designIndoorTemperatureCRow.toggle(mpcSelected);
+    designOutdoorTemperatureCRow.toggle(mpcSelected);
+    roomHeatLoadWRow.toggle(mpcSelected);
+    roomVolumeM3Row.toggle(mpcSelected);
+    airChangeRateRow.toggle(mpcSelected);
+    transmissionHeatLossExternalWRow.toggle(mpcSelected);
+    ventilationHeatLossWRow.toggle(mpcSelected);
     mpcReferenceFlowTemperatureRow.toggle(mpcSelected);
-    mpcMinFlowFactorRow.toggle(mpcSelected);
-    mpcMaxFlowFactorRow.toggle(mpcSelected);
+    mpcDemandHysteresisPctRow.toggle(mpcSelected);
+    mpcHoldTimeRow.toggle(mpcSelected);
+    mpcHoldOverrideDemandPctRow.toggle(mpcSelected);
+    mpcMaxDemandStepPctRow.toggle(mpcSelected);
     minTargetTemperatureRow.toggle(mpcSelected);
     maxTargetTemperatureRow.toggle(mpcSelected);
     targetTemperatureStepRow.toggle(mpcSelected);
+    roomTemperatureStrategyRow.toggle(mpcSelected);
+    maxSensorAgeRow.toggle(mpcSelected);
   });
 }
 
@@ -443,20 +495,25 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "pvBoostEnabled",
     "pvBoostTemperatureOffset",
     "controllerMode",
-    "mpcStepMinutes",
-    "mpcHorizonSteps",
-    "mpcThermalGain",
-    "mpcLossCoeff",
-    "mpcChangePenalty",
-    "mpcDemandHysteresisPct",
-    "mpcHoldTimeSeconds",
-    "mpcMaxDemandStepPct",
+    "designIndoorTemperatureC",
+    "designOutdoorTemperatureC",
+    "roomHeatLoadW",
+    "roomVolumeM3",
+    "airChangeRate",
+    "transmissionHeatLossExternalW",
+    "ventilationHeatLossW",
     "mpcReferenceFlowTemperature",
-    "mpcMinFlowFactor",
-    "mpcMaxFlowFactor",
+    "mpcDemandHysteresisPct",
+    "mpcHoldTime",
+    "mpcHoldTimeUnit",
+    "mpcHoldOverrideDemandPct",
+    "mpcMaxDemandStepPct",
     "minTargetTemperature",
     "maxTargetTemperature",
     "targetTemperatureStep",
+    "roomTemperatureStrategy",
+    "maxSensorAge",
+    "maxSensorAgeUnit",
   ],
   inputKeys: [
     "activeCondition",
@@ -546,7 +603,7 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
       const trvListCtx = ctx.getList("trv-rows");
       const trvs = trvListCtx.values() as Array<{
         name: string;
-        powerFactor: number;
+        radiatorPowerW: number;
       }>;
 
       const namedTrvs = trvs
@@ -570,7 +627,7 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
 
       node.trvs = node.trvs.map((t) => ({
         ...t,
-        powerFactor: Math.max(0.1, Math.min(3, t.powerFactor ?? 1)),
+        radiatorPowerW: Math.max(100, t.radiatorPowerW ?? 1000),
       }));
     },
   },

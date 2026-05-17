@@ -58,21 +58,34 @@ export default class HeatingControllerMigration extends ActiveControllerMigratio
 
     if (this.checkMigrationStepRequired(node, "1.2.3")) {
       node.controllerMode = Defaults.controllerMode;
-      node.mpcStepMinutes = Defaults.mpcStepMinutes;
-      node.mpcHorizonSteps = Defaults.mpcHorizonSteps;
-      node.mpcThermalGain = Defaults.mpcThermalGain;
-      node.mpcLossCoeff = Defaults.mpcLossCoeff;
-      node.mpcChangePenalty = Defaults.mpcChangePenalty;
+
+      node.designIndoorTemperatureC = Defaults.designIndoorTemperatureC;
+      node.designOutdoorTemperatureC = Defaults.designOutdoorTemperatureC;
+
+      node.roomHeatLoadW = Defaults.roomHeatLoadW;
+      node.roomVolumeM3 = Defaults.roomVolumeM3;
+      node.airChangeRate = Defaults.airChangeRate;
+      node.transmissionHeatLossExternalW =
+        Defaults.transmissionHeatLossExternalW;
+      node.ventilationHeatLossW = Defaults.ventilationHeatLossW;
+
+      node.mpcReferenceFlowTemperature = Defaults.mpcReferenceFlowTemperature;
+
+      node.mpcDemandHysteresisPct = Defaults.mpcDemandHysteresisPct;
+      node.mpcHoldTime = Defaults.mpcHoldTime;
+      node.mpcHoldTimeUnit = Defaults.mpcHoldTimeUnit;
+      node.mpcHoldOverrideDemandPct = Defaults.mpcHoldOverrideDemandPct;
+      node.mpcMaxDemandStepPct = Defaults.mpcMaxDemandStepPct;
+
       node.minTargetTemperature = Defaults.minTargetTemperature;
       node.maxTargetTemperature = Defaults.maxTargetTemperature;
       node.targetTemperatureStep = Defaults.targetTemperatureStep;
-      node.mpcDemandHysteresisPct = Defaults.mpcDemandHysteresisPct;
-      node.mpcHoldTimeSeconds = Defaults.mpcHoldTimeSeconds;
-      node.mpcMaxDemandStepPct = Defaults.mpcMaxDemandStepPct;
-      node.mpcReferenceFlowTemperature = Defaults.mpcReferenceFlowTemperature;
-      node.mpcMinFlowFactor = Defaults.mpcMinFlowFactor;
-      node.mpcMaxFlowFactor = Defaults.mpcMaxFlowFactor;
-      node.trvs = Defaults.trvs;
+
+      node.trvs = Defaults.trvs.map((trv) => ({ ...trv }));
+      node.roomTemperatureStrategy = Defaults.roomTemperatureStrategy;
+      node.maxSensorAge = Defaults.maxSensorAge;
+      node.maxSensorAgeUnit = Defaults.maxSensorAgeUnit;
+
       node.migrated = true;
     }
 

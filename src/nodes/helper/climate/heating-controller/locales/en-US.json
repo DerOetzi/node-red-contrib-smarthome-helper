@@ -74,49 +74,53 @@
                 "mpc": "MPC"
             }
         },
-        "mpcStepMinutes": {
-            "label": "MPC step (minutes)",
-            "description": "Simulation step width in minutes"
+        "designIndoorTemperatureC": {
+            "label": "Design indoor temperature (°C)",
+            "description": "Room indoor temperature from the heat load calculation"
         },
-        "mpcHorizonSteps": {
-            "label": "MPC horizon (steps)",
-            "description": "Number of simulation steps in the prediction horizon"
+        "designOutdoorTemperatureC": {
+            "label": "Design outdoor temperature (°C)",
+            "description": "Design outdoor temperature from the heat load calculation"
         },
-        "mpcThermalGain": {
-            "label": "MPC thermal gain",
-            "description": "Temperature rise per step at full demand"
+        "roomHeatLoadW": {
+            "label": "Room heat load (W)",
+            "description": "Calculated room heat load in watts"
         },
-        "mpcLossCoeff": {
-            "label": "MPC loss coefficient",
-            "description": "Thermal loss per step"
+        "roomVolumeM3": {
+            "label": "Room volume (m³)",
+            "description": "Room volume in cubic meters"
         },
-        "mpcChangePenalty": {
-            "label": "MPC change penalty",
-            "description": "Penalty for demand changes (smoothing)"
+        "airChangeRate": {
+            "label": "Air change rate",
+            "description": "Room air change rate"
+        },
+        "transmissionHeatLossExternalW": {
+            "label": "External transmission heat loss (W)",
+            "description": "Heat losses from the room to exterior areas in watts"
+        },
+        "ventilationHeatLossW": {
+            "label": "Ventilation heat loss (W)",
+            "description": "Ventilation heat loss from the heat load calculation"
+        },
+        "mpcReferenceFlowTemperature": {
+            "label": "Reference flow temperature (°C)",
+            "description": "Reference flow temperature for radiator power"
         },
         "mpcDemandHysteresisPct": {
             "label": "MPC demand hysteresis (%)",
             "description": "Minimum demand change to accept new value (prevents flapping)"
         },
-        "mpcHoldTimeSeconds": {
-            "label": "MPC hold time (seconds)",
+        "mpcHoldTime": {
+            "label": "MPC hold time",
             "description": "Minimum time between demand updates"
+        },
+        "mpcHoldOverrideDemandPct": {
+            "label": "MPC hold override threshold (%)",
+            "description": "Demand change (%) large enough to bypass the hold time and update immediately"
         },
         "mpcMaxDemandStepPct": {
             "label": "MPC max demand step (%)",
             "description": "Maximum demand change per cycle (rate limiter)"
-        },
-        "mpcReferenceFlowTemperature": {
-            "label": "Reference flow temperature (°C)",
-            "description": "Reference flow temperature for heating power normalization"
-        },
-        "mpcMinFlowFactor": {
-            "label": "Min flow factor",
-            "description": "Minimum heating power factor when flow temperature is low"
-        },
-        "mpcMaxFlowFactor": {
-            "label": "Max flow factor",
-            "description": "Maximum heating power factor when flow temperature is high"
         },
         "minTargetTemperature": {
             "label": "Min target temperature",
@@ -130,13 +134,26 @@
             "label": "TRV name",
             "description": "Identifier used as the output topic prefix for this TRV"
         },
-        "trvPowerFactor": {
-            "label": "Power factor",
-            "description": "Relative heating power of this TRV (1.0 = reference, >1 stronger, <1 weaker)"
+        "trvRadiatorPowerW": {
+            "label": "Radiator power (W)",
+            "description": "Nominal radiator power for this TRV in watts"
         },
         "targetTemperatureStep": {
             "label": "Temperature step",
             "description": "Rounding step for TRV target temperature"
+        },
+        "roomTemperatureStrategy": {
+            "label": "Room temperature strategy",
+            "description": "How the room temperature is estimated from available sensors",
+            "options": {
+                "external": "External sensor first (fallback to TRV average)",
+                "average_trv": "Average of TRV sensors",
+                "median_trv": "Median of TRV sensors"
+            }
+        },
+        "maxSensorAge": {
+            "label": "Max sensor age",
+            "description": "Maximum age of all sensor values before they are considered stale (0 = no limit)"
         }
     },
     "input": {
@@ -176,9 +193,18 @@
             "name": "PV Boost temperature offset",
             "description": "Dynamic PV temperature offset"
         },
-        "trv1": { "name": "TRV 1 temperature", "description": "Temperature measured by TRV 1" },
-        "trv2": { "name": "TRV 2 temperature", "description": "Temperature measured by TRV 2" },
-        "trv3": { "name": "TRV 3 temperature", "description": "Temperature measured by TRV 3" },
+        "trv1": {
+            "name": "TRV 1 temperature",
+            "description": "Temperature measured by TRV 1"
+        },
+        "trv2": {
+            "name": "TRV 2 temperature",
+            "description": "Temperature measured by TRV 2"
+        },
+        "trv3": {
+            "name": "TRV 3 temperature",
+            "description": "Temperature measured by TRV 3"
+        },
         "additionalTemperatureSensor": {
             "name": "Room temperature sensor",
             "description": "External room temperature sensor (leading source for MPC)"

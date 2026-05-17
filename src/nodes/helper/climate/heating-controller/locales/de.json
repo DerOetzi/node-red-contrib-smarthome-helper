@@ -74,49 +74,53 @@
                 "mpc": "MPC"
             }
         },
-        "mpcStepMinutes": {
-            "label": "MPC Schrittweite (Minuten)",
-            "description": "Simulationsschrittweite in Minuten"
+        "designIndoorTemperatureC": {
+            "label": "Auslegungs-Innentemperatur (°C)",
+            "description": "Raum-Innentemperatur aus der Heizlastberechnung"
         },
-        "mpcHorizonSteps": {
-            "label": "MPC Horizont (Schritte)",
-            "description": "Anzahl der Simulationsschritte im Prädiktionshorizont"
+        "designOutdoorTemperatureC": {
+            "label": "Auslegungs-Außentemperatur (°C)",
+            "description": "Norm-Außentemperatur aus der Heizlastberechnung"
         },
-        "mpcThermalGain": {
-            "label": "MPC Wärmegewinn",
-            "description": "Temperaturanstieg je Schritt bei voller Heizleistung"
+        "roomHeatLoadW": {
+            "label": "Raum-Heizlast (W)",
+            "description": "Berechnete Heizlast des Raums in Watt"
         },
-        "mpcLossCoeff": {
-            "label": "MPC Verlustkoeffizient",
-            "description": "Wärmeverlust je Schritt"
+        "roomVolumeM3": {
+            "label": "Raumvolumen (m³)",
+            "description": "Volumen des Raums in Kubikmetern"
         },
-        "mpcChangePenalty": {
-            "label": "MPC Änderungsstrafe",
-            "description": "Strafe für Sollwertsprünge (Glättung)"
+        "airChangeRate": {
+            "label": "Luftwechselrate",
+            "description": "Luftwechselrate des Raums"
+        },
+        "transmissionHeatLossExternalW": {
+            "label": "Transmissionsverluste außen (W)",
+            "description": "Wärmeverluste des Raums gegen Außenbereiche in Watt"
+        },
+        "ventilationHeatLossW": {
+            "label": "Lüftungswärmeverluste (W)",
+            "description": "Wärmeverluste durch Lüftung aus der Heizlastberechnung"
+        },
+        "mpcReferenceFlowTemperature": {
+            "label": "Referenz-Vorlauftemperatur (°C)",
+            "description": "Referenz-Vorlauftemperatur für die Heizkörperleistung"
         },
         "mpcDemandHysteresisPct": {
             "label": "MPC Hysterese (%)",
             "description": "Mindestabweichung für Anforderungsänderung (verhindert Flattern)"
         },
-        "mpcHoldTimeSeconds": {
-            "label": "MPC Haltezeit (Sekunden)",
+        "mpcHoldTime": {
+            "label": "MPC Haltezeit",
             "description": "Mindestzeit zwischen Anforderungsaktualisierungen"
+        },
+        "mpcHoldOverrideDemandPct": {
+            "label": "MPC Haltezeit-Override Schwellwert (%)",
+            "description": "Anforderungsänderung (%), ab der die Haltezeit überbrückt und sofort aktualisiert wird"
         },
         "mpcMaxDemandStepPct": {
             "label": "MPC Max. Änderung pro Zyklus (%)",
             "description": "Maximale Anforderungsänderung pro Zyklus (Ratenbegrenzer)"
-        },
-        "mpcReferenceFlowTemperature": {
-            "label": "Referenz-Vorlauftemperatur (°C)",
-            "description": "Referenz-Vorlauftemperatur zur Normierung der Heizleistung"
-        },
-        "mpcMinFlowFactor": {
-            "label": "Min. Vorlauf-Faktor",
-            "description": "Minimaler Heizleistungsfaktor bei niedriger Vorlauftemperatur"
-        },
-        "mpcMaxFlowFactor": {
-            "label": "Max. Vorlauf-Faktor",
-            "description": "Maximaler Heizleistungsfaktor bei hoher Vorlauftemperatur"
         },
         "minTargetTemperature": {
             "label": "Min. Zieltemperatur",
@@ -130,13 +134,26 @@
             "label": "TRV-Name",
             "description": "Bezeichner, der als Ausgabe-Topic-Präfix für diesen TRV verwendet wird"
         },
-        "trvPowerFactor": {
-            "label": "Leistungsfaktor",
-            "description": "Relative Heizleistung dieses TRV (1,0 = Referenz, >1 stärker, <1 schwächer)"
+        "trvRadiatorPowerW": {
+            "label": "Heizkörperleistung (W)",
+            "description": "Nennleistung des Heizkörpers an diesem TRV in Watt"
         },
         "targetTemperatureStep": {
             "label": "Temperaturstufe",
             "description": "Rundungsstufe für die TRV-Zieltemperatur"
+        },
+        "roomTemperatureStrategy": {
+            "label": "Raumtemperatur-Strategie",
+            "description": "Wie die Raumtemperatur aus verfügbaren Sensoren geschätzt wird",
+            "options": {
+                "external": "Externer Sensor bevorzugt (Fallback: TRV-Mittelwert)",
+                "average_trv": "Mittelwert der TRV-Sensoren",
+                "median_trv": "Median der TRV-Sensoren"
+            }
+        },
+        "maxSensorAge": {
+            "label": "Max. Sensoralter",
+            "description": "Maximales Alter aller Sensorwerte bevor sie als veraltet gelten (0 = kein Limit)"
         }
     },
     "input": {
@@ -176,9 +193,18 @@
             "name": "PV Boost Temperatur-Offset",
             "description": "Dynamischer PV Temperatur-Offset"
         },
-        "trv1": { "name": "TRV 1 Temperatur", "description": "Temperatur gemessen durch TRV 1" },
-        "trv2": { "name": "TRV 2 Temperatur", "description": "Temperatur gemessen durch TRV 2" },
-        "trv3": { "name": "TRV 3 Temperatur", "description": "Temperatur gemessen durch TRV 3" },
+        "trv1": {
+            "name": "TRV 1 Temperatur",
+            "description": "Temperatur gemessen durch TRV 1"
+        },
+        "trv2": {
+            "name": "TRV 2 Temperatur",
+            "description": "Temperatur gemessen durch TRV 2"
+        },
+        "trv3": {
+            "name": "TRV 3 Temperatur",
+            "description": "Temperatur gemessen durch TRV 3"
+        },
         "additionalTemperatureSensor": {
             "name": "Raumtemperatursensor",
             "description": "Externer Raumtemperatursensor (führende Größe für MPC)"
