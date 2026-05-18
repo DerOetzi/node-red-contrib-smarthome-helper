@@ -100,24 +100,18 @@ export type RoomMpcInput = {
   trvTemperatures: (number | undefined)[];
 };
 
-export type RoomMpcResult = {
-  trvTargets: number[];
-  roomTemperature: number;
-  demandPct: number;
-  requestedHeatingPowerW: number;
-  availableHeatingPowerW: number;
-  input: RoomMpcInput;
-  learningState?: RoomModelLearningState | null;
-};
+export enum LearningStatus {
+  initializing = "initializing",
+  active = "active",
+  disabled = "disabled",
+  suppressed = "suppressed",
+  waitingInterval = "waiting_interval",
+  missingAppliedPower = "missing_applied_power",
+}
 
 export type LearningFactors = {
   uaFactor: number;
   capacityFactor: number;
-};
-
-export type RoomModelLearningState = {
-  learnedFactors: LearningFactors;
-  predictionErrorC?: number;
 };
 
 export type RoomModelPrediction = {
@@ -130,6 +124,25 @@ export type RoomModelPrediction = {
   modelErrorC: number;
 
   timestamp: number;
+};
+
+export type RoomModelLearningState = {
+  status: LearningStatus;
+
+  learnedFactors: LearningFactors;
+
+  prediction?: RoomModelPrediction;
+
+  appliedHeatingPowerW?: number;
+};
+
+export type RoomMpcResult = {
+  trvTargets: number[];
+  demandPct: number;
+  requestedHeatingPowerW: number;
+  availableHeatingPowerW: number;
+  input: RoomMpcInput;
+  learningState?: RoomModelLearningState;
 };
 
 export type TrvIndex = 0 | 1 | 2;

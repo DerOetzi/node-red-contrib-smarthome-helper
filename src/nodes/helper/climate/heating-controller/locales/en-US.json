@@ -248,6 +248,7 @@
         "inactive": "Inactive",
         "automationOn": "Automated",
         "automationOff": "Manual",
+        "heatingUnavailable": "Heating unavailable",
         "windowOpen": "Window open - Frost protection",
         "room": "Room"
     }

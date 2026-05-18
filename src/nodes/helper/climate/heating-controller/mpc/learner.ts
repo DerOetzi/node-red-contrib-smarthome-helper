@@ -1,5 +1,6 @@
 import {
   LearningFactors,
+  LearningStatus,
   RoomModelLearningState,
   RoomModelPrediction,
   RoomMpcInput,
@@ -23,49 +24,58 @@ export class RoomMPCModelLearner {
 
   private lastPrediction?: RoomModelPrediction;
 
-  private lastPredictionErrorC = 0;
-
   constructor(private readonly thermalModel: RoomThermalModel) {}
 
   public update(
     input: RoomMpcInput,
-    heatingPowerW: number,
-  ): RoomModelLearningState | null {
+    appliedHeatingPowerW: number,
+  ): RoomModelLearningState {
     if (!this.hasPreviousState()) {
       this.initializeState(input.roomTempC, input.nowTs);
 
-      return null;
+      return this.getLearningState(
+        LearningStatus.initializing,
+        appliedHeatingPowerW,
+      );
     }
 
     const durationSeconds = this.calculateDurationSeconds(input.nowTs);
 
     if (!this.isLearningIntervalReached(durationSeconds)) {
-      return null;
+      return this.getLearningState(
+        LearningStatus.waitingInterval,
+        appliedHeatingPowerW,
+      );
     }
 
     const prediction = this.createPrediction(
       input.roomTempC,
       input.outdoorTempC,
-      heatingPowerW,
+      appliedHeatingPowerW,
       durationSeconds,
       input.nowTs,
     );
 
     const learningFactors = this.calculateLearningFactors(
       prediction,
-      heatingPowerW,
+      appliedHeatingPowerW,
     );
 
     this.applyLearningFactors(learningFactors);
 
     this.storePredictionState(prediction, input.roomTempC, input.nowTs);
-    return this.getLearningState();
+    return this.getLearningState(LearningStatus.active, appliedHeatingPowerW);
   }
 
-  public getLearningState(): RoomModelLearningState {
+  public getLearningState(
+    status: LearningStatus,
+    appliedHeatingPowerW?: number,
+  ): RoomModelLearningState {
     return {
+      status,
       learnedFactors: this.thermalModel.getLearningFactors(),
-      predictionErrorC: this.lastPredictionErrorC,
+      prediction: this.lastPrediction,
+      appliedHeatingPowerW,
     };
   }
 
@@ -120,8 +130,6 @@ export class RoomMPCModelLearner {
       actualDeltaC,
       predictedDeltaC,
     );
-
-    this.lastPredictionErrorC = predictionErrorC;
 
     return {
       predictedTempC:

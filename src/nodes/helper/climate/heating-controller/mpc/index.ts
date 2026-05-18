@@ -5,6 +5,7 @@ import { RoomDistributionModel, RoomThermalModel } from "./model";
 import { ActorStateEntry, RoomMPCSensors } from "./sensors";
 import {
   HeatingMPCControllerNodeOptions,
+  LearningStatus,
   RoomMpcInput,
   RoomMpcResult,
   TrvIndex,
@@ -99,16 +100,34 @@ export class RoomMPCController {
       availableHeatingPowerW,
     );
 
-    if (this.isLearningAllowed()) {
-      const appliedHeatingPowerW = this.appliedHeatingPowerW.getFreshValue();
+    this.handleLearning(result, input);
 
-      if (appliedHeatingPowerW !== undefined) {
+    return result;
+  }
+
+  private handleLearning(result: RoomMpcResult, input: RoomMpcInput) {
+    const appliedHeatingPowerW = this.appliedHeatingPowerW.getFreshValue();
+
+    if (this.learningEnabled) {
+      if (this.isLearningSuppressed()) {
+        result.learningState = this.learner.getLearningState(
+          LearningStatus.suppressed,
+          appliedHeatingPowerW,
+        );
+      } else if (appliedHeatingPowerW === undefined) {
+        result.learningState = this.learner.getLearningState(
+          LearningStatus.missingAppliedPower,
+        );
+      } else {
         const learningState = this.learner.update(input, appliedHeatingPowerW);
         result.learningState = learningState;
       }
+    } else {
+      result.learningState = this.learner.getLearningState(
+        LearningStatus.disabled,
+        appliedHeatingPowerW,
+      );
     }
-
-    return result;
   }
 
   public setAppliedHeatingPower(powerW: number): void {
@@ -161,7 +180,6 @@ export class RoomMPCController {
 
     return {
       trvTargets: this.distributionModel.distributeDemand(stabilizedDemandPct),
-      roomTemperature: input.roomTempC,
       demandPct: stabilizedDemandPct,
       input: input,
       requestedHeatingPowerW,
@@ -211,7 +229,7 @@ export class RoomMPCController {
     this.learningSuppressedUntilTs = Date.now() + durationTs;
   }
 
-  private isLearningAllowed(): boolean {
-    return this.learningEnabled && Date.now() >= this.learningSuppressedUntilTs;
+  private isLearningSuppressed(): boolean {
+    return Date.now() < this.learningSuppressedUntilTs;
   }
 }

@@ -39,6 +39,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   private ecoTemperatureOffset: number = -2;
   private pvBoost = false;
 
+  private heatingAvailable = true;
   private windowOpenState: boolean = false;
   private activeHeatmode: string = "";
 
@@ -114,10 +115,12 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       case HeatingControllerTarget.heatingAvailable:
         this.handleControlBooleanUpdate(
           messageFlow.payloadAsBoolean(false),
-          (value) =>
+          (value) => {
+            this.heatingAvailable = value;
             value
               ? this.mpcController.enableLearning()
-              : this.mpcController.disableLearning(),
+              : this.mpcController.disableLearning();
+          },
         );
         break;
       case HeatingControllerTarget.trv1:
@@ -275,7 +278,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       return;
     }
 
-    if (this.windowOpenState) {
+    if (this.windowOpenState || !this.heatingAvailable) {
       this.activateFrostProtection();
       return;
     }
@@ -325,14 +328,14 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   private activateFrostProtection() {
     const frostMode = this.config.frostProtectionCommand;
     if (frostMode) {
-      this.debounce(
+      this.debouncePass(
         new NodeMessageFlow({ topic: "heatmode", payload: frostMode }, 0),
       );
     }
-    const frostTemp = this.roundTemperatureToStep(
+    this.sendTemperatureForAllTrvs(
       this.config.frostProtectionTemperature,
+      true,
     );
-    this.sendTemperatureForAllTrvs(frostTemp);
   }
 
   private determineBaseTargetTemperature(
@@ -352,7 +355,10 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     }
   }
 
-  sendTemperatureForAllTrvs(temperature: number) {
+  sendTemperatureForAllTrvs(
+    temperature: number,
+    frostProtection: boolean = false,
+  ) {
     const topics: string[] = [];
     if (this.config.trvs.length === 0) {
       topics.push("target_temperature");
@@ -367,7 +373,13 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     }
 
     topics.forEach((topic, index) => {
-      this.sendTemperature(topic, temperature, index as TrvIndex);
+      this.sendTemperature(
+        topic,
+        temperature,
+        index as TrvIndex,
+        null,
+        frostProtection,
+      );
     });
   }
 
@@ -381,11 +393,17 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     temperature: number,
     trvIndex: TrvIndex,
     mpc: RoomMpcResult | null = null,
+    frostProtection: boolean = false,
   ): void {
     const flow = new NodeMessageFlow({ topic, payload: temperature }, 1);
     flow.updateAdditionalAttribute("trv", trvIndex);
     flow.updateAdditionalAttribute("mpc", mpc);
-    this.debounce(flow);
+
+    if (frostProtection) {
+      this.debouncePass(flow);
+    } else {
+      this.debounce(flow);
+    }
   }
 
   protected debounced(messageFlow: NodeMessageFlow): void {
@@ -428,51 +446,65 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       return this.RED._("helper.heating-controller.state.inactive");
     }
 
-    let text: string;
-    if (status === null) {
-      text = "Unknown";
-    } else if (this.windowOpenState) {
-      text = this.RED._("helper.heating-controller.state.windowOpen");
-    } else if (this.blocked) {
-      text = this.RED._("helper.heating-controller.state.automationOff");
-    } else {
-      text = this.RED._("helper.heating-controller.state.automationOn");
-    }
+    const text = this.resolveStateText(status);
 
-    const displayMode = this.windowOpenState
-      ? this.config.frostProtectionCommand
-      : this.activeHeatmode;
+    const displayMode =
+      this.windowOpenState || !this.heatingAvailable
+        ? this.config.frostProtectionCommand
+        : this.activeHeatmode;
     const baseTargetTemperature =
       this.determineBaseTargetTemperature(displayMode);
 
     if (baseTargetTemperature >= 0) {
-      const effectiveTargetTemperature =
-        !this.windowOpenState && this.config.pvBoostEnabled && this.pvBoost
-          ? baseTargetTemperature + Number(this.config.pvBoostTemperatureOffset)
-          : baseTargetTemperature;
-
-      text += " - " + displayMode;
-      text += " (" + effectiveTargetTemperature + " °C";
-
-      if (!this.windowOpenState && this.config.pvBoostEnabled && this.pvBoost) {
-        text += " +☀️";
-      }
-
-      const roomTemperature = this.mpcController.getRoomTemperature();
-      if (roomTemperature !== null) {
-        text +=
-          " / " +
-          this.RED._("helper.heating-controller.state.room") +
-          " " +
-          roomTemperature.toFixed(1) +
-          " °C";
-      }
-
-      text += ")";
-    } else {
-      text += " - Unknown";
+      return (
+        text + this.formatTemperatureDetails(displayMode, baseTargetTemperature)
+      );
     }
 
-    return text;
+    return text + " - Unknown";
+  }
+
+  private resolveStateText(status: any): string {
+    if (status === null) {
+      return "Unknown";
+    } else if (this.windowOpenState) {
+      return this.RED._("helper.heating-controller.state.windowOpen");
+    } else if (!this.heatingAvailable) {
+      return this.RED._("helper.heating-controller.state.heatingUnavailable");
+    } else if (this.blocked) {
+      return this.RED._("helper.heating-controller.state.automationOff");
+    }
+    return this.RED._("helper.heating-controller.state.automationOn");
+  }
+
+  private formatTemperatureDetails(
+    displayMode: string,
+    baseTargetTemperature: number,
+  ): string {
+    const pvBoostActive =
+      !this.windowOpenState && this.config.pvBoostEnabled && this.pvBoost;
+    const effectiveTargetTemperature = pvBoostActive
+      ? baseTargetTemperature + Number(this.config.pvBoostTemperatureOffset)
+      : baseTargetTemperature;
+
+    let detail = " - " + displayMode;
+    detail += " (" + effectiveTargetTemperature + " °C";
+
+    if (pvBoostActive) {
+      detail += " +☀️";
+    }
+
+    const roomTemperature = this.mpcController.getRoomTemperature();
+    if (roomTemperature !== null) {
+      detail +=
+        " / " +
+        this.RED._("helper.heating-controller.state.room") +
+        " " +
+        roomTemperature.toFixed(1) +
+        " °C";
+    }
+
+    detail += ")";
+    return detail;
   }
 }
