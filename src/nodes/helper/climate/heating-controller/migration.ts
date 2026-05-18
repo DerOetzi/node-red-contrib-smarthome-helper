@@ -69,6 +69,8 @@ export default class HeatingControllerMigration extends ActiveControllerMigratio
         Defaults.transmissionHeatLossExternalW;
       node.ventilationHeatLossW = Defaults.ventilationHeatLossW;
 
+      node.mpcLearningEnabledByDefault = Defaults.mpcLearningEnabledByDefault;
+
       node.mpcReferenceFlowTemperature = Defaults.mpcReferenceFlowTemperature;
 
       node.mpcDemandHysteresisPct = Defaults.mpcDemandHysteresisPct;

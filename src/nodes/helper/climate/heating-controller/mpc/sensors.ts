@@ -43,6 +43,8 @@ class SensorEntry {
   }
 }
 
+export class ActorStateEntry extends SensorEntry {}
+
 export class RoomMPCSensors {
   private readonly trvTemperatures: SensorEntry[] = [];
   private readonly additionalTemperatureSensor: SensorEntry;
@@ -183,8 +185,9 @@ export class RoomMPCSensors {
 
   public createInput(targetTempC: number): RoomMpcInput | null {
     const roomTemperature = this.getRoomTemperature();
+    const outdoorTempC = this.outdoorTemperatureSensor.getFreshValue();
 
-    if (roomTemperature.temperature === null) {
+    if (roomTemperature.temperature === null || outdoorTempC === undefined) {
       return null;
     }
 
@@ -192,7 +195,7 @@ export class RoomMPCSensors {
       nowTs: Date.now(),
       targetTempC,
       roomTempC: roomTemperature.temperature,
-      outdoorTempC: this.outdoorTemperatureSensor.getFreshValue(),
+      outdoorTempC: outdoorTempC,
       flowTempC: this.flowTemperatureSensor.getFreshValue(),
       usedRoomSensorStrategy: roomTemperature.usedStrategy,
       trvTemperatures: roomTemperature.trvTemperatures,

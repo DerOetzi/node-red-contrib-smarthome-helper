@@ -4,7 +4,6 @@ import {
   ActiveControllerNodeOptions,
   ActiveControllerNodeOptionsDefaults,
   ActiveControllerTarget,
-  ActiveControllerNodeMessage,
 } from "../../../flowctrl/active-controller/types";
 import { MatcherRowDefaults } from "../../../flowctrl/match-join/types";
 import { NotApplicableCompareFunction } from "../../../logical/compare/types";
@@ -31,6 +30,7 @@ export enum HeatingControllerTarget {
   ecoTemperatureOffset = "ecoTemperatureOffset",
   pvBoost = "pvBoost",
   windowOpen = "windowOpen",
+  heatingAvailable = "heatingAvailable",
   trv1 = "trv1",
   trv2 = "trv2",
   trv3 = "trv3",
@@ -115,7 +115,3 @@ export interface HeatingControllerNodeDef
 
 export interface HeatingControllerEditorNodeProperties
   extends ActiveControllerEditorNodeProperties, HeatingControllerNodeOptions {}
-
-export interface HeatingControllerNodeMessage extends ActiveControllerNodeMessage {
-  heatmode?: HeatMode;
-}

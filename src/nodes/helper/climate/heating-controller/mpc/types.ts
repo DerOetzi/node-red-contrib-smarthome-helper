@@ -26,6 +26,8 @@ export interface HeatingMPCControllerNodeOptions {
   transmissionHeatLossExternalW: number;
   ventilationHeatLossW: number;
 
+  mpcLearningEnabledByDefault: boolean;
+
   mpcReferenceFlowTemperature: number;
 
   mpcDemandHysteresisPct: number;
@@ -55,6 +57,8 @@ export const HeatingMPCControllerOptionsDefaults: HeatingMPCControllerNodeOption
     airChangeRate: 0.5,
     transmissionHeatLossExternalW: 800,
     ventilationHeatLossW: 250,
+
+    mpcLearningEnabledByDefault: false,
 
     mpcReferenceFlowTemperature: 50,
 
@@ -90,7 +94,7 @@ export type RoomMpcInput = {
   nowTs: number;
   targetTempC: number;
   roomTempC: number;
-  outdoorTempC?: number;
+  outdoorTempC: number;
   flowTempC?: number;
   usedRoomSensorStrategy: RoomTemperatureStrategy | null;
   trvTemperatures: (number | undefined)[];
@@ -102,6 +106,30 @@ export type RoomMpcResult = {
   demandPct: number;
   requestedHeatingPowerW: number;
   availableHeatingPowerW: number;
+  input: RoomMpcInput;
+  learningState?: RoomModelLearningState | null;
+};
+
+export type LearningFactors = {
+  uaFactor: number;
+  capacityFactor: number;
+};
+
+export type RoomModelLearningState = {
+  learnedFactors: LearningFactors;
+  predictionErrorC?: number;
+};
+
+export type RoomModelPrediction = {
+  predictedTempC: number;
+  actualTempC: number;
+
+  predictedDeltaC: number;
+  actualDeltaC: number;
+
+  modelErrorC: number;
+
+  timestamp: number;
 };
 
 export type TrvIndex = 0 | 1 | 2;

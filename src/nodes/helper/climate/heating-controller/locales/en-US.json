@@ -102,6 +102,10 @@
             "label": "Ventilation heat loss (W)",
             "description": "Ventilation heat loss from the heat load calculation"
         },
+        "mpcLearningEnabledByDefault": {
+            "label": "MPC learning enabled by default",
+            "description": "Whether MPC model adaptation is enabled by default. Use heating available input to control it dynamically."
+        },
         "mpcReferenceFlowTemperature": {
             "label": "Reference flow temperature (°C)",
             "description": "Reference flow temperature for radiator power"
@@ -204,6 +208,10 @@
         "trv3": {
             "name": "TRV 3 temperature",
             "description": "Temperature measured by TRV 3"
+        },
+        "heatingAvailable": {
+            "name": "Heating available",
+            "description": "Whether heating is currently available (for MPC)"
         },
         "additionalTemperatureSensor": {
             "name": "Room temperature sensor",

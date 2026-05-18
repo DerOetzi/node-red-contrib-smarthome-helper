@@ -1,7 +1,8 @@
 import { clamp } from "../../../../../helpers/math.helper";
 import { convertToMilliseconds } from "../../../../../helpers/time.helper";
+import { RoomMPCModelLearner } from "./learner";
 import { RoomDistributionModel, RoomThermalModel } from "./model";
-import { RoomMPCSensors } from "./sensors";
+import { ActorStateEntry, RoomMPCSensors } from "./sensors";
 import {
   HeatingMPCControllerNodeOptions,
   RoomMpcInput,
@@ -10,22 +11,40 @@ import {
 } from "./types";
 
 export class RoomMPCController {
+  private readonly config: HeatingMPCControllerNodeOptions;
+
   private readonly sensors: RoomMPCSensors;
+
   private readonly thermalModel: RoomThermalModel;
   private readonly distributionModel: RoomDistributionModel;
-  private readonly config: HeatingMPCControllerNodeOptions;
+
+  private readonly learner: RoomMPCModelLearner;
 
   private readonly holdTimeMs: number;
 
+  private readonly appliedHeatingPowerW: ActorStateEntry;
+
   private lastDemandPct = 0;
   private lastDemandUpdateTs = 0;
+
+  private learningEnabled: boolean;
+
+  private learningSuppressedUntilTs = 0;
 
   constructor(config: HeatingMPCControllerNodeOptions) {
     this.config = config;
 
     this.sensors = new RoomMPCSensors(config);
+
     this.thermalModel = new RoomThermalModel(config);
     this.distributionModel = new RoomDistributionModel(config);
+
+    this.appliedHeatingPowerW = new ActorStateEntry(
+      convertToMilliseconds(config.maxSensorAge, config.maxSensorAgeUnit),
+    );
+
+    this.learningEnabled = config.mpcLearningEnabledByDefault;
+    this.learner = new RoomMPCModelLearner(this.thermalModel);
 
     this.holdTimeMs = convertToMilliseconds(
       config.mpcHoldTime,
@@ -74,11 +93,26 @@ export class RoomMPCController {
 
     const stabilizedDemandPct = this.stabilizeDemand(requestedDemandPct);
 
-    return this.createResult(
+    const result = this.createResult(
       input,
       stabilizedDemandPct,
       availableHeatingPowerW,
     );
+
+    if (this.isLearningAllowed()) {
+      const appliedHeatingPowerW = this.appliedHeatingPowerW.getFreshValue();
+
+      if (appliedHeatingPowerW !== undefined) {
+        const learningState = this.learner.update(input, appliedHeatingPowerW);
+        result.learningState = learningState;
+      }
+    }
+
+    return result;
+  }
+
+  public setAppliedHeatingPower(powerW: number): void {
+    this.appliedHeatingPowerW.value = powerW;
   }
 
   private calculateRequestedDemandPct(
@@ -105,7 +139,7 @@ export class RoomMPCController {
   ): number {
     const baseHeatingPower = this.thermalModel.calculateBaseHeatingPower(
       input.targetTempC,
-      this.getOutdoorTemperature(input),
+      input.outdoorTempC,
     );
 
     const catchupPower = this.thermalModel.calculateCatchupPower(
@@ -115,10 +149,6 @@ export class RoomMPCController {
     );
 
     return baseHeatingPower + catchupPower;
-  }
-
-  private getOutdoorTemperature(input: RoomMpcInput): number {
-    return input.outdoorTempC ?? this.config.designOutdoorTemperatureC;
   }
 
   private createResult(
@@ -133,6 +163,7 @@ export class RoomMPCController {
       trvTargets: this.distributionModel.distributeDemand(stabilizedDemandPct),
       roomTemperature: input.roomTempC,
       demandPct: stabilizedDemandPct,
+      input: input,
       requestedHeatingPowerW,
       availableHeatingPowerW,
     };
@@ -166,5 +197,21 @@ export class RoomMPCController {
     this.lastDemandUpdateTs = now;
 
     return limitedDemandPct;
+  }
+
+  public enableLearning(): void {
+    this.learningEnabled = true;
+  }
+
+  public disableLearning(): void {
+    this.learningEnabled = false;
+  }
+
+  public suppressLearningForInterval(durationTs: number): void {
+    this.learningSuppressedUntilTs = Date.now() + durationTs;
+  }
+
+  private isLearningAllowed(): boolean {
+    return this.learningEnabled && Date.now() >= this.learningSuppressedUntilTs;
   }
 }

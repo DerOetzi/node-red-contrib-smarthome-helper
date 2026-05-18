@@ -1,4 +1,4 @@
-import { Node, NodeAPI, NodeStatusFill } from "node-red";
+import { Node, NodeAPI, NodeMessage, NodeStatusFill } from "node-red";
 import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import ActiveControllerNode from "../../../flowctrl/active-controller";
 import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
@@ -8,7 +8,6 @@ import { HelperClimateCategory } from "../types";
 import {
   HeatingControllerControllerMode,
   HeatingControllerNodeDef,
-  HeatingControllerNodeMessage,
   HeatingControllerNodeOptions,
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
@@ -17,8 +16,12 @@ import {
 import Migration from "../../../flowctrl/base/migration";
 import HeatingControllerMigration from "./migration";
 import { RoomMPCController } from "./mpc";
-import { TrvIndex } from "./mpc/types";
+import { RoomMpcResult, TrvIndex } from "./mpc/types";
 import { TRV_MAX_COUNT } from "./mpc/const";
+import {
+  convertToMilliseconds,
+  TimeIntervalUnit,
+} from "../../../../helpers/time.helper";
 
 export default class HeatingControllerNode extends ActiveControllerNode<
   HeatingControllerNodeDef,
@@ -107,6 +110,15 @@ export default class HeatingControllerNode extends ActiveControllerNode<
         this.windowsStates[messageFlow.originalTopic ?? "window"] =
           messageFlow.payload as boolean;
         this.handleWindowOpen(messageFlow);
+        break;
+      case HeatingControllerTarget.heatingAvailable:
+        this.handleControlBooleanUpdate(
+          messageFlow.payloadAsBoolean(false),
+          (value) =>
+            value
+              ? this.mpcController.enableLearning()
+              : this.mpcController.disableLearning(),
+        );
         break;
       case HeatingControllerTarget.trv1:
       case HeatingControllerTarget.trv2:
@@ -197,9 +209,9 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     return LogicalOperation.and(Object.values(this.comfortConditions));
   }
 
-  private handleCommand(msg: HeatingControllerNodeMessage): void {
+  private handleCommand(msg: NodeMessage): void {
     if (msg?.heatmode) {
-      let heatmode: string = msg.heatmode;
+      let heatmode: string = msg.heatmode as string;
       switch (heatmode) {
         case HeatMode.comfort:
           heatmode = this.config.comfortCommand;
@@ -221,6 +233,8 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   }
 
   private handleWindowOpen(messageFlow: NodeMessageFlow) {
+    const previousWindowOpenState = this.windowOpenState;
+
     this.windowOpenState = LogicalOperation.or(
       Object.values(this.windowsStates),
     );
@@ -231,6 +245,12 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       this.sendAction(this.config.frostProtectionCommand);
       ha_action = "switch.turn_on";
     } else {
+      if (previousWindowOpenState) {
+        this.mpcController.suppressLearningForInterval(
+          convertToMilliseconds(30, TimeIntervalUnit.m),
+        );
+      }
+
       if (this.automaticModeSelectionAllowed) {
         this.handleComfortCondition();
       } else if (this.activeHeatmode) {
@@ -289,24 +309,16 @@ export default class HeatingControllerNode extends ActiveControllerNode<
         this.sendTemperatureForAllTrvs(targetTemperature);
       } else {
         mpcResult.trvTargets.forEach((trvTarget, index) => {
-          this.debounce(
-            new NodeMessageFlow(
-              {
-                topic: this.config.trvs[index]?.name ?? `trv${index + 1}`,
-                payload: trvTarget,
-              },
-              1,
-            ),
+          this.sendTemperature(
+            this.config.trvs[index]?.name ?? `trv${index + 1}`,
+            trvTarget,
+            index as TrvIndex,
+            mpcResult,
           );
         });
       }
     } else {
-      this.debounce(
-        new NodeMessageFlow(
-          { topic: "target_temperature", payload: targetTemperature },
-          1,
-        ),
-      );
+      this.sendTemperature("target_temperature", targetTemperature, 0);
     }
   }
 
@@ -354,14 +366,38 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       }
     }
 
-    topics.forEach((topic) => {
-      this.debounce(new NodeMessageFlow({ topic, payload: temperature }, 1));
+    topics.forEach((topic, index) => {
+      this.sendTemperature(topic, temperature, index as TrvIndex);
     });
   }
 
   roundTemperatureToStep(temperature: number) {
     const step = this.config.targetTemperatureStep;
     return Math.round(temperature / step) * step;
+  }
+
+  private sendTemperature(
+    topic: string,
+    temperature: number,
+    trvIndex: TrvIndex,
+    mpc: RoomMpcResult | null = null,
+  ): void {
+    const flow = new NodeMessageFlow({ topic, payload: temperature }, 1);
+    flow.updateAdditionalAttribute("trv", trvIndex);
+    flow.updateAdditionalAttribute("mpc", mpc);
+    this.debounce(flow);
+  }
+
+  protected debounced(messageFlow: NodeMessageFlow): void {
+    if (messageFlow.output === 1) {
+      const mpc = messageFlow.getAdditionalAttribute("mpc");
+      const trvIndex = messageFlow.getAdditionalAttribute("trv") as TrvIndex;
+      if (mpc !== null && trvIndex === 0) {
+        this.mpcController.setAppliedHeatingPower(mpc.requestedHeatingPowerW);
+      }
+    }
+
+    super.debounced(messageFlow);
   }
 
   protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {

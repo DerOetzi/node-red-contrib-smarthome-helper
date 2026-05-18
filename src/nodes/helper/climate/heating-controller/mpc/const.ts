@@ -4,4 +4,12 @@ export const MIN_FLOW_FACTOR = 0.3;
 export const MAX_FLOW_FACTOR = 1.5;
 export const MAX_ROOM_ERROR = 3;
 export const DEFAULT_THERMAL_CAPACITY_PER_M3 = 40000;
+
 export const TRV_MAX_COUNT = 3;
+
+export const MIN_LEARNING_INTERVAL_SECONDS = 300;
+export const MAX_PREDICTION_ERROR_C = 3;
+export const UA_LEARNING_RATE = 0.0005;
+export const CAPACITY_LEARNING_RATE = 0.0002;
+export const MAX_UA_LEARNING_HEATING_POWER_W = 100;
+export const MIN_CAPACITY_LEARNING_HEATING_POWER_W = 300;

@@ -102,6 +102,10 @@
             "label": "Lüftungswärmeverluste (W)",
             "description": "Wärmeverluste durch Lüftung aus der Heizlastberechnung"
         },
+        "mpcLearningEnabledByDefault": {
+            "label": "MPC Lernen standardmäßig aktiviert",
+            "description": "Ob die MPC-Modellanpassung standardmäßig aktiviert ist. Nutze Heizung verfügbar Eingang, um sie dynamisch zu steuern."
+        },
         "mpcReferenceFlowTemperature": {
             "label": "Referenz-Vorlauftemperatur (°C)",
             "description": "Referenz-Vorlauftemperatur für die Heizkörperleistung"
@@ -192,6 +196,10 @@
         "pvBoostTemperatureOffset": {
             "name": "PV Boost Temperatur-Offset",
             "description": "Dynamischer PV Temperatur-Offset"
+        },
+        "heatingAvailable": {
+            "name": "Heizung verfügbar",
+            "description": "Ob die Heizung derzeit verfügbar ist (für MPC)"
         },
         "trv1": {
             "name": "TRV 1 Temperatur",

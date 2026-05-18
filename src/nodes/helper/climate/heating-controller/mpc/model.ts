@@ -7,11 +7,14 @@ import {
   MAX_ROOM_ERROR,
   MIN_FLOW_FACTOR,
 } from "./const";
-import { HeatingMPCControllerNodeOptions } from "./types";
+import { HeatingMPCControllerNodeOptions, LearningFactors } from "./types";
 
 export class RoomThermalModel {
-  public readonly uaTotal: number;
-  public readonly thermalCapacityJPerK: number;
+  public readonly baseUaTotal: number;
+  private learnedUaFactor = 1;
+
+  public readonly baseThermalCapacityJPerK: number;
+  private learnedCapacityFactor = 1;
 
   private readonly referenceFlowTemperature: number;
   private readonly totalRadiatorPowerW: number;
@@ -19,9 +22,9 @@ export class RoomThermalModel {
   constructor(config: HeatingMPCControllerNodeOptions) {
     this.referenceFlowTemperature = config.mpcReferenceFlowTemperature;
 
-    this.uaTotal = this.calculateTotalHeatLossCoefficient(config);
+    this.baseUaTotal = this.calculateTotalHeatLossCoefficient(config);
 
-    this.thermalCapacityJPerK =
+    this.baseThermalCapacityJPerK =
       DEFAULT_THERMAL_CAPACITY_PER_M3 * config.roomVolumeM3;
 
     this.totalRadiatorPowerW = config.trvs.reduce(
@@ -29,6 +32,15 @@ export class RoomThermalModel {
       0,
     );
   }
+
+  private get effectiveUaTotal(): number {
+    return this.baseUaTotal * this.learnedUaFactor;
+  }
+
+  private get effectiveThermalCapacityJPerK(): number {
+    return this.baseThermalCapacityJPerK * this.learnedCapacityFactor;
+  }
+
   private calculateTotalHeatLossCoefficient(
     config: HeatingMPCControllerNodeOptions,
   ): number {
@@ -59,6 +71,13 @@ export class RoomThermalModel {
     return config.transmissionHeatLossExternalW > 0
       ? config.transmissionHeatLossExternalW / deltaTDesign
       : 0;
+  }
+
+  public calculateHeatLoss(
+    roomTemperatureC: number,
+    outdoorTemperatureC: number,
+  ): number {
+    return this.effectiveUaTotal * (roomTemperatureC - outdoorTemperatureC);
   }
 
   private calculateVentilationUa(
@@ -96,7 +115,7 @@ export class RoomThermalModel {
     targetTemperature: number,
     outdoorTemperature: number,
   ): number {
-    return this.uaTotal * (targetTemperature - outdoorTemperature);
+    return this.effectiveUaTotal * (targetTemperature - outdoorTemperature);
   }
 
   public calculateCatchupPower(
@@ -108,7 +127,8 @@ export class RoomThermalModel {
     const limitedError = clamp(roomError, -MAX_ROOM_ERROR, MAX_ROOM_ERROR);
 
     const theoreticalCatchupPower =
-      (this.thermalCapacityJPerK / CATCHUP_TIME_SECONDS) * limitedError;
+      (this.effectiveThermalCapacityJPerK / CATCHUP_TIME_SECONDS) *
+      limitedError;
 
     const maxCatchupPower = availableHeatingPowerW * 0.6;
 
@@ -130,6 +150,28 @@ export class RoomThermalModel {
       MIN_FLOW_FACTOR,
       MAX_FLOW_FACTOR,
     );
+  }
+
+  public predictTemperatureChange(
+    netHeatingPowerW: number,
+    durationSeconds: number,
+  ): number {
+    return (
+      (netHeatingPowerW * durationSeconds) / this.effectiveThermalCapacityJPerK
+    );
+  }
+
+  public updateLearningFactors(factors: LearningFactors): void {
+    this.learnedUaFactor = clamp(factors.uaFactor, 0.5, 2);
+
+    this.learnedCapacityFactor = clamp(factors.capacityFactor, 0.5, 3);
+  }
+
+  public getLearningFactors(): LearningFactors {
+    return {
+      uaFactor: this.learnedUaFactor,
+      capacityFactor: this.learnedCapacityFactor,
+    };
   }
 }
 

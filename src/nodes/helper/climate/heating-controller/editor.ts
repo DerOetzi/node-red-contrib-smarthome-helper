@@ -44,6 +44,7 @@ const controlMatcherList = new MatchJoinEditableList({
     ActiveControllerTarget.manualControl,
     ActiveControllerTarget.command,
     HeatingControllerTarget.windowOpen,
+    HeatingControllerTarget.heatingAvailable,
   ],
   translatePrefix: "helper.heating-controller",
   headerPrefix: "helper.heating-controller",
@@ -153,7 +154,6 @@ function buildHeatingControllerFormContent(
       icon: "sun-o",
       min: 0,
       max: 3,
-      step: 1,
     })
     .parent()
     .toggle(node.pvBoostEnabled);
@@ -235,7 +235,7 @@ function buildHeatingControllerFormContent(
       icon: "home",
       min: 10,
       max: 30,
-      step: 0.5,
+      step: 0.1,
     })
     .parent()
     .toggle(isMpc);
@@ -248,7 +248,7 @@ function buildHeatingControllerFormContent(
       icon: "snowflake-o",
       min: -30,
       max: 20,
-      step: 0.5,
+      step: 0.1,
     })
     .parent()
     .toggle(isMpc);
@@ -261,7 +261,6 @@ function buildHeatingControllerFormContent(
       icon: "fire",
       min: 100,
       max: 10000,
-      step: 50,
     })
     .parent()
     .toggle(isMpc);
@@ -300,7 +299,6 @@ function buildHeatingControllerFormContent(
       icon: "minus-circle",
       min: 0,
       max: 10000,
-      step: 50,
     })
     .parent()
     .toggle(isMpc);
@@ -313,7 +311,6 @@ function buildHeatingControllerFormContent(
       icon: "sign-out",
       min: 0,
       max: 10000,
-      step: 10,
     })
     .parent()
     .toggle(isMpc);
@@ -326,7 +323,6 @@ function buildHeatingControllerFormContent(
       icon: "tint",
       min: 20,
       max: 90,
-      step: 5,
     })
     .parent()
     .toggle(isMpc);
@@ -339,7 +335,6 @@ function buildHeatingControllerFormContent(
       icon: "adjust",
       min: 0,
       max: 30,
-      step: 1,
     })
     .parent()
     .toggle(isMpc);
@@ -364,7 +359,6 @@ function buildHeatingControllerFormContent(
       icon: "bolt",
       min: 0,
       max: 100,
-      step: 5,
     })
     .parent()
     .toggle(isMpc);
@@ -377,7 +371,16 @@ function buildHeatingControllerFormContent(
       icon: "arrows-v",
       min: 5,
       max: 100,
-      step: 5,
+    })
+    .parent()
+    .toggle(isMpc);
+
+  const mpcLearningEnabledByDefaultRow = builder
+    .createCheckboxInput({
+      id: "node-input-mpcLearningEnabledByDefault",
+      label: "mpcLearningEnabledByDefault",
+      value: node.mpcLearningEnabledByDefault,
+      icon: "graduation-cap",
     })
     .parent()
     .toggle(isMpc);
@@ -457,6 +460,7 @@ function buildHeatingControllerFormContent(
     airChangeRateRow.toggle(mpcSelected);
     transmissionHeatLossExternalWRow.toggle(mpcSelected);
     ventilationHeatLossWRow.toggle(mpcSelected);
+    mpcLearningEnabledByDefaultRow.toggle(mpcSelected);
     mpcReferenceFlowTemperatureRow.toggle(mpcSelected);
     mpcDemandHysteresisPctRow.toggle(mpcSelected);
     mpcHoldTimeRow.toggle(mpcSelected);
@@ -502,6 +506,7 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "airChangeRate",
     "transmissionHeatLossExternalW",
     "ventilationHeatLossW",
+    "mpcLearningEnabledByDefault",
     "mpcReferenceFlowTemperature",
     "mpcDemandHysteresisPct",
     "mpcHoldTime",
@@ -524,6 +529,7 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "command",
     "pvBoost",
     "pvBoostTemperatureOffset",
+    "heatingAvailable",
     "trv1",
     "trv2",
     "trv3",
