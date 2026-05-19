@@ -224,6 +224,10 @@
         "flowTemperature": {
             "name": "Flow temperature",
             "description": "Heating circuit flow temperature for heating power estimation"
+        },
+        "mpcLearningRecalibrate": {
+            "name": "MPC learning recalibrate",
+            "description": "Trigger to recalibrate MPC learning with provided factors"
         }
     },
     "output": {
@@ -239,9 +243,9 @@
             "name": "Window open",
             "description": "Window status"
         },
-        "status": {
-            "name": "Status",
-            "description": "Status message"
+        "persistLearningFactors": {
+            "name": "Persist learning factors",
+            "description": "Output with current learning factors for persistence (MPC mode)"
         }
     },
     "state": {

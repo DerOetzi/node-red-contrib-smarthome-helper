@@ -6,6 +6,7 @@ import { ActorStateEntry, RoomMPCSensors } from "./sensors";
 import {
   HeatingMPCControllerNodeOptions,
   LearningStatus,
+  PersistedLearningFactors,
   RoomMpcInput,
   RoomMpcResult,
   TrvIndex,
@@ -87,17 +88,29 @@ export class RoomMPCController {
       return null;
     }
 
-    const requestedDemandPct = this.calculateRequestedDemandPct(
+    const requestedHeatingPowerW = this.calculateRequestedHeatingPower(
       input,
+      availableHeatingPowerW,
+    );
+
+    const requestedDemandPct = this.calculateRequestedDemandPct(
+      requestedHeatingPowerW,
       availableHeatingPowerW,
     );
 
     const stabilizedDemandPct = this.stabilizeDemand(requestedDemandPct);
 
+    const recommendedFlowTemperatureC =
+      this.thermalModel.calculateRecommendedFlowTemperature(
+        requestedHeatingPowerW,
+      );
+
     const result = this.createResult(
       input,
       stabilizedDemandPct,
+      requestedHeatingPowerW,
       availableHeatingPowerW,
+      recommendedFlowTemperatureC,
     );
 
     this.handleLearning(result, input);
@@ -134,17 +147,20 @@ export class RoomMPCController {
     this.appliedHeatingPowerW.value = powerW;
   }
 
+  public consumePersistedLearningFactors(): PersistedLearningFactors | null {
+    return this.learner.consumePersistedLearningFactors();
+  }
+
+  public recalibrateLearningFactors(factors: PersistedLearningFactors): void {
+    this.learner.recalibrate(factors);
+  }
+
   private calculateRequestedDemandPct(
-    input: RoomMpcInput,
+    requestedHeatingPowerW: number,
     availableHeatingPowerW: number,
   ): number {
-    const requestedHeatingPower = this.calculateRequestedHeatingPower(
-      input,
-      availableHeatingPowerW,
-    );
-
     const limitedHeatingPower = clamp(
-      requestedHeatingPower,
+      requestedHeatingPowerW,
       0,
       availableHeatingPowerW,
     );
@@ -173,17 +189,17 @@ export class RoomMPCController {
   private createResult(
     input: RoomMpcInput,
     stabilizedDemandPct: number,
+    requestedHeatingPowerW: number,
     availableHeatingPowerW: number,
+    recommendedFlowTemperatureC: number | null,
   ): RoomMpcResult {
-    const requestedHeatingPowerW =
-      (stabilizedDemandPct / 100) * availableHeatingPowerW;
-
     return {
       trvTargets: this.distributionModel.distributeDemand(stabilizedDemandPct),
       demandPct: stabilizedDemandPct,
       input: input,
       requestedHeatingPowerW,
       availableHeatingPowerW,
+      recommendedFlowTemperatureC,
     };
   }
 

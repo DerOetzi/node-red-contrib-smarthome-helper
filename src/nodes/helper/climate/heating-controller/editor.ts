@@ -45,6 +45,7 @@ const controlMatcherList = new MatchJoinEditableList({
     ActiveControllerTarget.command,
     HeatingControllerTarget.windowOpen,
     HeatingControllerTarget.heatingAvailable,
+    HeatingControllerTarget.mpcLearningRecalibrate,
   ],
   translatePrefix: "helper.heating-controller",
   headerPrefix: "helper.heating-controller",
@@ -215,6 +216,11 @@ function buildHeatingControllerFormContent(
   builder.line();
 
   const isMpc = node.controllerMode === HeatingControllerControllerMode.mpc;
+
+  controlMatcherList.showHideTarget(
+    isMpc,
+    HeatingControllerTarget.mpcLearningRecalibrate,
+  );
 
   const controllerModeSelect = builder.createSelectInput({
     id: "node-input-controllerMode",
@@ -451,6 +457,11 @@ function buildHeatingControllerFormContent(
     .parent()
     .toggle(isMpc);
 
+  const outputsInput = builder.createHiddenInput({
+    id: "node-input-outputs",
+    value: node.outputs,
+  });
+
   controllerModeSelect.on("change", function () {
     const mpcSelected = $(this).val() === HeatingControllerControllerMode.mpc;
     designIndoorTemperatureCRow.toggle(mpcSelected);
@@ -471,6 +482,13 @@ function buildHeatingControllerFormContent(
     targetTemperatureStepRow.toggle(mpcSelected);
     roomTemperatureStrategyRow.toggle(mpcSelected);
     maxSensorAgeRow.toggle(mpcSelected);
+
+    controlMatcherList.removeTarget(
+      mpcSelected,
+      HeatingControllerTarget.mpcLearningRecalibrate,
+    );
+
+    outputsInput.val(mpcSelected ? 4 : 3);
   });
 }
 
@@ -527,6 +545,7 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "windowOpen",
     "manualControl",
     "command",
+    "mpcLearningRecalibrate",
     "pvBoost",
     "pvBoostTemperatureOffset",
     "heatingAvailable",
@@ -537,7 +556,7 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "outdoorTemperature",
     "flowTemperature",
   ],
-  outputKeys: ["heatmode", "temperature", "window"],
+  outputKeys: ["heatmode", "temperature", "window", "persistLearningFactors"],
   baseTemplate: "input-only",
   lists: [
     {

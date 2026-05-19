@@ -31,6 +31,7 @@ export enum HeatingControllerTarget {
   pvBoost = "pvBoost",
   windowOpen = "windowOpen",
   heatingAvailable = "heatingAvailable",
+  mpcLearningRecalibrate = "mpcLearningRecalibrate",
   trv1 = "trv1",
   trv2 = "trv2",
   trv3 = "trv3",

@@ -1,6 +1,7 @@
 import { EditorNodeInstance } from "node-red";
 import { MatcherRow } from "../../../flowctrl/match-join/types";
 import {
+  HeatingControllerControllerMode,
   HeatingControllerEditorNodeProperties,
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
@@ -88,6 +89,12 @@ export default class HeatingControllerMigration extends ActiveControllerMigratio
       node.maxSensorAge = Defaults.maxSensorAge;
       node.maxSensorAgeUnit = Defaults.maxSensorAgeUnit;
 
+      node.migrated = true;
+    }
+
+    if (this.checkMigrationStepRequired(node, "1.2.6")) {
+      node.outputs =
+        node.controllerMode === HeatingControllerControllerMode.mpc ? 4 : 3;
       node.migrated = true;
     }
 

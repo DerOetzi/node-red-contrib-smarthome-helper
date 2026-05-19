@@ -111,6 +111,28 @@ export class RoomThermalModel {
     return this.totalRadiatorPowerW * flowFactor;
   }
 
+  public calculateRecommendedFlowTemperature(
+    requiredHeatingPowerW: number,
+  ): number | null {
+    if (this.totalRadiatorPowerW <= 0 || requiredHeatingPowerW <= 0) {
+      return null;
+    }
+
+    const requiredPowerRatio = requiredHeatingPowerW / this.totalRadiatorPowerW;
+
+    const radiatorExponent = 1.3;
+
+    const normalizedFlowTemperature = Math.pow(
+      requiredPowerRatio,
+      1 / radiatorExponent,
+    );
+
+    return roundToStep(
+      clamp(normalizedFlowTemperature * this.referenceFlowTemperature, 20, 90),
+      1,
+    );
+  }
+
   public calculateBaseHeatingPower(
     targetTemperature: number,
     outdoorTemperature: number,
@@ -162,6 +184,10 @@ export class RoomThermalModel {
   }
 
   public updateLearningFactors(factors: LearningFactors): void {
+    this.setLearningFactors(factors);
+  }
+
+  public setLearningFactors(factors: LearningFactors): void {
     this.learnedUaFactor = clamp(factors.uaFactor, 0.5, 2);
 
     this.learnedCapacityFactor = clamp(factors.capacityFactor, 0.5, 3);

@@ -224,6 +224,10 @@
         "flowTemperature": {
             "name": "Vorlauftemperatur",
             "description": "Vorlauftemperatur des Heizkreises zur Heizleistungsschätzung"
+        },
+        "mpcLearningRecalibrate": {
+            "name": "MPC Lernen recalibrieren",
+            "description": "Trigger zum Recalibrieren des MPC Lernens mit bereitgestellten Faktoren"
         }
     },
     "output": {
@@ -239,9 +243,9 @@
             "name": "Fenster offen",
             "description": "Fensterstatus"
         },
-        "status": {
-            "name": "Status",
-            "description": "Statusmeldung"
+        "persistLearningFactors": {
+            "name": "Lernfaktoren persistieren",
+            "description": "Ausgabe mit aktuellen Lernfaktoren zur Persistierung (MPC-Modus)"
         }
     },
     "state": {

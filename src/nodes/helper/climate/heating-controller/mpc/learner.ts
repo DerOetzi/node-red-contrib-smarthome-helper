@@ -1,6 +1,7 @@
 import {
   LearningFactors,
   LearningStatus,
+  PersistedLearningFactors,
   RoomModelLearningState,
   RoomModelPrediction,
   RoomMpcInput,
@@ -13,6 +14,8 @@ import {
   MAX_UA_LEARNING_HEATING_POWER_W,
   MIN_CAPACITY_LEARNING_HEATING_POWER_W,
   MIN_LEARNING_INTERVAL_SECONDS,
+  PERSISTENCE_THRESHOLD,
+  PERSISTENCE_VERSION,
   UA_LEARNING_RATE,
 } from "./const";
 import { RoomThermalModel } from "./model";
@@ -23,6 +26,10 @@ export class RoomMPCModelLearner {
   private lastTimestamp?: number;
 
   private lastPrediction?: RoomModelPrediction;
+
+  private pendingPersistedFactors?: PersistedLearningFactors;
+
+  private lastPersistedFactors?: PersistedLearningFactors;
 
   constructor(private readonly thermalModel: RoomThermalModel) {}
 
@@ -63,6 +70,16 @@ export class RoomMPCModelLearner {
 
     this.applyLearningFactors(learningFactors);
 
+    if (
+      !this.lastPersistedFactors ||
+      this.haveLearningFactorsChanged(
+        this.lastPersistedFactors.factors,
+        learningFactors,
+      )
+    ) {
+      this.pendingPersistedFactors = this.createPersistedLearningFactors();
+    }
+
     this.storePredictionState(prediction, input.roomTempC, input.nowTs);
     return this.getLearningState(LearningStatus.active, appliedHeatingPowerW);
   }
@@ -79,8 +96,50 @@ export class RoomMPCModelLearner {
     };
   }
 
+  public consumePersistedLearningFactors(): PersistedLearningFactors | null {
+    if (this.pendingPersistedFactors) {
+      this.lastPersistedFactors = this.pendingPersistedFactors;
+      this.pendingPersistedFactors = undefined;
+      return this.lastPersistedFactors;
+    }
+
+    return null;
+  }
+
   public getLastPrediction(): RoomModelPrediction | undefined {
     return this.lastPrediction;
+  }
+
+  private haveLearningFactorsChanged(
+    current: LearningFactors,
+    next: LearningFactors,
+  ): boolean {
+    return (
+      Math.abs(current.uaFactor - next.uaFactor) >= PERSISTENCE_THRESHOLD ||
+      Math.abs(current.capacityFactor - next.capacityFactor) >=
+        PERSISTENCE_THRESHOLD
+    );
+  }
+
+  private createPersistedLearningFactors(): PersistedLearningFactors {
+    return {
+      version: PERSISTENCE_VERSION,
+      factors: this.thermalModel.getLearningFactors(),
+    };
+  }
+
+  public recalibrate(factors: PersistedLearningFactors): void {
+    this.thermalModel.setLearningFactors(factors.factors);
+    this.reset();
+    this.lastPersistedFactors = this.createPersistedLearningFactors();
+  }
+
+  public reset(): void {
+    this.lastRoomTemperatureC = undefined;
+    this.lastTimestamp = undefined;
+    this.lastPrediction = undefined;
+    this.pendingPersistedFactors = undefined;
+    this.lastPersistedFactors = undefined;
   }
 
   private hasPreviousState(): boolean {

@@ -16,8 +16,8 @@ import {
 import Migration from "../../../flowctrl/base/migration";
 import HeatingControllerMigration from "./migration";
 import { RoomMPCController } from "./mpc";
-import { RoomMpcResult, TrvIndex } from "./mpc/types";
-import { TRV_MAX_COUNT } from "./mpc/const";
+import { PersistedLearningFactors, RoomMpcResult, TrvIndex } from "./mpc/types";
+import { PERSISTENCE_VERSION, TRV_MAX_COUNT } from "./mpc/const";
 import {
   convertToMilliseconds,
   TimeIntervalUnit,
@@ -143,6 +143,9 @@ export default class HeatingControllerNode extends ActiveControllerNode<
           this.mpcController.setFlowTemperature(value),
         );
         break;
+      case HeatingControllerTarget.mpcLearningRecalibrate:
+        this.handleMPCLearningRecalibrate(messageFlow);
+        break;
     }
   }
 
@@ -235,6 +238,34 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     }
   }
 
+  private handleMPCLearningRecalibrate(messageFlow: NodeMessageFlow): void {
+    const persistedLearningFactors =
+      messageFlow.getPayload<PersistedLearningFactors>();
+    if (this.isValidPersistedLearningFactors(persistedLearningFactors)) {
+      this.mpcController.recalibrateLearningFactors(persistedLearningFactors!);
+    } else {
+      this.node.error(
+        "Invalid payload for MPC learning recalibration",
+        messageFlow.originalMsg,
+      );
+    }
+  }
+
+  private isValidPersistedLearningFactors(
+    persistedLearningFactors: PersistedLearningFactors | undefined,
+  ) {
+    return (
+      persistedLearningFactors &&
+      typeof persistedLearningFactors === "object" &&
+      persistedLearningFactors.factors &&
+      typeof persistedLearningFactors.factors === "object" &&
+      Number.isInteger(persistedLearningFactors.version) &&
+      persistedLearningFactors.version === PERSISTENCE_VERSION &&
+      Number.isFinite(persistedLearningFactors.factors.uaFactor) &&
+      Number.isFinite(persistedLearningFactors.factors.capacityFactor)
+    );
+  }
+
   private handleWindowOpen(messageFlow: NodeMessageFlow) {
     const previousWindowOpenState = this.windowOpenState;
 
@@ -308,20 +339,37 @@ export default class HeatingControllerNode extends ActiveControllerNode<
 
     if (this.config.controllerMode === HeatingControllerControllerMode.mpc) {
       const mpcResult = this.mpcController.compute(targetTemperature);
-      if (mpcResult === null) {
-        this.sendTemperatureForAllTrvs(targetTemperature);
-      } else {
-        mpcResult.trvTargets.forEach((trvTarget, index) => {
-          this.sendTemperature(
-            this.config.trvs[index]?.name ?? `trv${index + 1}`,
-            trvTarget,
-            index as TrvIndex,
-            mpcResult,
-          );
-        });
-      }
+      this.handleMPCResult(mpcResult, targetTemperature);
     } else {
       this.sendTemperature("target_temperature", targetTemperature, 0);
+    }
+  }
+
+  private handleMPCResult(
+    mpcResult: RoomMpcResult | null,
+    targetTemperature: number,
+  ): void {
+    if (mpcResult === null) {
+      this.sendTemperatureForAllTrvs(targetTemperature);
+    } else {
+      mpcResult.trvTargets.forEach((trvTarget, index) => {
+        this.sendTemperature(
+          this.config.trvs[index]?.name ?? `trv${index + 1}`,
+          trvTarget,
+          index as TrvIndex,
+          mpcResult,
+        );
+      });
+
+      const persist = this.mpcController.consumePersistedLearningFactors();
+      if (persist) {
+        this.debouncePass(
+          new NodeMessageFlow(
+            { topic: "persistLearningFactors", payload: persist },
+            3,
+          ),
+        );
+      }
     }
   }
 

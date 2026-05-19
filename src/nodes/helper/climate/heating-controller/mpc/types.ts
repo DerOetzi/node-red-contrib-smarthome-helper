@@ -102,6 +102,7 @@ export type RoomMpcInput = {
 
 export enum LearningStatus {
   initializing = "initializing",
+  calibrating = "calibrating",
   active = "active",
   disabled = "disabled",
   suppressed = "suppressed",
@@ -112,6 +113,12 @@ export enum LearningStatus {
 export type LearningFactors = {
   uaFactor: number;
   capacityFactor: number;
+};
+
+export type PersistedLearningFactors = {
+  version: number;
+
+  factors: LearningFactors;
 };
 
 export type RoomModelPrediction = {
@@ -138,10 +145,15 @@ export type RoomModelLearningState = {
 
 export type RoomMpcResult = {
   trvTargets: number[];
+
+  input: RoomMpcInput;
+
   demandPct: number;
   requestedHeatingPowerW: number;
+
   availableHeatingPowerW: number;
-  input: RoomMpcInput;
+  recommendedFlowTemperatureC: number | null;
+
   learningState?: RoomModelLearningState;
 };
 
