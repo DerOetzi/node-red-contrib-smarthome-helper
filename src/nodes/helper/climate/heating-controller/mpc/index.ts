@@ -1,5 +1,5 @@
 import { Node } from "node-red";
-import { clamp } from "../../../../../helpers/math.helper";
+import { clamp, roundToStep } from "../../../../../helpers/math.helper";
 import {
   convertToMilliseconds,
   TimeIntervalUnit,
@@ -129,58 +129,6 @@ export class RoomMPCController {
     return result;
   }
 
-  private handleLearning(input: RoomMpcInput): RoomModelLearningState {
-    const appliedHeatingPowerW = this.appliedHeatingPowerW.getFreshValue(
-      input.nowTs,
-    );
-
-    if (this.learningEnabled) {
-      if (this.isLearningSuppressed()) {
-        return this.learner.getLearningState(
-          LearningStatus.suppressed,
-          appliedHeatingPowerW,
-        );
-      } else if (appliedHeatingPowerW === undefined) {
-        return this.learner.getLearningState(
-          LearningStatus.missingAppliedPower,
-        );
-      } else {
-        const learningState = this.learner.update(input, appliedHeatingPowerW);
-        return learningState;
-      }
-    } else {
-      return this.learner.getLearningState(
-        LearningStatus.disabled,
-        appliedHeatingPowerW,
-      );
-    }
-  }
-
-  public setAppliedHeatingPower(powerW: number): void {
-    this.appliedHeatingPowerW.value = powerW;
-  }
-
-  public consumePersistedLearningFactors(): PersistedLearningFactors | null {
-    return this.learner.consumePersistedLearningFactors();
-  }
-
-  public recalibrateLearningFactors(factors: PersistedLearningFactors): void {
-    this.learner.recalibrate(factors);
-  }
-
-  private calculateRequestedDemandPct(
-    requestedHeatingPowerW: number,
-    availableHeatingPowerW: number,
-  ): number {
-    const limitedHeatingPower = clamp(
-      requestedHeatingPowerW,
-      0,
-      availableHeatingPowerW,
-    );
-
-    return (limitedHeatingPower / availableHeatingPowerW) * 100;
-  }
-
   private calculateRequestedHeatingPower(
     input: RoomMpcInput,
     availableHeatingPowerW: number,
@@ -196,26 +144,20 @@ export class RoomMPCController {
       availableHeatingPowerW,
     );
 
-    return baseHeatingPower + catchupPower;
+    return roundToStep(baseHeatingPower + catchupPower, 0.01);
   }
 
-  private createResult(
-    input: RoomMpcInput,
-    learningState: RoomModelLearningState,
-    stabilizedDemandPct: number,
+  private calculateRequestedDemandPct(
     requestedHeatingPowerW: number,
     availableHeatingPowerW: number,
-    recommendedFlowTemperatureC: number | null,
-  ): RoomMpcResult {
-    return {
-      trvTargets: this.distributionModel.distributeDemand(stabilizedDemandPct),
-      demandPct: stabilizedDemandPct,
-      input: input,
+  ): number {
+    const limitedHeatingPower = clamp(
       requestedHeatingPowerW,
+      0,
       availableHeatingPowerW,
-      recommendedFlowTemperatureC,
-      learningState,
-    };
+    );
+
+    return (limitedHeatingPower / availableHeatingPowerW) * 100;
   }
 
   private applyDemandRateLimiting(
@@ -246,6 +188,64 @@ export class RoomMPCController {
     this.lastOutputDemandPct = this.targetDemandPct;
     this.lastDemandUpdateTs = input.nowTs;
     return this.lastOutputDemandPct;
+  }
+
+  private handleLearning(input: RoomMpcInput): RoomModelLearningState {
+    const appliedHeatingPowerW = this.appliedHeatingPowerW.getFreshValue(
+      input.nowTs,
+    );
+
+    if (this.learningEnabled) {
+      if (this.isLearningSuppressed()) {
+        return this.learner.getLearningState(
+          LearningStatus.suppressed,
+          appliedHeatingPowerW,
+        );
+      } else if (appliedHeatingPowerW === undefined) {
+        return this.learner.getLearningState(
+          LearningStatus.missingAppliedPower,
+        );
+      } else {
+        const learningState = this.learner.update(input, appliedHeatingPowerW);
+        return learningState;
+      }
+    } else {
+      return this.learner.getLearningState(
+        LearningStatus.disabled,
+        appliedHeatingPowerW,
+      );
+    }
+  }
+
+  private createResult(
+    input: RoomMpcInput,
+    learningState: RoomModelLearningState,
+    stabilizedDemandPct: number,
+    requestedHeatingPowerW: number,
+    availableHeatingPowerW: number,
+    recommendedFlowTemperatureC: number | null,
+  ): RoomMpcResult {
+    return {
+      trvTargets: this.distributionModel.distributeDemand(stabilizedDemandPct),
+      demandPct: stabilizedDemandPct,
+      input: input,
+      requestedHeatingPowerW,
+      availableHeatingPowerW,
+      recommendedFlowTemperatureC,
+      learningState,
+    };
+  }
+
+  public setAppliedHeatingPower(powerW: number): void {
+    this.appliedHeatingPowerW.value = powerW;
+  }
+
+  public consumePersistedLearningFactors(): PersistedLearningFactors | null {
+    return this.learner.consumePersistedLearningFactors();
+  }
+
+  public recalibrateLearningFactors(factors: PersistedLearningFactors): void {
+    this.learner.recalibrate(factors);
   }
 
   public enableLearning(): void {

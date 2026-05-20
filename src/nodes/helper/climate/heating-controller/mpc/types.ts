@@ -1,4 +1,5 @@
 import { TimeIntervalUnit } from "../../../../../helpers/time.helper";
+import { PERSISTENCE_VERSION } from "./const";
 
 export enum RoomTemperatureStrategy {
   external = "external",
@@ -114,11 +115,44 @@ export type LearningFactors = {
   capacityFactor: number;
 };
 
-export type PersistedLearningFactors = {
-  version: number;
+export class PersistedLearningFactors {
+  private readonly _version: number;
+  private readonly _uaFactor: number;
+  private readonly _capacityFactor: number;
 
-  factors: LearningFactors;
-};
+  constructor(factors: LearningFactors) {
+    this._version = PERSISTENCE_VERSION;
+    this._uaFactor = factors.uaFactor;
+    this._capacityFactor = factors.capacityFactor;
+  }
+
+  public get version(): number {
+    return this._version;
+  }
+
+  public get uaFactor(): number {
+    return this._uaFactor;
+  }
+
+  public get capacityFactor(): number {
+    return this._capacityFactor;
+  }
+
+  public get factors(): LearningFactors {
+    return {
+      uaFactor: this._uaFactor,
+      capacityFactor: this._capacityFactor,
+    };
+  }
+
+  public toJson(): string {
+    return JSON.stringify({
+      version: this._version,
+      uaFactor: this._uaFactor,
+      capacityFactor: this._capacityFactor,
+    });
+  }
+}
 
 export type RoomModelPrediction = {
   predictedTempC: number;

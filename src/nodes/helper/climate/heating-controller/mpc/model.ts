@@ -44,14 +44,6 @@ export class RoomThermalModel {
     }
   }
 
-  private get effectiveUaTotal(): number {
-    return this.baseUaTotal * this.learnedUaFactor;
-  }
-
-  private get effectiveThermalCapacityJPerK(): number {
-    return this.baseThermalCapacityJPerK * this.learnedCapacityFactor;
-  }
-
   private calculateTotalHeatLossCoefficient(
     config: HeatingMPCControllerNodeOptions,
   ): number {
@@ -84,13 +76,6 @@ export class RoomThermalModel {
       : 0;
   }
 
-  public calculateHeatLoss(
-    roomTemperatureC: number,
-    outdoorTemperatureC: number,
-  ): number {
-    return this.effectiveUaTotal * (roomTemperatureC - outdoorTemperatureC);
-  }
-
   private calculateVentilationUa(
     config: HeatingMPCControllerNodeOptions,
     deltaTDesign: number,
@@ -119,30 +104,27 @@ export class RoomThermalModel {
 
     const flowFactor = this.calculateFlowFactor(flowTemperature);
 
-    return this.totalRadiatorPowerW * flowFactor;
+    return roundToStep(this.totalRadiatorPowerW * flowFactor, 0.01);
   }
 
-  public calculateRecommendedFlowTemperature(
-    requiredHeatingPowerW: number,
-  ): number | null {
-    if (this.totalRadiatorPowerW <= 0 || requiredHeatingPowerW <= 0) {
-      return null;
+  private calculateFlowFactor(flowTemperature?: number): number {
+    if (flowTemperature === undefined) {
+      return 1;
     }
 
-    const requiredPowerRatio = requiredHeatingPowerW / this.totalRadiatorPowerW;
-
+    const excessTemp = flowTemperature - this.referenceRoomTemperatureC;
     const excessTempRef =
       this.referenceFlowTemperature - this.referenceRoomTemperatureC;
 
     if (excessTempRef <= 0) {
-      return null;
+      return 1;
     }
 
-    const recommendedFlowTemp =
-      this.referenceRoomTemperatureC +
-      excessTempRef * Math.pow(requiredPowerRatio, 1 / RADIATOR_EXPONENT);
-
-    return roundToStep(clamp(recommendedFlowTemp, 20, 90), 1);
+    return clamp(
+      Math.pow(Math.max(0, excessTemp) / excessTempRef, RADIATOR_EXPONENT),
+      MIN_FLOW_FACTOR,
+      MAX_FLOW_FACTOR,
+    );
   }
 
   public calculateBaseHeatingPower(
@@ -169,33 +151,27 @@ export class RoomThermalModel {
     return Math.min(theoreticalCatchupPower, maxCatchupPower);
   }
 
-  private calculateFlowFactor(flowTemperature?: number): number {
-    if (flowTemperature === undefined) {
-      return 1;
+  public calculateRecommendedFlowTemperature(
+    requiredHeatingPowerW: number,
+  ): number | null {
+    if (this.totalRadiatorPowerW <= 0 || requiredHeatingPowerW <= 0) {
+      return null;
     }
 
-    const excessTemp = flowTemperature - this.referenceRoomTemperatureC;
+    const requiredPowerRatio = requiredHeatingPowerW / this.totalRadiatorPowerW;
+
     const excessTempRef =
       this.referenceFlowTemperature - this.referenceRoomTemperatureC;
 
     if (excessTempRef <= 0) {
-      return 1;
+      return null;
     }
 
-    return clamp(
-      Math.pow(Math.max(0, excessTemp) / excessTempRef, RADIATOR_EXPONENT),
-      MIN_FLOW_FACTOR,
-      MAX_FLOW_FACTOR,
-    );
-  }
+    const recommendedFlowTemp =
+      this.referenceRoomTemperatureC +
+      excessTempRef * Math.pow(requiredPowerRatio, 1 / RADIATOR_EXPONENT);
 
-  public predictTemperatureChange(
-    netHeatingPowerW: number,
-    durationSeconds: number,
-  ): number {
-    return (
-      (netHeatingPowerW * durationSeconds) / this.effectiveThermalCapacityJPerK
-    );
+    return roundToStep(clamp(recommendedFlowTemp, 20, 90), 1);
   }
 
   public updateLearningFactors(factors: LearningFactors): LearningFactors {
@@ -215,6 +191,30 @@ export class RoomThermalModel {
       uaFactor: this.learnedUaFactor,
       capacityFactor: this.learnedCapacityFactor,
     };
+  }
+
+  public calculateHeatLoss(
+    roomTemperatureC: number,
+    outdoorTemperatureC: number,
+  ): number {
+    return this.effectiveUaTotal * (roomTemperatureC - outdoorTemperatureC);
+  }
+
+  public predictTemperatureChange(
+    netHeatingPowerW: number,
+    durationSeconds: number,
+  ): number {
+    return (
+      (netHeatingPowerW * durationSeconds) / this.effectiveThermalCapacityJPerK
+    );
+  }
+
+  private get effectiveUaTotal(): number {
+    return this.baseUaTotal * this.learnedUaFactor;
+  }
+
+  private get effectiveThermalCapacityJPerK(): number {
+    return this.baseThermalCapacityJPerK * this.learnedCapacityFactor;
   }
 }
 

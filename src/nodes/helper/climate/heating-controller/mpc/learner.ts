@@ -16,7 +16,6 @@ import {
   MIN_DELTA_C_FOR_LEARNING,
   MIN_LEARNING_INTERVAL_SECONDS,
   PERSISTENCE_THRESHOLD,
-  PERSISTENCE_VERSION,
   UA_LEARNING_RATE,
 } from "./const";
 import { RoomThermalModel } from "./model";
@@ -124,10 +123,7 @@ export class RoomMPCModelLearner {
   }
 
   private createPersistedLearningFactors(): PersistedLearningFactors {
-    return {
-      version: PERSISTENCE_VERSION,
-      factors: this.thermalModel.getLearningFactors(),
-    };
+    return new PersistedLearningFactors(this.thermalModel.getLearningFactors());
   }
 
   public recalibrate(factors: PersistedLearningFactors): void {
@@ -259,7 +255,7 @@ export class RoomMPCModelLearner {
       return currentUaFactor;
     }
 
-    const direction = prediction.modelErrorC > 0 ? -1 : 1;
+    const direction = -Math.sign(prediction.modelErrorC);
 
     return (
       currentUaFactor +
@@ -275,8 +271,7 @@ export class RoomMPCModelLearner {
       return currentCapacityFactor;
     }
 
-    const direction =
-      prediction.actualDeltaC < prediction.predictedDeltaC ? 1 : -1;
+    const direction = -Math.sign(prediction.modelErrorC);
 
     return (
       currentCapacityFactor +
