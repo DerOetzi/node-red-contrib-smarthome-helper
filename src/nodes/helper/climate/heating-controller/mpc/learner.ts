@@ -13,6 +13,7 @@ import {
   MAX_PREDICTION_ERROR_C,
   MAX_UA_LEARNING_HEATING_POWER_W,
   MIN_CAPACITY_LEARNING_HEATING_POWER_W,
+  MIN_DELTA_C_FOR_LEARNING,
   MIN_LEARNING_INTERVAL_SECONDS,
   PERSISTENCE_THRESHOLD,
   PERSISTENCE_VERSION,
@@ -68,13 +69,14 @@ export class RoomMPCModelLearner {
       appliedHeatingPowerW,
     );
 
-    this.applyLearningFactors(learningFactors);
+    const appliedLearningFactors =
+      this.thermalModel.updateLearningFactors(learningFactors);
 
     if (
       !this.lastPersistedFactors ||
       this.haveLearningFactorsChanged(
         this.lastPersistedFactors.factors,
-        learningFactors,
+        appliedLearningFactors,
       )
     ) {
       this.pendingPersistedFactors = this.createPersistedLearningFactors();
@@ -130,16 +132,21 @@ export class RoomMPCModelLearner {
 
   public recalibrate(factors: PersistedLearningFactors): void {
     this.thermalModel.setLearningFactors(factors.factors);
-    this.reset();
+    this.resetState();
     this.lastPersistedFactors = this.createPersistedLearningFactors();
   }
 
   public reset(): void {
+    this.resetState();
+    this.lastPersistedFactors = undefined;
+    this.thermalModel.setLearningFactors({ uaFactor: 1, capacityFactor: 1 });
+  }
+
+  private resetState(): void {
     this.lastRoomTemperatureC = undefined;
     this.lastTimestamp = undefined;
     this.lastPrediction = undefined;
     this.pendingPersistedFactors = undefined;
-    this.lastPersistedFactors = undefined;
   }
 
   private hasPreviousState(): boolean {
@@ -248,7 +255,7 @@ export class RoomMPCModelLearner {
     currentUaFactor: number,
     prediction: RoomModelPrediction,
   ): number {
-    if (Math.abs(prediction.actualDeltaC) < 0.05) {
+    if (Math.abs(prediction.actualDeltaC) < MIN_DELTA_C_FOR_LEARNING) {
       return currentUaFactor;
     }
 
@@ -264,7 +271,7 @@ export class RoomMPCModelLearner {
     currentCapacityFactor: number,
     prediction: RoomModelPrediction,
   ): number {
-    if (Math.abs(prediction.predictedDeltaC) < 0.05) {
+    if (Math.abs(prediction.predictedDeltaC) < MIN_DELTA_C_FOR_LEARNING) {
       return currentCapacityFactor;
     }
 
@@ -275,10 +282,6 @@ export class RoomMPCModelLearner {
       currentCapacityFactor +
       direction * Math.abs(prediction.modelErrorC) * CAPACITY_LEARNING_RATE
     );
-  }
-
-  private applyLearningFactors(learningFactors: LearningFactors): void {
-    this.thermalModel.updateLearningFactors(learningFactors);
   }
 
   private storePredictionState(

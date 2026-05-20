@@ -1,5 +1,10 @@
+import { Node } from "node-red";
 import { clamp } from "../../../../../helpers/math.helper";
-import { convertToMilliseconds } from "../../../../../helpers/time.helper";
+import {
+  convertToMilliseconds,
+  TimeIntervalUnit,
+} from "../../../../../helpers/time.helper";
+import { APPLIED_POWER_MAX_AGE_MINUTES } from "./const";
 import { RoomMPCModelLearner } from "./learner";
 import { RoomDistributionModel, RoomThermalModel } from "./model";
 import { ActorStateEntry, RoomMPCSensors } from "./sensors";
@@ -7,6 +12,7 @@ import {
   HeatingMPCControllerNodeOptions,
   LearningStatus,
   PersistedLearningFactors,
+  RoomModelLearningState,
   RoomMpcInput,
   RoomMpcResult,
   TrvIndex,
@@ -26,23 +32,24 @@ export class RoomMPCController {
 
   private readonly appliedHeatingPowerW: ActorStateEntry;
 
-  private lastDemandPct = 0;
+  private targetDemandPct = 0;
+  private lastOutputDemandPct = 0;
   private lastDemandUpdateTs = 0;
 
   private learningEnabled: boolean;
 
   private learningSuppressedUntilTs = 0;
 
-  constructor(config: HeatingMPCControllerNodeOptions) {
+  constructor(node: Node, config: HeatingMPCControllerNodeOptions) {
     this.config = config;
 
     this.sensors = new RoomMPCSensors(config);
 
-    this.thermalModel = new RoomThermalModel(config);
+    this.thermalModel = new RoomThermalModel(node, config);
     this.distributionModel = new RoomDistributionModel(config);
 
     this.appliedHeatingPowerW = new ActorStateEntry(
-      convertToMilliseconds(config.maxSensorAge, config.maxSensorAgeUnit),
+      convertToMilliseconds(APPLIED_POWER_MAX_AGE_MINUTES, TimeIntervalUnit.m),
     );
 
     this.learningEnabled = config.mpcLearningEnabledByDefault;
@@ -98,45 +105,51 @@ export class RoomMPCController {
       availableHeatingPowerW,
     );
 
-    const stabilizedDemandPct = this.stabilizeDemand(requestedDemandPct);
+    const stabilizedDemandPct = this.applyDemandRateLimiting(
+      input,
+      requestedDemandPct,
+    );
 
     const recommendedFlowTemperatureC =
       this.thermalModel.calculateRecommendedFlowTemperature(
         requestedHeatingPowerW,
       );
 
+    const learningState = this.handleLearning(input);
+
     const result = this.createResult(
       input,
+      learningState,
       stabilizedDemandPct,
       requestedHeatingPowerW,
       availableHeatingPowerW,
       recommendedFlowTemperatureC,
     );
 
-    this.handleLearning(result, input);
-
     return result;
   }
 
-  private handleLearning(result: RoomMpcResult, input: RoomMpcInput) {
-    const appliedHeatingPowerW = this.appliedHeatingPowerW.getFreshValue();
+  private handleLearning(input: RoomMpcInput): RoomModelLearningState {
+    const appliedHeatingPowerW = this.appliedHeatingPowerW.getFreshValue(
+      input.nowTs,
+    );
 
     if (this.learningEnabled) {
       if (this.isLearningSuppressed()) {
-        result.learningState = this.learner.getLearningState(
+        return this.learner.getLearningState(
           LearningStatus.suppressed,
           appliedHeatingPowerW,
         );
       } else if (appliedHeatingPowerW === undefined) {
-        result.learningState = this.learner.getLearningState(
+        return this.learner.getLearningState(
           LearningStatus.missingAppliedPower,
         );
       } else {
         const learningState = this.learner.update(input, appliedHeatingPowerW);
-        result.learningState = learningState;
+        return learningState;
       }
     } else {
-      result.learningState = this.learner.getLearningState(
+      return this.learner.getLearningState(
         LearningStatus.disabled,
         appliedHeatingPowerW,
       );
@@ -188,6 +201,7 @@ export class RoomMPCController {
 
   private createResult(
     input: RoomMpcInput,
+    learningState: RoomModelLearningState,
     stabilizedDemandPct: number,
     requestedHeatingPowerW: number,
     availableHeatingPowerW: number,
@@ -200,37 +214,38 @@ export class RoomMPCController {
       requestedHeatingPowerW,
       availableHeatingPowerW,
       recommendedFlowTemperatureC,
+      learningState,
     };
   }
 
-  private stabilizeDemand(demandPct: number): number {
-    const now = Date.now();
-
-    if (
-      Math.abs(demandPct - this.lastDemandPct) <
-      this.config.mpcDemandHysteresisPct
-    ) {
-      return this.lastDemandPct;
-    }
-
-    if (
-      now - this.lastDemandUpdateTs < this.holdTimeMs &&
-      Math.abs(demandPct - this.lastDemandPct) <
-        this.config.mpcHoldOverrideDemandPct
-    ) {
-      return this.lastDemandPct;
-    }
-
-    const limitedDemandPct = clamp(
+  private applyDemandRateLimiting(
+    input: RoomMpcInput,
+    demandPct: number,
+  ): number {
+    this.targetDemandPct = clamp(
       demandPct,
-      this.lastDemandPct - this.config.mpcMaxDemandStepPct,
-      this.lastDemandPct + this.config.mpcMaxDemandStepPct,
+      this.targetDemandPct - this.config.mpcMaxDemandStepPct,
+      this.targetDemandPct + this.config.mpcMaxDemandStepPct,
     );
 
-    this.lastDemandPct = limitedDemandPct;
-    this.lastDemandUpdateTs = now;
+    if (
+      Math.abs(this.targetDemandPct - this.lastOutputDemandPct) <
+      this.config.mpcDemandHysteresisPct
+    ) {
+      return this.lastOutputDemandPct;
+    }
 
-    return limitedDemandPct;
+    if (
+      input.nowTs - this.lastDemandUpdateTs < this.holdTimeMs &&
+      Math.abs(this.targetDemandPct - this.lastOutputDemandPct) <
+        this.config.mpcHoldOverrideDemandPct
+    ) {
+      return this.lastOutputDemandPct;
+    }
+
+    this.lastOutputDemandPct = this.targetDemandPct;
+    this.lastDemandUpdateTs = input.nowTs;
+    return this.lastOutputDemandPct;
   }
 
   public enableLearning(): void {
@@ -241,8 +256,8 @@ export class RoomMPCController {
     this.learningEnabled = false;
   }
 
-  public suppressLearningForInterval(durationTs: number): void {
-    this.learningSuppressedUntilTs = Date.now() + durationTs;
+  public suppressLearningForInterval(durationMs: number): void {
+    this.learningSuppressedUntilTs = Date.now() + durationMs;
   }
 
   private isLearningSuppressed(): boolean {

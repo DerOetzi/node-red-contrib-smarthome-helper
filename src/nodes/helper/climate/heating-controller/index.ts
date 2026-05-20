@@ -51,7 +51,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
 
   constructor(RED: NodeAPI, node: Node, config: HeatingControllerNodeDef) {
     super(RED, node, config, HeatingControllerNodeOptionsDefaults);
-    this.mpcController = new RoomMPCController(config);
+    this.mpcController = new RoomMPCController(node, config);
     this.initialize();
   }
 
@@ -150,7 +150,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   }
 
   private handleComfortConditionTarget(messageFlow: NodeMessageFlow): void {
-    if (this.comfortConditions.hasOwnProperty("__default__")) {
+    if ("__default__" in this.comfortConditions) {
       delete this.comfortConditions["__default__"];
     }
     this.comfortConditions[messageFlow.originalTopic ?? "comfort"] =
@@ -403,7 +403,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     }
   }
 
-  sendTemperatureForAllTrvs(
+  private sendTemperatureForAllTrvs(
     temperature: number,
     frostProtection: boolean = false,
   ) {
@@ -429,11 +429,6 @@ export default class HeatingControllerNode extends ActiveControllerNode<
         frostProtection,
       );
     });
-  }
-
-  roundTemperatureToStep(temperature: number) {
-    const step = this.config.targetTemperatureStep;
-    return Math.round(temperature / step) * step;
   }
 
   private sendTemperature(

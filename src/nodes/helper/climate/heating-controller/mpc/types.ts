@@ -102,7 +102,6 @@ export type RoomMpcInput = {
 
 export enum LearningStatus {
   initializing = "initializing",
-  calibrating = "calibrating",
   active = "active",
   disabled = "disabled",
   suppressed = "suppressed",

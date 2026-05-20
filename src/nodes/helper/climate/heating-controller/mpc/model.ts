@@ -1,11 +1,14 @@
+import { Node } from "node-red";
 import { clamp, roundToStep } from "../../../../../helpers/math.helper";
 import {
   CATCHUP_TIME_SECONDS,
   DEFAULT_THERMAL_CAPACITY_PER_M3,
   DISTRIBUTION_ALPHA,
+  MAX_CATCHUP_POWER_RATIO,
   MAX_FLOW_FACTOR,
   MAX_ROOM_ERROR,
   MIN_FLOW_FACTOR,
+  RADIATOR_EXPONENT,
 } from "./const";
 import { HeatingMPCControllerNodeOptions, LearningFactors } from "./types";
 
@@ -17,20 +20,28 @@ export class RoomThermalModel {
   private learnedCapacityFactor = 1;
 
   private readonly referenceFlowTemperature: number;
+  private readonly referenceRoomTemperatureC: number;
   private readonly totalRadiatorPowerW: number;
 
-  constructor(config: HeatingMPCControllerNodeOptions) {
+  constructor(node: Node, config: HeatingMPCControllerNodeOptions) {
     this.referenceFlowTemperature = config.mpcReferenceFlowTemperature;
+    this.referenceRoomTemperatureC = config.designIndoorTemperatureC;
 
     this.baseUaTotal = this.calculateTotalHeatLossCoefficient(config);
 
     this.baseThermalCapacityJPerK =
-      DEFAULT_THERMAL_CAPACITY_PER_M3 * config.roomVolumeM3;
+      DEFAULT_THERMAL_CAPACITY_PER_M3 * Math.max(0.1, config.roomVolumeM3);
 
     this.totalRadiatorPowerW = config.trvs.reduce(
       (sum, trv) => sum + trv.radiatorPowerW,
       0,
     );
+
+    if (this.totalRadiatorPowerW <= 0) {
+      node.warn(
+        `Total radiator power is zero or negative (${this.totalRadiatorPowerW} W). Heating power will be calculated as zero.`,
+      );
+    }
   }
 
   private get effectiveUaTotal(): number {
@@ -120,17 +131,18 @@ export class RoomThermalModel {
 
     const requiredPowerRatio = requiredHeatingPowerW / this.totalRadiatorPowerW;
 
-    const radiatorExponent = 1.3;
+    const excessTempRef =
+      this.referenceFlowTemperature - this.referenceRoomTemperatureC;
 
-    const normalizedFlowTemperature = Math.pow(
-      requiredPowerRatio,
-      1 / radiatorExponent,
-    );
+    if (excessTempRef <= 0) {
+      return null;
+    }
 
-    return roundToStep(
-      clamp(normalizedFlowTemperature * this.referenceFlowTemperature, 20, 90),
-      1,
-    );
+    const recommendedFlowTemp =
+      this.referenceRoomTemperatureC +
+      excessTempRef * Math.pow(requiredPowerRatio, 1 / RADIATOR_EXPONENT);
+
+    return roundToStep(clamp(recommendedFlowTemp, 20, 90), 1);
   }
 
   public calculateBaseHeatingPower(
@@ -152,7 +164,7 @@ export class RoomThermalModel {
       (this.effectiveThermalCapacityJPerK / CATCHUP_TIME_SECONDS) *
       limitedError;
 
-    const maxCatchupPower = availableHeatingPowerW * 0.6;
+    const maxCatchupPower = availableHeatingPowerW * MAX_CATCHUP_POWER_RATIO;
 
     return Math.min(theoreticalCatchupPower, maxCatchupPower);
   }
@@ -162,13 +174,16 @@ export class RoomThermalModel {
       return 1;
     }
 
-    const normalizedFlowTemperature =
-      flowTemperature / this.referenceFlowTemperature;
+    const excessTemp = flowTemperature - this.referenceRoomTemperatureC;
+    const excessTempRef =
+      this.referenceFlowTemperature - this.referenceRoomTemperatureC;
 
-    const radiatorExponent = 1.3;
+    if (excessTempRef <= 0) {
+      return 1;
+    }
 
     return clamp(
-      Math.pow(normalizedFlowTemperature, radiatorExponent),
+      Math.pow(Math.max(0, excessTemp) / excessTempRef, RADIATOR_EXPONENT),
       MIN_FLOW_FACTOR,
       MAX_FLOW_FACTOR,
     );
@@ -183,14 +198,16 @@ export class RoomThermalModel {
     );
   }
 
-  public updateLearningFactors(factors: LearningFactors): void {
-    this.setLearningFactors(factors);
+  public updateLearningFactors(factors: LearningFactors): LearningFactors {
+    return this.setLearningFactors(factors);
   }
 
-  public setLearningFactors(factors: LearningFactors): void {
+  public setLearningFactors(factors: LearningFactors): LearningFactors {
     this.learnedUaFactor = clamp(factors.uaFactor, 0.5, 2);
 
     this.learnedCapacityFactor = clamp(factors.capacityFactor, 0.5, 3);
+
+    return this.getLearningFactors();
   }
 
   public getLearningFactors(): LearningFactors {

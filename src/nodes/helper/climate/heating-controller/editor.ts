@@ -166,7 +166,7 @@ function buildHeatingControllerFormContent(
   });
 
   builder.createNumberInput({
-    id: "frostProtectionTemperature",
+    id: "node-input-frostProtectionTemperature",
     label: "frostProtectionTemperature",
     value: node.frostProtectionTemperature,
     icon: "snowflake-o",
