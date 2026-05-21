@@ -205,6 +205,13 @@ export class NodeMessageFlow {
     return cloneDeep<any>(this._originalMessage.payload);
   }
 
+  public updateAdditionalAttributes(newAttributes: Record<string, any>): void {
+    this.additionalAttributes = {
+      ...this.additionalAttributes,
+      ...newAttributes,
+    };
+  }
+
   public updateAdditionalAttribute(key: string, value: any): void {
     this.additionalAttributes[key] = value;
   }

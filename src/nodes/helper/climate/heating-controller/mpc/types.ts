@@ -176,18 +176,74 @@ export type RoomModelLearningState = {
   appliedHeatingPowerW?: number;
 };
 
-export type RoomMpcResult = {
-  trvTargets: number[];
+export class RoomMpcResult {
+  public static readonly REQUESTED_HEATING_POWER_ATTRIBUTE =
+    "mpcRequestedHeatingPowerW";
 
-  input: RoomMpcInput;
+  constructor(
+    public trvTargets: number[],
+    public input: RoomMpcInput,
+    public demandPct: number,
+    public requestedHeatingPowerW: number,
+    public availableHeatingPowerW: number,
+    public recommendedFlowTemperatureC: number | null,
+    public learningState?: RoomModelLearningState,
+  ) {}
 
-  demandPct: number;
-  requestedHeatingPowerW: number;
+  public getMpcAdditionalAttributes(): Record<string, unknown> {
+    const attributes: Record<string, unknown> = {};
+    Object.assign(attributes, this.getMpcInAttributes());
+    Object.assign(attributes, this.getMpcOutAttributes());
+    Object.assign(attributes, this.getMpcLearningAttributes());
+    return attributes;
+  }
 
-  availableHeatingPowerW: number;
-  recommendedFlowTemperatureC: number | null;
+  private getMpcInAttributes(): Record<string, unknown> {
+    const attributes: Record<string, unknown> = {
+      mpcInTargetTempC: this.input.targetTempC,
+      mpcInRoomTempC: this.input.roomTempC,
+      mpcInRoomSensorStrategy: this.input.usedRoomSensorStrategy,
+      mpcInOutdoorTempC: this.input.outdoorTempC,
+      mpcInFlowTempC: this.input.flowTempC,
+    };
 
-  learningState?: RoomModelLearningState;
-};
+    this.input.trvTemperatures.forEach((trvTemp, index) => {
+      attributes[`mpcInTrv${index + 1}TempC`] = trvTemp;
+    });
+
+    return attributes;
+  }
+
+  private getMpcOutAttributes(): Record<string, unknown> {
+    const attributes: Record<string, unknown> = {
+      mpcOutDemandPct: this.demandPct,
+      [RoomMpcResult.REQUESTED_HEATING_POWER_ATTRIBUTE]:
+        this.requestedHeatingPowerW,
+      mpcOutAvailableHeatingPowerW: this.availableHeatingPowerW,
+      mpcOutRecommendedFlowTemperatureC: this.recommendedFlowTemperatureC,
+    };
+
+    this.trvTargets.forEach((trvTarget, index) => {
+      attributes[`mpcOutTrv${index + 1}TargetTempC`] = trvTarget;
+    });
+
+    return attributes;
+  }
+
+  private getMpcLearningAttributes(): Record<string, unknown> {
+    if (!this.learningState) {
+      return {};
+    }
+
+    return {
+      mpcLearningStatus: this.learningState.status,
+      mpcLearningUaFactor: this.learningState.learnedFactors.uaFactor,
+      mpcLearningCapacityFactor:
+        this.learningState.learnedFactors.capacityFactor,
+      mpcLearningPrediction: this.learningState.prediction,
+      mpcLearningAppliedHeatingPowerW: this.learningState.appliedHeatingPowerW,
+    };
+  }
+}
 
 export type TrvIndex = 0 | 1 | 2;

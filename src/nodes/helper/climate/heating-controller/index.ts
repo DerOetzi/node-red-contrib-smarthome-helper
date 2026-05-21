@@ -321,10 +321,18 @@ export default class HeatingControllerNode extends ActiveControllerNode<
         new NodeMessageFlow({ topic: "heatmode", payload: frostMode }, 0),
       );
     }
-    this.sendTemperatureForAllTrvs(
-      this.config.frostProtectionTemperature,
-      true,
-    );
+
+    const frostProtectionTemperature = this.config.frostProtectionTemperature;
+
+    if (this.config.controllerMode === HeatingControllerControllerMode.mpc) {
+      const frostMpcResult = this.mpcController.compute(
+        frostProtectionTemperature,
+      );
+      this.handleMPCResult(frostMpcResult, frostProtectionTemperature, true);
+      return;
+    }
+
+    this.sendTemperatureForAllTrvs(frostProtectionTemperature, true);
   }
 
   private get automaticModeSelectionAllowed(): boolean {
@@ -337,9 +345,10 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   private handleMPCResult(
     mpcResult: RoomMpcResult | null,
     targetTemperature: number,
+    frostProtection: boolean = false,
   ): void {
     if (mpcResult === null) {
-      this.sendTemperatureForAllTrvs(targetTemperature);
+      this.sendTemperatureForAllTrvs(targetTemperature, frostProtection);
     } else {
       mpcResult.trvTargets.forEach((trvTarget, index) => {
         this.sendTemperature(
@@ -347,6 +356,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
           trvTarget,
           index as TrvIndex,
           mpcResult,
+          frostProtection,
         );
       });
 
@@ -408,27 +418,14 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     topic: string,
     temperature: number,
     trvIndex: TrvIndex,
-    mpc: RoomMpcResult | null = null,
+    mpcResult: RoomMpcResult | null = null,
     frostProtection: boolean = false,
   ): void {
     const flow = new NodeMessageFlow({ topic, payload: temperature }, 1);
     flow.updateAdditionalAttribute("trv", trvIndex);
-    flow.updateAdditionalAttribute("mpc", mpc);
 
-    if (trvIndex === 0 && mpc !== null) {
-      flow.updateAdditionalAttribute("mpcDemandPct", mpc.demandPct);
-      flow.updateAdditionalAttribute(
-        "mpcRequestedHeatingPowerW",
-        mpc.requestedHeatingPowerW,
-      );
-      flow.updateAdditionalAttribute(
-        "mpcAvailableHeatingPowerW",
-        mpc.availableHeatingPowerW,
-      );
-      flow.updateAdditionalAttribute(
-        "mpcRecommendedFlowTemperatureC",
-        mpc.recommendedFlowTemperatureC,
-      );
+    if (trvIndex === 0 && mpcResult !== null) {
+      flow.updateAdditionalAttributes(mpcResult.getMpcAdditionalAttributes());
     }
 
     if (frostProtection) {
@@ -440,14 +437,38 @@ export default class HeatingControllerNode extends ActiveControllerNode<
 
   protected debounced(messageFlow: NodeMessageFlow): void {
     if (messageFlow.output === 1) {
-      const mpc = messageFlow.getAdditionalAttribute("mpc");
+      const requestedHeatingPowerW =
+        this.readRequestedHeatingPowerFromFlow(messageFlow);
+
       const trvIndex = messageFlow.getAdditionalAttribute("trv") as TrvIndex;
-      if (mpc !== null && trvIndex === 0) {
-        this.mpcController.setAppliedHeatingPower(mpc.requestedHeatingPowerW);
+
+      if (requestedHeatingPowerW !== null && trvIndex === 0) {
+        this.mpcController.setAppliedHeatingPower(requestedHeatingPowerW);
       }
     }
 
     super.debounced(messageFlow);
+  }
+
+  private readRequestedHeatingPowerFromFlow(
+    flow: NodeMessageFlow,
+  ): number | null {
+    const requestedHeatingPowerWIn = flow.getAdditionalAttribute(
+      RoomMpcResult.REQUESTED_HEATING_POWER_ATTRIBUTE,
+    );
+
+    if (
+      requestedHeatingPowerWIn === undefined ||
+      requestedHeatingPowerWIn === null
+    ) {
+      return null;
+    }
+
+    const requestedHeatingPowerW = Number(requestedHeatingPowerWIn);
+    return Number.isNaN(requestedHeatingPowerW) ||
+      !Number.isFinite(requestedHeatingPowerW)
+      ? null
+      : requestedHeatingPowerW;
   }
 
   protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {

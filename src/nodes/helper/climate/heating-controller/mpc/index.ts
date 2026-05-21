@@ -225,15 +225,15 @@ export class RoomMPCController {
     availableHeatingPowerW: number,
     recommendedFlowTemperatureC: number | null,
   ): RoomMpcResult {
-    return {
-      trvTargets: this.distributionModel.distributeDemand(stabilizedDemandPct),
-      demandPct: stabilizedDemandPct,
-      input: input,
+    return new RoomMpcResult(
+      this.distributionModel.distributeDemand(stabilizedDemandPct),
+      input,
+      stabilizedDemandPct,
       requestedHeatingPowerW,
       availableHeatingPowerW,
       recommendedFlowTemperatureC,
       learningState,
-    };
+    );
   }
 
   public setAppliedHeatingPower(powerW: number): void {
