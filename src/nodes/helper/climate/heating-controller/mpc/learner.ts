@@ -1,323 +1,269 @@
 import {
+  convertToMilliseconds,
+  TimeIntervalUnit,
+} from "../../../../../helpers/time.helper";
+import {
   LearningFactors,
   LearningStatus,
   PersistedLearningFactors,
   RoomModelLearningState,
-  RoomModelPrediction,
   RoomMpcInput,
 } from "./types";
-
-import { clamp } from "../../../../../helpers/math.helper";
 import { ThermalCapacityModel } from "./models/capacity";
 import { RoomLossModel } from "./models/loss";
 
-const PERSISTENCE_VERSION = 1;
-const CAPACITY_LEARNING_RATE = 0.002;
-const MAX_PREDICTION_ERROR_C = 3;
-const MAX_UA_LEARNING_HEATING_POWER_W = 200;
-const MIN_CAPACITY_LEARNING_HEATING_POWER_W = 150;
-const MIN_DELTA_C_FOR_LEARNING = 0.05;
-const MIN_LEARNING_INTERVAL_SECONDS = 300;
-const PERSISTENCE_THRESHOLD = 0.002;
-const UA_LEARNING_RATE = 0.0005;
+const LEARNING_INTERVAL_MINUTES = 30;
+
+const HISTORY_RETENTION_MINUTES = 180;
+
+export type LearnerHistoryEntry = {
+  timestamp: number;
+
+  roomTemperatureC: number;
+
+  outdoorTemperatureC: number;
+
+  flowTemperatureC?: number;
+
+  appliedHeatingPowerW: number;
+};
+
+export type LearnerPrediction = {
+  timestamp: number;
+
+  predictedRoomTemperatureC: number;
+
+  predictionHorizonSeconds: number;
+};
 
 export class RoomMPCModelLearner {
-  private lastRoomTemperatureC?: number;
+  private readonly learningIntervalMs = convertToMilliseconds(
+    LEARNING_INTERVAL_MINUTES,
+    TimeIntervalUnit.m,
+  );
 
-  private lastTimestamp?: number;
+  private readonly historyRetentionMs = convertToMilliseconds(
+    HISTORY_RETENTION_MINUTES,
+    TimeIntervalUnit.m,
+  );
 
-  private lastPrediction?: RoomModelPrediction;
+  private readonly history: LearnerHistoryEntry[] = [];
 
-  private pendingPersistedFactors?: PersistedLearningFactors;
+  private activePrediction?: LearnerPrediction;
 
-  private lastPersistedFactors?: PersistedLearningFactors;
+  private lastPrediction?: LearnerPrediction;
+
+  private learningIntervalHandle?: ReturnType<typeof setInterval>;
+
+  private suppressedUntilTs = 0;
+
+  private currentWindowInvalid = false;
+
+  private nextWindowInvalid = false;
+
+  private lastPersistedFactorsJson?: string;
+
+  private learningState: RoomModelLearningState = {
+    status: LearningStatus.disabled,
+
+    learnedFactors: {
+      uaFactor: 1,
+      capacityFactor: 1,
+    },
+  };
 
   constructor(
     private readonly lossModel: RoomLossModel,
     private readonly capacityModel: ThermalCapacityModel,
-  ) {}
+  ) {
+    this.learningState.learnedFactors = this.getCurrentLearningFactors();
+  }
 
-  public update(
+  public destroy(): void {
+    this.disable();
+  }
+
+  public enable(): void {
+    if (this.learningIntervalHandle) {
+      return;
+    }
+
+    this.activePrediction = undefined;
+    this.lastPrediction = undefined;
+
+    this.learningIntervalHandle = setInterval(() => {
+      this.runLearningCycle();
+    }, this.learningIntervalMs);
+
+    this.learningState = this.createLearningState(
+      LearningStatus.waitingInterval,
+    );
+  }
+
+  public disable(): void {
+    if (this.learningIntervalHandle) {
+      clearInterval(this.learningIntervalHandle);
+
+      this.learningIntervalHandle = undefined;
+    }
+
+    this.learningState = this.createLearningState(LearningStatus.disabled);
+    this.activePrediction = undefined;
+    this.lastPrediction = undefined;
+    this.currentWindowInvalid = false;
+    this.nextWindowInvalid = false;
+  }
+
+  public suppressForInterval(durationMs: number): void {
+    this.suppressedUntilTs = Date.now() + durationMs;
+
+    this.currentWindowInvalid = true;
+
+    this.learningState = this.createLearningState(LearningStatus.suppressed);
+  }
+
+  public appendHistory(
     input: RoomMpcInput,
     appliedHeatingPowerW: number,
-  ): RoomModelLearningState {
-    if (!this.hasPreviousState()) {
-      this.initializeState(input.roomTempC, input.nowTs);
+  ): void {
+    this.history.push({
+      timestamp: input.nowTs,
 
-      return this.getLearningState(
-        LearningStatus.initializing,
-        appliedHeatingPowerW,
-      );
+      roomTemperatureC: input.roomTempC,
+
+      outdoorTemperatureC: input.outdoorTempC,
+
+      flowTemperatureC: input.flowTempC,
+
+      appliedHeatingPowerW,
+    });
+
+    this.cleanupHistory(input.nowTs);
+  }
+
+  public setPrediction(prediction: LearnerPrediction): void {
+    this.lastPrediction = prediction;
+  }
+
+  public getLearningState(): RoomModelLearningState {
+    return this.learningState;
+  }
+
+  private runLearningCycle(): void {
+    if (Date.now() < this.suppressedUntilTs) {
+      this.nextWindowInvalid = true;
     }
 
-    const durationSeconds = this.calculateDurationSeconds(input.nowTs);
+    if (this.currentWindowInvalid) {
+      this.learningState = this.createLearningState(LearningStatus.suppressed);
 
-    if (!this.isLearningIntervalReached(durationSeconds)) {
-      return this.getLearningState(
+      this.rotateLearningWindow();
+
+      return;
+    }
+
+    if (!this.activePrediction) {
+      this.learningState = this.createLearningState(
         LearningStatus.waitingInterval,
-        appliedHeatingPowerW,
       );
+
+      this.rotateLearningWindow();
+
+      return;
     }
 
-    const prediction = this.createPrediction(
-      input.roomTempC,
-      input.outdoorTempC,
-      appliedHeatingPowerW,
-      durationSeconds,
-      input.nowTs,
-    );
+    const relevantHistory = this.getRelevantHistory(this.activePrediction);
 
-    const learningFactors = this.calculateLearningFactors(
-      prediction,
-      appliedHeatingPowerW,
-    );
+    if (relevantHistory.length === 0) {
+      this.learningState = this.createLearningState(
+        LearningStatus.waitingInterval,
+      );
 
-    const appliedLearningFactors = this.applyLearningFactors(learningFactors);
-    if (
-      !this.lastPersistedFactors ||
-      this.haveLearningFactorsChanged(
-        this.lastPersistedFactors.factors,
-        appliedLearningFactors,
-      )
-    ) {
-      this.pendingPersistedFactors = this.createPersistedLearningFactors();
+      this.rotateLearningWindow();
+
+      return;
     }
 
-    this.storePredictionState(prediction, input.roomTempC, input.nowTs);
-    return this.getLearningState(LearningStatus.active, appliedHeatingPowerW);
+    // TODO:
+    // - Validate thresholds
+    // - Compare prediction vs reality
+    // - Learn UA factor
+    // - Learn capacity factor
+
+    this.learningState = this.createLearningState(LearningStatus.active);
+
+    this.rotateLearningWindow();
   }
 
-  private applyLearningFactors(factors: LearningFactors): LearningFactors {
-    this.lossModel.learnedUaFactor = factors.uaFactor;
-    this.capacityModel.learnedCapacityFactor = factors.capacityFactor;
+  private rotateLearningWindow(): void {
+    this.currentWindowInvalid = this.nextWindowInvalid;
 
-    return this.getLearningFactors();
+    this.nextWindowInvalid = false;
+
+    this.activePrediction = this.lastPrediction;
+
+    this.lastPrediction = undefined;
   }
 
-  private getLearningFactors(): LearningFactors {
-    return {
-      uaFactor: this.lossModel.learnedUaFactor,
-      capacityFactor: this.capacityModel.learnedCapacityFactor,
-    };
+  private getRelevantHistory(
+    prediction: LearnerPrediction,
+  ): LearnerHistoryEntry[] {
+    const predictionEndTs =
+      prediction.timestamp + prediction.predictionHorizonSeconds * 1000;
+
+    return this.history.filter(
+      (entry) =>
+        entry.timestamp >= prediction.timestamp &&
+        entry.timestamp <= predictionEndTs,
+    );
   }
 
-  public getLearningState(
-    status: LearningStatus,
-    appliedHeatingPowerW?: number,
-  ): RoomModelLearningState {
-    return {
-      status,
-      learnedFactors: this.getLearningFactors(),
-      prediction: this.lastPrediction,
-      appliedHeatingPowerW,
-    };
-  }
-
-  public consumePersistedLearningFactors(): PersistedLearningFactors | null {
-    if (this.pendingPersistedFactors) {
-      this.lastPersistedFactors = this.pendingPersistedFactors;
-      this.pendingPersistedFactors = undefined;
-      return this.lastPersistedFactors;
+  private cleanupHistory(nowTs: number): void {
+    for (let i = this.history.length - 1; i >= 0; i--) {
+      if (nowTs - this.history[i].timestamp > this.historyRetentionMs) {
+        this.history.splice(i, 1);
+      }
     }
-
-    return null;
-  }
-
-  public getLastPrediction(): RoomModelPrediction | undefined {
-    return this.lastPrediction;
-  }
-
-  private haveLearningFactorsChanged(
-    current: LearningFactors,
-    next: LearningFactors,
-  ): boolean {
-    return (
-      Math.abs(current.uaFactor - next.uaFactor) >= PERSISTENCE_THRESHOLD ||
-      Math.abs(current.capacityFactor - next.capacityFactor) >=
-        PERSISTENCE_THRESHOLD
-    );
-  }
-
-  private createPersistedLearningFactors(): PersistedLearningFactors {
-    return new PersistedLearningFactors(
-      this.getLearningFactors(),
-      PERSISTENCE_VERSION,
-    );
   }
 
   public recalibrate(factors: PersistedLearningFactors): void {
-    this.applyLearningFactors(factors.factors);
-    this.resetState();
-    this.lastPersistedFactors = this.createPersistedLearningFactors();
+    this.lossModel.learnedUaFactor = factors.uaFactor;
+
+    this.capacityModel.learnedCapacityFactor = factors.capacityFactor;
+
+    this.learningState = this.createLearningState(this.learningState.status);
   }
 
-  public reset(): void {
-    this.resetState();
-    this.lastPersistedFactors = undefined;
-    this.applyLearningFactors({ uaFactor: 1, capacityFactor: 1 });
-  }
-
-  private resetState(): void {
-    this.lastRoomTemperatureC = undefined;
-    this.lastTimestamp = undefined;
-    this.lastPrediction = undefined;
-    this.pendingPersistedFactors = undefined;
-  }
-
-  private hasPreviousState(): boolean {
-    return (
-      this.lastRoomTemperatureC !== undefined &&
-      this.lastTimestamp !== undefined
-    );
-  }
-
-  private initializeState(roomTemperatureC: number, timestamp: number): void {
-    this.lastRoomTemperatureC = roomTemperatureC;
-
-    this.lastTimestamp = timestamp;
-  }
-
-  private calculateDurationSeconds(timestamp: number): number {
-    return (timestamp - (this.lastTimestamp ?? timestamp)) / 1000;
-  }
-
-  private isLearningIntervalReached(durationSeconds: number): boolean {
-    return durationSeconds >= MIN_LEARNING_INTERVAL_SECONDS;
-  }
-
-  private createPrediction(
-    roomTemperatureC: number,
-    outdoorTemperatureC: number,
-    heatingPowerW: number,
-    durationSeconds: number,
-    timestamp: number,
-  ): RoomModelPrediction {
-    /* TODO refactor
-    const actualDeltaC =
-      roomTemperatureC - (this.lastRoomTemperatureC ?? roomTemperatureC);
-
-    const heatLossW = this.thermalModel.calculateHeatLoss(
-      roomTemperatureC,
-      outdoorTemperatureC,
+  public consumePersistedLearningFactors(): PersistedLearningFactors | null {
+    const factors = new PersistedLearningFactors(
+      this.getCurrentLearningFactors(),
+      1,
     );
 
-    const netHeatingPowerW = heatingPowerW - heatLossW;
+    const json = factors.toJson();
 
-    const predictedDeltaC = this.thermalModel.predictTemperatureChange(
-      netHeatingPowerW,
-      durationSeconds,
-    );
-
-    const predictionErrorC = this.calculatePredictionError(
-      actualDeltaC,
-      predictedDeltaC,
-    );
-
-    return {
-      predictedTempC:
-        (this.lastRoomTemperatureC ?? roomTemperatureC) + predictedDeltaC,
-
-      actualTempC: roomTemperatureC,
-
-      predictedDeltaC,
-      actualDeltaC,
-
-      modelErrorC: predictionErrorC,
-
-      timestamp,
-    };
-
-    */
-    return {
-      predictedTempC: roomTemperatureC,
-      actualTempC: roomTemperatureC,
-      predictedDeltaC: 0,
-      actualDeltaC: 0,
-      modelErrorC: 0,
-      timestamp,
-    };
-  }
-
-  private calculatePredictionError(
-    actualDeltaC: number,
-    predictedDeltaC: number,
-  ): number {
-    return clamp(
-      actualDeltaC - predictedDeltaC,
-      -MAX_PREDICTION_ERROR_C,
-      MAX_PREDICTION_ERROR_C,
-    );
-  }
-
-  private calculateLearningFactors(
-    prediction: RoomModelPrediction,
-    heatingPowerW: number,
-  ): LearningFactors {
-    const currentFactors = this.getLearningFactors();
-
-    return {
-      uaFactor: this.canLearnUa(heatingPowerW)
-        ? this.calculateNextUaFactor(currentFactors.uaFactor, prediction)
-        : currentFactors.uaFactor,
-
-      capacityFactor: this.canLearnCapacity(heatingPowerW)
-        ? this.calculateNextCapacityFactor(
-            currentFactors.capacityFactor,
-            prediction,
-          )
-        : currentFactors.capacityFactor,
-    };
-  }
-
-  private canLearnUa(heatingPowerW: number): boolean {
-    return heatingPowerW <= MAX_UA_LEARNING_HEATING_POWER_W;
-  }
-
-  private canLearnCapacity(heatingPowerW: number): boolean {
-    return heatingPowerW >= MIN_CAPACITY_LEARNING_HEATING_POWER_W;
-  }
-
-  private calculateNextUaFactor(
-    currentUaFactor: number,
-    prediction: RoomModelPrediction,
-  ): number {
-    if (Math.abs(prediction.actualDeltaC) < MIN_DELTA_C_FOR_LEARNING) {
-      return currentUaFactor;
+    if (json === this.lastPersistedFactorsJson) {
+      return null;
     }
 
-    const direction = -Math.sign(prediction.modelErrorC);
+    this.lastPersistedFactorsJson = json;
 
-    return (
-      currentUaFactor +
-      direction * Math.abs(prediction.modelErrorC) * UA_LEARNING_RATE
-    );
+    return factors;
   }
 
-  private calculateNextCapacityFactor(
-    currentCapacityFactor: number,
-    prediction: RoomModelPrediction,
-  ): number {
-    if (Math.abs(prediction.predictedDeltaC) < MIN_DELTA_C_FOR_LEARNING) {
-      return currentCapacityFactor;
-    }
+  private createLearningState(status: LearningStatus): RoomModelLearningState {
+    return {
+      status,
 
-    const direction = -Math.sign(prediction.modelErrorC);
-
-    return (
-      currentCapacityFactor +
-      direction * Math.abs(prediction.modelErrorC) * CAPACITY_LEARNING_RATE
-    );
+      learnedFactors: this.getCurrentLearningFactors(),
+    };
   }
 
-  private storePredictionState(
-    prediction: RoomModelPrediction,
-    roomTemperatureC: number,
-    timestamp: number,
-  ): void {
-    this.lastPrediction = prediction;
+  private getCurrentLearningFactors(): LearningFactors {
+    return {
+      uaFactor: this.lossModel.learnedUaFactor,
 
-    this.lastRoomTemperatureC = roomTemperatureC;
-
-    this.lastTimestamp = timestamp;
+      capacityFactor: this.capacityModel.learnedCapacityFactor,
+    };
   }
 }

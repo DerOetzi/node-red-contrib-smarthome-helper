@@ -14,18 +14,11 @@ export class RoomLossModel {
       config.roomHeatLoadW / Math.max(0.1, designTemperatureDeltaC);
   }
 
-  public calculateRequiredHeatingPowerW(
-    targetTemperatureC: number,
-    outdoorTemperatureC: number,
-  ): number {
-    return this.calculateHeatLossW(targetTemperatureC, outdoorTemperatureC);
-  }
-
   public calculateHeatLossW(
-    roomTemperatureC: number,
+    temperatureC: number,
     outdoorTemperatureC: number,
   ): number {
-    return this.effectiveUaWPerK * (roomTemperatureC - outdoorTemperatureC);
+    return this.effectiveUaWPerK * (temperatureC - outdoorTemperatureC);
   }
 
   public set learnedUaFactor(value: number) {

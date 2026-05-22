@@ -14,8 +14,13 @@ import {
 import Migration from "../../../flowctrl/base/migration";
 import HeatingControllerMigration from "./migration";
 import { RoomMPCController } from "./mpc";
-import { PersistedLearningFactors, RoomMpcResult, TrvIndex } from "./mpc/types";
-import { PERSISTENCE_VERSION, TRV_MAX_COUNT } from "./mpc/const";
+import {
+  PersistedLearningFactors,
+  PERSISTENCE_VERSION,
+  RoomMpcResult,
+  TRV_MAX_COUNT,
+  TrvIndex,
+} from "./mpc/types";
 import {
   convertToMilliseconds,
   TimeIntervalUnit,
@@ -39,7 +44,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   constructor(RED: NodeAPI, node: Node, config: HeatingControllerNodeDef) {
     super(RED, node, config, HeatingControllerNodeOptionsDefaults);
     this.stateController = new HeatingStateController(this.config);
-    this.mpcController = new RoomMPCController(node, config);
+    this.mpcController = new RoomMPCController(config);
     this.handleComfortCondition();
   }
 
@@ -47,6 +52,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     super.onClose();
     this.manualFallbackOverrideActive = false;
     this.stateController.reset();
+    this.mpcController.destroy();
   }
 
   protected matched(messageFlow: NodeMessageFlow): void {
@@ -151,6 +157,9 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     let ha_action = "";
 
     if (current) {
+      this.mpcController.suppressLearningForInterval(
+        convertToMilliseconds(1, TimeIntervalUnit.h),
+      );
       this.sendAction(this.config.frostProtectionCommand);
       ha_action = "switch.turn_on";
     } else {
@@ -231,10 +240,13 @@ export default class HeatingControllerNode extends ActiveControllerNode<
           ? Number.parseFloat(input.capacityFactor)
           : input.capacityFactor;
 
-      const persistedLearningFactors = new PersistedLearningFactors({
-        uaFactor,
-        capacityFactor,
-      });
+      const persistedLearningFactors = new PersistedLearningFactors(
+        {
+          uaFactor,
+          capacityFactor,
+        },
+        PERSISTENCE_VERSION,
+      );
       this.mpcController.recalibrateLearningFactors(persistedLearningFactors);
     } else {
       this.node.error(
@@ -375,7 +387,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
           trvTarget,
           index as TrvIndex,
           mpcResult,
-          frostProtection,
+          true,
         );
       });
 
@@ -438,7 +450,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     temperature: number,
     trvIndex: TrvIndex,
     mpcResult: RoomMpcResult | null = null,
-    frostProtection: boolean = false,
+    skipDebounce: boolean = false,
   ): void {
     const flow = new NodeMessageFlow({ topic, payload: temperature }, 1);
     flow.updateAdditionalAttribute("trv", trvIndex);
@@ -447,47 +459,11 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       flow.updateAdditionalAttributes(mpcResult.getMpcAdditionalAttributes());
     }
 
-    if (frostProtection) {
+    if (skipDebounce) {
       this.debouncePass(flow);
     } else {
       this.debounce(flow);
     }
-  }
-
-  protected debounced(messageFlow: NodeMessageFlow): void {
-    if (messageFlow.output === 1) {
-      const requestedHeatingPowerW =
-        this.readRequestedHeatingPowerFromFlow(messageFlow);
-
-      const trvIndex = messageFlow.getAdditionalAttribute("trv") as TrvIndex;
-
-      if (requestedHeatingPowerW !== null && trvIndex === 0) {
-        this.mpcController.setAppliedHeatingPower(requestedHeatingPowerW);
-      }
-    }
-
-    super.debounced(messageFlow);
-  }
-
-  private readRequestedHeatingPowerFromFlow(
-    flow: NodeMessageFlow,
-  ): number | null {
-    const requestedHeatingPowerWIn = flow.getAdditionalAttribute(
-      RoomMpcResult.REQUESTED_HEATING_POWER_ATTRIBUTE,
-    );
-
-    if (
-      requestedHeatingPowerWIn === undefined ||
-      requestedHeatingPowerWIn === null
-    ) {
-      return null;
-    }
-
-    const requestedHeatingPowerW = Number(requestedHeatingPowerWIn);
-    return Number.isNaN(requestedHeatingPowerW) ||
-      !Number.isFinite(requestedHeatingPowerW)
-      ? null
-      : requestedHeatingPowerW;
   }
 
   protected updateStatusAfterDebounce(messageFlow: NodeMessageFlow): void {

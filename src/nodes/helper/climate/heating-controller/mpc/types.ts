@@ -152,7 +152,6 @@ export enum LearningStatus {
   disabled = "disabled",
   suppressed = "suppressed",
   waitingInterval = "waiting_interval",
-  missingAppliedPower = "missing_applied_power",
 }
 
 export type LearningFactors = {
@@ -293,3 +292,5 @@ export class RoomMpcResult {
 
 export const TRV_MAX_COUNT = 3;
 export type TrvIndex = 0 | 1 | 2;
+
+export const PERSISTENCE_VERSION = 1;

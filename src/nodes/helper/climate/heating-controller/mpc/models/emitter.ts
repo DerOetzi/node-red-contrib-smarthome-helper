@@ -45,6 +45,8 @@ const PANEL_RADIATOR_REFERENCE_POWER_W_PER_METER: Record<
   },
 };
 
+const MIN_ACTIVE_TRV_TEMPERATURE_C = 18;
+
 type DesignTemperatures = {
   flowTemperatureC: number;
   overtemperatureC: number;
@@ -190,6 +192,13 @@ export class HeatEmitterModel {
       return 0;
     }
 
+    if (availableHeights.includes(heightMm)) {
+      return (
+        PANEL_RADIATOR_REFERENCE_POWER_W_PER_METER[heightMm]?.[radiatorType] ??
+        0
+      );
+    }
+
     if (heightMm <= availableHeights[0]) {
       return (
         PANEL_RADIATOR_REFERENCE_POWER_W_PER_METER[availableHeights[0]]?.[
@@ -216,7 +225,7 @@ export class HeatEmitterModel {
 
       const nextHeight = availableHeights[i + 1];
 
-      if (heightMm >= currentHeight && heightMm <= nextHeight) {
+      if (heightMm > currentHeight && heightMm < nextHeight) {
         lowerHeight = currentHeight;
         upperHeight = nextHeight;
         break;
@@ -339,19 +348,28 @@ export class HeatEmitterModel {
       this.calculateTargetTemperature(emitter, demand),
     );
   }
+
   private calculateTargetTemperature(
     emitter: PreparedEmitter,
     demand: number,
   ): number {
-    const weightedDemand = Math.max(
-      0,
-      Math.min(1, demand * emitter.distributionWeight * this.emitters.length),
+    if (demand < 0.05) {
+      return emitter.trv.minTargetTemperature;
+    }
+
+    const weightedDemand = clamp(demand * emitter.distributionWeight, 0, 1);
+
+    const effectiveDemand = Math.pow(weightedDemand, 1 / emitter.exponent);
+
+    const minActiveTargetTemperature = Math.max(
+      MIN_ACTIVE_TRV_TEMPERATURE_C,
+      emitter.trv.minTargetTemperature,
     );
 
     const targetTemperature =
-      emitter.trv.minTargetTemperature +
-      weightedDemand *
-        (emitter.trv.maxTargetTemperature - emitter.trv.minTargetTemperature);
+      minActiveTargetTemperature +
+      effectiveDemand *
+        (emitter.trv.maxTargetTemperature - minActiveTargetTemperature);
 
     return clamp(
       roundToStep(targetTemperature, emitter.trv.targetTemperatureStep),
@@ -394,6 +412,6 @@ export class HeatEmitterModel {
       }
     }
 
-    return roundToStep(optimalFlow, 0.5);
+    return Math.ceil(optimalFlow / 0.5) * 0.5;
   }
 }
