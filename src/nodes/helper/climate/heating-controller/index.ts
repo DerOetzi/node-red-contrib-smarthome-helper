@@ -34,6 +34,8 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   private readonly mpcController: RoomMPCController;
   private readonly stateController: HeatingStateController;
 
+  private manualFallbackOverrideActive: boolean = false;
+
   constructor(RED: NodeAPI, node: Node, config: HeatingControllerNodeDef) {
     super(RED, node, config, HeatingControllerNodeOptionsDefaults);
     this.stateController = new HeatingStateController(this.config);
@@ -43,6 +45,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
 
   protected onClose(): void {
     super.onClose();
+    this.manualFallbackOverrideActive = false;
     this.stateController.reset();
   }
 
@@ -114,6 +117,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   }
 
   protected onCommand(messageFlow: NodeMessageFlow): void {
+    this.clearManualFallbackOverrideIfAutomaticModeAvailable();
     const msg = messageFlow.originalMsg;
     if (msg?.heatmode) {
       const heatmode = this.stateController.mapHeatmodeCommand(
@@ -126,6 +130,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   }
 
   protected onManualControl(manual: any) {
+    this.clearManualFallbackOverrideIfAutomaticModeAvailable();
     this.sendAction(manual, true);
   }
 
@@ -262,12 +267,19 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   }
 
   private handleComfortCondition(): void {
+    this.clearManualFallbackOverrideIfAutomaticModeAvailable();
     if (this.automaticModeSelectionAllowed) {
       const desiredHeatmode = this.stateController.desiredAutomaticHeatmode(
         this.active,
         this.blocked,
       );
       this.sendAction(desiredHeatmode);
+    }
+  }
+
+  private clearManualFallbackOverrideIfAutomaticModeAvailable(): void {
+    if (this.automaticModeSelectionAllowed) {
+      this.manualFallbackOverrideActive = false;
     }
   }
 
@@ -279,7 +291,14 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       return;
     }
 
-    if (this.stateController.shouldForceFrostProtection()) {
+    if (isExplicitCommand && heatmode !== this.config.frostProtectionCommand) {
+      this.manualFallbackOverrideActive = true;
+    }
+
+    if (
+      !this.manualFallbackOverrideActive &&
+      this.stateController.shouldForceFrostProtection()
+    ) {
       this.activateFrostProtection();
       return;
     }
@@ -482,7 +501,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     if (!this.active) {
       return "red";
     }
-    if (status === null) {
+    if (status === null || !this.stateController) {
       return "grey";
     }
     if (this.stateController.isWindowOpen) {
@@ -499,9 +518,16 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       return this.RED._("helper.heating-controller.state.inactive");
     }
 
+    if (!this.stateController) {
+      return this.RED._("helper.heating-controller.state.initializing");
+    }
+
     const text = this.resolveStateText(status);
 
-    const displayMode = this.stateController.resolveDisplayMode();
+    const displayMode =
+      this.manualFallbackOverrideActive && this.stateController?.currentHeatmode
+        ? this.stateController.currentHeatmode
+        : this.stateController.resolveDisplayMode();
     const baseTargetTemperature =
       this.stateController.determineBaseTargetTemperature(displayMode);
 
@@ -542,16 +568,6 @@ export default class HeatingControllerNode extends ActiveControllerNode<
 
     if (pvBoostActive) {
       detail += " +☀️";
-    }
-
-    const roomTemperature = this.mpcController.getRoomTemperature();
-    if (roomTemperature !== null) {
-      detail +=
-        " / " +
-        this.RED._("helper.heating-controller.state.room") +
-        " " +
-        roomTemperature.toFixed(1) +
-        " °C";
     }
 
     detail += ")";

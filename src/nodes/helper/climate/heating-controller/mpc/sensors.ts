@@ -3,21 +3,20 @@ import {
   TimeIntervalUnit,
 } from "../../../../../helpers/time.helper";
 import {
-  SENSOR_OUTLIER_DRIFT_MAX_INTERVAL_M,
-  SENSOR_OUTLIER_DRIFT_MATCH_DELTA_C,
-  SENSOR_OUTLIER_DRIFT_REPEAT_COUNT,
-  SENSOR_OUTLIER_MAX_DELTA_C,
-  SENSOR_OUTLIER_MIN_SAMPLES,
-  SENSOR_OUTLIER_WINDOW_SIZE,
-  TRV_MAX_COUNT,
-} from "./const";
-import {
   HeatingMPCControllerNodeOptions,
   RoomMpcInput,
   RoomTemperatureResult,
   RoomTemperatureStrategy,
+  TRV_MAX_COUNT,
   TrvIndex,
 } from "./types";
+
+const SENSOR_OUTLIER_MIN_SAMPLES = 3;
+const SENSOR_OUTLIER_MAX_DELTA_C = 5;
+const SENSOR_OUTLIER_WINDOW_SIZE = 10;
+const SENSOR_OUTLIER_DRIFT_REPEAT_COUNT = 3;
+const SENSOR_OUTLIER_DRIFT_MATCH_DELTA_C = 1;
+const SENSOR_OUTLIER_DRIFT_MAX_INTERVAL_M = 5;
 
 class SensorEntry {
   private _value?: number;

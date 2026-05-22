@@ -82,33 +82,24 @@
             "label": "Design outdoor temperature (°C)",
             "description": "Design outdoor temperature from the heat load calculation"
         },
+        "designTemperatureSystem": {
+            "label": "Design temperature system",
+            "description": "Heating system design temperatures from the heat load calculation",
+            "options": {
+                "system_75_65": "75/65 °C",
+                "system_70_55": "70/55 °C",
+                "system_55_45": "55/45 °C",
+                "system_45_35": "45/35 °C",
+                "system_35_30": "35/30 °C"
+            }
+        },
         "roomHeatLoadW": {
             "label": "Room heat load (W)",
             "description": "Calculated room heat load in watts"
         },
-        "roomVolumeM3": {
-            "label": "Room volume (m³)",
-            "description": "Room volume in cubic meters"
-        },
-        "airChangeRate": {
-            "label": "Air change rate",
-            "description": "Room air change rate"
-        },
-        "transmissionHeatLossExternalW": {
-            "label": "External transmission heat loss (W)",
-            "description": "Heat losses from the room to exterior areas in watts"
-        },
-        "ventilationHeatLossW": {
-            "label": "Ventilation heat loss (W)",
-            "description": "Ventilation heat loss from the heat load calculation"
-        },
         "mpcLearningEnabledByDefault": {
             "label": "MPC learning enabled by default",
             "description": "Whether MPC model adaptation is enabled by default. Use heating available input to control it dynamically."
-        },
-        "mpcReferenceFlowTemperature": {
-            "label": "Reference flow temperature (°C)",
-            "description": "Reference flow temperature for radiator power"
         },
         "mpcDemandHysteresisPct": {
             "label": "MPC demand hysteresis (%)",
@@ -138,9 +129,36 @@
             "label": "TRV name",
             "description": "Identifier used as the output topic prefix for this TRV"
         },
-        "trvRadiatorPowerW": {
-            "label": "Radiator power (W)",
-            "description": "Nominal radiator power for this TRV in watts"
+        "heatEmitterType": {
+            "label": "Heat emitter type",
+            "description": "Type of heat emitter connected to this TRV",
+            "options": {
+                "panel": "Panel radiator",
+                "towel": "Towel radiator"
+            }
+        },
+        "radiatorType": {
+            "label": "Panel radiator type",
+            "description": "Panel radiator construction type",
+            "options": {
+                "10": "Type 10",
+                "11": "Type 11",
+                "21": "Type 21",
+                "22": "Type 22",
+                "33": "Type 33"
+            }
+        },
+        "widthMm": {
+            "label": "Width (mm)",
+            "description": "Radiator width in millimeters"
+        },
+        "heightMm": {
+            "label": "Height (mm)",
+            "description": "Radiator height in millimeters"
+        },
+        "nominalPowerW": {
+            "label": "Nominal power (W)",
+            "description": "Rated heat output at the selected design temperature system"
         },
         "targetTemperatureStep": {
             "label": "Temperature step",
@@ -249,11 +267,12 @@
         }
     },
     "state": {
+        "initializing": "Initializing",
         "inactive": "Inactive",
         "automationOn": "Automated",
         "automationOff": "Manual",
         "heatingUnavailable": "Heating unavailable",
-        "windowOpen": "Window open - Frost protection",
+        "windowOpen": "Window open",
         "room": "Room"
     }
 }

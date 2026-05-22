@@ -6660,7 +6660,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "df1d30e94fa679dc",
         "name": "",
-        "version": "1.2.6",
+        "version": "1.2.16",
         "topic": "topic",
         "topicType": "msg",
         "filterUniquePayload": false,
@@ -6780,7 +6780,12 @@
         "trvs": [
             {
                 "name": "trv1",
-                "radiatorPowerW": 1000
+                "heatEmitter": {
+                    "emitterType": "panel",
+                    "radiatorType": "22",
+                    "widthMm": 500,
+                    "heightMm": 600
+                }
             }
         ],
         "roomTemperatureStrategy": "external",
@@ -7370,7 +7375,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "df1d30e94fa679dc",
         "name": "",
-        "version": "1.2.6",
+        "version": "1.2.16",
         "topic": "topic",
         "topicType": "msg",
         "filterUniquePayload": false,
@@ -7388,24 +7393,6 @@
         "debounceLeading": false,
         "debounceTrailing": true,
         "matchers": [
-            {
-                "targetType": "str",
-                "property": "topic",
-                "propertyType": "msg",
-                "operation": "eq",
-                "compare": "ha_comfort_number",
-                "compareType": "str",
-                "target": "comfortTemperature"
-            },
-            {
-                "targetType": "str",
-                "property": "topic",
-                "propertyType": "msg",
-                "operation": "eq",
-                "compare": "ha_eco_offset_number",
-                "compareType": "str",
-                "target": "ecoTemperatureOffset"
-            },
             {
                 "targetType": "str",
                 "property": "topic",
@@ -7438,18 +7425,36 @@
                 "property": "topic",
                 "propertyType": "msg",
                 "operation": "eq",
-                "compare": "pv_boost",
+                "compare": "system_running",
                 "compareType": "str",
-                "target": "pvBoost"
+                "target": "activeCondition"
             },
             {
                 "targetType": "str",
                 "property": "topic",
                 "propertyType": "msg",
                 "operation": "eq",
-                "compare": "system_running",
+                "compare": "ha_comfort_number",
                 "compareType": "str",
-                "target": "activeCondition"
+                "target": "comfortTemperature"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "ha_eco_offset_number",
+                "compareType": "str",
+                "target": "ecoTemperatureOffset"
+            },
+            {
+                "targetType": "str",
+                "property": "topic",
+                "propertyType": "msg",
+                "operation": "eq",
+                "compare": "pv_boost",
+                "compareType": "str",
+                "target": "pvBoost"
             }
         ],
         "discardNotMatched": true,
@@ -7490,7 +7495,11 @@
         "trvs": [
             {
                 "name": "trv1",
-                "radiatorPowerW": 1000
+                "heatEmitter.emitterType": "panel",
+                "heatEmitter.radiatorType": "10",
+                "heatEmitter.widthMm": "1000",
+                "heatEmitter.heightMm": "600",
+                "heatEmitter.nominalPowerW": ""
             }
         ],
         "roomTemperatureStrategy": "external",

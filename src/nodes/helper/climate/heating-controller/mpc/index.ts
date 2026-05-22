@@ -1,12 +1,9 @@
-import { Node } from "node-red";
 import { clamp, roundToStep } from "../../../../../helpers/math.helper";
 import {
   convertToMilliseconds,
   TimeIntervalUnit,
 } from "../../../../../helpers/time.helper";
-import { APPLIED_POWER_MAX_AGE_MINUTES } from "./const";
 import { RoomMPCModelLearner } from "./learner";
-import { RoomDistributionModel, RoomThermalModel } from "./model";
 import { ActorStateEntry, RoomMPCSensors } from "./sensors";
 import {
   HeatingMPCControllerNodeOptions,
@@ -17,14 +14,18 @@ import {
   RoomMpcResult,
   TrvIndex,
 } from "./types";
+import { HeatEmitterModel } from "./models/emitter";
+import { ThermalCapacityModel } from "./models/capacity";
+import { RoomLossModel } from "./models/loss";
+
+const APPLIED_POWER_MAX_AGE_MINUTES = 30;
 
 export class RoomMPCController {
-  private readonly config: HeatingMPCControllerNodeOptions;
-
   private readonly sensors: RoomMPCSensors;
 
-  private readonly thermalModel: RoomThermalModel;
-  private readonly distributionModel: RoomDistributionModel;
+  private readonly lossModel: RoomLossModel;
+  private readonly capacityModel: ThermalCapacityModel;
+  private readonly emitterModel: HeatEmitterModel;
 
   private readonly learner: RoomMPCModelLearner;
 
@@ -40,20 +41,21 @@ export class RoomMPCController {
 
   private learningSuppressedUntilTs = 0;
 
-  constructor(node: Node, config: HeatingMPCControllerNodeOptions) {
-    this.config = config;
-
+  constructor(private readonly config: HeatingMPCControllerNodeOptions) {
     this.sensors = new RoomMPCSensors(config);
 
-    this.thermalModel = new RoomThermalModel(node, config);
-    this.distributionModel = new RoomDistributionModel(config);
+    this.emitterModel = new HeatEmitterModel(config);
+
+    this.lossModel = new RoomLossModel(config);
+
+    this.capacityModel = new ThermalCapacityModel(config);
 
     this.appliedHeatingPowerW = new ActorStateEntry(
       convertToMilliseconds(APPLIED_POWER_MAX_AGE_MINUTES, TimeIntervalUnit.m),
     );
 
     this.learningEnabled = config.mpcLearningEnabledByDefault;
-    this.learner = new RoomMPCModelLearner(this.thermalModel);
+    this.learner = new RoomMPCModelLearner(this.lossModel, this.capacityModel);
 
     this.holdTimeMs = convertToMilliseconds(
       config.mpcHoldTime,
@@ -89,7 +91,10 @@ export class RoomMPCController {
     }
 
     const availableHeatingPowerW =
-      this.thermalModel.calculateAvailableHeatingPower(input.flowTempC);
+      this.emitterModel.calculateAvailableHeatingPowerW(
+        input.roomTempC,
+        input.flowTempC,
+      );
 
     if (availableHeatingPowerW <= 0) {
       return null;
@@ -111,8 +116,9 @@ export class RoomMPCController {
     );
 
     const recommendedFlowTemperatureC =
-      this.thermalModel.calculateRecommendedFlowTemperature(
+      this.emitterModel.calculateRecommendedFlowTemperatureC(
         requestedHeatingPowerW,
+        input.roomTempC,
       );
 
     const learningState = this.handleLearning(input);
@@ -133,12 +139,12 @@ export class RoomMPCController {
     input: RoomMpcInput,
     availableHeatingPowerW: number,
   ): number {
-    const baseHeatingPower = this.thermalModel.calculateBaseHeatingPower(
+    const baseHeatingPower = this.lossModel.calculateRequiredHeatingPowerW(
       input.targetTempC,
       input.outdoorTempC,
     );
 
-    const catchupPower = this.thermalModel.calculateCatchupPower(
+    const catchupPower = this.capacityModel.calculateCatchupPowerW(
       input.targetTempC,
       input.roomTempC,
       availableHeatingPowerW,
@@ -226,7 +232,7 @@ export class RoomMPCController {
     recommendedFlowTemperatureC: number | null,
   ): RoomMpcResult {
     return new RoomMpcResult(
-      this.distributionModel.distributeDemand(stabilizedDemandPct),
+      this.emitterModel.calculateTargetTemperatures(stabilizedDemandPct),
       input,
       stabilizedDemandPct,
       requestedHeatingPowerW,

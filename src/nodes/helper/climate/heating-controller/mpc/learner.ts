@@ -8,17 +8,18 @@ import {
 } from "./types";
 
 import { clamp } from "../../../../../helpers/math.helper";
-import {
-  CAPACITY_LEARNING_RATE,
-  MAX_PREDICTION_ERROR_C,
-  MAX_UA_LEARNING_HEATING_POWER_W,
-  MIN_CAPACITY_LEARNING_HEATING_POWER_W,
-  MIN_DELTA_C_FOR_LEARNING,
-  MIN_LEARNING_INTERVAL_SECONDS,
-  PERSISTENCE_THRESHOLD,
-  UA_LEARNING_RATE,
-} from "./const";
-import { RoomThermalModel } from "./model";
+import { ThermalCapacityModel } from "./models/capacity";
+import { RoomLossModel } from "./models/loss";
+
+const PERSISTENCE_VERSION = 1;
+const CAPACITY_LEARNING_RATE = 0.002;
+const MAX_PREDICTION_ERROR_C = 3;
+const MAX_UA_LEARNING_HEATING_POWER_W = 200;
+const MIN_CAPACITY_LEARNING_HEATING_POWER_W = 150;
+const MIN_DELTA_C_FOR_LEARNING = 0.05;
+const MIN_LEARNING_INTERVAL_SECONDS = 300;
+const PERSISTENCE_THRESHOLD = 0.002;
+const UA_LEARNING_RATE = 0.0005;
 
 export class RoomMPCModelLearner {
   private lastRoomTemperatureC?: number;
@@ -31,7 +32,10 @@ export class RoomMPCModelLearner {
 
   private lastPersistedFactors?: PersistedLearningFactors;
 
-  constructor(private readonly thermalModel: RoomThermalModel) {}
+  constructor(
+    private readonly lossModel: RoomLossModel,
+    private readonly capacityModel: ThermalCapacityModel,
+  ) {}
 
   public update(
     input: RoomMpcInput,
@@ -68,9 +72,7 @@ export class RoomMPCModelLearner {
       appliedHeatingPowerW,
     );
 
-    const appliedLearningFactors =
-      this.thermalModel.updateLearningFactors(learningFactors);
-
+    const appliedLearningFactors = this.applyLearningFactors(learningFactors);
     if (
       !this.lastPersistedFactors ||
       this.haveLearningFactorsChanged(
@@ -85,13 +87,27 @@ export class RoomMPCModelLearner {
     return this.getLearningState(LearningStatus.active, appliedHeatingPowerW);
   }
 
+  private applyLearningFactors(factors: LearningFactors): LearningFactors {
+    this.lossModel.learnedUaFactor = factors.uaFactor;
+    this.capacityModel.learnedCapacityFactor = factors.capacityFactor;
+
+    return this.getLearningFactors();
+  }
+
+  private getLearningFactors(): LearningFactors {
+    return {
+      uaFactor: this.lossModel.learnedUaFactor,
+      capacityFactor: this.capacityModel.learnedCapacityFactor,
+    };
+  }
+
   public getLearningState(
     status: LearningStatus,
     appliedHeatingPowerW?: number,
   ): RoomModelLearningState {
     return {
       status,
-      learnedFactors: this.thermalModel.getLearningFactors(),
+      learnedFactors: this.getLearningFactors(),
       prediction: this.lastPrediction,
       appliedHeatingPowerW,
     };
@@ -123,11 +139,14 @@ export class RoomMPCModelLearner {
   }
 
   private createPersistedLearningFactors(): PersistedLearningFactors {
-    return new PersistedLearningFactors(this.thermalModel.getLearningFactors());
+    return new PersistedLearningFactors(
+      this.getLearningFactors(),
+      PERSISTENCE_VERSION,
+    );
   }
 
   public recalibrate(factors: PersistedLearningFactors): void {
-    this.thermalModel.setLearningFactors(factors.factors);
+    this.applyLearningFactors(factors.factors);
     this.resetState();
     this.lastPersistedFactors = this.createPersistedLearningFactors();
   }
@@ -135,7 +154,7 @@ export class RoomMPCModelLearner {
   public reset(): void {
     this.resetState();
     this.lastPersistedFactors = undefined;
-    this.thermalModel.setLearningFactors({ uaFactor: 1, capacityFactor: 1 });
+    this.applyLearningFactors({ uaFactor: 1, capacityFactor: 1 });
   }
 
   private resetState(): void {
@@ -173,6 +192,7 @@ export class RoomMPCModelLearner {
     durationSeconds: number,
     timestamp: number,
   ): RoomModelPrediction {
+    /* TODO refactor
     const actualDeltaC =
       roomTemperatureC - (this.lastRoomTemperatureC ?? roomTemperatureC);
 
@@ -206,6 +226,16 @@ export class RoomMPCModelLearner {
 
       timestamp,
     };
+
+    */
+    return {
+      predictedTempC: roomTemperatureC,
+      actualTempC: roomTemperatureC,
+      predictedDeltaC: 0,
+      actualDeltaC: 0,
+      modelErrorC: 0,
+      timestamp,
+    };
   }
 
   private calculatePredictionError(
@@ -223,7 +253,7 @@ export class RoomMPCModelLearner {
     prediction: RoomModelPrediction,
     heatingPowerW: number,
   ): LearningFactors {
-    const currentFactors = this.thermalModel.getLearningFactors();
+    const currentFactors = this.getLearningFactors();
 
     return {
       uaFactor: this.canLearnUa(heatingPowerW)

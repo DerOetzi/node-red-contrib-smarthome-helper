@@ -62,6 +62,18 @@ export default class Migration<
     return node;
   }
 
+  protected applyStep(
+    node: EditorNodeInstance<T>,
+    migration: (node: EditorNodeInstance<T>) => EditorNodeInstance<T>,
+    version: string,
+  ): EditorNodeInstance<T> {
+    if (this.checkMigrationStepRequired(node, version)) {
+      node = migration(node);
+      node.migrated = true;
+    }
+    return node;
+  }
+
   protected checkMigrationStepRequired(
     node: EditorNodeInstance<T>,
     compareVersion: string,

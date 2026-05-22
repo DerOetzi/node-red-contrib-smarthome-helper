@@ -1,35 +1,74 @@
 import { TimeIntervalUnit } from "../../../../../helpers/time.helper";
-import { PERSISTENCE_VERSION } from "./const";
 
 export enum RoomTemperatureStrategy {
   external = "external",
   average_trv = "average_trv",
   median_trv = "median_trv",
 }
+export enum HeatEmitterType {
+  panel = "panel",
+  towel = "towel",
+}
+
+export enum PanelRadiatorType {
+  type10 = "10",
+  type11 = "11",
+  type21 = "21",
+  type22 = "22",
+  type33 = "33",
+}
+
+export enum DesignTemperatureSystem {
+  system_75_65 = "system_75_65",
+  system_70_55 = "system_70_55",
+  system_55_45 = "system_55_45",
+  system_45_35 = "system_45_35",
+  system_35_30 = "system_35_30",
+}
 
 export interface TrvRow {
   name: string;
-  radiatorPowerW: number;
+
+  emitterType: HeatEmitterType;
+
+  minTargetTemperature: number;
+  maxTargetTemperature: number;
+  targetTemperatureStep: number;
+
+  //Panel radiator properties
+  radiatorType?: PanelRadiatorType;
+  widthMm?: number;
+  heightMm?: number;
+
+  //Towel radiator properties
+  nominalPowerW?: number;
+
+  //Deprecated since 1.2.16
+  radiatorPowerW?: number;
 }
 
 export const TrvRowDefaults: TrvRow = {
   name: "",
-  radiatorPowerW: 1000,
+
+  minTargetTemperature: 5,
+  maxTargetTemperature: 30,
+  targetTemperatureStep: 0.5,
+
+  emitterType: HeatEmitterType.panel,
+  radiatorType: PanelRadiatorType.type22,
+  widthMm: 1000,
+  heightMm: 600,
+
+  radiatorPowerW: undefined,
 };
 
 export interface HeatingMPCControllerNodeOptions {
   designIndoorTemperatureC: number;
   designOutdoorTemperatureC: number;
-
+  designTemperatureSystem: DesignTemperatureSystem;
   roomHeatLoadW: number;
-  roomVolumeM3: number;
-  airChangeRate: number;
-  transmissionHeatLossExternalW: number;
-  ventilationHeatLossW: number;
 
   mpcLearningEnabledByDefault: boolean;
-
-  mpcReferenceFlowTemperature: number;
 
   mpcDemandHysteresisPct: number;
   mpcHoldTime: number;
@@ -37,41 +76,38 @@ export interface HeatingMPCControllerNodeOptions {
   mpcHoldOverrideDemandPct: number;
   mpcMaxDemandStepPct: number;
 
-  minTargetTemperature: number;
-  maxTargetTemperature: number;
-  targetTemperatureStep: number;
-
   trvs: TrvRow[];
 
   roomTemperatureStrategy: RoomTemperatureStrategy;
   maxSensorAge: number;
   maxSensorAgeUnit: TimeIntervalUnit;
+
+  //Deprecated since 1.2.17
+  mpcReferenceFlowTemperature?: number;
+  roomVolumeM3?: number;
+  airChangeRate?: number;
+  transmissionHeatLossExternalW?: number;
+  ventilationHeatLossW?: number;
+
+  minTargetTemperature?: number;
+  maxTargetTemperature?: number;
+  targetTemperatureStep?: number;
 }
 
 export const HeatingMPCControllerOptionsDefaults: HeatingMPCControllerNodeOptions =
   {
     designIndoorTemperatureC: 20,
     designOutdoorTemperatureC: -12,
-
-    roomHeatLoadW: 1200,
-    roomVolumeM3: 50,
-    airChangeRate: 0.5,
-    transmissionHeatLossExternalW: 800,
-    ventilationHeatLossW: 250,
+    designTemperatureSystem: DesignTemperatureSystem.system_55_45,
+    roomHeatLoadW: 1000,
 
     mpcLearningEnabledByDefault: false,
-
-    mpcReferenceFlowTemperature: 50,
 
     mpcDemandHysteresisPct: 5,
     mpcHoldTime: 5,
     mpcHoldTimeUnit: TimeIntervalUnit.m,
     mpcHoldOverrideDemandPct: 40,
     mpcMaxDemandStepPct: 20,
-
-    minTargetTemperature: 5,
-    maxTargetTemperature: 30,
-    targetTemperatureStep: 1,
 
     trvs: [
       {
@@ -83,6 +119,15 @@ export const HeatingMPCControllerOptionsDefaults: HeatingMPCControllerNodeOption
     roomTemperatureStrategy: RoomTemperatureStrategy.external,
     maxSensorAge: 30,
     maxSensorAgeUnit: TimeIntervalUnit.m,
+
+    mpcReferenceFlowTemperature: undefined,
+    roomVolumeM3: undefined,
+    airChangeRate: undefined,
+    transmissionHeatLossExternalW: undefined,
+    ventilationHeatLossW: undefined,
+    minTargetTemperature: undefined,
+    maxTargetTemperature: undefined,
+    targetTemperatureStep: undefined,
   };
 
 export type RoomTemperatureResult = {
@@ -120,8 +165,8 @@ export class PersistedLearningFactors {
   private readonly _uaFactor: number;
   private readonly _capacityFactor: number;
 
-  constructor(factors: LearningFactors) {
-    this._version = PERSISTENCE_VERSION;
+  constructor(factors: LearningFactors, version: number) {
+    this._version = version;
     this._uaFactor = factors.uaFactor;
     this._capacityFactor = factors.capacityFactor;
   }
@@ -178,7 +223,7 @@ export type RoomModelLearningState = {
 
 export class RoomMpcResult {
   public static readonly REQUESTED_HEATING_POWER_ATTRIBUTE =
-    "mpcRequestedHeatingPowerW";
+    "mpcOutRequestedHeatingPowerW";
 
   constructor(
     public trvTargets: number[],
@@ -246,4 +291,5 @@ export class RoomMpcResult {
   }
 }
 
+export const TRV_MAX_COUNT = 3;
 export type TrvIndex = 0 | 1 | 2;

@@ -7,8 +7,14 @@ import {
 } from "../../../flowctrl/base/editor";
 import { MatchJoinEditableList } from "../../../flowctrl/match-join/editor";
 import HeatingControllerNode from "./";
-import { TRV_MAX_COUNT } from "./mpc/const";
-import { RoomTemperatureStrategy, TrvRow } from "./mpc/types";
+import {
+  DesignTemperatureSystem,
+  HeatEmitterType,
+  RoomTemperatureStrategy,
+  TRV_MAX_COUNT,
+  TrvRow,
+  TrvRowDefaults,
+} from "./mpc/types";
 import {
   HeatingControllerControllerMode,
   HeatingControllerEditorNodeProperties,
@@ -25,15 +31,98 @@ class TrvListEditableList extends NodeEditorFormEditableList<TrvRow> {
       value: data.name ?? "",
       icon: "tag",
     });
+
     this.rowBuilder!.createNumberInput({
-      id: "radiatorPowerW",
-      label: "trvRadiatorPowerW",
-      value: data.radiatorPowerW ?? 1000,
-      icon: "tachometer",
-      min: 100,
-      max: 5000,
-      step: 50,
+      id: "minTargetTemperature",
+      label: "minTargetTemperature",
+      value: data.minTargetTemperature ?? TrvRowDefaults.minTargetTemperature,
+      min: 5,
+      max: 10,
+      step: 0.5,
+      icon: "arrow-down",
     });
+
+    this.rowBuilder!.createNumberInput({
+      id: "maxTargetTemperature",
+      label: "maxTargetTemperature",
+      value: data.maxTargetTemperature ?? TrvRowDefaults.maxTargetTemperature,
+      min: 15,
+      max: 35,
+      step: 0.5,
+      icon: "arrow-up",
+    });
+
+    this.rowBuilder!.createNumberInput({
+      id: "targetTemperatureStep",
+      label: "targetTemperatureStep",
+      value: data.targetTemperatureStep ?? TrvRowDefaults.targetTemperatureStep,
+      min: 0.5,
+      max: 2,
+      step: 0.5,
+      icon: "step-forward",
+    });
+
+    const heatEmitterTypeSelect = this.rowBuilder!.createSelectInput({
+      id: "emitterType",
+      label: "heatEmitterType",
+      value: data.emitterType,
+      options: [HeatEmitterType.panel, HeatEmitterType.towel],
+      icon: "thermometer",
+    });
+
+    const radiatorTypeRow = this.rowBuilder!.createSelectInput({
+      id: "radiatorType",
+      label: "radiatorType",
+      value: data.radiatorType,
+      options: ["10", "11", "21", "22", "33"],
+      icon: "thermometer",
+    }).parent();
+
+    const widthMmRow = this.rowBuilder!.createNumberInput({
+      id: "widthMm",
+      label: "widthMm",
+      value: data.widthMm ?? 1000,
+      min: 200,
+      max: 3000,
+      step: 50,
+      icon: "arrows-h",
+    }).parent();
+
+    const heightMmRow = this.rowBuilder!.createNumberInput({
+      id: "heightMm",
+      label: "heightMm",
+      value: data.heightMm ?? 600,
+      min: 200,
+      max: 1200,
+      step: 50,
+      icon: "arrows-v",
+    }).parent();
+
+    const nominalPowerWRow = this.rowBuilder!.createNumberInput({
+      id: "nominalPowerW",
+      label: "nominalPowerW",
+      value: data.nominalPowerW,
+      min: 100,
+      max: 3000,
+      step: 10,
+      icon: "bolt",
+    }).parent();
+
+    const updateHeatEmitterFieldVisibility = () => {
+      const emitterType =
+        (heatEmitterTypeSelect.val() as HeatEmitterType) ??
+        HeatEmitterType.panel;
+      const isPanelEmitter = emitterType === HeatEmitterType.panel;
+
+      radiatorTypeRow.toggle(isPanelEmitter);
+      widthMmRow.toggle(isPanelEmitter);
+      heightMmRow.toggle(isPanelEmitter);
+      nominalPowerWRow.toggle(!isPanelEmitter);
+    };
+
+    updateHeatEmitterFieldVisibility();
+
+    heatEmitterTypeSelect.on("change", updateHeatEmitterFieldVisibility);
   }
 }
 
@@ -259,6 +348,17 @@ function buildHeatingControllerFormContent(
     .parent()
     .toggle(isMpc);
 
+  const designTemperatureSystemRow = builder
+    .createSelectInput({
+      id: "node-input-designTemperatureSystem",
+      label: "designTemperatureSystem",
+      value: node.designTemperatureSystem,
+      icon: "thermometer-half",
+      options: Object.values(DesignTemperatureSystem),
+    })
+    .parent()
+    .toggle(isMpc);
+
   const roomHeatLoadWRow = builder
     .createNumberInput({
       id: "node-input-roomHeatLoadW",
@@ -267,68 +367,6 @@ function buildHeatingControllerFormContent(
       icon: "fire",
       min: 100,
       max: 10000,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const roomVolumeM3Row = builder
-    .createNumberInput({
-      id: "node-input-roomVolumeM3",
-      label: "roomVolumeM3",
-      value: node.roomVolumeM3,
-      icon: "cube",
-      min: 5,
-      max: 500,
-      step: 0.1,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const airChangeRateRow = builder
-    .createNumberInput({
-      id: "node-input-airChangeRate",
-      label: "airChangeRate",
-      value: node.airChangeRate,
-      icon: "exchange",
-      min: 0,
-      max: 10,
-      step: 0.1,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const transmissionHeatLossExternalWRow = builder
-    .createNumberInput({
-      id: "node-input-transmissionHeatLossExternalW",
-      label: "transmissionHeatLossExternalW",
-      value: node.transmissionHeatLossExternalW,
-      icon: "minus-circle",
-      min: 0,
-      max: 10000,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const ventilationHeatLossWRow = builder
-    .createNumberInput({
-      id: "node-input-ventilationHeatLossW",
-      label: "ventilationHeatLossW",
-      value: node.ventilationHeatLossW,
-      icon: "sign-out",
-      min: 0,
-      max: 10000,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const mpcReferenceFlowTemperatureRow = builder
-    .createNumberInput({
-      id: "node-input-mpcReferenceFlowTemperature",
-      label: "mpcReferenceFlowTemperature",
-      value: node.mpcReferenceFlowTemperature,
-      icon: "tint",
-      min: 20,
-      max: 90,
     })
     .parent()
     .toggle(isMpc);
@@ -391,43 +429,6 @@ function buildHeatingControllerFormContent(
     .parent()
     .toggle(isMpc);
 
-  const minTargetTemperatureRow = builder
-    .createNumberInput({
-      id: "node-input-minTargetTemperature",
-      label: "minTargetTemperature",
-      value: node.minTargetTemperature,
-      icon: "thermometer-empty",
-      min: 0,
-      max: 15,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const maxTargetTemperatureRow = builder
-    .createNumberInput({
-      id: "node-input-maxTargetTemperature",
-      label: "maxTargetTemperature",
-      value: node.maxTargetTemperature,
-      icon: "thermometer-full",
-      min: 15,
-      max: 35,
-    })
-    .parent()
-    .toggle(isMpc);
-
-  const targetTemperatureStepRow = builder
-    .createNumberInput({
-      id: "node-input-targetTemperatureStep",
-      label: "targetTemperatureStep",
-      value: node.targetTemperatureStep,
-      icon: "step-forward",
-      min: 0.5,
-      max: 2,
-      step: 0.5,
-    })
-    .parent()
-    .toggle(isMpc);
-
   builder.line();
 
   const roomTemperatureStrategyRow = builder
@@ -466,20 +467,13 @@ function buildHeatingControllerFormContent(
     const mpcSelected = $(this).val() === HeatingControllerControllerMode.mpc;
     designIndoorTemperatureCRow.toggle(mpcSelected);
     designOutdoorTemperatureCRow.toggle(mpcSelected);
+    designTemperatureSystemRow.toggle(mpcSelected);
     roomHeatLoadWRow.toggle(mpcSelected);
-    roomVolumeM3Row.toggle(mpcSelected);
-    airChangeRateRow.toggle(mpcSelected);
-    transmissionHeatLossExternalWRow.toggle(mpcSelected);
-    ventilationHeatLossWRow.toggle(mpcSelected);
     mpcLearningEnabledByDefaultRow.toggle(mpcSelected);
-    mpcReferenceFlowTemperatureRow.toggle(mpcSelected);
     mpcDemandHysteresisPctRow.toggle(mpcSelected);
     mpcHoldTimeRow.toggle(mpcSelected);
     mpcHoldOverrideDemandPctRow.toggle(mpcSelected);
     mpcMaxDemandStepPctRow.toggle(mpcSelected);
-    minTargetTemperatureRow.toggle(mpcSelected);
-    maxTargetTemperatureRow.toggle(mpcSelected);
-    targetTemperatureStepRow.toggle(mpcSelected);
     roomTemperatureStrategyRow.toggle(mpcSelected);
     maxSensorAgeRow.toggle(mpcSelected);
 
@@ -519,21 +513,14 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
     "controllerMode",
     "designIndoorTemperatureC",
     "designOutdoorTemperatureC",
+    "designTemperatureSystem",
     "roomHeatLoadW",
-    "roomVolumeM3",
-    "airChangeRate",
-    "transmissionHeatLossExternalW",
-    "ventilationHeatLossW",
     "mpcLearningEnabledByDefault",
-    "mpcReferenceFlowTemperature",
     "mpcDemandHysteresisPct",
     "mpcHoldTime",
     "mpcHoldTimeUnit",
     "mpcHoldOverrideDemandPct",
     "mpcMaxDemandStepPct",
-    "minTargetTemperature",
-    "maxTargetTemperature",
-    "targetTemperatureStep",
     "roomTemperatureStrategy",
     "maxSensorAge",
     "maxSensorAgeUnit",
@@ -623,37 +610,6 @@ export const HeatingControllerEditorDef: NodeEditorDefinition<
       }
 
       $("#trv-rows").on("change", () => updateMatcherVisibilityForTrvCount());
-    },
-    oneditsave(node, ctx) {
-      const trvListCtx = ctx.getList("trv-rows");
-      const trvs = trvListCtx.values() as Array<{
-        name: string;
-        radiatorPowerW: number;
-      }>;
-
-      const namedTrvs = trvs
-        .filter((t) => t.name && t.name.trim().length > 0)
-        .map((t) => ({ ...t, name: t.name.trim() }));
-
-      const names = namedTrvs.map((t) => t.name);
-      const unique = new Set(names);
-      if (unique.size < names.length) {
-        const seen = new Set<string>();
-        node.trvs = namedTrvs.filter((t) => {
-          if (seen.has(t.name)) {
-            return false;
-          }
-          seen.add(t.name);
-          return true;
-        });
-      } else {
-        node.trvs = namedTrvs;
-      }
-
-      node.trvs = node.trvs.map((t) => ({
-        ...t,
-        radiatorPowerW: Math.max(100, t.radiatorPowerW ?? 1000),
-      }));
     },
   },
 };
