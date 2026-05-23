@@ -47,6 +47,8 @@ const PANEL_RADIATOR_REFERENCE_POWER_W_PER_METER: Record<
 
 const MIN_ACTIVE_TRV_TEMPERATURE_C = 18;
 
+const INFINITE_LOOP_GUARD = 20;
+
 type DesignTemperatures = {
   flowTemperatureC: number;
   overtemperatureC: number;
@@ -397,6 +399,8 @@ export class HeatEmitterModel {
       return high;
     }
 
+    let iterations = 0;
+
     while (high - low > 0.1) {
       const mid = (low + high) / 2;
       const availablePowerW = this.calculateAvailableHeatingPowerW(
@@ -409,6 +413,10 @@ export class HeatEmitterModel {
         high = mid;
       } else {
         low = mid;
+      }
+
+      if (++iterations > INFINITE_LOOP_GUARD) {
+        break;
       }
     }
 

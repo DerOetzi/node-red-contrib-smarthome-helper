@@ -1,12 +1,15 @@
 import { LogicalOperation } from "../../../logical/op";
 import { HeatMode, HeatingControllerNodeOptions } from "./types";
 
+const DEFAULT_COMFORT_TEMPERATURE = 22;
+const DEFAULT_ECO_TEMPERATURE_OFFSET = -2;
+
 export class HeatingStateController {
   private comfortConditions: Record<string, boolean> = {};
   private windowsStates: Record<string, boolean> = {};
 
-  private comfortTemperature = 22;
-  private ecoTemperatureOffset = -2;
+  private comfortTemperature = DEFAULT_COMFORT_TEMPERATURE;
+  private ecoTemperatureOffset = DEFAULT_ECO_TEMPERATURE_OFFSET;
   private pvBoost = false;
 
   private heatingAvailable = true;
@@ -25,8 +28,8 @@ export class HeatingStateController {
     this.windowsStates = {};
     this.windowOpenState = false;
     this.heatingAvailable = true;
-    this.comfortTemperature = 22;
-    this.ecoTemperatureOffset = -2;
+    this.comfortTemperature = DEFAULT_COMFORT_TEMPERATURE;
+    this.ecoTemperatureOffset = DEFAULT_ECO_TEMPERATURE_OFFSET;
     this.pvBoost = false;
   }
 
@@ -117,7 +120,7 @@ export class HeatingStateController {
     return this.activeHeatmode;
   }
 
-  public determineBaseTargetTemperature(heatmode?: string): number {
+  public determineBaseTargetTemperature(heatmode?: string): number | null {
     const mode = heatmode ?? this.activeHeatmode;
     switch (mode) {
       case this.config.comfortCommand:
@@ -129,15 +132,13 @@ export class HeatingStateController {
       case this.config.frostProtectionCommand:
         return this.config.frostProtectionTemperature;
       default:
-        return -1;
+        return null;
     }
   }
 
   public effectiveTargetTemperature(baseTargetTemperature: number): number {
     if (this.config.pvBoostEnabled && this.pvBoost) {
-      return (
-        baseTargetTemperature + Number(this.config.pvBoostTemperatureOffset)
-      );
+      return baseTargetTemperature + this.config.pvBoostTemperatureOffset;
     }
     return baseTargetTemperature;
   }

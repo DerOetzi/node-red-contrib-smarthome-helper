@@ -3,6 +3,9 @@ import { HeatingMPCControllerNodeOptions } from "../types";
 
 const DEFAULT_CAPACITY_SECONDS = 7200;
 
+export const MIN_LEARNED_CAPACITY_FACTOR = 0.5;
+export const MAX_LEARNED_CAPACITY_FACTOR = 3;
+
 export class ThermalCapacityModel {
   private _learnedCapacityFactor = 1;
 
@@ -29,7 +32,11 @@ export class ThermalCapacityModel {
   }
 
   public set learnedCapacityFactor(value: number) {
-    this._learnedCapacityFactor = clamp(value, 0.5, 3);
+    this._learnedCapacityFactor = clamp(
+      value,
+      MIN_LEARNED_CAPACITY_FACTOR,
+      MAX_LEARNED_CAPACITY_FACTOR,
+    );
   }
 
   public get learnedCapacityFactor(): number {

@@ -9,14 +9,37 @@ import {
   RoomModelLearningState,
   RoomMpcInput,
 } from "./types";
-import { ThermalCapacityModel } from "./models/capacity";
-import { RoomLossModel } from "./models/loss";
+import {
+  MAX_LEARNED_CAPACITY_FACTOR,
+  MIN_LEARNED_CAPACITY_FACTOR,
+  ThermalCapacityModel,
+} from "./models/capacity";
+import {
+  MAX_LEARNED_UA_FACTOR,
+  MIN_LEARNED_UA_FACTOR,
+  RoomLossModel,
+} from "./models/loss";
+import { clamp } from "../../../../../helpers/math.helper";
 
 const LEARNING_INTERVAL_MINUTES = 30;
 
 const HISTORY_RETENTION_MINUTES = 180;
 
-export type LearnerHistoryEntry = {
+const MIN_HISTORY_SAMPLES = 5;
+
+const UA_LEARNING_THRESHOLD_W = 300;
+
+const MIN_ROOM_DELTA_C = 0.15;
+
+const MAX_OUTDOOR_DELTA_C = 1;
+
+const MAX_FLOW_DELTA_C = 5;
+
+const UA_LEARNING_RATE = 0.0025;
+
+const CAPACITY_LEARNING_RATE = 0.005;
+
+type LearnerHistoryEntry = {
   timestamp: number;
 
   roomTemperatureC: number;
@@ -28,7 +51,7 @@ export type LearnerHistoryEntry = {
   appliedHeatingPowerW: number;
 };
 
-export type LearnerPrediction = {
+type LearnerPrediction = {
   timestamp: number;
 
   predictedRoomTemperatureC: number;
@@ -141,6 +164,14 @@ export class RoomMPCModelLearner {
     this.cleanupHistory(input.nowTs);
   }
 
+  private cleanupHistory(nowTs: number): void {
+    for (let i = this.history.length - 1; i >= 0; i--) {
+      if (nowTs - this.history[i].timestamp > this.historyRetentionMs) {
+        this.history.splice(i, 1);
+      }
+    }
+  }
+
   public setPrediction(prediction: LearnerPrediction): void {
     this.lastPrediction = prediction;
   }
@@ -174,7 +205,7 @@ export class RoomMPCModelLearner {
 
     const relevantHistory = this.getRelevantHistory(this.activePrediction);
 
-    if (relevantHistory.length === 0) {
+    if (relevantHistory.length < MIN_HISTORY_SAMPLES) {
       this.learningState = this.createLearningState(
         LearningStatus.waitingInterval,
       );
@@ -184,25 +215,42 @@ export class RoomMPCModelLearner {
       return;
     }
 
-    // TODO:
-    // - Validate thresholds
-    // - Compare prediction vs reality
-    // - Learn UA factor
-    // - Learn capacity factor
+    if (!this.isHistoryValid(relevantHistory)) {
+      this.learningState = this.createLearningState(LearningStatus.skipped);
 
-    this.learningState = this.createLearningState(LearningStatus.active);
+      this.rotateLearningWindow();
+
+      return;
+    }
+
+    const predictedRoomTemperatureC =
+      this.activePrediction.predictedRoomTemperatureC;
+
+    const actualRoomTemperatureC =
+      this.calculateActualRoomTemperatureC(relevantHistory);
+
+    const predictionErrorC = actualRoomTemperatureC - predictedRoomTemperatureC;
+
+    const averageHeatingPowerW =
+      this.calculateAverageHeatingPowerW(relevantHistory);
+
+    if (Math.abs(predictionErrorC) < MIN_ROOM_DELTA_C) {
+      this.learningState = this.createLearningState(LearningStatus.skipped);
+
+      this.rotateLearningWindow();
+
+      return;
+    }
+
+    if (averageHeatingPowerW < UA_LEARNING_THRESHOLD_W) {
+      this.learnUaFactor(predictionErrorC);
+    } else {
+      this.learnCapacityFactor(predictionErrorC);
+    }
+
+    this.learningState = this.createLearningState(LearningStatus.learned);
 
     this.rotateLearningWindow();
-  }
-
-  private rotateLearningWindow(): void {
-    this.currentWindowInvalid = this.nextWindowInvalid;
-
-    this.nextWindowInvalid = false;
-
-    this.activePrediction = this.lastPrediction;
-
-    this.lastPrediction = undefined;
   }
 
   private getRelevantHistory(
@@ -218,12 +266,89 @@ export class RoomMPCModelLearner {
     );
   }
 
-  private cleanupHistory(nowTs: number): void {
-    for (let i = this.history.length - 1; i >= 0; i--) {
-      if (nowTs - this.history[i].timestamp > this.historyRetentionMs) {
-        this.history.splice(i, 1);
+  private isHistoryValid(history: LearnerHistoryEntry[]): boolean {
+    const outdoorTemperatures = history.map(
+      (entry) => entry.outdoorTemperatureC,
+    );
+
+    const outdoorDeltaC =
+      Math.max(...outdoorTemperatures) - Math.min(...outdoorTemperatures);
+
+    if (outdoorDeltaC > MAX_OUTDOOR_DELTA_C) {
+      return false;
+    }
+
+    const flowTemperatures = history
+      .map((entry) => entry.flowTemperatureC)
+      .filter(
+        (value): value is number =>
+          value !== undefined && !Number.isNaN(value) && Number.isFinite(value),
+      );
+
+    if (flowTemperatures.length > 0) {
+      const flowDeltaC =
+        Math.max(...flowTemperatures) - Math.min(...flowTemperatures);
+
+      if (flowDeltaC > MAX_FLOW_DELTA_C) {
+        return false;
       }
     }
+
+    return true;
+  }
+
+  private calculateActualRoomTemperatureC(
+    history: LearnerHistoryEntry[],
+  ): number {
+    const lastSamples = history.slice(-5);
+
+    return (
+      lastSamples.reduce((sum, entry) => sum + entry.roomTemperatureC, 0) /
+      lastSamples.length
+    );
+  }
+
+  private calculateAverageHeatingPowerW(
+    history: LearnerHistoryEntry[],
+  ): number {
+    return (
+      history.reduce((sum, entry) => sum + entry.appliedHeatingPowerW, 0) /
+      history.length
+    );
+  }
+
+  private learnUaFactor(predictionErrorC: number): void {
+    const nextFactor =
+      this.lossModel.learnedUaFactor *
+      (1 - predictionErrorC * UA_LEARNING_RATE);
+
+    this.lossModel.learnedUaFactor = clamp(
+      nextFactor,
+      MIN_LEARNED_UA_FACTOR,
+      MAX_LEARNED_UA_FACTOR,
+    );
+  }
+
+  private learnCapacityFactor(predictionErrorC: number): void {
+    const nextFactor =
+      this.capacityModel.learnedCapacityFactor *
+      (1 - predictionErrorC * CAPACITY_LEARNING_RATE);
+
+    this.capacityModel.learnedCapacityFactor = clamp(
+      nextFactor,
+      MIN_LEARNED_CAPACITY_FACTOR,
+      MAX_LEARNED_CAPACITY_FACTOR,
+    );
+  }
+
+  private rotateLearningWindow(): void {
+    this.currentWindowInvalid = this.nextWindowInvalid;
+
+    this.nextWindowInvalid = false;
+
+    this.activePrediction = this.lastPrediction;
+
+    this.lastPrediction = undefined;
   }
 
   public recalibrate(factors: PersistedLearningFactors): void {

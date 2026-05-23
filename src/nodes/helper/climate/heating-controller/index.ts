@@ -329,7 +329,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     const baseTargetTemperature =
       this.stateController.determineBaseTargetTemperature(effectiveMode);
 
-    if (baseTargetTemperature < 0) {
+    if (baseTargetTemperature === null) {
       return;
     }
 
@@ -507,7 +507,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     const baseTargetTemperature =
       this.stateController.determineBaseTargetTemperature(displayMode);
 
-    if (baseTargetTemperature >= 0) {
+    if (baseTargetTemperature !== null) {
       return (
         text + this.formatTemperatureDetails(displayMode, baseTargetTemperature)
       );

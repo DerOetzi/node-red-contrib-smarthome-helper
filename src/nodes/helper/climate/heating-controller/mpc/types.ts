@@ -59,6 +59,9 @@ export const TrvRowDefaults: TrvRow = {
   widthMm: 1000,
   heightMm: 600,
 
+  nominalPowerW: 500,
+
+  //Deprecated since 1.2.16
   radiatorPowerW: undefined,
 };
 
@@ -147,9 +150,9 @@ export type RoomMpcInput = {
 };
 
 export enum LearningStatus {
-  initializing = "initializing",
-  active = "active",
+  learned = "learned",
   disabled = "disabled",
+  skipped = "skipped",
   suppressed = "suppressed",
   waitingInterval = "waiting_interval",
 }

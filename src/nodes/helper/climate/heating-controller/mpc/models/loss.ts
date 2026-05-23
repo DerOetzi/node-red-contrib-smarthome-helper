@@ -1,6 +1,9 @@
 import { clamp } from "../../../../../../helpers/math.helper";
 import { HeatingMPCControllerNodeOptions } from "../types";
 
+export const MIN_LEARNED_UA_FACTOR = 0.5;
+export const MAX_LEARNED_UA_FACTOR = 2;
+
 export class RoomLossModel {
   private _learnedUaFactor = 1;
 
@@ -22,7 +25,11 @@ export class RoomLossModel {
   }
 
   public set learnedUaFactor(value: number) {
-    this._learnedUaFactor = clamp(value, 0.5, 2);
+    this._learnedUaFactor = clamp(
+      value,
+      MIN_LEARNED_UA_FACTOR,
+      MAX_LEARNED_UA_FACTOR,
+    );
   }
 
   public get learnedUaFactor(): number {

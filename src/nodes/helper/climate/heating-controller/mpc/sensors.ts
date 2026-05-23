@@ -275,7 +275,12 @@ export class RoomMPCSensors {
 
     const validTrvTemperatures = this.getValidTemperatures(trvTemperatures);
 
-    if (validTrvTemperatures.length === 0) {
+    const calculatedTemperature =
+      effectiveStrategy === RoomTemperatureStrategy.median_trv
+        ? this.calculateMedianTemperature(validTrvTemperatures)
+        : this.calculateAverageTemperature(validTrvTemperatures);
+
+    if (calculatedTemperature === null) {
       return {
         temperature: null,
         usedStrategy: null,
@@ -284,10 +289,7 @@ export class RoomMPCSensors {
     }
 
     return {
-      temperature:
-        effectiveStrategy === RoomTemperatureStrategy.average_trv
-          ? this.calculateAverageTemperature(validTrvTemperatures)
-          : this.calculateMedianTemperature(validTrvTemperatures),
+      temperature: calculatedTemperature,
       usedStrategy: effectiveStrategy,
       trvTemperatures,
     };
@@ -297,13 +299,21 @@ export class RoomMPCSensors {
     return temperatures.filter((temp): temp is number => temp !== undefined);
   }
 
-  private calculateAverageTemperature(temperatures: number[]): number {
+  private calculateAverageTemperature(temperatures: number[]): number | null {
+    if (temperatures.length === 0) {
+      return null;
+    }
+
     return (
       temperatures.reduce((sum, value) => sum + value, 0) / temperatures.length
     );
   }
 
-  private calculateMedianTemperature(temperatures: number[]): number {
+  private calculateMedianTemperature(temperatures: number[]): number | null {
+    if (temperatures.length === 0) {
+      return null;
+    }
+
     const sorted = temperatures.slice().sort((a, b) => a - b);
 
     const middle = Math.floor(sorted.length / 2);
