@@ -6,13 +6,17 @@ import {
   HeatingMPCControllerNodeOptions,
   PersistedLearningFactors,
   RoomModelLearningState,
-  RoomMpcInput,
-  RoomMpcResult,
   TrvIndex,
 } from "./types";
 import { HeatEmitterModel } from "./models/emitter";
 import { ThermalCapacityModel } from "./models/capacity";
 import { RoomLossModel } from "./models/loss";
+import {
+  RoomMpcComputeResult,
+  RoomMpcErrorCode,
+  RoomMpcInput,
+  RoomMpcResult,
+} from "./results";
 
 const MPC_PREDICTION_HORIZON_SECONDS = 1800;
 
@@ -85,16 +89,17 @@ export class RoomMPCController {
     this.sensors.setFlowTemperature(value);
   }
 
-  public getRoomTemperature(): number | null {
-    return this.sensors.getRoomTemperature().temperature;
-  }
+  public compute(targetTemperature: number): RoomMpcComputeResult {
+    const inputResult = this.sensors.createInput(targetTemperature);
 
-  public compute(targetTemperature: number): RoomMpcResult | null {
-    const input = this.sensors.createInput(targetTemperature);
-
-    if (!input) {
-      return null;
+    if (!inputResult.valid) {
+      return {
+        valid: false,
+        error: inputResult.error,
+      };
     }
+
+    const input = inputResult.input;
 
     const availableHeatingPowerW =
       this.emitterModel.calculateAvailableHeatingPowerW(
@@ -103,7 +108,14 @@ export class RoomMPCController {
       );
 
     if (availableHeatingPowerW <= 0) {
-      return null;
+      return {
+        valid: false,
+        error: {
+          code: RoomMpcErrorCode.noHeatingPowerAvailable,
+          message:
+            "No heating power available at current room and flow temperatures",
+        },
+      };
     }
 
     const optimalDemand = this.findOptimalDemandPrediction(input);
@@ -130,14 +142,17 @@ export class RoomMPCController {
       optimalDemand.predictedTemperatureC,
     );
 
-    return this.createResult(
-      input,
-      learningState,
-      stabilizedDemandPct,
-      requestedHeatingPowerW,
-      availableHeatingPowerW,
-      recommendedFlowTemperatureC,
-    );
+    return {
+      valid: true,
+      result: this.createResult(
+        input,
+        learningState,
+        stabilizedDemandPct,
+        requestedHeatingPowerW,
+        availableHeatingPowerW,
+        recommendedFlowTemperatureC,
+      ),
+    };
   }
 
   private findOptimalDemandPrediction(

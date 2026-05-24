@@ -3,9 +3,12 @@ import {
   TimeIntervalUnit,
 } from "../../../../../helpers/time.helper";
 import {
-  HeatingMPCControllerNodeOptions,
-  RoomMpcInput,
+  RoomMpcErrorCode,
+  RoomMpcInputResult,
   RoomTemperatureResult,
+} from "./results";
+import {
+  HeatingMPCControllerNodeOptions,
   RoomTemperatureStrategy,
   TRV_MAX_COUNT,
   TrvIndex,
@@ -47,6 +50,10 @@ class SensorEntry {
 
   private isFresh(nowTs: number = Date.now()): boolean {
     if (this._value === undefined) {
+      return false;
+    }
+
+    if (!Number.isFinite(this._value)) {
       return false;
     }
 
@@ -169,12 +176,6 @@ class SensorEntry {
   }
 }
 
-export class ActorStateEntry extends SensorEntry {
-  constructor(maxAgeMs: number) {
-    super(maxAgeMs, false);
-  }
-}
-
 export class RoomMPCSensors {
   private readonly trvTemperatures: SensorEntry[] = [];
   private readonly additionalTemperatureSensor: SensorEntry;
@@ -258,10 +259,26 @@ export class RoomMPCSensors {
     externalTemperature: number | undefined,
     trvTemperatures: (number | undefined)[],
   ): RoomTemperatureResult {
+    if (externalTemperature === undefined) {
+      return {
+        valid: false,
+        error: {
+          code: RoomMpcErrorCode.missingExternalTemperature,
+          message: "Missing external temperature",
+          details: {
+            usedStrategy: RoomTemperatureStrategy.external,
+          },
+        },
+      };
+    }
+
     return {
-      temperature: externalTemperature ?? null,
-      usedStrategy: RoomTemperatureStrategy.external,
-      trvTemperatures,
+      valid: true,
+      input: {
+        temperature: externalTemperature,
+        usedStrategy: RoomTemperatureStrategy.external,
+        trvTemperatures,
+      },
     };
   }
 
@@ -282,16 +299,25 @@ export class RoomMPCSensors {
 
     if (calculatedTemperature === null) {
       return {
-        temperature: null,
-        usedStrategy: null,
-        trvTemperatures,
+        valid: false,
+        error: {
+          code: RoomMpcErrorCode.missingTrvTemperatures,
+          message: "Missing TRV temperatures",
+          details: {
+            usedStrategy: effectiveStrategy,
+            trvTemperatures,
+          },
+        },
       };
     }
 
     return {
-      temperature: calculatedTemperature,
-      usedStrategy: effectiveStrategy,
-      trvTemperatures,
+      valid: true,
+      input: {
+        temperature: calculatedTemperature,
+        usedStrategy: effectiveStrategy,
+        trvTemperatures,
+      },
     };
   }
 
@@ -323,22 +349,38 @@ export class RoomMPCSensors {
       : sorted[middle];
   }
 
-  public createInput(targetTempC: number): RoomMpcInput | null {
-    const roomTemperature = this.getRoomTemperature();
+  public createInput(targetTempC: number): RoomMpcInputResult {
+    const roomTemperatureResult = this.getRoomTemperature();
     const outdoorTempC = this.outdoorTemperatureSensor.getFreshValue();
 
-    if (roomTemperature.temperature === null || outdoorTempC === undefined) {
-      return null;
+    if (!roomTemperatureResult.valid) {
+      return {
+        valid: false,
+        error: roomTemperatureResult.error,
+      };
+    }
+
+    if (outdoorTempC === undefined) {
+      return {
+        valid: false,
+        error: {
+          code: RoomMpcErrorCode.missingOutdoorTemperature,
+          message: "Missing outdoor temperature",
+        },
+      };
     }
 
     return {
-      nowTs: Date.now(),
-      targetTempC,
-      roomTempC: roomTemperature.temperature,
-      outdoorTempC: outdoorTempC,
-      flowTempC: this.flowTemperatureSensor.getFreshValue(),
-      usedRoomSensorStrategy: roomTemperature.usedStrategy,
-      trvTemperatures: roomTemperature.trvTemperatures,
+      valid: true,
+      input: {
+        nowTs: Date.now(),
+        targetTempC,
+        roomTempC: roomTemperatureResult.input.temperature,
+        outdoorTempC: outdoorTempC,
+        flowTempC: this.flowTemperatureSensor.getFreshValue(),
+        usedRoomSensorStrategy: roomTemperatureResult.input.usedStrategy,
+        trvTemperatures: roomTemperatureResult.input.trvTemperatures,
+      },
     };
   }
 }

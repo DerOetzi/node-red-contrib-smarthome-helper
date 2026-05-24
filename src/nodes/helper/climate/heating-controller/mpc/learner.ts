@@ -7,7 +7,6 @@ import {
   LearningStatus,
   PersistedLearningFactors,
   RoomModelLearningState,
-  RoomMpcInput,
 } from "./types";
 import {
   MAX_LEARNED_CAPACITY_FACTOR,
@@ -20,6 +19,7 @@ import {
   RoomLossModel,
 } from "./models/loss";
 import { clamp } from "../../../../../helpers/math.helper";
+import { RoomMpcInput } from "./results";
 
 const LEARNING_INTERVAL_MINUTES = 30;
 

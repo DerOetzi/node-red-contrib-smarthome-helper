@@ -17,7 +17,6 @@ import { RoomMPCController } from "./mpc";
 import {
   PersistedLearningFactors,
   PERSISTENCE_VERSION,
-  RoomMpcResult,
   TRV_MAX_COUNT,
   TrvIndex,
 } from "./mpc/types";
@@ -26,6 +25,11 @@ import {
   TimeIntervalUnit,
 } from "../../../../helpers/time.helper";
 import { HeatingStateController } from "./state";
+import {
+  RoomMpcComputeResult,
+  RoomMpcLogLevel,
+  RoomMpcResult,
+} from "./mpc/results";
 
 export default class HeatingControllerNode extends ActiveControllerNode<
   HeatingControllerNodeDef,
@@ -338,8 +342,8 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     );
 
     if (this.config.controllerMode === HeatingControllerControllerMode.mpc) {
-      const mpcResult = this.mpcController.compute(targetTemperature);
-      this.handleMPCResult(mpcResult, targetTemperature);
+      const mpcComputeResult = this.mpcController.compute(targetTemperature);
+      this.handleMPCResult(mpcComputeResult, targetTemperature);
     } else {
       this.sendTemperature("target_temperature", targetTemperature, 0);
     }
@@ -356,10 +360,14 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     const frostProtectionTemperature = this.config.frostProtectionTemperature;
 
     if (this.config.controllerMode === HeatingControllerControllerMode.mpc) {
-      const frostMpcResult = this.mpcController.compute(
+      const frostMpcComputeResult = this.mpcController.compute(
         frostProtectionTemperature,
       );
-      this.handleMPCResult(frostMpcResult, frostProtectionTemperature, true);
+      this.handleMPCResult(
+        frostMpcComputeResult,
+        frostProtectionTemperature,
+        true,
+      );
       return;
     }
 
@@ -374,13 +382,12 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   }
 
   private handleMPCResult(
-    mpcResult: RoomMpcResult | null,
+    mpcComputeResult: RoomMpcComputeResult,
     targetTemperature: number,
     frostProtection: boolean = false,
   ): void {
-    if (mpcResult === null) {
-      this.sendTemperatureForAllTrvs(targetTemperature, frostProtection);
-    } else {
+    if (mpcComputeResult.valid) {
+      const mpcResult = mpcComputeResult.result;
       mpcResult.trvTargets.forEach((trvTarget, index) => {
         this.sendTemperature(
           this.config.trvs[index]?.name ?? `trv${index + 1}`,
@@ -392,6 +399,26 @@ export default class HeatingControllerNode extends ActiveControllerNode<
       });
 
       this.handleMPCPersistLearning();
+    } else {
+      switch (RoomMpcLogLevel[mpcComputeResult.error.code]) {
+        case "error":
+          this.node.error(
+            `MPC computation failed: ${mpcComputeResult.error.message} (code: ${mpcComputeResult.error.code})`,
+          );
+          break;
+        case "warn":
+          this.node.warn(
+            `MPC computation warning: ${mpcComputeResult.error.message} (code: ${mpcComputeResult.error.code})`,
+          );
+          break;
+        case "info":
+          this.node.log(
+            `MPC computation info: ${mpcComputeResult.error.message} (code: ${mpcComputeResult.error.code})`,
+          );
+          break;
+      }
+
+      this.sendTemperatureForAllTrvs(targetTemperature, frostProtection);
     }
   }
 
