@@ -31,19 +31,6 @@ export enum RoomMpcErrorCode {
   noHeatingPowerAvailable = "no_heating_power_available",
 }
 
-export const RoomMpcLogLevel: Record<
-  RoomMpcErrorCode,
-  "info" | "warn" | "error"
-> = {
-  [RoomMpcErrorCode.missingExternalTemperature]: "warn",
-
-  [RoomMpcErrorCode.missingTrvTemperatures]: "warn",
-
-  [RoomMpcErrorCode.missingOutdoorTemperature]: "warn",
-
-  [RoomMpcErrorCode.noHeatingPowerAvailable]: "info",
-};
-
 export type RoomMpcError = {
   code: RoomMpcErrorCode;
 

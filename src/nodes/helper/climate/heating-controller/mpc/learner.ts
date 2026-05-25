@@ -84,7 +84,7 @@ export class RoomMPCModelLearner {
 
   private nextWindowInvalid = false;
 
-  private lastPersistedFactorsJson?: string;
+  private pendingPersistedFactors: PersistedLearningFactors | null = null;
 
   private learningState: RoomModelLearningState = {
     status: LearningStatus.disabled,
@@ -114,6 +114,8 @@ export class RoomMPCModelLearner {
     this.activePrediction = undefined;
     this.lastPrediction = undefined;
 
+    this.pendingPersistedFactors = null;
+
     this.learningIntervalHandle = setInterval(() => {
       this.runLearningCycle();
     }, this.learningIntervalMs);
@@ -128,6 +130,7 @@ export class RoomMPCModelLearner {
       clearInterval(this.learningIntervalHandle);
 
       this.learningIntervalHandle = undefined;
+      this.pendingPersistedFactors = null;
     }
 
     this.learningState = this.createLearningState(LearningStatus.disabled);
@@ -141,6 +144,7 @@ export class RoomMPCModelLearner {
     this.suppressedUntilTs = Date.now() + durationMs;
 
     this.currentWindowInvalid = true;
+    this.pendingPersistedFactors = null;
 
     this.learningState = this.createLearningState(LearningStatus.suppressed);
   }
@@ -248,6 +252,11 @@ export class RoomMPCModelLearner {
       this.learnCapacityFactor(predictionErrorC);
     }
 
+    this.pendingPersistedFactors = new PersistedLearningFactors(
+      this.getCurrentLearningFactors(),
+      1,
+    );
+
     this.learningState = this.createLearningState(LearningStatus.learned);
 
     this.rotateLearningWindow();
@@ -352,6 +361,7 @@ export class RoomMPCModelLearner {
   }
 
   public recalibrate(factors: PersistedLearningFactors): void {
+    this.pendingPersistedFactors = null;
     this.lossModel.learnedUaFactor = factors.uaFactor;
 
     this.capacityModel.learnedCapacityFactor = factors.capacityFactor;
@@ -360,18 +370,12 @@ export class RoomMPCModelLearner {
   }
 
   public consumePersistedLearningFactors(): PersistedLearningFactors | null {
-    const factors = new PersistedLearningFactors(
-      this.getCurrentLearningFactors(),
-      1,
-    );
-
-    const json = factors.toJson();
-
-    if (json === this.lastPersistedFactorsJson) {
+    if (this.pendingPersistedFactors === null) {
       return null;
     }
 
-    this.lastPersistedFactorsJson = json;
+    const factors = this.pendingPersistedFactors;
+    this.pendingPersistedFactors = null;
 
     return factors;
   }

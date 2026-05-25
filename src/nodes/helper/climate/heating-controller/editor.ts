@@ -84,7 +84,6 @@ class TrvListEditableList extends NodeEditorFormEditableList<TrvRow> {
       value: data.widthMm ?? 1000,
       min: 200,
       max: 3000,
-      step: 50,
       icon: "arrows-h",
     }).parent();
 
@@ -94,7 +93,6 @@ class TrvListEditableList extends NodeEditorFormEditableList<TrvRow> {
       value: data.heightMm ?? 600,
       min: 200,
       max: 1200,
-      step: 50,
       icon: "arrows-v",
     }).parent();
 
@@ -104,7 +102,6 @@ class TrvListEditableList extends NodeEditorFormEditableList<TrvRow> {
       value: data.nominalPowerW,
       min: 100,
       max: 3000,
-      step: 10,
       icon: "bolt",
     }).parent();
 

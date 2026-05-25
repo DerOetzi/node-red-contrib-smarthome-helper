@@ -1,9 +1,24 @@
 import { Node, NodeAPI, NodeStatusFill } from "node-red";
-import { NodeMessageFlow } from "../../../flowctrl/base/types";
+import {
+  convertToMilliseconds,
+  TimeIntervalUnit,
+} from "../../../../helpers/time.helper";
 import ActiveControllerNode from "../../../flowctrl/active-controller";
 import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
+import Migration from "../../../flowctrl/base/migration";
+import { NodeMessageFlow } from "../../../flowctrl/base/types";
 import { NodeCategory } from "../../../types";
 import { HelperClimateCategory } from "../types";
+import HeatingControllerMigration from "./migration";
+import { RoomMPCController } from "./mpc";
+import { RoomMpcComputeResult } from "./mpc/results";
+import {
+  PersistedLearningFactors,
+  PERSISTENCE_VERSION,
+  TRV_MAX_COUNT,
+  TrvIndex,
+} from "./mpc/types";
+import { HeatingStateController } from "./state";
 import {
   HeatingControllerControllerMode,
   HeatingControllerNodeDef,
@@ -11,25 +26,6 @@ import {
   HeatingControllerNodeOptionsDefaults,
   HeatingControllerTarget,
 } from "./types";
-import Migration from "../../../flowctrl/base/migration";
-import HeatingControllerMigration from "./migration";
-import { RoomMPCController } from "./mpc";
-import {
-  PersistedLearningFactors,
-  PERSISTENCE_VERSION,
-  TRV_MAX_COUNT,
-  TrvIndex,
-} from "./mpc/types";
-import {
-  convertToMilliseconds,
-  TimeIntervalUnit,
-} from "../../../../helpers/time.helper";
-import { HeatingStateController } from "./state";
-import {
-  RoomMpcComputeResult,
-  RoomMpcLogLevel,
-  RoomMpcResult,
-} from "./mpc/results";
 
 export default class HeatingControllerNode extends ActiveControllerNode<
   HeatingControllerNodeDef,
@@ -387,37 +383,18 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     frostProtection: boolean = false,
   ): void {
     if (mpcComputeResult.valid) {
-      const mpcResult = mpcComputeResult.result;
-      mpcResult.trvTargets.forEach((trvTarget, index) => {
+      mpcComputeResult.result.trvTargets.forEach((trvTarget, index) => {
         this.sendTemperature(
           this.config.trvs[index]?.name ?? `trv${index + 1}`,
           trvTarget,
           index as TrvIndex,
-          mpcResult,
+          mpcComputeResult,
           true,
         );
       });
 
       this.handleMPCPersistLearning();
     } else {
-      switch (RoomMpcLogLevel[mpcComputeResult.error.code]) {
-        case "error":
-          this.node.error(
-            `MPC computation failed: ${mpcComputeResult.error.message} (code: ${mpcComputeResult.error.code})`,
-          );
-          break;
-        case "warn":
-          this.node.warn(
-            `MPC computation warning: ${mpcComputeResult.error.message} (code: ${mpcComputeResult.error.code})`,
-          );
-          break;
-        case "info":
-          this.node.log(
-            `MPC computation info: ${mpcComputeResult.error.message} (code: ${mpcComputeResult.error.code})`,
-          );
-          break;
-      }
-
       this.sendTemperatureForAllTrvs(targetTemperature, frostProtection);
     }
   }
@@ -447,6 +424,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
   private sendTemperatureForAllTrvs(
     temperature: number,
     frostProtection: boolean = false,
+    mpcComputedResult: RoomMpcComputeResult | null = null,
   ) {
     const topics: string[] = [];
     if (this.config.trvs.length === 0) {
@@ -466,7 +444,7 @@ export default class HeatingControllerNode extends ActiveControllerNode<
         topic,
         temperature,
         index as TrvIndex,
-        null,
+        mpcComputedResult,
         frostProtection,
       );
     });
@@ -476,14 +454,20 @@ export default class HeatingControllerNode extends ActiveControllerNode<
     topic: string,
     temperature: number,
     trvIndex: TrvIndex,
-    mpcResult: RoomMpcResult | null = null,
+    mpcComputedResult: RoomMpcComputeResult | null = null,
     skipDebounce: boolean = false,
   ): void {
     const flow = new NodeMessageFlow({ topic, payload: temperature }, 1);
     flow.updateAdditionalAttribute("trv", trvIndex);
 
-    if (trvIndex === 0 && mpcResult !== null) {
-      flow.updateAdditionalAttributes(mpcResult.getMpcAdditionalAttributes());
+    if (trvIndex === 0 && mpcComputedResult !== null) {
+      if (mpcComputedResult.valid) {
+        flow.updateAdditionalAttributes(
+          mpcComputedResult.result.getMpcAdditionalAttributes(),
+        );
+      } else {
+        flow.updateAdditionalAttribute("mpcError", mpcComputedResult.error);
+      }
     }
 
     if (skipDebounce) {
