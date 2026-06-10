@@ -139,7 +139,8 @@ export class HeatingStateController {
   public effectiveTargetTemperature(baseTargetTemperature: number): number {
     if (this.config.pvBoostEnabled && this.pvBoost) {
       return (
-        baseTargetTemperature + Number(this.config.pvBoostTemperatureOffset)
+        Number(baseTargetTemperature) +
+        Number(this.config.pvBoostTemperatureOffset)
       );
     }
     return baseTargetTemperature;

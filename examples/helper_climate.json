@@ -155,7 +155,7 @@
     "z": "c16b0ae576a8ea46",
     "g": "df1d30e94fa679dc",
     "name": "",
-    "version": "1.2.16",
+    "version": "1.2.24",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -257,21 +257,14 @@
     "controllerMode": "static",
     "designIndoorTemperatureC": 20,
     "designOutdoorTemperatureC": -12,
+    "designTemperatureSystem": "system_55_45",
     "roomHeatLoadW": 1200,
-    "roomVolumeM3": 50,
-    "airChangeRate": 0.5,
-    "transmissionHeatLossExternalW": 800,
-    "ventilationHeatLossW": 250,
     "mpcLearningEnabledByDefault": false,
-    "mpcReferenceFlowTemperature": 50,
     "mpcDemandHysteresisPct": 5,
     "mpcHoldTime": 5,
     "mpcHoldTimeUnit": "m",
     "mpcHoldOverrideDemandPct": 40,
     "mpcMaxDemandStepPct": 20,
-    "minTargetTemperature": 5,
-    "maxTargetTemperature": 30,
-    "targetTemperatureStep": 1,
     "trvs": [
       {
         "name": "trv1",
@@ -280,7 +273,10 @@
           "radiatorType": "22",
           "widthMm": 500,
           "heightMm": 600
-        }
+        },
+        "minTargetTemperature": 5,
+        "maxTargetTemperature": 30,
+        "targetTemperatureStep": 1
       }
     ],
     "roomTemperatureStrategy": "external",
@@ -870,7 +866,7 @@
     "z": "c16b0ae576a8ea46",
     "g": "df1d30e94fa679dc",
     "name": "",
-    "version": "1.2.16",
+    "version": "1.2.24",
     "topic": "topic",
     "topicType": "msg",
     "filterUniquePayload": false,
@@ -972,21 +968,14 @@
     "controllerMode": "static",
     "designIndoorTemperatureC": 20,
     "designOutdoorTemperatureC": -12,
+    "designTemperatureSystem": "system_55_45",
     "roomHeatLoadW": 1200,
-    "roomVolumeM3": 50,
-    "airChangeRate": 0.5,
-    "transmissionHeatLossExternalW": 800,
-    "ventilationHeatLossW": 250,
     "mpcLearningEnabledByDefault": false,
-    "mpcReferenceFlowTemperature": 50,
     "mpcDemandHysteresisPct": 5,
     "mpcHoldTime": 5,
     "mpcHoldTimeUnit": "m",
     "mpcHoldOverrideDemandPct": 40,
     "mpcMaxDemandStepPct": 20,
-    "minTargetTemperature": 5,
-    "maxTargetTemperature": 30,
-    "targetTemperatureStep": 1,
     "trvs": [
       {
         "name": "trv1",
@@ -994,7 +983,10 @@
         "heatEmitter.radiatorType": "10",
         "heatEmitter.widthMm": "1000",
         "heatEmitter.heightMm": "600",
-        "heatEmitter.nominalPowerW": ""
+        "heatEmitter.nominalPowerW": "",
+        "minTargetTemperature": 5,
+        "maxTargetTemperature": 30,
+        "targetTemperatureStep": 1
       }
     ],
     "roomTemperatureStrategy": "external",

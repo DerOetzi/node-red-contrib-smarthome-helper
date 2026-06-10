@@ -377,9 +377,7 @@
             "b19ee5bc1795fd02",
             "8bcd9d80a8ada497",
             "ef9919e3cd200f45",
-            "fb4944b41bb1f7f1",
-            "bc4190c1272dc724",
-            "be4d97e52a71a7f2"
+            "fb4944b41bb1f7f1"
         ],
         "x": 54,
         "y": 379,
@@ -5947,10 +5945,10 @@
         "y": 440,
         "wires": [
             [
-                "bc4190c1272dc724"
+                "1a7e38b67e78e65d"
             ],
             [
-                "be4d97e52a71a7f2"
+                "1a7e38b67e78e65d"
             ]
         ]
     },
@@ -6020,7 +6018,7 @@
         "z": "50a63383c0611497",
         "g": "2366616d8806730a",
         "name": "",
-        "version": "1.2.0",
+        "version": "1.2.24",
         "topic": "motioncontrol",
         "topicType": "str",
         "filterUniquePayload": false,
@@ -6087,6 +6085,10 @@
         "discardNotMatched": true,
         "join": false,
         "minMsgCount": 1,
+        "defaultActive": true,
+        "reactivateEnabled": true,
+        "pause": 1,
+        "pauseUnit": "h",
         "timer": "10",
         "timerUnit": "s",
         "nightmodeEnabled": true,
@@ -6585,82 +6587,12 @@
         ]
     },
     {
-        "id": "bc4190c1272dc724",
-        "type": "change",
-        "z": "50a63383c0611497",
-        "g": "2366616d8806730a",
-        "name": "On",
-        "rules": [
-            {
-                "t": "set",
-                "p": "command",
-                "pt": "msg",
-                "to": "block",
-                "tot": "str"
-            },
-            {
-                "t": "set",
-                "p": "action",
-                "pt": "msg",
-                "to": "On",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 670,
-        "y": 420,
-        "wires": [
-            [
-                "1a7e38b67e78e65d"
-            ]
-        ]
-    },
-    {
-        "id": "be4d97e52a71a7f2",
-        "type": "change",
-        "z": "50a63383c0611497",
-        "g": "2366616d8806730a",
-        "name": "Off",
-        "rules": [
-            {
-                "t": "set",
-                "p": "command",
-                "pt": "msg",
-                "to": "block",
-                "tot": "str"
-            },
-            {
-                "t": "set",
-                "p": "action",
-                "pt": "msg",
-                "to": "Off",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 670,
-        "y": 460,
-        "wires": [
-            [
-                "1a7e38b67e78e65d"
-            ]
-        ]
-    },
-    {
         "id": "2ee35a20030c34b2",
         "type": "helper-heating-controller",
         "z": "c16b0ae576a8ea46",
         "g": "df1d30e94fa679dc",
         "name": "",
-        "version": "1.2.16",
+        "version": "1.2.24",
         "topic": "topic",
         "topicType": "msg",
         "filterUniquePayload": false,
@@ -6762,21 +6694,14 @@
         "controllerMode": "static",
         "designIndoorTemperatureC": 20,
         "designOutdoorTemperatureC": -12,
+        "designTemperatureSystem": "system_55_45",
         "roomHeatLoadW": 1200,
-        "roomVolumeM3": 50,
-        "airChangeRate": 0.5,
-        "transmissionHeatLossExternalW": 800,
-        "ventilationHeatLossW": 250,
         "mpcLearningEnabledByDefault": false,
-        "mpcReferenceFlowTemperature": 50,
         "mpcDemandHysteresisPct": 5,
         "mpcHoldTime": 5,
         "mpcHoldTimeUnit": "m",
         "mpcHoldOverrideDemandPct": 40,
         "mpcMaxDemandStepPct": 20,
-        "minTargetTemperature": 5,
-        "maxTargetTemperature": 30,
-        "targetTemperatureStep": 1,
         "trvs": [
             {
                 "name": "trv1",
@@ -6785,7 +6710,10 @@
                     "radiatorType": "22",
                     "widthMm": 500,
                     "heightMm": 600
-                }
+                },
+                "minTargetTemperature": 5,
+                "maxTargetTemperature": 30,
+                "targetTemperatureStep": 1
             }
         ],
         "roomTemperatureStrategy": "external",
@@ -7375,7 +7303,7 @@
         "z": "c16b0ae576a8ea46",
         "g": "df1d30e94fa679dc",
         "name": "",
-        "version": "1.2.16",
+        "version": "1.2.24",
         "topic": "topic",
         "topicType": "msg",
         "filterUniquePayload": false,
@@ -7477,21 +7405,14 @@
         "controllerMode": "static",
         "designIndoorTemperatureC": 20,
         "designOutdoorTemperatureC": -12,
+        "designTemperatureSystem": "system_55_45",
         "roomHeatLoadW": 1200,
-        "roomVolumeM3": 50,
-        "airChangeRate": 0.5,
-        "transmissionHeatLossExternalW": 800,
-        "ventilationHeatLossW": 250,
         "mpcLearningEnabledByDefault": false,
-        "mpcReferenceFlowTemperature": 50,
         "mpcDemandHysteresisPct": 5,
         "mpcHoldTime": 5,
         "mpcHoldTimeUnit": "m",
         "mpcHoldOverrideDemandPct": 40,
         "mpcMaxDemandStepPct": 20,
-        "minTargetTemperature": 5,
-        "maxTargetTemperature": 30,
-        "targetTemperatureStep": 1,
         "trvs": [
             {
                 "name": "trv1",
@@ -7499,7 +7420,10 @@
                 "heatEmitter.radiatorType": "10",
                 "heatEmitter.widthMm": "1000",
                 "heatEmitter.heightMm": "600",
-                "heatEmitter.nominalPowerW": ""
+                "heatEmitter.nominalPowerW": "",
+                "minTargetTemperature": 5,
+                "maxTargetTemperature": 30,
+                "targetTemperatureStep": 1
             }
         ],
         "roomTemperatureStrategy": "external",

@@ -1,0 +1,86 @@
+{
+  "name": "Warmwasser Zirkulations-Controller",
+  "description": "Intervallbasierte Steuerung für Warmwasser-Zirkulationspumpen mit Sonderfreigabe und Zeitfenster-Konfiguration",
+  "matcher-rows-control": "Steuerung",
+  "matcher-rows-conditions": "Bedingungen",
+  "interval-rows": "Zeitfenster",
+  "field": {
+    "target": {
+      "label": "Parameter",
+      "description": "Eingangsparameter für die Zirkulationssteuerung"
+    },
+    "defaultActive": {
+      "label": "Standard aktiv",
+      "description": "Ob der Controller standardmäßig aktiv ist"
+    },
+    "reactivateEnabled": {
+      "label": "Reaktivieren",
+      "description": "Aktiviert automatisches Reaktivieren nach manueller Bedienung"
+    },
+    "defaultOnTime": {
+      "label": "Standard Ein-Zeit",
+      "description": "Laufzeit der Pumpe außerhalb konfigurierter Zeitfenster"
+    },
+    "defaultOffTime": {
+      "label": "Standard Aus-Zeit",
+      "description": "Pausenzeit der Pumpe außerhalb konfigurierter Zeitfenster"
+    },
+    "specialReleaseOffDelay": {
+      "label": "Sonderfreigabe Nachlauf",
+      "description": "Zeit, die die Pumpe nach Ende einer Sonderfreigabe noch weiterläuft"
+    },
+    "intervalName": {
+      "label": "Name",
+      "description": "Bezeichnung des Zeitfensters"
+    },
+    "from": {
+      "label": "Von",
+      "description": "Startzeit des Zeitfensters (HH:MM)"
+    },
+    "to": {
+      "label": "Bis",
+      "description": "Endzeit des Zeitfensters (HH:MM)"
+    },
+    "onTime": {
+      "label": "Ein-Zeit",
+      "description": "Laufzeit der Pumpe in diesem Zeitfenster"
+    },
+    "offTime": {
+      "label": "Aus-Zeit",
+      "description": "Pausenzeit der Pumpe in diesem Zeitfenster"
+    }
+  },
+  "input": {
+    "activeCondition": {
+      "name": "Bedingung aktiv",
+      "description": "Bestimmt, ob der Controller aktiv ist"
+    },
+    "heatingAvailable": {
+      "name": "Heizung verfügbar",
+      "description": "Gibt an, ob die Heizung in Betrieb ist (z.B. Wärmepumpe im heat_pump-Modus)"
+    },
+    "runCondition": {
+      "name": "Laufbedingung",
+      "description": "Bedingungen, die alle erfüllt sein müssen, damit die Intervallsteuerung startet (z.B. Anwesenheit)"
+    },
+    "specialRelease": {
+      "name": "Sonderfreigabe",
+      "description": "Erzwingt die Pumpe dauerhaft EIN, unabhängig vom Intervall (z.B. PV-Überschuss, hohe Speichertemperatur)"
+    }
+  },
+  "output": {
+    "pump": {
+      "name": "Pumpe",
+      "description": "Schaltzustand der Zirkulationspumpe (true = ein, false = aus)"
+    }
+  },
+  "status": {
+    "inactive": "Inaktiv",
+    "heating-unavailable": "Heizung nicht verfügbar",
+    "special-release": "Sonderfreigabe aktiv",
+    "special-release-off-delay": "Sonderfreigabe – Nachlauf",
+    "waiting-run-condition": "Warte auf Laufbedingung",
+    "interval-on": "Intervall – Pumpe an",
+    "interval-off": "Intervall – Pause"
+  }
+}

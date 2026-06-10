@@ -1,30 +1,21 @@
-import { NodeMessage } from "node-red";
-
 import { TimeIntervalUnit } from "../../../../helpers/time.helper";
-import {
-  InputNodeOptionsDefaults,
-  MatcherRowDefaults,
-  MatchJoinEditorNodeProperties,
-  MatchJoinNodeDef,
-  MatchJoinNodeOptions,
-} from "../../../flowctrl/match-join/types";
+import { MatcherRowDefaults } from "../../../flowctrl/match-join/types";
 import { NotApplicableCompareFunction } from "../../../logical/compare/types";
-import { LightCommand } from "../../light/light-controller/types";
-
-export enum MotionControllerCommand {
-  block = "block",
-  unblock = "unblock",
-}
+import {
+  ActiveControllerEditorNodeProperties,
+  ActiveControllerNodeDef,
+  ActiveControllerNodeOptions,
+  ActiveControllerNodeOptionsDefaults,
+  ActiveControllerTarget,
+} from "../../../flowctrl/active-controller/types";
 
 export enum MotionControllerTarget {
   motion = "motion",
   darkness = "darkness",
   night = "night",
-  manualControl = "manualControl",
-  command = "command",
 }
 
-export interface MotionControllerNodeOptions extends MatchJoinNodeOptions {
+export interface MotionControllerNodeOptions extends ActiveControllerNodeOptions {
   timer: number;
   timerUnit: TimeIntervalUnit;
   onlyDarkness: boolean;
@@ -39,23 +30,23 @@ export interface MotionControllerNodeOptions extends MatchJoinNodeOptions {
 
 export const MotionControllerNodeOptionsDefaults: MotionControllerNodeOptions =
   {
-    ...InputNodeOptionsDefaults,
+    ...ActiveControllerNodeOptionsDefaults,
     matchers: [
       {
         ...MatcherRowDefaults,
-        target: "motion",
+        target: MotionControllerTarget.motion,
         targetType: "str",
       },
       {
         ...MatcherRowDefaults,
         property: "command",
         operation: NotApplicableCompareFunction.notEmpty,
-        target: "command",
+        target: ActiveControllerTarget.command,
         targetType: "str",
       },
       {
         ...MatcherRowDefaults,
-        target: "manualControl",
+        target: ActiveControllerTarget.manualControl,
         targetType: "str",
       },
     ],
@@ -69,12 +60,7 @@ export const MotionControllerNodeOptionsDefaults: MotionControllerNodeOptions =
   };
 
 export interface MotionControllerNodeDef
-  extends MatchJoinNodeDef, MotionControllerNodeOptions {}
+  extends ActiveControllerNodeDef, MotionControllerNodeOptions {}
 
 export interface MotionControllerEditorNodeProperties
-  extends MatchJoinEditorNodeProperties, MotionControllerNodeOptions {}
-
-export interface MotionControllerNodeMessage extends NodeMessage {
-  command?: MotionControllerCommand;
-  action?: LightCommand;
-}
+  extends ActiveControllerEditorNodeProperties, MotionControllerNodeOptions {}

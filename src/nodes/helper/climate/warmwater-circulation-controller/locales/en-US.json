@@ -1,0 +1,86 @@
+{
+  "name": "Warmwater Circulation Controller",
+  "description": "Interval-based control for domestic hot water circulation pumps with special release and time-window scheduling",
+  "matcher-rows-control": "Control",
+  "matcher-rows-conditions": "Conditions",
+  "interval-rows": "Time windows",
+  "field": {
+    "target": {
+      "label": "Parameter",
+      "description": "Input parameter for circulation control"
+    },
+    "defaultActive": {
+      "label": "Default active",
+      "description": "Whether the controller is active by default"
+    },
+    "reactivateEnabled": {
+      "label": "Re-enable",
+      "description": "Enables automatic reactivation after manual control"
+    },
+    "defaultOnTime": {
+      "label": "Default on-time",
+      "description": "Pump run time outside of configured time windows"
+    },
+    "defaultOffTime": {
+      "label": "Default off-time",
+      "description": "Pump pause time outside of configured time windows"
+    },
+    "specialReleaseOffDelay": {
+      "label": "Special release off-delay",
+      "description": "Time the pump keeps running after a special release ends"
+    },
+    "intervalName": {
+      "label": "Name",
+      "description": "Label for this time window"
+    },
+    "from": {
+      "label": "From",
+      "description": "Start time of the time window (HH:MM)"
+    },
+    "to": {
+      "label": "To",
+      "description": "End time of the time window (HH:MM)"
+    },
+    "onTime": {
+      "label": "On-time",
+      "description": "Pump run time within this time window"
+    },
+    "offTime": {
+      "label": "Off-time",
+      "description": "Pump pause time within this time window"
+    }
+  },
+  "input": {
+    "activeCondition": {
+      "name": "Active condition",
+      "description": "Determines whether the controller is active"
+    },
+    "heatingAvailable": {
+      "name": "Heating available",
+      "description": "Whether the heating system is running (e.g. heat pump in heat_pump mode)"
+    },
+    "runCondition": {
+      "name": "Run condition",
+      "description": "All conditions must be true for the interval loop to start (e.g. presence)"
+    },
+    "specialRelease": {
+      "name": "Special release",
+      "description": "Forces the pump on regardless of the interval (e.g. PV surplus, high tank temperature)"
+    }
+  },
+  "output": {
+    "pump": {
+      "name": "Pump",
+      "description": "Circulation pump switch state (true = on, false = off)"
+    }
+  },
+  "status": {
+    "inactive": "Inactive",
+    "heating-unavailable": "Heating unavailable",
+    "special-release": "Special release active",
+    "special-release-off-delay": "Special release – off delay",
+    "waiting-run-condition": "Waiting for run condition",
+    "interval-on": "Interval – pump on",
+    "interval-off": "Interval – waiting"
+  }
+}

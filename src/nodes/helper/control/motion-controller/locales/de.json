@@ -2,6 +2,18 @@
     "name": "Bewegungssteuerung",
     "description": "Steuert Lichter basierend auf Bewegungserkennung mit optionalen Dunkelheits- und Nachtmodus-Einstellungen",
     "field": {
+        "reactivateEnabled": {
+            "label": "Reaktivieren",
+            "description": "Aktiviert automatisches Reaktivieren nach manueller Bedienung"
+        },
+        "pause": {
+            "label": "Pause",
+            "description": "Pausenzeit vor Reaktivierung"
+        },
+        "defaultActive": {
+            "label": "Standard aktiv",
+            "description": "Standardmäßig aktiver Zustand"
+        },
         "timer": {
             "label": "Timer",
             "description": "Zeit, um Lichter nach Bewegung eingeschaltet zu lassen"
@@ -16,6 +28,10 @@
         }
     },
     "input": {
+        "activeCondition": {
+            "name": "Aktivierungsbedingung",
+            "description": "Bedingungen für die Aktivierung des Controllers"
+        },
         "motion": {
             "name": "Bewegung",
             "description": "Bewegungssensor-Eingabe"
@@ -51,6 +67,7 @@
         "automationOn": "Automatisch",
         "active": "Aktiv",
         "automationOff": "Manuell",
+        "inactive": "Inaktiv",
         "motion": "Bewegung erkannt",
         "noMotion": "Keine Bewegung erkannt"
     }

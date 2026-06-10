@@ -2,22 +2,21 @@ import { Node, NodeAPI, NodeStatusFill } from "node-red";
 import { convertToMilliseconds } from "../../../../helpers/time.helper";
 import Migration from "../../../flowctrl/base/migration";
 import { NodeMessageFlow } from "../../../flowctrl/base/types";
-import MatchJoinNode from "../../../flowctrl/match-join";
 import { LogicalOperation } from "../../../logical/op";
 import { NodeCategory } from "../../../types";
 import { LightCommand } from "../../light/light-controller/types";
 import { HelperControlCategory } from "../types";
 import MotionControllerMigration from "./migration";
 import {
-  MotionControllerCommand,
   MotionControllerNodeDef,
-  MotionControllerNodeMessage,
   MotionControllerNodeOptions,
   MotionControllerNodeOptionsDefaults,
   MotionControllerTarget,
 } from "./types";
+import ActiveControllerNode from "../../../flowctrl/active-controller";
+import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
 
-export default class MotionControllerNode extends MatchJoinNode<
+export default class MotionControllerNode extends ActiveControllerNode<
   MotionControllerNodeDef,
   MotionControllerNodeOptions
 > {
@@ -31,35 +30,19 @@ export default class MotionControllerNode extends MatchJoinNode<
   private motionStates: Record<string, boolean> = {};
   private darkness: boolean = true;
   private night: boolean = false;
-  private lastAction: string = "";
 
   constructor(RED: NodeAPI, node: Node, config: MotionControllerNodeDef) {
     super(RED, node, config, MotionControllerNodeOptionsDefaults);
-    this.initialize();
-  }
-
-  private initialize() {
-    this.blocked = false;
-  }
-
-  private get blocked(): boolean {
-    return !this.nodeStatus;
-  }
-
-  private set blocked(value: boolean) {
-    this.nodeStatus = !value;
   }
 
   protected onClose(): void {
     super.onClose();
+    this.clearTimer();
     this.motionStates = {};
   }
 
   protected matched(messageFlow: NodeMessageFlow): void {
     const topic = messageFlow.topic;
-
-    const motionControllerMessage =
-      messageFlow.originalMsg as MotionControllerNodeMessage;
 
     switch (topic) {
       case MotionControllerTarget.motion:
@@ -67,13 +50,14 @@ export default class MotionControllerNode extends MatchJoinNode<
           messageFlow.payload as boolean;
         this.handleMotion();
         break;
-      case MotionControllerTarget.command:
-        this.blocked =
-          motionControllerMessage.command === MotionControllerCommand.block;
-        this.handleCommand(motionControllerMessage);
+      case ActiveControllerTarget.activeCondition:
+        this.handleActivateTarget(messageFlow);
         break;
-      case MotionControllerTarget.manualControl:
-        this.handleManualControl(motionControllerMessage);
+      case ActiveControllerTarget.command:
+        this.handleCommandTarget(messageFlow);
+        break;
+      case ActiveControllerTarget.manualControl:
+        this.handleManualControlTarget(messageFlow);
         break;
       case MotionControllerTarget.darkness:
         this.darkness = messageFlow.payload as boolean;
@@ -85,83 +69,26 @@ export default class MotionControllerNode extends MatchJoinNode<
     }
   }
 
-  private handleMotion(ignoreTimer: boolean = false): void {
-    if (!this.blocked && (!this.timer || ignoreTimer)) {
-      if (this.isOn()) {
-        if (this.config.nightmodeEnabled && this.night) {
-          this.sendAction(this.config.nightmodeCommand!);
-        } else {
-          this.sendAction(this.config.onCommand!);
-        }
-
-        this.startTimer();
-      } else {
-        this.clearTimer();
-        this.sendAction(this.config.offCommand!);
-      }
-    }
-
-    this.triggerNodeStatus();
+  protected onReactivate(): void {
+    this.handleMotion(true);
   }
 
-  private sendAction(action: string): void {
-    this.lastAction = action;
-    const actionMessageFlow = new NodeMessageFlow(
-      {
-        topic: "action",
-        payload: action,
-      },
-      0
-    );
-    this.debounce(actionMessageFlow);
+  protected onManualControl(manual: unknown): void {
+    this.handleAction(manual);
   }
 
-  protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
-    this.triggerNodeStatus();
-  }
-
-  private startTimer(): void {
-    this.timer ??= setInterval(
-      () => {
-        if (!this.isOn()) {
-          this.handleMotion(true);
-        }
-      },
-      convertToMilliseconds(this.config.timer, this.config.timerUnit)
-    );
-  }
-
-  private isOn(): boolean {
-    return this.isMotion() && this.isDarkness();
-  }
-
-  private isMotion(): boolean {
-    return LogicalOperation.or(Object.values(this.motionStates));
-  }
-
-  private isDarkness(): boolean {
-    return !this.config.onlyDarkness || this.darkness;
-  }
-
-  private handleManualControl(msg: MotionControllerNodeMessage): void {
-    if (!this.blocked) {
-      if (this.lastAction && msg.payload !== this.lastAction) {
-        this.blocked = true;
-        this.handleCommand(msg);
-      }
-    }
-  }
-
-  private handleCommand(msg: MotionControllerNodeMessage): void {
-    this.triggerNodeStatus();
-
+  protected onCommand(messageFlow: NodeMessageFlow): void {
     if (this.blocked) {
       this.clearTimer();
     }
+    const msg = messageFlow.originalMsg;
+    this.handleAction(msg?.action);
+  }
 
-    if (msg?.action) {
-      let action: string;
-      switch (msg.action) {
+  private handleAction(actionIn?: unknown): void {
+    if (actionIn) {
+      let action: string = actionIn as string;
+      switch (actionIn) {
         case LightCommand.On:
           action = this.config.onCommand!;
           break;
@@ -178,17 +105,97 @@ export default class MotionControllerNode extends MatchJoinNode<
     }
   }
 
+  private handleMotion(ignoreTimer: boolean = false): void {
+    if (this.blocked || !this.active || (this.timer && !ignoreTimer)) {
+      return;
+    }
+
+    if (this.isOn()) {
+      if (this.config.nightmodeEnabled && this.night) {
+        this.sendAction(this.config.nightmodeCommand!);
+      } else {
+        this.sendAction(this.config.onCommand!);
+      }
+      this.restartTimer();
+    } else {
+      this.switchOff();
+    }
+
+    this.triggerNodeStatus();
+  }
+
+  private restartTimer(): void {
+    this.clearTimer();
+
+    this.timer = setTimeout(
+      () => {
+        this.timer = null;
+
+        if (this.isOn()) {
+          this.restartTimer();
+        } else {
+          this.switchOff();
+        }
+      },
+      convertToMilliseconds(this.config.timer, this.config.timerUnit),
+    );
+  }
+
+  private isOn(): boolean {
+    return this.isMotion() && this.isDarkness();
+  }
+
+  private isMotion(): boolean {
+    if (!this.motionStates || Object.keys(this.motionStates).length === 0) {
+      return false;
+    }
+
+    return LogicalOperation.or(Object.values(this.motionStates));
+  }
+
+  private isDarkness(): boolean {
+    return !this.config.onlyDarkness || this.darkness;
+  }
+
+  private switchOff(): void {
+    this.clearTimer();
+    this.sendAction(this.config.offCommand!);
+  }
+
   private clearTimer(): void {
     if (this.timer) {
-      clearInterval(this.timer);
+      clearTimeout(this.timer);
       this.timer = null;
     }
+  }
+
+  private sendAction(action: string): void {
+    if (!this.active) {
+      return;
+    }
+
+    this.lastsend = action;
+
+    const actionMessageFlow = new NodeMessageFlow(
+      {
+        topic: "action",
+        payload: action,
+      },
+      0,
+    );
+    this.debounce(actionMessageFlow);
+  }
+
+  protected updateStatusAfterDebounce(_: NodeMessageFlow): void {
+    this.triggerNodeStatus();
   }
 
   protected statusColor(status: any): NodeStatusFill {
     let color: NodeStatusFill = "yellow";
 
-    if (status === null) {
+    if (!this.active) {
+      color = "red";
+    } else if (status === null) {
       color = "grey";
     } else if (this.blocked) {
       color = "red";
@@ -200,7 +207,12 @@ export default class MotionControllerNode extends MatchJoinNode<
   }
 
   protected statusTextFormatter(status: any): string {
+    if (!this.active) {
+      return this.RED._("helper.motion-controller.state.inactive");
+    }
+
     let text = "";
+
     if (status === null) {
       text = "Unknown";
     } else if (this.blocked) {

@@ -2,6 +2,18 @@
     "name": "Motion Controller",
     "description": "Controls lights based on motion detection with optional darkness and nightmode settings",
     "field": {
+        "defaultActive": {
+            "label": "Default active",
+            "description": "Whether the controller is active by default"
+        },
+        "reactivateEnabled": {
+            "label": "Re-enable",
+            "description": "Enables automatic reactivation after manual control"
+        },
+        "pause": {
+            "label": "Pause",
+            "description": "Pause time before reactivation"
+        },
         "timer": {
             "label": "Timer",
             "description": "Time to keep lights on after motion"
@@ -16,6 +28,10 @@
         }
     },
     "input": {
+        "activeCondition": {
+            "name": "Active condition",
+            "description": "Conditions for controller activation"
+        },
         "motion": {
             "name": "motion",
             "description": "Motion sensor input"
@@ -51,6 +67,7 @@
         "automationOn": "Automated",
         "active": "Active",
         "automationOff": "Manual",
+        "inactive": "Inactive",
         "motion": "Motion detected",
         "noMotion": "No motion detected"
     }

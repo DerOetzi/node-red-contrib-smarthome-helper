@@ -1,6 +1,6 @@
 {
     "name": "Heating Controller",
-    "description": "Intelligent control for heating systems with comfort and eco modes",
+    "description": "Intelligent control for heating systems with comfort and eco modes. Supports manual override, boost mode, and model-predictive control (MPC) for optimized energy efficiency. The MPC control moder is in beta stage and development is paused until next heating period! You can already try it or use control mode static if you want to be save.",
     "matcher-rows-control": "Control inputs",
     "matcher-rows-temperature": "Temperature inputs",
     "matcher-rows-boost": "Boost inputs",

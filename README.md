@@ -41,6 +41,9 @@ Requirements:
 ### Helper Climate
 
 - `heating-controller`: Heating logic with modes and additional conditions
+
+  > **Note:** The new integrated MPC is beta state at the moment and development is postponed until the next heating period end of summer 2026. Use static controller mode if you want most benefits.
+
 - `hygro-calculator`: Calculates dew point and absolute humidity
 
 ### Helper Control

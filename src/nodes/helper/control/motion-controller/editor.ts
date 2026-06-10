@@ -1,3 +1,4 @@
+import { ActiveControllerTarget } from "../../../flowctrl/active-controller/types";
 import {
   i18nFieldDefault,
   NodeEditorDefinition,
@@ -28,7 +29,14 @@ export const MotionControllerEditorDef: NodeEditorDefinition<
       id: "matcher-rows",
       create: () =>
         new MatchJoinEditableList({
-          targets: Object.values(MotionControllerTarget),
+          targets: [
+            MotionControllerTarget.motion,
+            MotionControllerTarget.darkness,
+            MotionControllerTarget.night,
+            ActiveControllerTarget.activeCondition,
+            ActiveControllerTarget.command,
+            ActiveControllerTarget.manualControl,
+          ],
           translatePrefix: "helper.motion-controller",
         }),
       dataKey: "matchers",
@@ -38,6 +46,18 @@ export const MotionControllerEditorDef: NodeEditorDefinition<
   form: {
     id: "motion-controller-options",
     fields: [
+      {
+        type: "checkbox",
+        key: "defaultActive",
+        icon: "toggle-on",
+        showsListTarget: {
+          listId: "matcher-rows",
+          target: ActiveControllerTarget.activeCondition,
+        },
+      },
+      { type: "checkbox", key: "reactivateEnabled", icon: "toggle-on" },
+      { type: "time", key: "pause", icon: "pause" },
+      { type: "line" },
       { type: "time", key: "timer", icon: "clock-o" },
       {
         type: "checkbox",
