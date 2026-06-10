@@ -76,6 +76,7 @@
   },
   "status": {
     "inactive": "Inactive",
+    "unknown": "Unknown",
     "heating-unavailable": "Heating unavailable",
     "special-release": "Special release active",
     "special-release-off-delay": "Special release – off delay",

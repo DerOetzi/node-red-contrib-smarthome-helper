@@ -39,6 +39,7 @@ export default class WarmwaterCirculationControllerNode extends ActiveController
     config: WarmwaterCirculationControllerNodeDef,
   ) {
     super(RED, node, config, WarmwaterCirculationControllerNodeOptionsDefaults);
+    this.triggerNodeStatus();
   }
 
   protected onClose(): void {
@@ -201,6 +202,8 @@ export default class WarmwaterCirculationControllerNode extends ActiveController
   private emitPump(on: boolean): void {
     const flow = new NodeMessageFlow({ topic: "pump", payload: on }, 0);
 
+    flow.updateAdditionalAttribute("status", this.resolveStatusKey("pump"));
+
     this.debounce(flow);
   }
 
@@ -229,13 +232,17 @@ export default class WarmwaterCirculationControllerNode extends ActiveController
     this.triggerNodeStatus();
   }
 
-  protected statusColor(_status: any): NodeStatusFill {
+  protected statusColor(status: any): NodeStatusFill {
     if (!this.active) {
       return "red";
     }
 
-    if (!this.stateController.isHeatingAvailable) {
+    if (status === null || !this.stateController) {
       return "grey";
+    }
+
+    if (!this.stateController.isHeatingAvailable) {
+      return "blue";
     }
 
     if (
@@ -248,17 +255,22 @@ export default class WarmwaterCirculationControllerNode extends ActiveController
     return (this.lastsend as any) === true ? "green" : "blue";
   }
 
-  protected statusTextFormatter(_status: any): string {
-    const statusKey = this.resolveStatusKey();
+  protected statusTextFormatter(status: any): string {
+    const statusKey = this.resolveStatusKey(status);
     return this.RED._(
       `helper.warmwater-circulation-controller.status.${statusKey}`,
     );
   }
 
-  private resolveStatusKey(): string {
+  private resolveStatusKey(status: any): string {
     if (!this.active) {
       return "inactive";
     }
+
+    if (status === null || !this.stateController) {
+      return "unknown";
+    }
+
     if (!this.stateController.isHeatingAvailable) {
       return "heating-unavailable";
     }

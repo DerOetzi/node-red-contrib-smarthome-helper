@@ -150,6 +150,37 @@
     "h": 1162
   },
   {
+    "id": "f3e8a1b2c4d56789",
+    "type": "group",
+    "z": "c16b0ae576a8ea46",
+    "name": "Warmwater Circulation Controller",
+    "style": {
+      "stroke": "#999999",
+      "stroke-opacity": "1",
+      "fill": "none",
+      "fill-opacity": "1",
+      "label": true,
+      "label-position": "nw",
+      "color": "#a4a4a4"
+    },
+    "nodes": [
+      "c1d2e3f4a5b60001",
+      "c1d2e3f4a5b60002",
+      "c1d2e3f4a5b60003",
+      "c1d2e3f4a5b60004",
+      "c1d2e3f4a5b60005",
+      "c1d2e3f4a5b60006",
+      "c1d2e3f4a5b60007",
+      "c1d2e3f4a5b60008",
+      "a1b2c3d4e5f67890",
+      "b2c3d4e5f6789012"
+    ],
+    "x": 54,
+    "y": 3339,
+    "w": 732,
+    "h": 422
+  },
+  {
     "id": "2ee35a20030c34b2",
     "type": "helper-heating-controller",
     "z": "c16b0ae576a8ea46",
@@ -2834,6 +2865,366 @@
     "wires": [
       [
         "39c0cb52f511d9cb"
+      ]
+    ]
+  },
+  {
+    "id": "a1b2c3d4e5f67890",
+    "type": "helper-warmwater-circulation-controller",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "",
+    "version": "1.2.26",
+    "topic": "topic",
+    "topicType": "msg",
+    "filterUniquePayload": false,
+    "newMsg": false,
+    "outputs": 1,
+    "inputs": 1,
+    "statusReportingEnabled": true,
+    "statusItem": "circulationStatus",
+    "statusTextItem": "circulationStatusText",
+    "debounce": true,
+    "debounceTopic": true,
+    "debounceShowStatus": false,
+    "debounceTime": "500",
+    "debounceUnit": "ms",
+    "debounceLeading": false,
+    "debounceTrailing": true,
+    "matchers": [
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "active_condition",
+        "compareType": "str",
+        "target": "activeCondition"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "heating_available",
+        "compareType": "str",
+        "target": "heatingAvailable"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "run_condition",
+        "compareType": "str",
+        "target": "runCondition"
+      },
+      {
+        "targetType": "str",
+        "property": "topic",
+        "propertyType": "msg",
+        "operation": "eq",
+        "compare": "special_release",
+        "compareType": "str",
+        "target": "specialRelease"
+      }
+    ],
+    "discardNotMatched": true,
+    "join": false,
+    "minMsgCount": 1,
+    "defaultActive": true,
+    "reactivateEnabled": true,
+    "pause": "10",
+    "pauseUnit": "s",
+    "intervals": [
+      {
+        "name": "morning",
+        "from": "05:00",
+        "to": "09:00",
+        "onTime": "10",
+        "onTimeUnit": "s",
+        "offTime": "20",
+        "offTimeUnit": "s"
+      },
+      {
+        "name": "evening",
+        "from": "17:00",
+        "to": "22:00",
+        "onTime": "10",
+        "onTimeUnit": "s",
+        "offTime": "20",
+        "offTimeUnit": "s"
+      }
+    ],
+    "defaultOnTime": 10,
+    "defaultOnTimeUnit": "s",
+    "defaultOffTime": 20,
+    "defaultOffTimeUnit": "s",
+    "specialReleaseOffDelay": 30,
+    "specialReleaseOffDelayUnit": "s",
+    "x": 470,
+    "y": 3550,
+    "wires": [
+      [
+        "b2c3d4e5f6789012"
+      ]
+    ]
+  },
+  {
+    "id": "b2c3d4e5f6789012",
+    "type": "debug",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "pump",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "payload",
+    "statusType": "msg",
+    "x": 690,
+    "y": 3550,
+    "wires": []
+  },
+  {
+    "id": "c1d2e3f4a5b60001",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "active_condition",
+    "payload": "true",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3380,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
+      ]
+    ]
+  },
+  {
+    "id": "c1d2e3f4a5b60002",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "active_condition",
+    "payload": "false",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3420,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
+      ]
+    ]
+  },
+  {
+    "id": "c1d2e3f4a5b60003",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "heat_pump",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "heating_available",
+    "payload": "true",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3480,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
+      ]
+    ]
+  },
+  {
+    "id": "c1d2e3f4a5b60004",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "off",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "heating_available",
+    "payload": "false",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3520,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
+      ]
+    ]
+  },
+  {
+    "id": "c1d2e3f4a5b60005",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "presence",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "run_condition",
+    "payload": "true",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3580,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
+      ]
+    ]
+  },
+  {
+    "id": "c1d2e3f4a5b60006",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "absence",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "run_condition",
+    "payload": "false",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3620,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
+      ]
+    ]
+  },
+  {
+    "id": "c1d2e3f4a5b60007",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "PV / high temp",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "special_release",
+    "payload": "true",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3680,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
+      ]
+    ]
+  },
+  {
+    "id": "c1d2e3f4a5b60008",
+    "type": "inject",
+    "z": "c16b0ae576a8ea46",
+    "g": "f3e8a1b2c4d56789",
+    "name": "",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "special_release",
+    "payload": "false",
+    "payloadType": "bool",
+    "x": 200,
+    "y": 3720,
+    "wires": [
+      [
+        "a1b2c3d4e5f67890"
       ]
     ]
   }

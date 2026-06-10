@@ -76,6 +76,7 @@
   },
   "status": {
     "inactive": "Inaktiv",
+    "unknown": "Unbekannt",
     "heating-unavailable": "Heizung nicht verfügbar",
     "special-release": "Sonderfreigabe aktiv",
     "special-release-off-delay": "Sonderfreigabe – Nachlauf",
