@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "clone-stats": "^1.0.0",
-    "node-red": "^4.0.2",
+    "node-red": "^5.0.1",
     "semver": "^7.7.4",
     "vinyl": "^3.0.1"
   },
